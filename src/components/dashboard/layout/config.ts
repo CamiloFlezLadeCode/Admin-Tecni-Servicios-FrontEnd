@@ -16,6 +16,6 @@ export const navItems = [
   { key: 'remisiones', title: 'Remisiones', href: paths.dashboard.remisiones, icon: 'arrow-circle-right' },
   { key: 'devoluciones', title: 'Devoluciones', href: paths.dashboard.devoluciones, icon: 'arrow-circle-left' },
   { key: 'account', title: 'Cuenta', href: paths.dashboard.account, icon: 'user' },
-  { key: 'admin', title: 'Maestro', href: paths.dashboard.maestro, icon: 'detective' },
+  { key: 'maestro', title: 'Maestro', href: paths.dashboard.maestro, icon: 'detective' },
   { key: 'settings', title: 'Ajustes', href: paths.dashboard.settings, icon: 'gear-six' },
 ] satisfies NavItemConfig[];
