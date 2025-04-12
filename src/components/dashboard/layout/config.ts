@@ -12,9 +12,10 @@ export const navItems = [
   { key: 'overview', title: 'Panel', href: paths.dashboard.overview, icon: 'chart-pie' },
   { key: 'customers', title: 'Clientes', href: paths.dashboard.customers, icon: 'users' },
   { key: 'integrations', title: 'Integraciones', href: paths.dashboard.integrations, icon: 'plugs-connected' },
+  // { key: 'error', title: 'Error', href: paths.errors.notFound, icon: 'x-square' },
+  { key: 'error', title: 'Remisiones', href: paths.dashboard.remisiones, icon: 'arrow-circle-right' },
+  { key: 'error', title: 'Devoluciones', href: paths.dashboard.devoluciones, icon: 'arrow-circle-left' },
   { key: 'account', title: 'Cuenta', href: paths.dashboard.account, icon: 'user' },
-  { key: 'error', title: 'Error', href: paths.errors.notFound, icon: 'x-square' },
-  { key: 'error', title: 'Remisiones', href: paths.errors.notFound, icon: 'gear-six' },
-  { key: 'error', title: 'Devoluciones', href: paths.errors.notFound, icon: 'Abc' },
+  { key: 'admin', title: 'Maestro', href: paths.dashboard.maestro, icon: 'detective' },
   { key: 'settings', title: 'Ajustes', href: paths.dashboard.settings, icon: 'gear-six' },
 ] satisfies NavItemConfig[];
