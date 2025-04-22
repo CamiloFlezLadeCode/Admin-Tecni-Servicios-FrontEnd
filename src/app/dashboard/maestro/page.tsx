@@ -1,14 +1,17 @@
+// app/dashboard/maestro/page.tsx
+// 'use client';
+
 import * as React from 'react';
-import type { Metadata } from 'next';
-import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Unstable_Grid2';
+import type { Metadata } from 'next';
+import { config } from '@/config';
 
 
-export default function Page(): React.JSX.Element{
-    return (
-        <div>
-            <Typography variant="h4">Maestro</Typography>
-        </div>
-    );
+export const metadata = { title: `Mestro | ${config.site.name}` } satisfies Metadata;
+export default function Page(): React.JSX.Element {
+  return (
+    <div>
+      {/* <Typography variant="h4">Bienvenido al Panel del Maestro</Typography> */}
+    </div>
+  );
 }

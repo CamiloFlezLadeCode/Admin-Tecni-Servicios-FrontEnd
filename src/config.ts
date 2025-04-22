@@ -6,7 +6,12 @@ export interface Config {
   logLevel: keyof typeof LogLevel;
 }
 
+// export const config: Config = {
+//   site: { name: 'Devias Kit', description: '', themeColor: '#090a0b', url: getSiteURL() },
+//   logLevel: (process.env.NEXT_PUBLIC_LOG_LEVEL as keyof typeof LogLevel) ?? LogLevel.ALL,
+// };
+
 export const config: Config = {
-  site: { name: 'Devias Kit', description: '', themeColor: '#090a0b', url: getSiteURL() },
+  site: { name: 'TecniServicios', description: '', themeColor: '#090a0b', url: getSiteURL() },
   logLevel: (process.env.NEXT_PUBLIC_LOG_LEVEL as keyof typeof LogLevel) ?? LogLevel.ALL,
 };

@@ -1,0 +1,20 @@
+// app/dashboard/maestro/layout.tsx
+import * as React from 'react';
+import { MainNav } from '@/components/dashboard/maestro/AppBar';
+import Typography from '@mui/material/Typography';
+
+
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
+export default function Layout({ children }: LayoutProps): React.JSX.Element {
+  return (
+    <div>
+        <Typography variant="h5" style={{fontWeight: 'bold'}}>Maestro</Typography>
+      <MainNav />
+      {/* <main style={{ padding: '1rem' }}>{children}</main> */}
+      <main style={{marginTop: '0.5rem'}}>{children}</main>
+    </div>
+  );
+}
