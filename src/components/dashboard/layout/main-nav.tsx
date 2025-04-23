@@ -11,17 +11,20 @@ import { Bell as BellIcon } from '@phosphor-icons/react/dist/ssr/Bell';
 import { List as ListIcon } from '@phosphor-icons/react/dist/ssr/List';
 import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass';
 import { Users as UsersIcon } from '@phosphor-icons/react/dist/ssr/Users';
+import Typography from '@mui/material/Typography';
 
 import { usePopover } from '@/hooks/use-popover';
 
 import { MobileNav } from './mobile-nav';
 import { UserPopover } from './user-popover';
+import { string } from 'zod';
 
 export function MainNav(): React.JSX.Element {
   const [openNav, setOpenNav] = React.useState<boolean>(false);
 
   const userPopover = usePopover<HTMLDivElement>();
 
+  const NombreUsuarioActivo = "Administrador";
   return (
     <React.Fragment>
       <Box
@@ -53,7 +56,7 @@ export function MainNav(): React.JSX.Element {
                 <MagnifyingGlassIcon />
               </IconButton>
             </Tooltip> */}
-            <label style={{fontWeight: 'bold'}}>¡Hola! Administrador 😊</label>
+            <Typography variant='h6'>¡Hola! {NombreUsuarioActivo} 😊</Typography>
           </Stack>
           <Stack sx={{ alignItems: 'center' }} direction="row" spacing={2}>
             {/* <Tooltip title="Contacts">

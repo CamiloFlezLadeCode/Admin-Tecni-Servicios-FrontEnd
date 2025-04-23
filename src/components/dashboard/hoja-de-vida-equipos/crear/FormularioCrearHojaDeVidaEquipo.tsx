@@ -15,8 +15,10 @@ import Select from '@mui/material/Select';
 import Grid from '@mui/material/Unstable_Grid2';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar'; // Alertas Flotantes
-import InputText from './InputText';
+// import InputText from './InputText'; //Así se importa un componente cuando se exporta con => export default InputText;
+import { InputText } from './InputText'; //Así se import un componente cuando se exporta con => export const InputText
 import InputSelect from './InputSelect';
+import Input from '../../componentes_generales/formulario/Input';
 
 const EstadoCliente = [
     { value: '1', label: 'Activo' },
@@ -43,7 +45,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
     const [email, setEmail] = React.useState('');
     const handleChangeNombre = (event: React.ChangeEvent<HTMLInputElement>) => {
         setNombre(event.target.value);
-      };
+    };
 
     return (
         <div>
@@ -59,16 +61,29 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                 <CardContent>
                     <Grid container spacing={1}>
                         <Grid md={12} xs={12}>
-                            <label htmlFor="" style={{ fontWeight: 'bold' }}>MANTENIMIENTO PREVENTIVO</label>
+                            <span>MANTENIMIENTO PREVENTIVO</span>
                         </Grid>
 
-                        <Grid xs={12}>
+
+                        <Grid md={2} xs={12}>
+                            <Input
+                                label="Fecha"
+                                value={nombre}
+                                onChange={handleChangeNombre}
+                                // required
+                                tamano="small"
+                                tipo_input="date"
+                            />
+                        </Grid>
+
+                        <Grid md={3} xs={12}>
                             <InputText
                                 label="Nombre"
                                 value={nombre}
                                 onChange={handleChangeNombre}
                                 required
                                 tamano="small"
+                                tipo_input="input"
                             />
                         </Grid>
 
