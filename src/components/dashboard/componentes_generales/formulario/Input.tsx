@@ -9,7 +9,7 @@ interface InputTextProps {
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
     required?: boolean;
     tamano: 'small' | 'medium'; // Especifica los tamaños permitidos
-    tipo_input: 'input' | 'date' | 'time' | 'number';
+    tipo_input: 'input' | 'date' | 'time' | 'number' | 'textarea';
 }
 
 const InputText: React.FC<InputTextProps> = ({ label, value, onChange, required = false, tamano, tipo_input }) => {
@@ -36,7 +36,10 @@ const InputText: React.FC<InputTextProps> = ({ label, value, onChange, required 
                 onChange={onChange}
                 label={label} // Asegúrate de incluir el label aquí
                 size={tamano}
-                type={tipo_input}
+                // type={tipo_input}
+                type={tipo_input === 'textarea' ? 'text' : tipo_input} // Usar 'text' para textarea
+                multiline={tipo_input === 'textarea'} // Habilitar multiline si es un textarea
+                minRows={tipo_input === 'textarea' ? 3 : 1} // Mínimo de filas para textarea
                 notched // Esta propiedad hace que la muesca sea visible siempre
                 onFocus={() => setFocused(true)} // Cambiar estado a enfocado
                 onBlur={() => setFocused(false)} // Cambiar estado a no enfocado

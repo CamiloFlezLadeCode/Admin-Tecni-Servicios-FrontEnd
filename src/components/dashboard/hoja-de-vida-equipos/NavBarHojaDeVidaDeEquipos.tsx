@@ -34,7 +34,7 @@ export function NavBarHojaDeVidaEquipos(): React.JSX.Element {
                 sx={{
                     borderBottom: '1px solid var(--mui-palette-divider)',
                     backgroundColor: 'var(--mui-palette-background-paper)',
-                    position: 'sticky',
+                    // position: 'sticky',
                     top: 0,
                     zIndex: 'var(--mui-zIndex-appBar)',
                 }}

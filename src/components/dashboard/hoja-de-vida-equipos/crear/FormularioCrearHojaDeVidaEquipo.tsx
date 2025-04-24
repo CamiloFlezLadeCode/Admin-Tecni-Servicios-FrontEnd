@@ -34,7 +34,7 @@ const EstadoCliente = [
 const Empresa = [
     { value: '1', label: 'Empresa/Cliente #1' },
     { value: '2', label: 'Empresa/Cliente #2' },
-    { value: '3', label: 'Cinnamom Overdressed' },
+    { value: '3', label: 'Cinnamom Overdressed Ceere Software SAS' },
 ]
 
 export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
@@ -74,6 +74,18 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
         console.log('Valor seleccionado:', newValue);
     };
 
+
+    // Repuestos
+    const [repuestos, setRepuestos] = React.useState('');
+    const handleRepuestosChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        setRepuestos(event.target.value);
+    };
+
+    // Observaciones
+    const [Observaciones, setObservaciones] = React.useState('');
+    const handleObservacionesChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        setObservaciones(event.target.value);
+    };
     return (
         <div>
             <Card>
@@ -87,22 +99,33 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                 <Divider />
                 <CardContent>
                     <Grid container spacing={1}>
-                        <Grid md={10} xs={12}>
+                        <Grid md={8} xs={12}>
                             <span>MANTENIMIENTO PREVENTIVO</span>
                         </Grid>
 
-                        {/* <Grid md={2} xs={12}>
+                        {/* <Grid md={2} xs={12} mt={0.5}>
                             <span>Consecutivo: [{Consecutivo}] </span>
                         </Grid> */}
-                        <Grid md={2} xs={12} style={{ display: 'flex', alignItems: 'center' }}>
+                        <Grid md={4} xs={12} style={{ display: 'flex', alignItems: 'center' }}>
                             <Info style={{ marginRight: '8px', color: '#1976d2', width: '26px', height: '26px' }} />
                             <Typography variant="body1" style={{ fontWeight: 'normal' }}>
                                 Consecutivo: {Consecutivo}
                             </Typography>
                         </Grid>
 
+                        <Grid md={12} xs={12} mt={0.5}>
+                            <Input
+                                label='Guía 12 col'
+                                value=''
+                                // onChange={}
+                                // required
+                                tamano='small'
+                                tipo_input='input'
+                            />
+                        </Grid>
 
-                        <Grid md={2} xs={12}>
+
+                        <Grid md={2} xs={12} mt={0.5}>
                             <Input
                                 label="Fecha"
                                 value={nombre}
@@ -113,29 +136,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                             />
                         </Grid>
 
-                        <Grid md={12} xs={12}>
-                            <Input
-                                label="Prueba"
-                                value="hola"
-                                // onChange={ }
-                                // required
-                                tamano='small'
-                                tipo_input='input'
-                            />
-                        </Grid>
-
-                        {/* <Grid md={} xs={12}>
-                          <Input
-                            label=""
-                            value={}
-                            onChange={}
-                            // required
-                            tamano=""
-                            tipo_input=""
-                          />
-                        </Grid> */}
-
-                        <Grid md={4} xs={12}>
+                        <Grid md={3} xs={12} mt={0.5}>
                             <InputSelect
                                 label='Empresa'
                                 value={selectedValue}
@@ -145,7 +146,274 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                             />
                         </Grid>
 
-                        <Grid md={3} xs={12}>
+                        <Grid md={2} xs={12} mt={0.5}>
+                            <Input
+                                label='Nit'
+                                value='123456789'
+                                // onChange={ }
+                                // required
+                                tamano='small'
+                                tipo_input='input'
+                            />
+                        </Grid>
+
+                        <Grid md={2} xs={12} mt={0.5}>
+                            <Input
+                                label='Teléfono'
+                                value='97531334'
+                                // onChange={}
+                                // required
+                                tamano='small'
+                                tipo_input='input'
+                            />
+                        </Grid>
+
+                        <Grid md={3} xs={12} mt={0.5}>
+                            <Input
+                                label='Dirección'
+                                value='Cra ochomil'
+                                // onChange={}
+                                // required
+                                tamano='small'
+                                tipo_input='input'
+                            />
+                        </Grid>
+
+                        <Grid md={12} xs={12} mt={0.7}>
+                            <span>HOJA DE VIDA EQUIPO</span>
+                        </Grid>
+
+                        <Grid md={4} xs={12} mt={0.5}>
+                            <Input
+                                label='Nombre del equipo'
+                                value='Taladro'
+                                // onChange={}
+                                // required
+                                tamano='small'
+                                tipo_input='input'
+                            />
+                        </Grid>
+
+                        <Grid md={2} xs={12} mt={0.5}>
+                            <Input
+                                label='Código'
+                                value='123'
+                                // onChange={}
+                                // required
+                                tamano='small'
+                                tipo_input='input'
+                            />
+                        </Grid>
+
+                        <Grid md={2} xs={12} mt={0.5}>
+                            <Input
+                                label='Selección'
+                                value='Select'
+                                // onChange={}
+                                // required
+                                tamano='small'
+                                tipo_input='input'
+                            />
+                        </Grid>
+
+                        <Grid md={2} xs={12} mt={0.5}>
+                            <Input
+                                label='Modelo'
+                                value='ars'
+                                // onChange={}
+                                // required
+                                tamano='small'
+                                tipo_input='input'
+                            />
+                        </Grid>
+
+                        <Grid md={2} xs={12} mt={0.5}>
+                            <Input
+                                label='Serie'
+                                value='sdfs'
+                                // onChange={}
+                                // required
+                                tamano='small'
+                                tipo_input='input'
+                            />
+                        </Grid>
+
+                        <Grid md={3} xs={12} mt={0.5}>
+                            <Input
+                                label='Obra'
+                                value='Casa nua country'
+                                // onChange={}
+                                // required
+                                tamano='small'
+                                tipo_input='input'
+                            />
+                        </Grid>
+
+                        <Grid md={3} xs={12} mt={0.5}>
+                            <Input
+                                label='Fabricante'
+                                value='Nombre Fabricante'
+                                // onChange={}
+                                // required
+                                tamano='small'
+                                tipo_input='input'
+                            />
+                        </Grid>
+
+                        <Grid md={2} xs={12} mt={0.5}>
+                            <Input
+                                label='Marca'
+                                value='Makita'
+                                // onChange={}
+                                // required
+                                tamano='small'
+                                tipo_input='input'
+                            />
+                        </Grid>
+
+                        <Grid md={12} xs={12} mt={0.7}>
+                            <span>CARACTERISTICAS TECNICAS</span>
+                        </Grid>
+
+                        <Grid md={2} xs={12} mt={0.5}>
+                            <Input
+                                label='Voltaje'
+                                value='220V'
+                                // onChange={}
+                                // required
+                                tamano='small'
+                                tipo_input='input'
+                            />
+                        </Grid>
+
+                        <Grid md={2} xs={12} mt={0.5}>
+                            <Input
+                                label='Tipo de control'
+                                value='Electrico'
+                                // onChange={}
+                                // required
+                                tamano='small'
+                                tipo_input='input'
+                            />
+                        </Grid>
+
+                        <Grid md={2} xs={12} mt={0.5}>
+                            <Input
+                                label='Agua'
+                                value=''
+                                // onChange={}
+                                // required
+                                tamano='small'
+                                tipo_input='input'
+                            />
+                        </Grid>
+
+                        <Grid md={2} xs={12} mt={0.5}>
+                            <Input
+                                label='Consumo'
+                                value='20 AHM'
+                                // onChange={}
+                                // required
+                                tamano='small'
+                                tipo_input='input'
+                            />
+                        </Grid>
+
+                        <Grid md={2} xs={12} mt={0.5}>
+                            <Input
+                                label='Tipo de operación'
+                                value='Manual'
+                                // onChange={}
+                                // required
+                                tamano='small'
+                                tipo_input='input'
+                            />
+                        </Grid>
+
+                        <Grid md={2} xs={12} mt={0.5}>
+                            <Input
+                                label='Aire'
+                                value=''
+                                // onChange={}
+                                // required
+                                tamano='small'
+                                tipo_input='input'
+                            />
+                        </Grid>
+
+                        <Grid md={3} xs={12} mt={0.5}>
+                            <Input
+                                label='Potencia'
+                                value='5 PH A 1800 RPM'
+                                // onChange={}
+                                // required
+                                tamano='small'
+                                tipo_input='input'
+                            />
+                        </Grid>
+
+                        <Grid md={2} xs={12} mt={0.5}>
+                            <Input
+                                label='Combustible'
+                                value='Si'
+                                // onChange={}
+                                // required
+                                tamano='small'
+                                tipo_input='input'
+                            />
+                        </Grid>
+
+                        <Grid md={12} xs={12} mt={0.7}>
+                            <span>INTERVENSIONES REALIZADAS AL EQUIPO</span>
+                        </Grid>
+
+                        <Grid md={4} xs={12} mt={0.5}>
+                            <Input
+                                label='Descripción de la actividad'
+                                value='Mantenimiento preventivo'
+                                // onChange={}
+                                // required
+                                tamano='small'
+                                tipo_input='input'
+                            />
+                        </Grid>
+
+                        <Grid container spacing={1} md={12}>
+                            <Grid md={6} xs={12} mt={0.5}>
+                                <Input
+                                    label='Repuestos'
+                                    value={repuestos}
+                                    onChange={handleRepuestosChange}
+                                    // required
+                                    tamano='small'
+                                    tipo_input='textarea'
+                                />
+                            </Grid>
+                            <Grid md={6} xs={12} mt={0.5} sx={{ height: '40%' }}>
+                                <Input
+                                    label='Observaciones'
+                                    value={Observaciones}
+                                    onChange={handleObservacionesChange}
+                                    // required
+                                    tamano='small'
+                                    tipo_input='textarea'
+                                />
+                            </Grid>
+                        </Grid>
+
+                        <Grid md={4} xs={12} mt={0.5}>
+                            <Input
+                                label='Resonsable'
+                                value=''
+                                // onChange={}
+                                // required
+                                tamano='small'
+                                tipo_input='input'
+                            />
+                        </Grid>
+
+                        {/* BASES PARA INPUTS FECHA, INPUT, SELECT */}
+                        {/* <Grid md={3} xs={12} mt={0.5}>
                             <InputText
                                 label="Nombre"
                                 value={nombre}
@@ -154,39 +422,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                 tamano="small"
                                 tipo_input="input"
                             />
-                        </Grid>
-
-
-                        <Grid md={6} xs={12}>
-                            <FormControl fullWidth required>
-                                <InputLabel>Nombre</InputLabel>
-                                <OutlinedInput defaultValue="Constructions" label="Nombre" name="Nombre" size="small" />
-                            </FormControl>
-                        </Grid>
-                        <Grid md={3} xs={12}>
-                            <FormControl fullWidth required>
-                                <InputLabel>Documento</InputLabel>
-                                <OutlinedInput defaultValue="Rivers" label="Documento" name="lastName" size="small" />
-                            </FormControl>
-                        </Grid>
-                        <Grid md={3} xs={12}>
-                            <FormControl fullWidth required>
-                                <InputLabel>Dirección</InputLabel>
-                                <OutlinedInput defaultValue="Rivers" label="Dirección" name="lastName" size="small" />
-                            </FormControl>
-                        </Grid>
-                        <Grid md={3} xs={12} mt={1}>
-                            <FormControl fullWidth required>
-                                <InputLabel>Teléfono</InputLabel>
-                                <OutlinedInput defaultValue="Rivers" label="Teléfono" name="lastName" size="small" />
-                            </FormControl>
-                        </Grid>
-                        <Grid md={3} xs={12} mt={1}>
-                            <FormControl fullWidth required>
-                                <InputLabel>Celular</InputLabel>
-                                <OutlinedInput defaultValue="Rivers" label="Celular" name="lastName" size="small" />
-                            </FormControl>
-                        </Grid>
+                        </Grid>                       
                         <Grid md={3} xs={12} mt={1}>
                             <FormControl fullWidth>
                                 <InputLabel>Estado</InputLabel>
@@ -197,12 +433,6 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                         </MenuItem>
                                     ))}
                                 </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid md={3} xs={12} mt={1}>
-                            <FormControl fullWidth required>
-                                <InputLabel>Correo</InputLabel>
-                                <OutlinedInput defaultValue="Rivers" label="Correo" name="lastName" size="small" />
                             </FormControl>
                         </Grid>
                         <Grid md={3} xs={12} mt={1}>
@@ -219,7 +449,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                     size="small"
                                 />
                             </FormControl>
-                        </Grid>
+                        </Grid> */}
                     </Grid>
                     {/* {mostrarAlerta && (
                     <Alert severity="success" sx={{ mt: 1 }}>
