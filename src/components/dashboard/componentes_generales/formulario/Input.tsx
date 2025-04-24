@@ -6,7 +6,7 @@ import { FormControl, InputLabel, TextField, Grid, OutlinedInput } from '@mui/ma
 interface InputTextProps {
     label: string;
     value: string;
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
     required?: boolean;
     tamano: 'small' | 'medium'; // Especifica los tamaños permitidos
     tipo_input: 'input' | 'date' | 'time' | 'number';
