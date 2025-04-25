@@ -11,13 +11,15 @@ import Snackbar from '@mui/material/Snackbar'; // Alertas Flotantes
 import Grid from '@mui/material/Unstable_Grid2';
 import * as React from 'react';
 // import InputText from './InputText'; //Así se importa un componente cuando se exporta con => export default InputText;
-// import InputSelect from './InputSelect';
 import Input from '../../componentes_generales/formulario/Input';
 import InputSelect from '../../componentes_generales/formulario/Select';
 
 import { SelectChangeEvent } from '@mui/material/Select'; // Asegúrate de tener esta importación
 import Typography from '@mui/material/Typography';
 import { Info } from '@phosphor-icons/react/dist/ssr';
+import axios from 'axios';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 
 
 const EstadoCliente = [
@@ -30,6 +32,33 @@ const Empresas = [
     { value: '2', label: 'Empresa/Cliente #2' },
     { value: '3', label: 'Cinnamom Overdressed Ceere Software SAS' },
 ]
+
+interface DatosTipo {
+    ValorFecha: Date;
+    ValorEmpresa: string;
+    ValorNit: string;
+    ValorTelefono: number;
+    ValorDireccion: string;
+    ValorNombreEquipo: string;
+    ValorCodigo: string;
+    ValorSeleccion: string;
+    ValorModelo: string;
+    ValorSerie: string;
+    ValorObra: string;
+    ValorFabricante: string;
+    ValorMarca: string;
+    ValorVoltaje: string;
+    ValorTipoControl: string;
+    ValorAgua: string;
+    ValorConsumo: string;
+    ValorTipoOperacion: string;
+    ValorAire: string;
+    ValorPotencia: string;
+    ValorCombustible: string;
+    ValorRepuestos: string;
+    ValorObservaciones: string;
+    ValorResponsable: string;
+}
 
 export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
 
@@ -188,17 +217,100 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
 
     // Mostrar alerta
     const [mostrarAlerta, setMostrarAlerta] = React.useState<boolean>(false);
-    const handleCrearCliente = () => {
-        setMostrarAlerta(true);
+    const [cargando, setCargando] = React.useState<boolean>(false);
+    const [camposFaltantes, setCamposFaltantes] = React.useState<string[]>([]);
+    const [MostrarAlertaSuccess, setMostrarAlertaSuccess] = React.useState<boolean>(false);
+    const handleCrearCliente = async () => {
+        // setMostrarAlerta(true);
+        setCargando(true);
 
         // Ocultar después de 3 segundos
-        setTimeout(() => {
-            setMostrarAlerta(false);
-        }, 3000);
+        // setTimeout(() => {
+        //     setMostrarAlerta(false);
+        // }, 5000);
 
-        console.log(Repuestos);
+        const Datos: DatosTipo = {
+            ValorFecha: new Date(Fecha),
+            ValorEmpresa: Empresa,
+            ValorNit: Nit,
+            ValorTelefono: parseInt(Telefono, 10),
+            ValorDireccion: Direccion,
+            ValorNombreEquipo: NombreEquipo,
+            ValorCodigo: Codigo,
+            ValorSeleccion: Seleccion,
+            ValorModelo: Modelo,
+            ValorSerie: Serie,
+            ValorObra: Obra,
+            ValorFabricante: Fabricante,
+            ValorMarca: Marca,
+            ValorVoltaje: Voltaje,
+            ValorTipoControl: TipoControl,
+            ValorAgua: Agua,
+            ValorConsumo: Consumo,
+            ValorTipoOperacion: TipoOperacion,
+            ValorAire: Aire,
+            ValorPotencia: Potencia,
+            ValorCombustible: Combustible,
+            ValorRepuestos: Repuestos,
+            ValorObservaciones: Observaciones,
+            ValorResponsable: Responsable
+        };
+
+        console.log(Datos);
+
+        const camposFaltantes = []; // Array para almacenar mensajes de campos faltantes
+        try {
+            // Verificar si la fecha es válida
+            if (isNaN(Datos.ValorFecha.getTime())) {
+                camposFaltantes.push('La fecha es obligatoria');
+            }
+
+            // Verificar otros campos
+            if (!Datos.ValorEmpresa) {
+                camposFaltantes.push('La empresa es obligatoria');
+            }
+            if (!Datos.ValorNit) {
+                camposFaltantes.push('El NIT es obligatorio');
+            }
+            // if (!Datos.ValorTelefono) {
+            //     camposFaltantes.push('El teléfono es obligatorio');
+            // }
+            if (isNaN(Datos.ValorTelefono) || Datos.ValorTelefono <= 0) {
+                camposFaltantes.push('El teléfono es obligatorio y debe ser un número válido');
+            }
+
+
+            // Si hay campos faltantes, mostrar alerta
+            if (camposFaltantes.length > 0) {
+                setMostrarAlerta(true);
+                setCamposFaltantes(camposFaltantes); // Actualiza el estado con los mensajes
+            } else {
+                setCamposFaltantes([]);
+                setMostrarAlerta(false);
+                setMostrarAlertaSuccess(true);
+
+                // setTimeout(() => {
+                //     setMostrarAlerta(false);
+                // }, 5000);
+            }
+        } catch (error) {
+            console.log(error)
+        }
     };
 
+    // const handleClose = () => {
+    //     setMostrarAlerta(false);
+    // };
+
+    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+        // Evitar que se cierre al hacer clic fuera
+        if (reason === 'clickaway') {
+            return;
+        }
+        setMostrarAlerta(false);
+    };
+
+    //BUENO
     return (
         <div>
             <Card>
@@ -491,7 +603,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                             />
                         </Grid>
 
-                        <Grid container spacing={1} md={12}>
+                        <Grid container spacing={1} md={12} xs={12}>
                             <Grid md={6} xs={12} mt={0.5}>
                                 <Input
                                     label='Repuestos'
@@ -502,7 +614,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                     tipo_input='textarea'
                                 />
                             </Grid>
-                            <Grid md={6} xs={12} mt={0.5} sx={{ height: '40%' }}>
+                            <Grid md={6} xs={12} mt={0.5} >
                                 <Input
                                     label='Observaciones'
                                     value={Observaciones}
@@ -579,16 +691,60 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
 
                 {/* Snackbar con alerta */}
                 <Snackbar
-                    open={mostrarAlerta}
+                    open={MostrarAlertaSuccess}
                     anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
                     autoHideDuration={5000}
-                    onClose={() => setMostrarAlerta(false)}
+                    onClose={() => setMostrarAlertaSuccess(false)}
                 >
-                    <Alert severity="success" sx={{ width: '100%' }} onClose={() => setMostrarAlerta(false)}>
+                    <Alert severity="success" sx={{ width: '100%', color: '#000000' }} onClose={() => setMostrarAlertaSuccess(false)}>
                         Hoja de vida creada exitosamente
+                    </Alert>
+                </Snackbar>
+
+                {/* Snackbar con alerta */}
+                {/* <Snackbar
+                    open={mostrarAlerta}
+                    anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                    // autoHideDuration={5000}
+                    onClose={handleClose}
+                >
+                    <Alert severity="warning" onClose={handleClose} sx={{ width: '100%' }}>
+                        {camposFaltantes.length > 0 ? camposFaltantes.join(', ') : 'Hay campos obligatorios.'}
+                    </Alert>
+                </Snackbar> */}
+
+
+                {/* Snackbar con alerta */}
+                <Snackbar
+                    open={mostrarAlerta}
+                    anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                    onClose={handleClose}
+                // autoHideDuration={null} // No se cierra automáticamente
+                >
+                    <Alert
+                        severity="warning"
+                        onClose={handleClose}
+                        sx={{ width: '100%' }}
+                    >
+                        <div>
+                            {camposFaltantes.length > 0 ? (
+                                <ul>
+                                    {camposFaltantes.map((campo, index) => (
+                                        <li key={campo}>{campo}</li>
+                                    ))}
+                                </ul>
+                            ) : null
+
+                                // : (
+                                //      <span>Hay campos obligatorios.</span>
+                                // )
+                            }
+                        </div>
                     </Alert>
                 </Snackbar>
             </Card>
         </div>
     );
+
+
 }

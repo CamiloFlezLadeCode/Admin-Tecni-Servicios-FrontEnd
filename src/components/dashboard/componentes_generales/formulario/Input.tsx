@@ -9,7 +9,7 @@ interface InputTextProps {
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
     required?: boolean;
     tamano: 'small' | 'medium'; // Especifica los tamaños permitidos
-    tipo_input: 'input' | 'date' | 'time' | 'number' | 'textarea';
+    tipo_input: 'text' | 'input' | 'date' | 'time' | 'number' | 'textarea';
 }
 
 const InputText: React.FC<InputTextProps> = ({ label, value, onChange, required = false, tamano, tipo_input }) => {
@@ -32,7 +32,7 @@ const InputText: React.FC<InputTextProps> = ({ label, value, onChange, required 
             </InputLabel>
             <OutlinedInput
                 id={label} // Vinculación correcta
-                value={value}
+                name={label}                value={value}
                 onChange={onChange}
                 label={label} // Asegúrate de incluir el label aquí
                 size={tamano}
