@@ -59,10 +59,10 @@
 	"Snippet para const y handle de select": {
 		"prefix": "ConstHandleSelect",
 		"body": [
-			"const [Empresa, setEmpresa] = React.useState<string>('');",
-			"const handleChangeEmpresa = (event: SelectChangeEvent<string>) => {",
+			"const [${1:varialbe}, set${1:variableCap}] = React.useState<string>('');",
+			"const handleChange${1:variableCap} = (event: SelectChangeEvent<string>) => {",
 			"   const newValue = event.target.value;",
-			"   setEmpresa(newValue);",
+			"   set${1:variableCap}(newValue);",
 			"};"
 		]
 	},

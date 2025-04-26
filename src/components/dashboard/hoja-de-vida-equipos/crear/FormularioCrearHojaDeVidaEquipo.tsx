@@ -62,7 +62,7 @@ interface DatosTipo {
 
 export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
 
-    // Fecha
+    //Fecha
     const [Fecha, setFecha] = React.useState('');
     const handleChangeFecha = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFecha(event.target.value);
@@ -73,6 +73,26 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
     const handleChangeEmpresa = (event: SelectChangeEvent<string>) => {
         const newValue = event.target.value;
         setEmpresa(newValue);
+
+        if (newValue === '1') {
+            setNit('EMPRESA 1');
+        }else {
+            setNit('');
+        }
+
+        switch(newValue){
+            case '1':
+                setNit('EMPRESA #1');
+            break;
+
+            case '2':
+                setNit('EMPRESAS #2');
+            break;
+
+            default:
+                setNit('NADA')
+            break;
+        }
     };
 
     //Nit
@@ -220,6 +240,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
     const [cargando, setCargando] = React.useState<boolean>(false);
     const [camposFaltantes, setCamposFaltantes] = React.useState<string[]>([]);
     const [MostrarAlertaSuccess, setMostrarAlertaSuccess] = React.useState<boolean>(false);
+
     const handleCrearCliente = async () => {
         // setMostrarAlerta(true);
         setCargando(true);
@@ -289,9 +310,34 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                 setMostrarAlerta(false);
                 setMostrarAlertaSuccess(true);
 
-                // setTimeout(() => {
-                //     setMostrarAlerta(false);
-                // }, 5000);
+
+
+                //Se reinician los campos para dar la posibilidad de crear una nueva hoja de vida a un equipo
+                setFecha('');
+                setEmpresa('');
+                setNit('');
+                setTelefono('');
+                setDireccion('');
+                setNombreEquipo('');
+                setCodigo('');
+                setSeleccion('');
+                setModelo('');
+                setSerie('');
+                setObra('');
+                setFabricante('');
+                setMarca('');
+                setVoltaje('');
+                setTipoControl('');
+                setAgua('');
+                setConsumo('');
+                setTipoOperacion('');
+                setAire('');
+                setPotencia('');
+                setCombustible('');
+                setDescripcionActividad('');
+                setRepuestos('');
+                setObservaciones('');
+                setResponsable('');
             }
         } catch (error) {
             console.log(error)
@@ -302,6 +348,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
     //     setMostrarAlerta(false);
     // };
 
+    //Evita que la alerta se cierre cuando se hace clic fuera de ella
     const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
         // Evitar que se cierre al hacer clic fuera
         if (reason === 'clickaway') {
