@@ -15,6 +15,7 @@ import Select from '@mui/material/Select';
 import Grid from '@mui/material/Unstable_Grid2';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar'; // Alertas Flotantes
+import { TraerClientes } from '@/services/gestionycontrol/clientes/TraerClientesRegistrados';
 
 
 import {
@@ -32,64 +33,145 @@ interface Client {
     id: number;
     name: string;
     email: string;
+    Nombres: string;
+    DocumentoUsuario: string;
+    IdUsuario: number;
 }
 
-const data: Client[] = [
-    { id: 1, name: 'Cliente 1', email: 'cliente1@example.com' },
-    { id: 2, name: 'Cliente 2', email: 'cliente2@example.com' },
-    { id: 3, name: 'Cliente 3', email: 'cliente3@example.com' },
-    // Agrega más datos según sea necesario
-];
+// const data: Client[] = [
+//     { id: 1, name: 'Cliente 1', email: 'cliente1@example.com' },
+//     { id: 2, name: 'Cliente 2', email: 'cliente2@example.com' },
+//     { id: 3, name: 'Cliente 3', email: 'cliente3@example.com' },
+//     // Agrega más datos según sea necesario
+// ];
+
+
+// export function TablaVisualizarCientes(): React.JSX.Element {
+//     const [searchTerm, setSearchTerm] = React.useState<string>('');
+
+//     const filteredData = data.filter(item =>
+//         ( item.name.toLowerCase().includes(searchTerm.toLowerCase()) ) 
+//         || ( item.email.toLowerCase().includes(searchTerm.toLowerCase()) )
+//     );
+//     return (
+//         <Card>
+//             <CardHeader
+//                 title="Visualización de clientes"
+//                 sx={{
+//                     fontSize: '0.875rem', // Tamaño de fuente más pequeño
+//                     padding: '8px', // Espaciado interno más pequeño
+//                 }}
+//             />
+//             <Divider />
+//             <CardContent>
+//             <Paper style={{border: 'solid green'}}>
+//             <TextField
+//                 variant="outlined"
+//                 placeholder="Buscar cliente..."
+//                 onChange={e => setSearchTerm(e.target.value)}
+//                 style={{ margin: '16px' }}
+//                 size='small'
+//             />
+//             <TableContainer>
+//                 <Table>
+//                     <TableHead>
+//                         <TableRow>
+//                             <TableCell>ID</TableCell>
+//                             <TableCell>Nombre</TableCell>
+//                             <TableCell>Email</TableCell>
+//                         </TableRow>
+//                     </TableHead>
+//                     <TableBody>
+//                         {filteredData.map(item => (
+//                             <TableRow key={item.id}>
+//                                 <TableCell>{item.id}</TableCell>
+//                                 <TableCell>{item.name}</TableCell>
+//                                 <TableCell>{item.email}</TableCell>
+//                             </TableRow>
+//                         ))}
+//                     </TableBody>
+//                 </Table>
+//             </TableContainer>
+//         </Paper>
+//             </CardContent>
+//         </Card>
+//     )
+// }
+
 
 
 export function TablaVisualizarCientes(): React.JSX.Element {
+    const [clientes, setClientes] = React.useState<Client[]>([]);
     const [searchTerm, setSearchTerm] = React.useState<string>('');
+    const [loading, setLoading] = React.useState<boolean>(true);
+    const [error, setError] = React.useState<string | null>(null);
 
-    const filteredData = data.filter(item =>
-        ( item.name.toLowerCase().includes(searchTerm.toLowerCase()) ) 
-        || ( item.email.toLowerCase().includes(searchTerm.toLowerCase()) )
+    // Función para traer los clientes al cargar
+    React.useEffect(() => {
+        const fetchClientes = async () => {
+            try {
+                const data = await TraerClientes();
+                setClientes(data);
+            } catch (error) {
+                console.error('❌ Error al traer clientes:', error);
+                setError('Error al cargar clientes');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchClientes();
+    }, []);
+
+    // Filtrar
+    const filteredData = clientes.filter(item =>
+        (item.Nombres.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (item.DocumentoUsuario.toLowerCase().includes(searchTerm.toLowerCase()))
     );
+
+    if (loading) {
+        return <div>Cargando clientes...</div>;
+    }
+
+    if (error) {
+        return <div>{error}</div>;
+    }
+
     return (
         <Card>
-            <CardHeader
-                title="Visualización de clientes"
-                sx={{
-                    fontSize: '0.875rem', // Tamaño de fuente más pequeño
-                    padding: '8px', // Espaciado interno más pequeño
-                }}
-            />
+            <CardHeader title="Visualización de clientes" />
             <Divider />
             <CardContent>
-            <Paper style={{border: 'solid green'}}>
-            <TextField
-                variant="outlined"
-                placeholder="Buscar cliente..."
-                onChange={e => setSearchTerm(e.target.value)}
-                style={{ margin: '16px' }}
-                size='small'
-            />
-            <TableContainer>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>ID</TableCell>
-                            <TableCell>Nombre</TableCell>
-                            <TableCell>Email</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {filteredData.map(item => (
-                            <TableRow key={item.id}>
-                                <TableCell>{item.id}</TableCell>
-                                <TableCell>{item.name}</TableCell>
-                                <TableCell>{item.email}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </Paper>
+                <Paper>
+                    <TextField
+                        variant="outlined"
+                        placeholder="Buscar cliente..."
+                        onChange={e => setSearchTerm(e.target.value)}
+                        style={{ margin: '16px' }}
+                        size="small"
+                    />
+                    <TableContainer>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>ID</TableCell>
+                                    <TableCell>Nombre</TableCell>
+                                    <TableCell>Identificación</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {filteredData.map(item => (
+                                    <TableRow key={item.IdUsuario}>
+                                        <TableCell>{item.IdUsuario}</TableCell>
+                                        <TableCell>{item.Nombres}</TableCell>
+                                        <TableCell>{item.DocumentoUsuario}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Paper>
             </CardContent>
         </Card>
-    )
+    );
 }

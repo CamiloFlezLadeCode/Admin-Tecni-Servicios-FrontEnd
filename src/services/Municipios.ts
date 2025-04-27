@@ -1,3 +1,26 @@
+const ImplementacionEnFrontEnd = `
+    import Input from '@/components/dashboard/componentes_generales/formulario/Input';
+    import Ciudades from '@/services/Municipios';
+
+    //Estado Municipio
+    const [Ciudad, setCiudad] = React.useState<string>('1');
+    const handleChangeCiudad = (event: SelectChangeEvent<string>) => {
+        const newValue = event.target.value;
+        setCiudad(newValue);
+    };
+
+    //Dentro del componente que retorna
+    <Grid md={2} xs={12} mt={0.5}>
+        <InputSelect
+            label='Ciudad'
+            value={Ciudad}
+            options={Ciudades}
+            size='small'
+            onChange={handleChangeCiudad}
+        />
+    </Grid>
+`;
+
 const Ciudades = [
     {
         "value": 1,

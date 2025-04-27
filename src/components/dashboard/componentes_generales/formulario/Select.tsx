@@ -18,7 +18,7 @@ const InputSelect: React.FC<InputSelectProps> = ({ label, value, onChange, optio
     <Grid item md={3} xs={12}>
       <FormControl fullWidth required={required}>
         <InputLabel
-          htmlFor={label} shrink
+          // htmlFor={label} shrink // Mejor comentado para evitar el issues por mal manejo de hmlfor
           style={{
             // color: focused || value ? '#000000' : '#B0B0B0', // Color negro si está enfocado o tiene valor
             color: focused ? '#000000' : 'gray', // Color negro si está enfocado o tiene valor
@@ -26,6 +26,7 @@ const InputSelect: React.FC<InputSelectProps> = ({ label, value, onChange, optio
           }}
         >{label}</InputLabel>
         <Select
+          id={label}
           value={value}
           name={valorname}
           onChange={onChange}

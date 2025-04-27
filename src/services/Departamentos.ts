@@ -1,3 +1,27 @@
+const ImplementacionEnFrontEnd = `
+    import Input from '@/components/dashboard/componentes_generales/formulario/Input';
+    import Departamentos from '@/services/Departamentos';
+
+    //Estado Departamento
+    const [Departamento, setDepartamento] = React.useState<string>('1');
+    const handleChangeDepartamento = (event: SelectChangeEvent<string>) => {
+        const newValue = event.target.value;
+        setDepartamento(newValue);
+    };
+
+    //Dentro del componente que retorna
+    <Grid md={2} xs={12} mt={0.5}>
+        <InputSelect
+            label='Departamento'
+            value={Departamento}
+            options={Departamentos}
+            size='small'
+            onChange={handleChangeDepartamento}
+            valorname='Departamento'
+        />
+    </Grid>
+`;
+
 const Departamentos = [
     {
         "value": 1,
