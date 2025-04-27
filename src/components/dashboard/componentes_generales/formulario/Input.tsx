@@ -10,9 +10,11 @@ interface InputTextProps {
     required?: boolean;
     tamano: 'small' | 'medium'; // Especifica los tamaños permitidos
     tipo_input: 'text' | 'input' | 'date' | 'time' | 'number' | 'textarea';
+    valorname?: string;
+    maximalongitud?: number;
 }
 
-const InputText: React.FC<InputTextProps> = ({ label, value, onChange, required = false, tamano, tipo_input }) => {
+const InputText: React.FC<InputTextProps> = ({ label, value, onChange, required = false, tamano, tipo_input, valorname, maximalongitud }) => {
     const [focused, setFocused] = React.useState(false);
     return (
         <FormControl fullWidth required={required} variant="outlined">
@@ -32,7 +34,9 @@ const InputText: React.FC<InputTextProps> = ({ label, value, onChange, required 
             </InputLabel>
             <OutlinedInput
                 id={label} // Vinculación correcta
-                name={label}                value={value}
+                // name={label}
+                name={valorname}
+                value={value}
                 onChange={onChange}
                 label={label} // Asegúrate de incluir el label aquí
                 size={tamano}
@@ -43,6 +47,9 @@ const InputText: React.FC<InputTextProps> = ({ label, value, onChange, required 
                 notched // Esta propiedad hace que la muesca sea visible siempre
                 onFocus={() => setFocused(true)} // Cambiar estado a enfocado
                 onBlur={() => setFocused(false)} // Cambiar estado a no enfocado
+                inputProps={{
+                    maxLength: maximalongitud || undefined, // Establecer longitud máxima si se proporciona
+                }}
             />
         </FormControl>
     );

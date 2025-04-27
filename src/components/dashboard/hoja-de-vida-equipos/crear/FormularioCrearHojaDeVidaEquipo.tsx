@@ -392,7 +392,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                 // onChange={}
                                 // required
                                 tamano='small'
-                                tipo_input='input'
+                                tipo_input='text'
                             />
                         </Grid> */}
 
@@ -425,7 +425,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                 onChange={handleChangeNit}
                                 // required
                                 tamano='small'
-                                tipo_input='input'
+                                tipo_input='text'
                             />
                         </Grid>
 
@@ -447,7 +447,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                 onChange={handleChangeDireccion}
                                 // required
                                 tamano='small'
-                                tipo_input='input'
+                                tipo_input='text'
                             />
                         </Grid>
 
@@ -462,7 +462,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                 onChange={handleChangeNombreEquipo}
                                 // required
                                 tamano='small'
-                                tipo_input='input'
+                                tipo_input='text'
                             />
                         </Grid>
 
@@ -473,7 +473,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                 onChange={handleChangeCodigo}
                                 // required
                                 tamano='small'
-                                tipo_input='input'
+                                tipo_input='text'
                             />
                         </Grid>
 
@@ -484,7 +484,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                 onChange={handleChangeSeleccion}
                                 // required
                                 tamano='small'
-                                tipo_input='input'
+                                tipo_input='text'
                             />
                         </Grid>
 
@@ -495,7 +495,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                 onChange={handleChangeModelo}
                                 // required
                                 tamano='small'
-                                tipo_input='input'
+                                tipo_input='text'
                             />
                         </Grid>
 
@@ -506,7 +506,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                 onChange={handleChangeSerie}
                                 // required
                                 tamano='small'
-                                tipo_input='input'
+                                tipo_input='text'
                             />
                         </Grid>
 
@@ -517,7 +517,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                 onChange={handleChangeObra}
                                 // required
                                 tamano='small'
-                                tipo_input='input'
+                                tipo_input='text'
                             />
                         </Grid>
 
@@ -528,7 +528,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                 onChange={handleChangeFabricante}
                                 // required
                                 tamano='small'
-                                tipo_input='input'
+                                tipo_input='text'
                             />
                         </Grid>
 
@@ -539,7 +539,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                 onChange={handleChangeMarca}
                                 // required
                                 tamano='small'
-                                tipo_input='input'
+                                tipo_input='text'
                             />
                         </Grid>
 
@@ -554,7 +554,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                 onChange={handleChangeVoltaje}
                                 // required
                                 tamano='small'
-                                tipo_input='input'
+                                tipo_input='text'
                             />
                         </Grid>
 
@@ -565,7 +565,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                 onChange={handleChangeTipoControl}
                                 // required
                                 tamano='small'
-                                tipo_input='input'
+                                tipo_input='text'
                             />
                         </Grid>
 
@@ -576,7 +576,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                 onChange={handleChangeAgua}
                                 // required
                                 tamano='small'
-                                tipo_input='input'
+                                tipo_input='text'
                             />
                         </Grid>
 
@@ -587,7 +587,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                 onChange={handleChangeConsumo}
                                 // required
                                 tamano='small'
-                                tipo_input='input'
+                                tipo_input='text'
                             />
                         </Grid>
 
@@ -598,7 +598,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                 onChange={handleChangeTipoOperacion}
                                 // required
                                 tamano='small'
-                                tipo_input='input'
+                                tipo_input='text'
                             />
                         </Grid>
 
@@ -609,7 +609,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                 onChange={handleChangeAire}
                                 // required
                                 tamano='small'
-                                tipo_input='input'
+                                tipo_input='text'
                             />
                         </Grid>
 
@@ -620,7 +620,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                 onChange={handleChangePotencia}
                                 // required
                                 tamano='small'
-                                tipo_input='input'
+                                tipo_input='text'
                             />
                         </Grid>
 
@@ -631,7 +631,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                 onChange={handleChangeCombustible}
                                 // required
                                 tamano='small'
-                                tipo_input='input'
+                                tipo_input='text'
                             />
                         </Grid>
 
@@ -646,7 +646,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                 onChange={handleChangeDescripcionActividad}
                                 // required
                                 tamano='small'
-                                tipo_input='input'
+                                tipo_input='text'
                             />
                         </Grid>
 
@@ -680,7 +680,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                                 onChange={handleChangeResponsable}
                                 // required
                                 tamano='small'
-                                tipo_input='input'
+                                tipo_input='text'
                             />
                         </Grid>
 

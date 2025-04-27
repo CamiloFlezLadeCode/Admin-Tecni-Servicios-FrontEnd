@@ -1,79 +1,95 @@
 {
-	"Reutilizar componente InputText": {
-		"prefix": "InputText",
-		"body": [
-			"<Input",
-			"  label=\"$1\"",
-			"  value={$2}",
-			"  onChange={$3}",
-			"  // required",
-			"  tamano=\"$4\"",
-			"  tipo_input=\"$5\"",
-			"/>"
-		],
-		"description": "Inserta un componente InputText con estructura base"
-	},
-	"Reutilizar InputText con Grid": {
-		"prefix": "inputGrid",
-		"body": [
-			"<Grid md={$1} xs={12}>",
-			"  <Input",
-			"    label=\"$2\"",
-			"    value={$3}",
-			"    onChange={$4}",
-			"    // required",
-			"    tamano=\"$5\"",
-			"    tipo_input=\"$6\"",
-			"  />",
-			"</Grid>"
-		],
-		"description": "Grid con componente InputText preformateado"
-	},
-	"Snippet para const": {
-		"prefix": "const",
-		"body": [
-			"const [,] = React.useState('');"
-		]
-	},
-	"Snippet para const de select": {
-		"prefix": "constselect",
-		"body": "const [,] = React.useState<string>('');"
-	},
-	"Snippet para handle de select": {
-		"prefix": "handleSelect",
-		"body": [
-			"const handleChange = (event: SelectChangeEvent<string>) => {",
-			"   const newValue = event.target.value;",
-			"   setcampo(newValue);",
-			"};"
-		]
-	},
-	"Snippet para handle de input": {
-		"prefix": "handleInput",
-		"body": [
-			"const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {",
-			"   setcampo(event.target.value);",
-			"};"
-		]
-	},
-	"Snippet para const y handle de select": {
-		"prefix": "ConstHandleSelect",
-		"body": [
-			"const [${1:varialbe}, set${1:variableCap}] = React.useState<string>('');",
-			"const handleChange${1:variableCap} = (event: SelectChangeEvent<string>) => {",
-			"   const newValue = event.target.value;",
-			"   set${1:variableCap}(newValue);",
-			"};"
-		]
-	},
-	"Snippet para const y handle de input": {
-		"prefix": "ConstHandleInput",
-		"body": [
-			"const [${1:variable}, set${1:variableCap}] = React.useState('');",
-			"const handleChange${1:variableCap} = (event: React.ChangeEvent<HTMLInputElement>) => {",
-			"   set${1:variableCap}(event.target.value);",
-			"};"
-		],
-		"description": "Crea un estado y un manejador de cambio para un input."
-	}
+    "InputText": {
+        "prefix": "GridInputText",
+        "body": [
+            "<Grid md={${1:}} xs={12} mt={0.5}>",
+            "    <Input",
+            "        label=''",
+            "        value='${2:}'",
+            "        onChange={${3:}}",
+            "        // required",
+            "        tamano='small'",
+            "        tipo_input='text'",
+            "    />",
+            "</Grid>"
+        ],
+        "description": "Snippet para un componente Input dentro de Grid"
+    },
+    "Reutilizar componente InputText": {
+        "prefix": "InputText",
+        "body": [
+            "<Input",
+            "  label=\"$1\"",
+            "  value={$2}",
+            "  onChange={$3}",
+            "  // required",
+            "  tamano=\"$4\"",
+            "  tipo_input=\"$5\"",
+            "/>"
+        ],
+        "description": "Inserta un componente InputText con estructura base"
+    },
+    "Reutilizar InputText con Grid": {
+        "prefix": "inputGrid",
+        "body": [
+            "<Grid md={$1} xs={12}>",
+            "  <Input",
+            "    label=\"$2\"",
+            "    value={$3}",
+            "    onChange={$4}",
+            "    // required",
+            "    tamano=\"$5\"",
+            "    tipo_input=\"$6\"",
+            "  />",
+            "</Grid>"
+        ],
+        "description": "Grid con componente InputText preformateado"
+    },
+    "Snippet para const": {
+        "prefix": "const",
+        "body": [
+            "const [,] = React.useState('');"
+        ]
+    },
+    "Snippet para const de select": {
+        "prefix": "constselect",
+        "body": "const [,] = React.useState<string>('');"
+    },
+    "Snippet para handle de select": {
+        "prefix": "handleSelect",
+        "body": [
+            "const handleChange = (event: SelectChangeEvent<string>) => {",
+            "   const newValue = event.target.value;",
+            "   setcampo(newValue);",
+            "};"
+        ]
+    },
+    "Snippet para handle de input": {
+        "prefix": "handleInput",
+        "body": [
+            "const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {",
+            "   setcampo(event.target.value);",
+            "};"
+        ]
+    },
+    "Snippet para const y handle de select": {
+        "prefix": "ConstHandleSelect",
+        "body": [
+            "const [${1:varialbe}, set${1:variableCap}] = React.useState<string>('');",
+            "const handleChange${1:variableCap} = (event: SelectChangeEvent<string>) => {",
+            "   const newValue = event.target.value;",
+            "   set${1:variableCap}(newValue);",
+            "};"
+        ]
+    },
+    "Snippet para const y handle de input": {
+        "prefix": "ConstHandleInput",
+        "body": [
+            "const [${1:variable}, set${1:variableCap}] = React.useState('');",
+            "const handleChange${1:variableCap} = (event: React.ChangeEvent<HTMLInputElement>) => {",
+            "   set${1:variableCap}(event.target.value);",
+            "};"
+        ],
+        "description": "Crea un estado y un manejador de cambio para un input."
+    }
 }

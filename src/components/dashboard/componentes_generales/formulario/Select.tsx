@@ -6,26 +6,28 @@ interface InputSelectProps {
   label: string;
   value: string;
   onChange: (event: SelectChangeEvent<string>) => void; // Cambiado a SelectChangeEvent
-  options: { value: string; label: string }[]; // Array de opciones
+  options: { value: string | number; label: string }[]; // Array de opciones
   required?: boolean;
   size?: 'small' | 'medium'; // Tamaño del select
+  valorname?: string;
 }
 
-const InputSelect: React.FC<InputSelectProps> = ({ label, value, onChange, options, required = false, size = 'small' }) => {
+const InputSelect: React.FC<InputSelectProps> = ({ label, value, onChange, options, required = false, size = 'small', valorname }) => {
   const [focused, setFocused] = React.useState(false);
   return (
     <Grid item md={3} xs={12}>
       <FormControl fullWidth required={required}>
         <InputLabel
-        htmlFor={label} shrink
-                        style={{
-                          // color: focused || value ? '#000000' : '#B0B0B0', // Color negro si está enfocado o tiene valor
-                          color: focused ? '#000000' : 'gray', // Color negro si está enfocado o tiene valor
-                          fontWeight: 'bolder',
-                      }}
+          htmlFor={label} shrink
+          style={{
+            // color: focused || value ? '#000000' : '#B0B0B0', // Color negro si está enfocado o tiene valor
+            color: focused ? '#000000' : 'gray', // Color negro si está enfocado o tiene valor
+            fontWeight: 'bolder',
+          }}
         >{label}</InputLabel>
         <Select
           value={value}
+          name={valorname}
           onChange={onChange}
           label={label}
           variant="outlined"
