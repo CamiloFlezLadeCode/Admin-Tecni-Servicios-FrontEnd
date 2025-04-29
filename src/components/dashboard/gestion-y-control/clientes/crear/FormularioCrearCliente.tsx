@@ -38,7 +38,7 @@ export function FormularioCrearCliente(): React.JSX.Element {
         Telefono: '',
         Celular: '',
         Correo: '',
-        EstadoCliente: '1',
+        Estado: '',
     });
 
     //Se definen las reglas con su respectivo mensaje de alerta
@@ -49,7 +49,7 @@ export function FormularioCrearCliente(): React.JSX.Element {
         { campo: 'Telefono', mensaje: 'El teléfono es obligatorio.' },
         { campo: 'Celular', mensaje: 'El celular es obligatorio y debe ser un número válido de 10 dígitos.' },
         { campo: 'Correo', mensaje: 'El correo es obligatorio y debe ser válido.' },
-        { campo: 'EstadoCliente', mensaje: 'El estado es obligatorio' }
+        { campo: 'Estado', mensaje: 'El estado es obligatorio' }
     ];
 
     const manejarValidacionExitosa = () => {
@@ -96,7 +96,7 @@ export function FormularioCrearCliente(): React.JSX.Element {
                     Telefono: '',
                     Celular: '',
                     Correo: '',
-                    EstadoCliente: '1',
+                    Estado: '1',
                 });
             } catch (error) {
                 if (progressInterval) clearInterval(progressInterval); // Limpiar
@@ -251,7 +251,7 @@ export function FormularioCrearCliente(): React.JSX.Element {
                     <Grid md={2} xs={12} mt={0.5}>
                         <InputSelect
                             label='Estado'
-                            value={datos.EstadoCliente}
+                            value={datos.Estado}
                             options={EstadoCliente}
                             size='small'
                             onChange={handleChange}
