@@ -18,13 +18,20 @@ import { usePopover } from '@/hooks/use-popover';
 import { MobileNav } from './mobile-nav';
 import { UserPopover } from './user-popover';
 import { string } from 'zod';
+import { UserContext } from '@/contexts/user-context'; // Asegúrate de que la ruta sea correcta
+
 
 export function MainNav(): React.JSX.Element {
   const [openNav, setOpenNav] = React.useState<boolean>(false);
 
   const userPopover = usePopover<HTMLDivElement>();
 
-  const NombreUsuarioActivo = "Administrador";
+  // Consumir el contexto del usuario
+  const { user } = React.useContext(UserContext) || { user: null };
+
+  // Obtener el nombre del usuario, si existe
+  const nombreUsuarioActivo = user ? `${user.fullName}` : null;
+  // const nombreUsuarioActivo = user ? user.fullName : 's';
   return (
     <React.Fragment>
       <Box
@@ -56,7 +63,13 @@ export function MainNav(): React.JSX.Element {
                 <MagnifyingGlassIcon />
               </IconButton>
             </Tooltip> */}
-            <Typography variant='h6'>¡Hola! {NombreUsuarioActivo} 😊</Typography>
+            {/* <Typography variant='h5' fontWeight="medium" color="primary">Hola,</Typography> */}
+            {/* <Typography variant='h5' fontWeight="bold" color="primary">{nombreUsuarioActivo} 😊</Typography> */}
+            <Typography variant="h5" color="primary">
+              <span style={{ fontWeight: 500 }}>¡Hola, </span>
+              <span style={{ fontWeight: 700 }}>{nombreUsuarioActivo}! 😊</span>
+            </Typography>
+
           </Stack>
           <Stack sx={{ alignItems: 'center' }} direction="row" spacing={2}>
             {/* <Tooltip title="Contacts">

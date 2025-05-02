@@ -16,6 +16,7 @@ import Divider from '@mui/material/Divider';
 import { SelectChangeEvent } from '@mui/material/Select'; // Asegúrate de tener esta importación
 import Grid from '@mui/material/Unstable_Grid2';
 import * as React from 'react';
+import { UserContext } from '@/contexts/user-context';
 
 
 const EstadoCliente = [
@@ -29,6 +30,11 @@ const Barrios = [
 
 export function FormularioCrearCliente(): React.JSX.Element {
 
+    // Consumir el contexto del usuario
+    const { user } = React.useContext(UserContext) || { user: null };
+    // Obtener el nombre del usuario, si existe
+    const documentoUsuarioActivo = user ? `${user.documento}` : null;
+
     //Se maneja el estado para todos los campos
     const [datos, setDatos] = React.useState({
         Nombre: '',
@@ -38,7 +44,8 @@ export function FormularioCrearCliente(): React.JSX.Element {
         Telefono: '',
         Celular: '',
         Correo: '',
-        Estado: '',
+        Estado: '1',
+        UsuarioCreacion: documentoUsuarioActivo
     });
 
     //Se definen las reglas con su respectivo mensaje de alerta
@@ -97,6 +104,7 @@ export function FormularioCrearCliente(): React.JSX.Element {
                     Celular: '',
                     Correo: '',
                     Estado: '1',
+                    UsuarioCreacion: documentoUsuarioActivo
                 });
             } catch (error) {
                 if (progressInterval) clearInterval(progressInterval); // Limpiar
@@ -133,6 +141,10 @@ export function FormularioCrearCliente(): React.JSX.Element {
                 console.log(value);
                 await verificarClienteExistente(value);
             }
+        }
+
+        if (name === 'Estado') {
+            console.log(value);
         }
 
         if (name === 'Correo') {
