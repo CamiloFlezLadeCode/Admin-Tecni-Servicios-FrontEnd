@@ -16,7 +16,8 @@ import Grid from '@mui/material/Unstable_Grid2';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar'; // Alertas Flotantes
 import { TraerClientes } from '@/services/gestionycontrol/clientes/TraerClientesRegistrados';
-
+import Chip from '@mui/material/Chip';
+import TablePagination from '@mui/material/TablePagination';
 
 import {
     Table,
@@ -33,9 +34,18 @@ interface Client {
     id: number;
     name: string;
     email: string;
-    Nombres: string;
+    Nombre: string;
     DocumentoUsuario: string;
     IdUsuario: number;
+    TipoDocumento: string;
+    Documento: string;
+    Correo: string;
+    Direccion: string;
+    Telefono: string;
+    Celular: string;
+    CreadoPor: string;
+    FechaCreacion: string;
+    Estado: string;
 }
 
 // const data: Client[] = [
@@ -98,6 +108,26 @@ interface Client {
 //     )
 // }
 
+// const Estado = {
+//     pending: { label: 'Pending', color: 'warning' },
+//     delivered: { label: 'Delivered', color: 'success' },
+//     refunded: { label: 'Refunded', color: 'error' },
+// } as const;
+
+
+type EstadoDb = 'activo' | 'inactivo';
+type EstadoKey = 'active' | 'inactive';
+
+const estadoMap: Record<EstadoDb, EstadoKey> = {
+    activo: 'active',
+    inactivo: 'inactive',
+};
+
+const Estado: Record<EstadoKey, { label: string; color: 'success' | 'error' }> = {
+    active: { label: 'Activo', color: 'success' },
+    inactive: { label: 'Inactivo', color: 'error' },
+};
+
 
 
 export function TablaVisualizarCientes(): React.JSX.Element {
@@ -105,6 +135,10 @@ export function TablaVisualizarCientes(): React.JSX.Element {
     const [searchTerm, setSearchTerm] = React.useState<string>('');
     const [loading, setLoading] = React.useState<boolean>(true);
     const [error, setError] = React.useState<string | null>(null);
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [mostrarTodasLasColumnas, setMostrarTodasLasColumnas] = React.useState(false);
+
 
     // Función para traer los clientes al cargar
     React.useEffect(() => {
@@ -125,8 +159,8 @@ export function TablaVisualizarCientes(): React.JSX.Element {
 
     // Filtrar
     const filteredData = clientes.filter(item =>
-        (item.Nombres.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (item.DocumentoUsuario.toLowerCase().includes(searchTerm.toLowerCase()))
+        (item.Nombre.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (item.Documento.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
     if (loading) {
@@ -136,6 +170,8 @@ export function TablaVisualizarCientes(): React.JSX.Element {
     if (error) {
         return <div>{error}</div>;
     }
+
+    const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
     return (
         <Card>
@@ -150,28 +186,118 @@ export function TablaVisualizarCientes(): React.JSX.Element {
                         style={{ margin: '16px' }}
                         size="small"
                     />
+                    <Button
+                        onClick={() => setMostrarTodasLasColumnas(!mostrarTodasLasColumnas)}
+                        variant="text"
+                        sx={{ margin: '16px' }}
+                    >
+                        {mostrarTodasLasColumnas ? 'Mostrar menos columnas' : 'Mostrar más columnas'}
+                    </Button>
                     <TableContainer>
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>ID</TableCell>
-                                    <TableCell>Nombre</TableCell>
-                                    <TableCell>Identificación</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Nombre</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Tipo Documento</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Documento</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Correo</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Dirección</TableCell>
+                                    {/* <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Teléfono</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Celular</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Creado Por</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Fecha Creación</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Estado</TableCell> */}
+                                    {mostrarTodasLasColumnas && (
+                                        <>
+                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Teléfono</TableCell>
+                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Celular</TableCell>
+                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Creado Por</TableCell>
+                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Fecha Creación</TableCell>
+                                        </>
+                                    )}
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Estado</TableCell>
                                 </TableRow>
                             </TableHead>
-                            <TableBody>
+                            {/* <TableBody>
                                 {filteredData.map(item => (
-                                    <TableRow key={item.IdUsuario}>
-                                        <TableCell>{item.IdUsuario}</TableCell>
-                                        <TableCell>{item.Nombres}</TableCell>
-                                        <TableCell>{item.DocumentoUsuario}</TableCell>
+                                    <TableRow key={item.DocumentoUsuario}>
+                                        <TableCell>{item.Nombre}</TableCell>
+                                        <TableCell>{item.TipoDocumento}</TableCell>
+                                        <TableCell>{item.Documento}</TableCell>
+                                        <TableCell>{item.Correo}</TableCell>
+                                        <TableCell>{item.Direccion}</TableCell>
+                                        <TableCell>{item.Telefono}</TableCell>
+                                        <TableCell>{item.Celular}</TableCell>
+                                        <TableCell>{item.CreadoPor}</TableCell>
+                                        <TableCell>{item.FechaCreacion}</TableCell>
+                                        <TableCell>
+                                            {(() => {
+                                                const estadoDb = item.Estado.toLowerCase();
+                                                const estadoKey = estadoMap[estadoDb as EstadoDb];
+                                                const estadoInfo = Estado[estadoKey];
+
+                                                return (
+                                                    <Chip
+                                                        label={estadoInfo?.label || item.Estado}
+                                                        color={estadoInfo?.color || 'default'}
+                                                        // variant="outlined"
+                                                        size="small"
+                                                        sx={{
+                                                            width: 100, // o el ancho que prefieras
+                                                            justifyContent: 'center', // centra el texto horizontalmente
+                                                        }}
+                                                    />
+                                                );
+                                            })()}
+                                        </TableCell>
+
+                                    </TableRow>
+                                ))}
+                            </TableBody> */}
+                            <TableBody>
+                                {paginatedData.map(item => (
+                                    <TableRow key={item.Documento}>
+                                        <TableCell>{item.Nombre}</TableCell>
+                                        <TableCell>{item.TipoDocumento}</TableCell>
+                                        <TableCell>{item.Documento}</TableCell>
+                                        <TableCell>{item.Correo}</TableCell>
+                                        <TableCell>{item.Direccion}</TableCell>
+                                        {mostrarTodasLasColumnas && (
+                                            <>
+                                                <TableCell>{item.Telefono}</TableCell>
+                                                <TableCell>{item.Celular}</TableCell>
+                                                <TableCell>{item.CreadoPor}</TableCell>
+                                                <TableCell>{item.FechaCreacion}</TableCell>
+                                            </>
+                                        )}
+                                        <TableCell>
+                                            <Chip
+                                                label={Estado[estadoMap[item.Estado.toLowerCase() as EstadoDb]]?.label || item.Estado}
+                                                color={Estado[estadoMap[item.Estado.toLowerCase() as EstadoDb]]?.color || 'default'}
+                                                size="small"
+                                                sx={{ width: 100, justifyContent: 'center' }}
+                                            />
+                                        </TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
                         </Table>
                     </TableContainer>
+                    <TablePagination
+                        component="div"
+                        count={filteredData.length}
+                        page={page}
+                        labelRowsPerPage="Filas por página"
+                        onPageChange={(event, newPage) => setPage(newPage)}
+                        rowsPerPage={rowsPerPage}
+                        onRowsPerPageChange={(event) => {
+                            setRowsPerPage(parseInt(event.target.value, 10));
+                            setPage(0);
+                        }}
+                        rowsPerPageOptions={[5, 10, 25]}
+                    />
                 </Paper>
             </CardContent>
         </Card>
-    );
+    )
 }

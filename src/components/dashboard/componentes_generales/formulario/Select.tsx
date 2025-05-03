@@ -10,9 +10,10 @@ interface InputSelectProps {
   required?: boolean;
   size?: 'small' | 'medium'; // Tamaño del select
   valorname?: string;
+  bloqueado?: boolean;
 }
 
-const InputSelect: React.FC<InputSelectProps> = ({ label, value, onChange, options, required = false, size = 'small', valorname }) => {
+const InputSelect: React.FC<InputSelectProps> = ({ label, value, onChange, options, required = false, size = 'small', valorname, bloqueado }) => {
   const [focused, setFocused] = React.useState(false);
   // return (
   //   <Grid item md={3} xs={12}>
@@ -51,41 +52,42 @@ const InputSelect: React.FC<InputSelectProps> = ({ label, value, onChange, optio
 
   const labelId = `${valorname ?? label}-label`; // generar un id único
 
-return (
-  <Grid item md={3} xs={12}>
-    <FormControl fullWidth required={required} variant="outlined">
-      <InputLabel
-        id={labelId} // aquí
-        shrink // 👈 Este es el truco
-        style={{
-          color: focused ? '#000000' : 'gray',
-          fontWeight: 'bolder',
-        }}
-      >
-        {label}
-      </InputLabel>
-      <Select
-        labelId={labelId} // aquí conectamos bien
-        id={valorname ?? label}
-        value={value}
-        name={valorname}
-        onChange={onChange}
-        label={label}
-        variant="outlined"
-        size={size}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
-        notched
-      >
-        {options.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-  </Grid>
-);
+  return (
+    <Grid item md={3} xs={12}>
+      <FormControl fullWidth required={required} variant="outlined">
+        <InputLabel
+          id={labelId} // aquí
+          shrink // 👈 Este es el truco
+          style={{
+            color: focused ? '#000000' : 'gray',
+            fontWeight: 'bolder',
+          }}
+        >
+          {label}
+        </InputLabel>
+        <Select
+          labelId={labelId} // aquí conectamos bien
+          id={valorname ?? label}
+          value={value}
+          name={valorname}
+          onChange={onChange}
+          label={label}
+          variant="outlined"
+          size={size}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          notched
+          disabled={bloqueado}
+        >
+          {options.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Grid>
+  );
 };
 
 export default InputSelect;

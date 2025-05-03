@@ -17,6 +17,7 @@ import { SelectChangeEvent } from '@mui/material/Select'; // Asegúrate de tener
 import Grid from '@mui/material/Unstable_Grid2';
 import * as React from 'react';
 import { UserContext } from '@/contexts/user-context';
+import { CrearUsuario } from '@/services/gestionycontrol/usuarios/CrearUsuarioService';
 
 
 const EstadoCliente = [
@@ -28,6 +29,13 @@ const Barrios = [
     { value: '1', label: 'Pupular1' }
 ]
 
+const RolesDisponibles = [
+    { value: '1', label: 'Administrador' },
+    { value: '2', label: 'Mecánico' },
+    { value: '3', label: 'Conductor' },
+    { value: '4', label: 'Cliente' },
+]
+
 export function FormularioCrearCliente(): React.JSX.Element {
 
     // Consumir el contexto del usuario
@@ -37,21 +45,22 @@ export function FormularioCrearCliente(): React.JSX.Element {
 
     //Se maneja el estado para todos los campos
     const [datos, setDatos] = React.useState({
-        Nombre: '',
-        TipoIdentificacion: '4',
-        Identificacion: '',
+        Nombres: '',
+        TipoDocumento: '4',
+        DocumentoUsuario: '',
         Direccion: '',
         Telefono: '',
         Celular: '',
-        Correo: '',
+        Correo: '@gmail.com',
         Estado: '1',
-        UsuarioCreacion: documentoUsuarioActivo
+        UsuarioCreacion: documentoUsuarioActivo,
+        Roles: '4'
     });
 
     //Se definen las reglas con su respectivo mensaje de alerta
     const reglasValidacion = [
-        { campo: 'Nombre', mensaje: 'El nombre es obligatorio.' },
-        { campo: 'Identificacion', mensaje: 'La identificación es obligatoria.' },
+        { campo: 'Nombres', mensaje: 'El nombre es obligatorio.' },
+        { campo: 'DocumentoUsuario', mensaje: 'La identificación es obligatoria.' },
         { campo: 'Direccion', mensaje: 'La dirección es obligatoria.' },
         { campo: 'Telefono', mensaje: 'El teléfono es obligatorio.' },
         { campo: 'Celular', mensaje: 'El celular es obligatorio y debe ser un número válido de 10 dígitos.' },
@@ -88,7 +97,8 @@ export function FormularioCrearCliente(): React.JSX.Element {
                 }, 20000);
 
                 // Hacer la petición de crear cliente
-                const data = await crearCliente(datos);
+                // const data = await crearCliente(datos);
+                const data = await CrearUsuario(datos);
                 clearInterval(progressInterval); // Limpiar intervalo
                 setProgress(100);
 
@@ -96,15 +106,16 @@ export function FormularioCrearCliente(): React.JSX.Element {
 
                 // Limpiar formulario
                 setDatos({
-                    Nombre: '',
-                    TipoIdentificacion: '4',
-                    Identificacion: '',
+                    Nombres: '',
+                    TipoDocumento: '4',
+                    DocumentoUsuario: '',
                     Direccion: '',
                     Telefono: '',
                     Celular: '',
-                    Correo: '',
+                    Correo: '@gmail.com',
                     Estado: '1',
-                    UsuarioCreacion: documentoUsuarioActivo
+                    UsuarioCreacion: documentoUsuarioActivo,
+                    Roles: '4'
                 });
             } catch (error) {
                 if (progressInterval) clearInterval(progressInterval); // Limpiar
@@ -136,7 +147,7 @@ export function FormularioCrearCliente(): React.JSX.Element {
             [name]: value,
         }));
 
-        if (name === 'Identificacion') {
+        if (name === 'DocumentoUsuario') {
             if (value.trim() !== '') {
                 console.log(value);
                 await verificarClienteExistente(value);
@@ -152,6 +163,41 @@ export function FormularioCrearCliente(): React.JSX.Element {
         }
     };
 
+    // const handleChange = async (e: SelectChangeEvent<string> | React.ChangeEvent<HTMLInputElement>) => {
+    //     const { name, value } = e.target;
+
+    //     if (name === 'Roles') {
+    //         const currentRoles = datos.Roles;
+    //         const newRoles = typeof value === 'string' ? [value] : value;
+
+    //         setDatos((prevDatos) => ({
+    //             ...prevDatos,
+    //             Roles: currentRoles.includes(newRoles[0])
+    //                 ? currentRoles.filter(rol => rol !== newRoles[0])
+    //                 : [...currentRoles, ...newRoles],
+    //         }));
+    //     } else {
+    //         setDatos((prevDatos) => ({
+    //             ...prevDatos,
+    //             [name]: value,
+    //         }));
+
+    //         if (name === 'Identificacion') {
+    //             if (value.trim() !== '') {
+    //                 console.log(value);
+    //                 await verificarClienteExistente(value);
+    //             }
+    //         }
+
+    //         if (name === 'Estado') {
+    //             console.log(value);
+    //         }
+
+    //         if (name === 'Correo') {
+    //             // const esValido = await formularioRef.current?.manejarValidacion();
+    //         }
+    //     }
+    // };
 
     //Mostrar alerta y success de inserción
     const [mostrarAlerta, setMostrarAlerta] = React.useState<boolean>(false);
@@ -186,33 +232,33 @@ export function FormularioCrearCliente(): React.JSX.Element {
                     <Grid md={4} xs={12} mt={0.5}>
                         <Input
                             label="Nombre"
-                            value={datos.Nombre}
+                            value={datos.Nombres}
                             onChange={handleChange}
                             // required
                             tamano="small"
                             tipo_input="text"
-                            valorname='Nombre'
+                            valorname='Nombres'
                         />
                     </Grid>
                     <Grid md={2} xs={12} mt={0.5}>
                         <InputSelect
                             label='Tipo de identificación'
-                            value={datos.TipoIdentificacion}
+                            value={datos.TipoDocumento}
                             options={TipoDocumentos}
                             size='small'
                             onChange={handleChange}
-                            valorname='TipoIdentificacion'
+                            valorname='TipoDocumento'
                         />
                     </Grid>
                     <Grid md={2} xs={12} mt={0.5}>
                         <Input
                             label='Identificación'
-                            value={datos.Identificacion}
+                            value={datos.DocumentoUsuario}
                             onChange={handleChange}
                             // required
                             tamano='small'
                             tipo_input='text'
-                            valorname='Identificacion'
+                            valorname='DocumentoUsuario'
                         />
                     </Grid>
                     <Grid md={4} xs={12} mt={0.5}>
@@ -268,6 +314,17 @@ export function FormularioCrearCliente(): React.JSX.Element {
                             size='small'
                             onChange={handleChange}
                             valorname='Estado'
+                        />
+                    </Grid>
+                    <Grid md={2} xs={12} mt={0.5}>
+                        <InputSelect
+                            label='Rol'
+                            value={datos.Roles}
+                            options={RolesDisponibles}
+                            size='small'
+                            onChange={handleChange}
+                            valorname='Roles'
+                            bloqueado={true}
                         />
                     </Grid>
                 </Grid>
