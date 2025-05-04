@@ -15,7 +15,10 @@ import Grid from '@mui/material/Unstable_Grid2';
 import * as React from 'react';
 import FormularioValidator from '@/components/dashboard/componentes_generales/formulario/ValidarCampos';
 import TipoDocumentos from '@/services/TipoDocumentos';
-import axios from 'axios'; 
+import { CrearMecanico } from '@/services/gestionycontrol/mecanicos/CrearMecanicoService';
+import { UserContext } from '@/contexts/user-context';
+import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
+
 
 const EstadoMecanico = [
     { value: '1', label: 'Activo' },
@@ -43,7 +46,18 @@ interface DatosMecanico {
     Estado: string;
 }
 
+const RolesDisponibles = [
+    { value: '1', label: 'Administrador' },
+    { value: '2', label: 'Mecánico' },
+    { value: '3', label: 'Conductor' },
+    { value: '4', label: 'Cliente' },
+]
+
 export function FormularioCrearMecanico(): React.JSX.Element {
+    // Consumir el contexto del usuario
+    const { user } = React.useContext(UserContext) || { user: null };
+    // Obtener el nombre del usuario, si existe
+    const documentoUsuarioActivo = user ? `${user.documento}` : null;
 
     const [datos, setDatos] = React.useState({
         Nombres: '',
@@ -52,8 +66,10 @@ export function FormularioCrearMecanico(): React.JSX.Element {
         Documento: '',
         Direccion: '',
         Celular: '',
-        Correo: '',
+        Correo: '@gmail.com',
+        UsuarioCreacion: documentoUsuarioActivo,
         Estado: '1',
+        Roles: '2'
     });
 
     //Se definen las reglas con su respectivo mensaje de alerta
@@ -75,180 +91,110 @@ export function FormularioCrearMecanico(): React.JSX.Element {
 
     // Crear una referencia para el FormularioValidator
     const formularioRef = React.useRef<{ manejarValidacion: () => void }>(null);
-
-    // const handleCrearMecanico = () => {
-    //     console.log(datos.Correo)
-    //     console.log(datos);
-    //     // Llamar a la función de validación del FormularioValidator
-    //     formularioRef.current?.manejarValidacion();
-    //     // manejarValidacionExitosa();
-    //     console.log("LLEGUE");
-
-    // };
-
-    // const handleCrearMecanico = async () => {
-    //     console.log(datos.Correo);
-    //     console.log(datos);
-
-    //     const esValido = await formularioRef.current?.manejarValidacion();
-
-    //     if (esValido) {
-    //         console.log("LLEGUE");
-    //         try {
-
-    //         } catch (error) {
-
-    //         }
-    //         manejarValidacionExitosa();
-
-    //         setMostrarAlerta(true);
-    //         // Reiniciar los campos del formulario
-    //         setDatos({
-    //             Nombres: '',
-    //             Apellidos: '',
-    //             TipoDocumento: '',
-    //             Documento: '',
-    //             Direccion: '',
-    //             Celular: '',
-    //             Correo: '',
-    //             Estado: '', // O el valor que desees por defecto
-    //         });
-    //     }
-    // };
-
-
+    const [progress, setProgress] = React.useState(0);
     const handleCrearMecanico = async () => {
-        console.log(datos.Correo);
-        console.log(datos);
-    
+        // Validar formulario
         const esValido = await formularioRef.current?.manejarValidacion();
-    
+
         if (esValido) {
-            console.log("Validación exitosa. Procediendo a crear...");
-    
+            let progressInterval: NodeJS.Timeout | null = null;
             try {
-                // 1. Hacer la petición al API con Axios
-                const { data } = await axios.post('/api/mecanicos', datos);
-    
-                console.log('Mecánico creado exitosamente:', data);
-                manejarValidacionExitosa();
-    
-                setMostrarAlerta(true);
-    
-                // 2. Limpiar formulario
+                setCargando(true);
+                // Lógica del progreso
+                let progreso = 0;
+                progressInterval = setInterval(() => {
+                    if (progreso < 80) {
+                        progreso += 10;
+                        setProgress(progreso);
+                    }
+                }, 20000);
+
+                // Hacer la petición de crear cliente
+                // const data = await crearCliente(datos);
+                const data = await CrearMecanico(datos);
+                clearInterval(progressInterval); // Limpiar intervalo
+                setProgress(100);
+
+                mostrarMensaje('Mecánico creado exitosamente', 'success');
+
+                // Limpiar formulario
                 setDatos({
                     Nombres: '',
                     Apellidos: '',
-                    TipoDocumento: '',
+                    TipoDocumento: '1',
                     Documento: '',
                     Direccion: '',
                     Celular: '',
-                    Correo: '',
-                    Estado: '', // O valor que necesites por defecto
+                    Correo: '@gmail.com',
+                    UsuarioCreacion: documentoUsuarioActivo,
+                    Estado: '1',
+                    Roles: '2'
                 });
-            } catch (error: any) {
-                // 3. Manejar errores
-                if (error.response) {
-                    // El servidor respondió con un error
-                    console.error('Error del servidor:', error.response.data);
-                } else if (error.request) {
-                    // La petición no llegó al servidor
-                    console.error('No hubo respuesta del servidor:', error.request);
-                } else {
-                    // Otro tipo de error
-                    console.error('Error desconocido:', error.message);
-                }
+            } catch (error) {
+                if (progressInterval) clearInterval(progressInterval); // Limpiar
+                setProgress(0); // Resetear el progreso
+                mostrarMensaje(`Error al crear el mecánico: ${error}`, 'error');
+            } finally {
+                setCargando(false);
             }
         }
     };
 
-
-    // Función para manejar cambios en los inputs
-    const handleChange = (e: SelectChangeEvent<string> | React.ChangeEvent<HTMLInputElement>) => {
+    //Función para manejar el cambio en los inputs
+    const handleChange = async (e: SelectChangeEvent<string> | React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setDatos((prevDatos) => ({
             ...prevDatos,
             [name]: value,
         }));
+
+        if (name === 'DocumentoUsuario') {
+            if (value.trim() !== '') {
+                console.log(value);
+                // await funcionaparaverificarclienteexiste(value);
+            }
+        }
     };
 
 
-    //Nombres
-    const [Nombres, setNombres] = React.useState('');
-    const handleChangeNombres = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setNombres(event.target.value);
-    };
-
-    //Apellidos
-    const [Apellidos, setApellidos] = React.useState('');
-    const handleChangeApellidos = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setApellidos(event.target.value);
-    };
-
-    //Documento
-    const [Documento, setDocumento] = React.useState('');
-    const handleChangeDocumento = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setDocumento(event.target.value);
-    };
-
-    //Dirección
-    const [Direccion, setDireccion] = React.useState('');
-    const handleChangeDireccion = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setDireccion(event.target.value);
-    };
-
-    //Tipo de documento
-    const [TipoDocumento, setTipoDocumento] = React.useState('');
-    const handleChangeTipoDocumento = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setTipoDocumento(event.target.value);
-    };
-
-    //Celular
-    const [Celular, setCelular] = React.useState('');
-    const handleChangeCelular = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setCelular(event.target.value);
-    };
-
-    //Correo
-    const [Correo, setCorreo] = React.useState('');
-    const handleChangeCorreo = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setCorreo(event.target.value);
-    };
-
-    //Estado
-    const [Estado, setEstado] = React.useState<string>('');
-    const handleChangeEstado = (event: SelectChangeEvent<string>) => {
-        const newValue = event.target.value;
-        setEstado(newValue);
-    };
-
-    //Mostrar alerta, validaciones y creación de mecánico
-    const [mostrarAlerta, setMostrarAlerta] = React.useState<boolean>(false);
-    const [cargando, setCargando] = React.useState<boolean>(false);
-    const [camposFaltantes, setCamposFaltantes] = React.useState<string[]>([]);
-    const [MostrarAlertaSuccess, setMostrarAlertaSuccess] = React.useState<boolean>(false);
-    // const handleCrearMecanico = () => {
-    //     // setMostrarAlerta(true);
-
-    //     setCargando(true);
-    //     const Datos: DatosTipo = {
-    //         ValorNombres: Nombres,
-    //         ValorApellidos: Apellidos,
-    //         ValorDocumento: Documento,
-    //         ValorDireccion: Direccion,
-    //         ValorCelular: Celular,
-    //         ValorCorreo: Correo,
-    //         ValorEstado: Estado,
-    //     };
-
-    //     const camposFaltantes = []; // Array para almacenar mensajes de campos faltantes
 
 
-    //     // Ocultar después de 3 segundos
-    //     setTimeout(() => {
-    //         setMostrarAlerta(false);
-    //     }, 3000);
+    // // Función para manejar cambios en los inputs
+    // const handleChange = (e: SelectChangeEvent<string> | React.ChangeEvent<HTMLInputElement>) => {
+    //     const { name, value } = e.target;
+    //     setDatos((prevDatos) => ({
+    //         ...prevDatos,
+    //         [name]: value,
+    //     }));
     // };
+
+
+    //Nombres forma directa individual
+    // const [Nombres, setNombres] = React.useState('');
+    // const handleChangeNombres = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     setNombres(event.target.value);
+    // };
+
+
+    //Mostrar alerta y success de inserción
+    const [mostrarAlerta, setMostrarAlerta] = React.useState<boolean>(false);
+    const [camposFaltantes, setCamposFaltantes] = React.useState<string[]>([]);
+    const [cargando, setCargando] = React.useState<boolean>(false);
+
+    // Dentro del estado:
+    const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
+    const [mensajeAlerta, setMensajeAlerta] = React.useState('');
+    const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
+
+    // Función para abrir alerta
+    const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error') => {
+        setMensajeAlerta(mensaje);
+        setTipoAlerta(tipo);
+        setMostrarAlertas(true);
+    };
+
+
+
 
 
     return (
@@ -263,16 +209,6 @@ export function FormularioCrearMecanico(): React.JSX.Element {
             <Divider />
             <CardContent>
                 <Grid container spacing={1}>
-                    {/* <Grid md={3} xs={12} mt={0.5}>
-                        <Input
-                            label='Nombres'
-                            value={Nombres}
-                            onChange={handleChangeNombres}
-                            // required
-                            tamano='small'
-                            tipo_input='text'
-                        />
-                    </Grid> */}
                     <Grid md={3} xs={12} mt={0.5}>
                         <Input
                             label='Nombres'
@@ -296,13 +232,14 @@ export function FormularioCrearMecanico(): React.JSX.Element {
                         />
                     </Grid>
                     <Grid md={3} xs={12} mt={0.5}>
-                       <InputSelect
-                          label='Tipo de documento'
-                          value={datos.TipoDocumento}
-                          options={TipoDocumentos}
-                          size='small'
-                          onChange={handleChange}
-                       />
+                        <InputSelect
+                            label='Tipo de documento'
+                            value={datos.TipoDocumento}
+                            options={TipoDocumentos}
+                            size='small'
+                            onChange={handleChange}
+                            valorname='TipoDocumento'
+                        />
                     </Grid>
                     <Grid md={3} xs={12} mt={0.5}>
                         <Input
@@ -360,12 +297,18 @@ export function FormularioCrearMecanico(): React.JSX.Element {
                             onChange={handleChange}
                         />
                     </Grid>
+                    <Grid md={2} xs={12} mt={0.5}>
+                        <InputSelect
+                            label='Rol'
+                            value={datos.Roles}
+                            options={RolesDisponibles}
+                            size='small'
+                            onChange={handleChange}
+                            valorname='Roles'
+                            bloqueado={true}
+                        />
+                    </Grid>
                 </Grid>
-                {/* {mostrarAlerta && (
-                    <Alert severity="success" sx={{ mt: 1 }}>
-                        Este es un mensaje de error!
-                    </Alert>
-                )} */}
             </CardContent>
             <Divider />
             <CardActions sx={{ justifyContent: 'flex-end' }}>
@@ -380,17 +323,12 @@ export function FormularioCrearMecanico(): React.JSX.Element {
                 />
             </CardActions>
 
-            {/* Snackbar con alerta */}
-            <Snackbar
-                open={mostrarAlerta}
-                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                autoHideDuration={3000}
-                onClose={() => setMostrarAlerta(false)}
-            >
-                <Alert severity="success" sx={{ width: '100%' }} onClose={() => setMostrarAlerta(false)}>
-                    Cliente creado exitosamente
-                </Alert>
-            </Snackbar>
+            <MensajeAlerta
+                open={mostrarAlertas}
+                tipo={tipoAlerta}
+                mensaje={mensajeAlerta}
+                onClose={() => setMostrarAlertas(false)}
+            />
         </Card>
     );
-}
+};

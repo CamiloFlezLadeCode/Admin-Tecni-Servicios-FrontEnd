@@ -48,73 +48,6 @@ interface Client {
     Estado: string;
 }
 
-// const data: Client[] = [
-//     { id: 1, name: 'Cliente 1', email: 'cliente1@example.com' },
-//     { id: 2, name: 'Cliente 2', email: 'cliente2@example.com' },
-//     { id: 3, name: 'Cliente 3', email: 'cliente3@example.com' },
-//     // Agrega más datos según sea necesario
-// ];
-
-
-// export function TablaVisualizarCientes(): React.JSX.Element {
-//     const [searchTerm, setSearchTerm] = React.useState<string>('');
-
-//     const filteredData = data.filter(item =>
-//         ( item.name.toLowerCase().includes(searchTerm.toLowerCase()) ) 
-//         || ( item.email.toLowerCase().includes(searchTerm.toLowerCase()) )
-//     );
-//     return (
-//         <Card>
-//             <CardHeader
-//                 title="Visualización de clientes"
-//                 sx={{
-//                     fontSize: '0.875rem', // Tamaño de fuente más pequeño
-//                     padding: '8px', // Espaciado interno más pequeño
-//                 }}
-//             />
-//             <Divider />
-//             <CardContent>
-//             <Paper style={{border: 'solid green'}}>
-//             <TextField
-//                 variant="outlined"
-//                 placeholder="Buscar cliente..."
-//                 onChange={e => setSearchTerm(e.target.value)}
-//                 style={{ margin: '16px' }}
-//                 size='small'
-//             />
-//             <TableContainer>
-//                 <Table>
-//                     <TableHead>
-//                         <TableRow>
-//                             <TableCell>ID</TableCell>
-//                             <TableCell>Nombre</TableCell>
-//                             <TableCell>Email</TableCell>
-//                         </TableRow>
-//                     </TableHead>
-//                     <TableBody>
-//                         {filteredData.map(item => (
-//                             <TableRow key={item.id}>
-//                                 <TableCell>{item.id}</TableCell>
-//                                 <TableCell>{item.name}</TableCell>
-//                                 <TableCell>{item.email}</TableCell>
-//                             </TableRow>
-//                         ))}
-//                     </TableBody>
-//                 </Table>
-//             </TableContainer>
-//         </Paper>
-//             </CardContent>
-//         </Card>
-//     )
-// }
-
-// const Estado = {
-//     pending: { label: 'Pending', color: 'warning' },
-//     delivered: { label: 'Delivered', color: 'success' },
-//     refunded: { label: 'Refunded', color: 'error' },
-// } as const;
-
-
 type EstadoDb = 'activo' | 'inactivo';
 type EstadoKey = 'active' | 'inactive';
 
@@ -218,42 +151,6 @@ export function TablaVisualizarCientes(): React.JSX.Element {
                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Estado</TableCell>
                                 </TableRow>
                             </TableHead>
-                            {/* <TableBody>
-                                {filteredData.map(item => (
-                                    <TableRow key={item.DocumentoUsuario}>
-                                        <TableCell>{item.Nombre}</TableCell>
-                                        <TableCell>{item.TipoDocumento}</TableCell>
-                                        <TableCell>{item.Documento}</TableCell>
-                                        <TableCell>{item.Correo}</TableCell>
-                                        <TableCell>{item.Direccion}</TableCell>
-                                        <TableCell>{item.Telefono}</TableCell>
-                                        <TableCell>{item.Celular}</TableCell>
-                                        <TableCell>{item.CreadoPor}</TableCell>
-                                        <TableCell>{item.FechaCreacion}</TableCell>
-                                        <TableCell>
-                                            {(() => {
-                                                const estadoDb = item.Estado.toLowerCase();
-                                                const estadoKey = estadoMap[estadoDb as EstadoDb];
-                                                const estadoInfo = Estado[estadoKey];
-
-                                                return (
-                                                    <Chip
-                                                        label={estadoInfo?.label || item.Estado}
-                                                        color={estadoInfo?.color || 'default'}
-                                                        // variant="outlined"
-                                                        size="small"
-                                                        sx={{
-                                                            width: 100, // o el ancho que prefieras
-                                                            justifyContent: 'center', // centra el texto horizontalmente
-                                                        }}
-                                                    />
-                                                );
-                                            })()}
-                                        </TableCell>
-
-                                    </TableRow>
-                                ))}
-                            </TableBody> */}
                             <TableBody>
                                 {paginatedData.map(item => (
                                     <TableRow key={item.Documento}>

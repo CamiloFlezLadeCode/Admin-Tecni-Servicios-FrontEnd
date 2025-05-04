@@ -127,16 +127,33 @@ export function FormularioCrearCliente(): React.JSX.Element {
         }
     };
 
+    // // Función para verificar si el cliente ya existe
+    // const verificarClienteExistente = async (identificacion: string) => {
+    //     if (!identificacion) return; // Si no hay identificación, no consultar
+
+    //     const result = await verificarClienteExistenteService(identificacion);
+
+    //     if (result) {
+    //         mostrarMensaje('El cliente ya se encuentra registrado.', 'error');
+    //         console.log('Cliente encontrado:');
+    //     };
+    // };
+
     // Función para verificar si el cliente ya existe
     const verificarClienteExistente = async (identificacion: string) => {
         if (!identificacion) return; // Si no hay identificación, no consultar
 
+        console.log('Verificando cliente con identificacion:', identificacion);
+
         const result = await verificarClienteExistenteService(identificacion);
 
+        // Verificamos el resultado
         if (result) {
             mostrarMensaje('El cliente ya se encuentra registrado.', 'error');
-            console.log('Cliente encontrado:');
-        };
+            console.log('Cliente encontrado:', result);
+        } else {
+            console.log('Cliente no encontrado');
+        }
     };
 
     //Función para manejar el cambio en los inputs

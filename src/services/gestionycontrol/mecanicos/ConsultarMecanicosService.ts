@@ -1,12 +1,12 @@
 import axios from 'axios';
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-export const CrearEquipo = async (datos: any) => {
+export const ConsultarMecanicos = async () => {
     try {
-        const { data } = await axios.post(`${apiUrl}/crear-equipo`, datos);
+        const { data } = await axios.get(`${apiUrl}/ver-mecanicos`);
         return data;
     } catch (error) {
-        console.log("Error al crear el equipo");
+        console.log("Error al consultar los mecánicos");
         throw error; // Lanza el error para manejarlo en el controlador
     }
 };

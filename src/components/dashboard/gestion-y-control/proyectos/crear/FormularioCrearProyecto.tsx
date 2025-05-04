@@ -22,6 +22,11 @@ const EstadoCliente = [
     { value: '2', label: 'Inactivo' },
 ]
 
+const Clientes = [
+    { value: '1', label: 'Cliente1' },
+    { value: '2', label: 'Cliente2' },
+]
+
 export function FormularioCrearProyecto(): React.JSX.Element {
     const [mostrarAlerta, setMostrarAlerta] = React.useState<boolean>(false);
 
@@ -55,28 +60,22 @@ export function FormularioCrearProyecto(): React.JSX.Element {
                             <OutlinedInput defaultValue="Constructions" label="Nombre" name="Nombre" size="small" />
                         </FormControl>
                     </Grid>
-                    <Grid md={3} xs={12}>
-                        <FormControl fullWidth required>
-                            <InputLabel>Documento</InputLabel>
-                            <OutlinedInput defaultValue="Rivers" label="Documento" name="lastName" size="small" />
+                    <Grid md={3} xs={12} mt={1}>
+                        <FormControl fullWidth>
+                            <InputLabel>Cliente</InputLabel>
+                            <Select defaultValue="Activo" label="Estado" name="state" variant="outlined" size="small">
+                                {Clientes.map((option) => (
+                                    <MenuItem key={option.value} value={option.value}>
+                                        {option.label}
+                                    </MenuItem>
+                                ))}
+                            </Select>
                         </FormControl>
                     </Grid>
                     <Grid md={3} xs={12}>
                         <FormControl fullWidth required>
                             <InputLabel>Dirección</InputLabel>
                             <OutlinedInput defaultValue="Rivers" label="Dirección" name="lastName" size="small" />
-                        </FormControl>
-                    </Grid>
-                    <Grid md={3} xs={12} mt={1}>
-                        <FormControl fullWidth required>
-                            <InputLabel>Teléfono</InputLabel>
-                            <OutlinedInput defaultValue="Rivers" label="Teléfono" name="lastName" size="small" />
-                        </FormControl>
-                    </Grid>
-                    <Grid md={3} xs={12} mt={1}>
-                        <FormControl fullWidth required>
-                            <InputLabel>Celular</InputLabel>
-                            <OutlinedInput defaultValue="Rivers" label="Celular" name="lastName" size="small" />
                         </FormControl>
                     </Grid>
                     <Grid md={3} xs={12} mt={1}>
@@ -89,27 +88,6 @@ export function FormularioCrearProyecto(): React.JSX.Element {
                                     </MenuItem>
                                 ))}
                             </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid md={3} xs={12} mt={1}>
-                        <FormControl fullWidth required>
-                            <InputLabel>Correo</InputLabel>
-                            <OutlinedInput defaultValue="Rivers" label="Correo" name="lastName" size="small" />
-                        </FormControl>
-                    </Grid>
-                    <Grid md={3} xs={12} mt={1}>
-                        <FormControl fullWidth required>
-                            <InputLabel shrink htmlFor="fecha">
-                                Fecha
-                            </InputLabel>
-                            <OutlinedInput
-                                id="fecha"
-                                type="date"
-                                name="fecha"
-                                notched
-                                label="Fecha"
-                                size="small"
-                            />
                         </FormControl>
                     </Grid>
                 </Grid>
