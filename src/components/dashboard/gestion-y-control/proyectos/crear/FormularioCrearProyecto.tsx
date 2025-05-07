@@ -1,20 +1,19 @@
 'use client'; // Esto dice que este archivo se renderiza en el lado del cliente
 
-import * as React from 'react';
+import Input from '@/components/dashboard/componentes_generales/formulario/Input';
+import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
+import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
 import Divider from '@mui/material/Divider';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import Select from '@mui/material/Select';
-import Grid from '@mui/material/Unstable_Grid2';
-import Alert from '@mui/material/Alert';
+import { SelectChangeEvent } from '@mui/material/Select'; // Asegúrate de tener esta importación
 import Snackbar from '@mui/material/Snackbar'; // Alertas Flotantes
+import Grid from '@mui/material/Unstable_Grid2';
+import * as React from 'react';
+
 
 
 const EstadoCliente = [
@@ -23,12 +22,35 @@ const EstadoCliente = [
 ]
 
 const Clientes = [
-    { value: '1', label: 'Cliente1' },
-    { value: '2', label: 'Cliente2' },
+    { value: '1', label: 'Emrpesa1' },
+    { value: '2', label: 'Empresa2' },
 ]
 
 export function FormularioCrearProyecto(): React.JSX.Element {
     const [mostrarAlerta, setMostrarAlerta] = React.useState<boolean>(false);
+
+    //Se maneja el estado de todos los campos del formulario
+    const [datos, setDatos] = React.useState({
+        Nombres: '',
+        Empresa: '',
+        Direccion: ''
+    });
+
+    //Función para manejar el cambio en los inputs
+    const handleChange = async (e: SelectChangeEvent<string> | React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setDatos((prevDatos) => ({
+            ...prevDatos,
+            [name]: value,
+        }));
+
+        if (name === 'DocumentoUsuario') {
+            if (value.trim() !== '') {
+                console.log(value);
+                // await funcionaparaverificarclienteexiste(value);
+            }
+        }
+    };
 
     // const handleCrearCliente = () => {
     //     setMostrarAlerta(true);
@@ -42,6 +64,10 @@ export function FormularioCrearProyecto(): React.JSX.Element {
             setMostrarAlerta(false);
         }, 3000);
     };
+
+    const MostrarInfo = () => {
+        console.log(datos);
+    };
     return (
         <Card>
             <CardHeader
@@ -54,52 +80,43 @@ export function FormularioCrearProyecto(): React.JSX.Element {
             <Divider />
             <CardContent>
                 <Grid container spacing={1}>
-                    <Grid md={6} xs={12}>
-                        <FormControl fullWidth required>
-                            <InputLabel>Nombre</InputLabel>
-                            <OutlinedInput defaultValue="Constructions" label="Nombre" name="Nombre" size="small" />
-                        </FormControl>
+                    <Grid md={4} xs={12} mt={0.5}>
+                        <Input
+                            label='Nombre'
+                            value={datos.Nombres}
+                            onChange={handleChange}
+                            // required
+                            tamano='small'
+                            tipo_input='text'
+                            valorname='Nombres'
+                        />
                     </Grid>
-                    <Grid md={3} xs={12} mt={1}>
-                        <FormControl fullWidth>
-                            <InputLabel>Cliente</InputLabel>
-                            <Select defaultValue="Activo" label="Estado" name="state" variant="outlined" size="small">
-                                {Clientes.map((option) => (
-                                    <MenuItem key={option.value} value={option.value}>
-                                        {option.label}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
+                    <Grid md={4} xs={12} mt={0.5}>
+                        <InputSelect
+                            label='Empresa'
+                            value={datos.Empresa}
+                            options={Clientes}
+                            size='small'
+                            onChange={handleChange}
+                            valorname='Empresa'
+                        />
                     </Grid>
-                    <Grid md={3} xs={12}>
-                        <FormControl fullWidth required>
-                            <InputLabel>Dirección</InputLabel>
-                            <OutlinedInput defaultValue="Rivers" label="Dirección" name="lastName" size="small" />
-                        </FormControl>
-                    </Grid>
-                    <Grid md={3} xs={12} mt={1}>
-                        <FormControl fullWidth>
-                            <InputLabel>Estado</InputLabel>
-                            <Select defaultValue="Activo" label="Estado" name="state" variant="outlined" size="small">
-                                {EstadoCliente.map((option) => (
-                                    <MenuItem key={option.value} value={option.value}>
-                                        {option.label}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
+                    <Grid md={4} xs={12} mt={0.5}>
+                        <Input
+                            label='Dirección'
+                            value={datos.Direccion}
+                            onChange={handleChange}
+                            // required
+                            tamano='small'
+                            tipo_input='text'
+                            valorname='Direccion'
+                        />
                     </Grid>
                 </Grid>
-                {/* {mostrarAlerta && (
-                    <Alert severity="success" sx={{ mt: 1 }}>
-                        Este es un mensaje de error!
-                    </Alert>
-                )} */}
             </CardContent>
             <Divider />
             <CardActions sx={{ justifyContent: 'flex-end' }}>
-                <Button variant="contained" onClick={handleCrearCliente}>
+                <Button variant="contained" onClick={MostrarInfo}>
                     Crear proyecto
                 </Button>
             </CardActions>

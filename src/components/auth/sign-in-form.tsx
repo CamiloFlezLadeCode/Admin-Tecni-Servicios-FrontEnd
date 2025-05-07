@@ -313,7 +313,7 @@ export function SignInForm(): React.JSX.Element {
               </FormControl>
             )}
           />
-          {errors.root ? <Alert color="error">{errors.root.message}</Alert> : null}
+          {errors.root ? <Alert color="error" severity="error">{errors.root.message}</Alert> : null}
           <Button disabled={isPending} type="submit" variant="contained">
             Ir
           </Button>

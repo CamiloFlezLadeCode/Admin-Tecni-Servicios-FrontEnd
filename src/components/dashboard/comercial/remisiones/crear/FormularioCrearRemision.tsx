@@ -15,15 +15,33 @@ import Select from '@mui/material/Select';
 import Grid from '@mui/material/Unstable_Grid2';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar'; // Alertas Flotantes
-
+import { SelectChangeEvent } from '@mui/material/Select'; // Asegúrate de tener esta importación
+import InputSelect from '../../../componentes_generales/formulario/Select'
 
 const EstadoCliente = [
     { value: '1', label: 'Activo' },
     { value: '2', label: 'Inactivo' },
 ]
 
+
+
+const Empresas = [
+    { value: '1', label: 'Empresa/Cliente #1' },
+    { value: '2', label: 'Empresa/Cliente #2' },
+    { value: '3', label: 'Cinnamom Overdressed Ceere Software SAS' },
+]
+
 export function FormularioCrearRemision(): React.JSX.Element {
     const [mostrarAlerta, setMostrarAlerta] = React.useState<boolean>(false);
+
+
+    //Empresa
+    const [Empresa, setEmpresa] = React.useState<string>('');
+        //Empresa
+        const handleChangeEmpresa = (event: SelectChangeEvent<string>) => {
+            const newValue = event.target.value;
+            setEmpresa(newValue);
+        };
 
     // const handleCrearCliente = () => {
     //     setMostrarAlerta(true);
@@ -38,7 +56,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
         }, 3000);
     };
     return (
-        <Card style={{height: '200vh'}}>
+        <Card style={{ height: '200vh' }}>
             <CardHeader
                 title="Creación de remisión" size="small"
                 sx={{
@@ -49,6 +67,15 @@ export function FormularioCrearRemision(): React.JSX.Element {
             <Divider />
             <CardContent>
                 <Grid container spacing={1}>
+                    <Grid md={3} xs={12} mt={0.5}>
+                        <InputSelect
+                            label='Empresa'
+                            value={Empresa}
+                            options={Empresas}
+                            size='small'
+                            onChange={handleChangeEmpresa}
+                        />
+                    </Grid>
                     <Grid md={6} xs={12}>
                         <FormControl fullWidth required>
                             <InputLabel>Nombre</InputLabel>
