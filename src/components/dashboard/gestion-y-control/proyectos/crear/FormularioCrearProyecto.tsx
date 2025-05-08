@@ -13,6 +13,7 @@ import { SelectChangeEvent } from '@mui/material/Select'; // Asegúrate de tener
 import Snackbar from '@mui/material/Snackbar'; // Alertas Flotantes
 import Grid from '@mui/material/Unstable_Grid2';
 import * as React from 'react';
+import { ListarClientes } from '@/services/generales/ListarClientesService';
 
 
 
@@ -21,10 +22,16 @@ const EstadoCliente = [
     { value: '2', label: 'Inactivo' },
 ]
 
-const Clientes = [
-    { value: '1', label: 'Emrpesa1' },
-    { value: '2', label: 'Empresa2' },
+const Clientess = [
+    { id: '100', value: '1', label: 'Emrpesa1' },
+    { id: '101', value: '2', label: 'Empresa2' },
 ]
+
+interface Client {
+    IdCliente: number;
+    DocumentoCliente: string;
+    NombreCliente: string;
+};
 
 export function FormularioCrearProyecto(): React.JSX.Element {
     const [mostrarAlerta, setMostrarAlerta] = React.useState<boolean>(false);
@@ -68,6 +75,53 @@ export function FormularioCrearProyecto(): React.JSX.Element {
     const MostrarInfo = () => {
         console.log(datos);
     };
+
+    // const [Clientes, setClientes] = React.useState<Client[]>([]);
+    const [Clientes, setClientes] = React.useState<{ value: string | number; label: string }[]>([{value: 'ClienteX', label: 'ClienteX'}]);
+
+
+    const [valorSeleccionado, setValorSeleccionado] = React.useState<string | number>(''); // 
+    // Estado para el valor seleccionado
+    // const Listar = async () => {
+    //     const Valores = ListarClientes();
+    //     console.log(Valores);
+    //     try {
+    //         const data = await ListarClientes();
+    //         setClientes(data);
+    //         console.log(data);
+    //     } catch (error) {
+
+    //     }
+
+    // }
+
+    const Listar = async () => {
+        try {
+            const data = await ListarClientes();
+            console.log(data);
+    
+            // Verifica si los datos ya están en el formato correcto
+            setClientes(data); // Establece los datos directamente
+
+                        // Establece un valor por defecto basado en los datos de la base de datos
+                        if (data.length > 0) {
+                            setValorSeleccionado(data[0].value); // Marca el primer cliente como seleccionado por defecto
+                        }
+        } catch (error) {
+            console.error('Error al listar clientes:', error);
+        }
+    };
+    
+    // Llama a la función Listar cuando sea necesario, por ejemplo, en un useEffect
+    React.useEffect(() => {
+        Listar();
+    }, []);
+
+
+    const handleChangee = (event: SelectChangeEvent<string | number>) => {
+        setValorSeleccionado(event.target.value as string | number); // Actualiza el valor seleccionado
+    };
+
     return (
         <Card>
             <CardHeader
@@ -94,10 +148,10 @@ export function FormularioCrearProyecto(): React.JSX.Element {
                     <Grid md={4} xs={12} mt={0.5}>
                         <InputSelect
                             label='Empresa'
-                            value={datos.Empresa}
+                            value={String(valorSeleccionado)}
                             options={Clientes}
                             size='small'
-                            onChange={handleChange}
+                            onChange={handleChangee}
                             valorname='Empresa'
                         />
                     </Grid>
@@ -116,7 +170,7 @@ export function FormularioCrearProyecto(): React.JSX.Element {
             </CardContent>
             <Divider />
             <CardActions sx={{ justifyContent: 'flex-end' }}>
-                <Button variant="contained" onClick={MostrarInfo}>
+                <Button variant="contained" onClick={Listar}>
                     Crear proyecto
                 </Button>
             </CardActions>
