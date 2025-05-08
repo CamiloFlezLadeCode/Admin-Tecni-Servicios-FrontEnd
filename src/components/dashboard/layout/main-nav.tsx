@@ -67,7 +67,7 @@ export function MainNav(): React.JSX.Element {
             {/* <Typography variant='h5' fontWeight="bold" color="primary">{nombreUsuarioActivo} 😊</Typography> */}
             <Typography variant="h5" color="primary">
               <span style={{ fontWeight: 500 }}>¡Hola, </span>
-              <span style={{ fontWeight: 700 }}>{nombreUsuarioActivo}! 😊</span>
+              <span style={{ fontWeight: 700 }}>{nombreUsuarioActivo}!</span>
             </Typography>
 
           </Stack>
