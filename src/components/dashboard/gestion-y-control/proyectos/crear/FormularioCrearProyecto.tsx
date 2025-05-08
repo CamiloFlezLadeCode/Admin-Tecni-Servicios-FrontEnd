@@ -1,8 +1,12 @@
 'use client'; // Esto dice que este archivo se renderiza en el lado del cliente
 
+import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import Input from '@/components/dashboard/componentes_generales/formulario/Input';
 import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
-import Alert from '@mui/material/Alert';
+import FormularioValidator from '@/components/dashboard/componentes_generales/formulario/ValidarCampos';
+import { UserContext } from '@/contexts/user-context';
+import { ListarClientes } from '@/services/generales/ListarClientesService';
+import { CrearProyecto } from '@/services/gestionycontrol/proyectos/CrearProyectoService';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -10,14 +14,8 @@ import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
 import Divider from '@mui/material/Divider';
 import { SelectChangeEvent } from '@mui/material/Select'; // Asegúrate de tener esta importación
-import Snackbar from '@mui/material/Snackbar'; // Alertas Flotantes
 import Grid from '@mui/material/Unstable_Grid2';
 import * as React from 'react';
-import { ListarClientes } from '@/services/generales/ListarClientesService';
-import FormularioValidator from '@/components/dashboard/componentes_generales/formulario/ValidarCampos';
-import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
-import { CrearProyecto } from '@/services/gestionycontrol/proyectos/CrearProyectoService';
-import { UserContext } from '@/contexts/user-context';
 
 
 
@@ -98,11 +96,9 @@ export function FormularioCrearProyecto(): React.JSX.Element {
         setMostrarAlertas(true);
     };
 
-    // const [Clientes, setClientes] = React.useState<Client[]>([]);
-    const [Clientes, setClientes] = React.useState<{ value: string | number; label: string }[]>([{ value: 'ClienteX', label: 'ClienteX' }]);
+    const [Clientes, setClientes] = React.useState<{ value: string | number; label: string }[]>([{ value: '333', label: '' }]);
+    // const [Clientes, setClientes] = React.useState<{ value: string | number; label: string }[]>([{ value: 'ClienteX', label: 'ClienteX' }]);
 
-
-    const [valorSeleccionado, setValorSeleccionado] = React.useState<string | number>('');
 
     //Se definen las reglas con su respectivo mensaje de alerta
     const reglasValidacion = [
@@ -125,10 +121,10 @@ export function FormularioCrearProyecto(): React.JSX.Element {
             // Verifica si los datos ya están en el formato correcto
             setClientes(data); // Establece los datos directamente
 
-            // Establece un valor por defecto basado en los datos de la base de datos
-            if (data.length > 0) {
-                setValorSeleccionado(data[0].value); // Marca el primer cliente como seleccionado por defecto
-            }
+            // // Establece un valor por defecto basado en los datos de la base de datos
+            // if (data.length > 0) {
+            //     setValorSeleccionado(data[0].value); // Marca el primer cliente como seleccionado por defecto
+            // }
         } catch (error) {
             console.error('Error al listar clientes:', error);
         }
@@ -138,11 +134,6 @@ export function FormularioCrearProyecto(): React.JSX.Element {
     React.useEffect(() => {
         Listar();
     }, []);
-
-
-    const handleChangee = (event: SelectChangeEvent<string | number>) => {
-        setValorSeleccionado(event.target.value as string | number); // Actualiza el valor seleccionado
-    };
 
     return (
         <Card>
