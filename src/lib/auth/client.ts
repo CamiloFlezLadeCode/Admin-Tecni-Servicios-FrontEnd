@@ -346,7 +346,7 @@ class AuthClient {
     return { error: 'Autenticación social no implementada' };
   }
 
-  async signInWithPassword(params: SignInWithPasswordParams): Promise<{ credenciales?: string; nombre?: string; documento?: string; error?: string }> {
+  async signInWithPassword(params: SignInWithPasswordParams): Promise<{ credenciales?: string; nombre?: string; documento?: string; error?: string; correo?: string; }> {
     const { email, password } = params;
 
     const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
@@ -358,13 +358,14 @@ class AuthClient {
       return { error: 'Credenciales incorrectas' };
     }
 
-    const { credenciales, nombre, documento } = response.data;
+    const { credenciales, nombre, documento, correo } = response.data;
 
     localStorage.setItem('custom-auth-token', credenciales);
     localStorage.setItem('custom-auth-name', nombre); // Guardamos el nombre completo
     localStorage.setItem('custom-auth-documento', documento);
+    localStorage.setItem('custom-auth-correo', correo);
 
-    return { credenciales, nombre, documento };
+    return { credenciales, nombre, documento, correo };
   }
 
   async resetPassword(params: ResetPasswordParams): Promise<{ error?: string }> {
@@ -379,8 +380,9 @@ class AuthClient {
     const token = localStorage.getItem('custom-auth-token');
     const name = localStorage.getItem('custom-auth-name');
     const documento = localStorage.getItem('custom-auth-documento');
+    const correousuario = localStorage.getItem('custom-auth-correo');
 
-    if (!token || !name || !documento) {
+    if (!token || !name || !documento || !correousuario) {
       return { data: null };
     }
 
@@ -388,7 +390,7 @@ class AuthClient {
       id: 'USR-001',
       avatar: '/assets/avatar.png',
       fullName: name,
-      email: '', // Puedes llenarlo si lo tuvieras en la respuesta del backend
+      email: correousuario, // Puedes llenarlo si lo tuvieras en la respuesta del backend
       documento: documento,
     };
 
@@ -399,7 +401,8 @@ class AuthClient {
     localStorage.removeItem('custom-auth-token');
     localStorage.removeItem('custom-auth-name');
     localStorage.removeItem('custom-auth-documento');
-    console.log('Usuario desconectado. Token, nombre y documento eliminados.');
+    localStorage.removeItem('custom-auth-correo');
+    console.log('Usuario desconectado. Token, nombre, correo y documento eliminados.');
     return {};
   }
 }

@@ -17,6 +17,9 @@ import { authClient } from '@/lib/auth/client';
 import { logger } from '@/lib/default-logger';
 import { useUser } from '@/hooks/use-user';
 
+import { UserContext } from '@/contexts/user-context';
+
+
 export interface UserPopoverProps {
   anchorEl: Element | null;
   onClose: () => void;
@@ -24,6 +27,13 @@ export interface UserPopoverProps {
 }
 
 export function UserPopover({ anchorEl, onClose, open }: UserPopoverProps): React.JSX.Element {
+  // Consumir el contexto del usuario
+  const { user } = React.useContext(UserContext) || { user: null };
+  // Obtener el nombre del usuario, si existe
+  const nombreUsuarioActivo = user ? `${user.fullName}` : null;
+  // Obtener el correo del usuario, si existe
+  const correoUsuarioActivo = user ? `${user.email}` : null;
+
   const { checkSession } = useUser();
 
   const router = useRouter();
@@ -57,9 +67,9 @@ export function UserPopover({ anchorEl, onClose, open }: UserPopoverProps): Reac
       slotProps={{ paper: { sx: { width: '240px' } } }}
     >
       <Box sx={{ p: '16px 20px ' }}>
-        <Typography variant="subtitle1">Tecniservicios SAS</Typography>
+        <Typography variant="subtitle1">{nombreUsuarioActivo}</Typography>
         <Typography color="text.secondary" variant="body2">
-          admin@tecniservicios.net
+          {correoUsuarioActivo}
         </Typography>
       </Box>
       <Divider />

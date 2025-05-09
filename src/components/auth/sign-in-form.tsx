@@ -251,6 +251,8 @@ export function SignInForm(): React.JSX.Element {
         localStorage.setItem('custom-auth-name', result.nombre); // No olvides guardar el nombre
         localStorage.setItem('custom-auth-documento', result.documento);
 
+        localStorage.setItem('custom-auth-correo', result.correo);
+
         await checkSession?.();
         // router.push('/'); // 👈 Redirige aquí a la ruta deseada
         router.refresh(); // Redirige a la página principal

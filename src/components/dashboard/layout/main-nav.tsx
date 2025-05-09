@@ -28,10 +28,10 @@ export function MainNav(): React.JSX.Element {
 
   // Consumir el contexto del usuario
   const { user } = React.useContext(UserContext) || { user: null };
-
   // Obtener el nombre del usuario, si existe
   const nombreUsuarioActivo = user ? `${user.fullName}` : null;
-  // const nombreUsuarioActivo = user ? user.fullName : 's';
+
+
   return (
     <React.Fragment>
       <Box

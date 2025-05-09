@@ -8,13 +8,14 @@ export const Login = async (datos: { NombreUsuario: string; ClaveUsuario: string
         
         // Manejar la respuesta, por ejemplo, guardando los datos en el estado o en el almacenamiento local
         if (response.status === 200) {
-            const { credenciales, rol, nombre, documento } = response.data;
+            const { credenciales, rol, nombre, documento, correo } = response.data;
             console.log('Credenciales obtenidas:', credenciales);
             console.log('Rol del usuario:', rol);
             console.log('Nombre del usuario:', nombre);
             console.log('Documento del usuario:', documento);
+            console.log('Correo del usuario:', correo);
             // Aquí puedes guardar los datos en el estado o en el almacenamiento local
-            return { credenciales, rol, nombre, documento };
+            return { credenciales, rol, nombre, documento, correo };
         }
     } catch (error) {
         console.error('Error al consultar las credenciales => ', error);
