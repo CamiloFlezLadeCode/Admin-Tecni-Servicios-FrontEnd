@@ -103,7 +103,7 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
                             <TableHead>
                                 <TableRow>
                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Nombre</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Referencia</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Referencia/Familia</TableCell>
                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Precio Venta</TableCell>
                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Precio Alquiler</TableCell>
                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Precio Reparación</TableCell>
