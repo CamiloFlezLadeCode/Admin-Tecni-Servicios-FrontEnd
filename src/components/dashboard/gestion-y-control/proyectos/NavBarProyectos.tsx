@@ -36,7 +36,7 @@ export function NavBarProyectos(): React.JSX.Element {
                     backgroundColor: 'var(--mui-palette-background-paper)',
                     position: 'sticky',
                     top: 0,
-                    zIndex: 'var(--mui-zIndex-appBar)',
+                    // zIndex: 'var(--mui-zIndex-appBar)',
                 }}
             >
                 <Stack

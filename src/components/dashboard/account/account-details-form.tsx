@@ -29,7 +29,7 @@ export function AccountDetailsForm(): React.JSX.Element {
       }}
     >
       <Card>
-        <CardHeader subheader="The information can be edited" title="Profile" />
+        <CardHeader subheader="La información se puede editar" title="Perfil" />
         <Divider />
         <CardContent>
           <Grid container spacing={3}>
