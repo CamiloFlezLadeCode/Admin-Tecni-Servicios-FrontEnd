@@ -161,7 +161,7 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <TablePagination
+                    {/* <TablePagination
                         component="div"
                         count={filteredData.length}
                         page={page}
@@ -173,8 +173,21 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
                         }}
                         labelRowsPerPage="Filas por página"
                         rowsPerPageOptions={[5, 10, 25]}
-                    />
+                    /> */}
                 </Paper>
+                <TablePagination
+                    component="div"
+                    count={filteredData.length}
+                    page={page}
+                    onPageChange={(_, newPage) => setPage(newPage)}
+                    rowsPerPage={rowsPerPage}
+                    onRowsPerPageChange={(event) => {
+                        setRowsPerPage(parseInt(event.target.value, 10));
+                        setPage(0);
+                    }}
+                    labelRowsPerPage="Filas por página"
+                    rowsPerPageOptions={[5, 10, 25]}
+                />
             </CardContent>
         </Card>
     );
