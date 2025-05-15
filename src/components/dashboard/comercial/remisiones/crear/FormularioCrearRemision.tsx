@@ -18,7 +18,9 @@ import Snackbar from '@mui/material/Snackbar'; // Alertas Flotantes
 import { SelectChangeEvent } from '@mui/material/Select'; // Asegúrate de tener esta importación
 import InputSelect from '../../../componentes_generales/formulario/Select'
 import FormularioValidator from '@/components/dashboard/componentes_generales/formulario/ValidarCampos';
-
+import { ListarClientes } from '@/services/generales/ListarClientesService';
+import { ListarReferencias } from '@/services/generales/ListarReferenciasServices';
+import { UserContext } from '@/contexts/user-context';
 
 const EstadoCliente = [
     { value: '1', label: 'Activo' },
@@ -34,8 +36,32 @@ const Empresas = [
 ]
 
 export function FormularioCrearRemision(): React.JSX.Element {
+    //Consumir el contexto del usuario
+    const { user } = React.useContext(UserContext) || { user: null };
+    const documentoUsuarioActivo = user ? `${user.documento}` : null;
+
+
     const [mostrarAlerta, setMostrarAlerta] = React.useState<boolean>(false);
 
+
+    //Prueba
+    const [nombre, setNombre] = React.useState('');
+    const CambiarValorAnombre = () => {
+
+        let Valores = ['1', '2', '3', '4', '5', '6', '7', '7'];
+        const indiceAleatorio = Math.floor(Math.random() * Valores.length);
+        console.log(indiceAleatorio);
+        // let ValorAleatorio = Math.floor(Math.random() * 10) + 1;
+        // console.error(ValorAleatorio);
+        setNombre(Valores[indiceAleatorio]);
+    }
+    React.useEffect(() => {
+        console.log('Montado o cambió "nombre"');
+
+        return () => {
+            console.log('Cleanup por cambio de "nombre" o desmontaje');
+        };
+    }, [nombre]);
 
     //Empresa
     const [Empresa, setEmpresa] = React.useState<string>('');
@@ -44,6 +70,22 @@ export function FormularioCrearRemision(): React.JSX.Element {
         const newValue = event.target.value;
         setEmpresa(newValue);
     };
+
+    //Estado para las referencias
+    const [Referencias, setReferencias] = React.useState('');
+    React.useEffect(() => {
+        const ListarReferencia = async () => {
+            try {
+                const data = await ListarReferencias();
+                setReferencias(data);
+                console.log(data);
+                // const DatosMapeados = Referencias
+            } catch (error) {
+                console.error('Error al listar las referencias: ', error);
+            }
+        };
+        ListarReferencia();
+    }, []);
 
     // const handleCrearCliente = () => {
     //     setMostrarAlerta(true);
@@ -78,7 +120,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
                             onChange={handleChangeEmpresa}
                         />
                     </Grid>
-                    <Grid md={3} xs={12} mt={0.5}>
+                    {/* <Grid md={3} xs={12} mt={0.5}>
                         <InputSelect
                             label='Proyecto'
                             value={Empresa}
@@ -86,7 +128,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
                             size='small'
                             onChange={handleChangeEmpresa}
                         />
-                    </Grid>
+                    </Grid> */}
                     {/* <Grid md={3} xs={12} mt={0.5}>
                        <InputSelect
                           label='Referencia'
@@ -126,7 +168,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
                             <OutlinedInput defaultValue="Rivers" label="Celular" name="lastName" size="small" />
                         </FormControl>
                     </Grid>
-                    <Grid md={3} xs={12} mt={1}>
+                    {/* <Grid md={3} xs={12} mt={1}>
                         <FormControl fullWidth>
                             <InputLabel>Estado</InputLabel>
                             <Select defaultValue="Activo" label="Estado" name="state" variant="outlined" size="small">
@@ -137,7 +179,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
                                 ))}
                             </Select>
                         </FormControl>
-                    </Grid>
+                    </Grid> */}
                     <Grid md={3} xs={12} mt={1}>
                         <FormControl fullWidth required>
                             <InputLabel>Correo</InputLabel>
@@ -170,6 +212,9 @@ export function FormularioCrearRemision(): React.JSX.Element {
             <CardActions sx={{ justifyContent: 'flex-end' }}>
                 <Button variant="contained" onClick={handleCrearCliente}>
                     Crear remisión
+                </Button>
+                <Button onClick={CambiarValorAnombre}>
+                    Cambiar Valor
                 </Button>
             </CardActions>
 
