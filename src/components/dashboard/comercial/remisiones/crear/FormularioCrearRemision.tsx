@@ -17,6 +17,8 @@ import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar'; // Alertas Flotantes
 import { SelectChangeEvent } from '@mui/material/Select'; // Asegúrate de tener esta importación
 import InputSelect from '../../../componentes_generales/formulario/Select'
+import FormularioValidator from '@/components/dashboard/componentes_generales/formulario/ValidarCampos';
+
 
 const EstadoCliente = [
     { value: '1', label: 'Activo' },
@@ -37,11 +39,11 @@ export function FormularioCrearRemision(): React.JSX.Element {
 
     //Empresa
     const [Empresa, setEmpresa] = React.useState<string>('');
-        //Empresa
-        const handleChangeEmpresa = (event: SelectChangeEvent<string>) => {
-            const newValue = event.target.value;
-            setEmpresa(newValue);
-        };
+    //Empresa
+    const handleChangeEmpresa = (event: SelectChangeEvent<string>) => {
+        const newValue = event.target.value;
+        setEmpresa(newValue);
+    };
 
     // const handleCrearCliente = () => {
     //     setMostrarAlerta(true);
@@ -69,13 +71,31 @@ export function FormularioCrearRemision(): React.JSX.Element {
                 <Grid container spacing={1}>
                     <Grid md={3} xs={12} mt={0.5}>
                         <InputSelect
-                            label='Empresa'
+                            label='Empresa/Cliente'
                             value={Empresa}
                             options={Empresas}
                             size='small'
                             onChange={handleChangeEmpresa}
                         />
                     </Grid>
+                    <Grid md={3} xs={12} mt={0.5}>
+                        <InputSelect
+                            label='Proyecto'
+                            value={Empresa}
+                            options={Empresas}
+                            size='small'
+                            onChange={handleChangeEmpresa}
+                        />
+                    </Grid>
+                    {/* <Grid md={3} xs={12} mt={0.5}>
+                       <InputSelect
+                          label='Referencia'
+                          value={Referencia}
+                          options={}
+                          size='small'
+                        //   onChange={handleChangevariable}
+                       />
+                    </Grid> */}
                     <Grid md={6} xs={12}>
                         <FormControl fullWidth required>
                             <InputLabel>Nombre</InputLabel>

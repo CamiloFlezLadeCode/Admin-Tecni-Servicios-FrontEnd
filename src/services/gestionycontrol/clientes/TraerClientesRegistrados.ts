@@ -3,7 +3,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export const TraerClientes = async () => {
     try {
-        const { data } = await axios.get(`${apiUrl}/verclientes`);
+        const { data } = await axios.get(`${apiUrl}/ver-clientes`);
         return data;
     } catch (error) {
         console.log("Error al consultar los clientes");

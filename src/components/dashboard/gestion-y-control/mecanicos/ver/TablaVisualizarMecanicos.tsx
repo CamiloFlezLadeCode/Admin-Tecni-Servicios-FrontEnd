@@ -79,7 +79,7 @@ export function TablaVisualizarMecanicos(): React.JSX.Element {
                         variant="outlined"
                         placeholder="Buscar mecánico..."
                         onChange={e => setSearchTerm(e.target.value)}
-                        style={{ margin: '16px' }}
+                        // style={{ margin: '16px' }}
                         size='small'
                     />
                     <TableContainer>

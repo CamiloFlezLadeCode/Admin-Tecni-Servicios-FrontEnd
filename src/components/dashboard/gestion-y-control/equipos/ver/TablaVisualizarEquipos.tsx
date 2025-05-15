@@ -95,7 +95,7 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
                             setSearchTerm(e.target.value);
                             setPage(0); // Reiniciar página al buscar
                         }}
-                        style={{ margin: '16px' }}
+                        // style={{ margin: '16px' }}
                         size="small"
                     />
                     <TableContainer>

@@ -122,7 +122,7 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
                         variant="outlined"
                         placeholder="Buscar proyecto..."
                         onChange={e => setSearchTerm(e.target.value)}
-                        style={{ margin: '16px' }}
+                        // style={{ margin: '16px' }}
                         size='small'
                     />
                     <TableContainer>

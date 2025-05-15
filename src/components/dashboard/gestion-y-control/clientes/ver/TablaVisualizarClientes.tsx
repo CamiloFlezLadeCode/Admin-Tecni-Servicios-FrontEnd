@@ -108,7 +108,10 @@ export function TablaVisualizarCientes(): React.JSX.Element {
 
     return (
         <Card>
-            <CardHeader title="Visualización de clientes" />
+            <CardHeader
+                title="Visualización de clientes"
+                sx={{ fontSize: '0.875rem', padding: '8px' }}
+            />
             <Divider />
             <CardContent>
                 <Paper>
@@ -116,13 +119,13 @@ export function TablaVisualizarCientes(): React.JSX.Element {
                         variant="outlined"
                         placeholder="Buscar cliente..."
                         onChange={e => setSearchTerm(e.target.value)}
-                        style={{ margin: '16px' }}
+                        // style={{ margin: '16px' }}
                         size="small"
                     />
                     <Button
                         onClick={() => setMostrarTodasLasColumnas(!mostrarTodasLasColumnas)}
                         variant="text"
-                        sx={{ margin: '16px' }}
+                        // sx={{ margin: '16px' }}
                     >
                         {mostrarTodasLasColumnas ? 'Mostrar menos columnas' : 'Mostrar más columnas'}
                     </Button>
