@@ -29,7 +29,7 @@ export function NavRemisiones(): React.JSX.Element {
     const pathname = usePathname();
 
     return (
-        <Card style={{height: '40px'}}>
+        <Card style={{ height: '40px' }}>
             <Box
                 component="header"
                 sx={{
@@ -37,14 +37,14 @@ export function NavRemisiones(): React.JSX.Element {
                     backgroundColor: 'var(--mui-palette-background-paper)',
                     position: 'sticky',
                     top: 0,
-                    zIndex: 'var(--mui-zIndex-appBar)',
+                    // zIndex: 'var(--mui-zIndex-appBar)',
                 }}
             >
                 <Stack
                     direction="row"
                     spacing={2}
                     // sx={{ alignItems: 'center', justifyContent: 'space-between', minHeight: '64px', px: 2 }}
-                    sx={{ alignItems: 'center', justifyContent: 'space-between', px: 2}}
+                    sx={{ alignItems: 'center', justifyContent: 'space-between', px: 2 }}
                 >
                     <Stack direction="row" spacing={2}>
                         {ItemsNavDevoluciones.map(({ path, label, icon: Icon }) => {

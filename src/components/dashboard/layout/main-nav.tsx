@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
 import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
@@ -19,7 +20,8 @@ import { MobileNav } from './mobile-nav';
 import { UserPopover } from './user-popover';
 import { string } from 'zod';
 import { UserContext } from '@/contexts/user-context'; // Asegúrate de que la ruta sea correcta
-
+import GuardarBackUp from '@/services/generales/GuardarBackUpService';
+import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 
 export function MainNav(): React.JSX.Element {
   const [openNav, setOpenNav] = React.useState<boolean>(false);
@@ -31,7 +33,33 @@ export function MainNav(): React.JSX.Element {
   // Obtener el nombre del usuario, si existe
   const nombreUsuarioActivo = user ? `${user.fullName}` : null;
 
+  //Para el manejo de la alerta
+  const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
+  const [mensajeAlerta, setMensajeAlerta] = React.useState('');
+  const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
 
+  // Función para abrir alerta
+  const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error') => {
+    setMensajeAlerta(mensaje);
+    setTipoAlerta(tipo);
+    setMostrarAlertas(true);
+  };
+  const RealizarBackUp = async () => {
+    try {
+      // Simular error manualmente, por ejemplo:
+      // throw new Error('Error simulado en RealizarBackUp');
+      //Simular promesa rechazada
+      // await Promise.reject('Error simulado de promesa rechazada');
+      const data = await GuardarBackUp();
+      if (data) {
+        // console.log(data);
+        mostrarMensaje('BackUp guardado correctamente', 'success');
+      }
+    } catch (error) {
+      mostrarMensaje(`Error al guardar el Backup: ${error}`, 'error');
+      console.error('Error al guardar el backup: ', error);
+    }
+  };
   return (
     <React.Fragment>
       <Box
@@ -84,6 +112,9 @@ export function MainNav(): React.JSX.Element {
                 </IconButton>
               </Badge>
             </Tooltip> */}
+            <Button style={{ fontWeight: 'bold' }} onClick={RealizarBackUp}>
+              Guardar BackUp
+            </Button>
             <Avatar
               onClick={userPopover.handleOpen}
               ref={userPopover.anchorRef}
@@ -93,6 +124,12 @@ export function MainNav(): React.JSX.Element {
             />
           </Stack>
         </Stack>
+        <MensajeAlerta
+          open={mostrarAlertas}
+          tipo={tipoAlerta}
+          mensaje={mensajeAlerta}
+          onClose={() => setMostrarAlertas(false)}
+        />
       </Box>
       <UserPopover anchorEl={userPopover.anchorRef.current} onClose={userPopover.handleClose} open={userPopover.open} />
       <MobileNav

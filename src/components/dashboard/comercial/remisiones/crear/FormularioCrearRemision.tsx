@@ -1,39 +1,55 @@
 'use client'; // Esto dice que este archivo se renderiza en el lado del cliente
 
-import * as React from 'react';
+import Input from '@/components/dashboard/componentes_generales/formulario/Input';
+import InputSelectConEstado from '@/components/dashboard/componentes_generales/formulario/SelectConEstado';
+import { UserContext } from '@/contexts/user-context';
+import { ListarCategorias } from '@/services/generales/ListarCategoriasServices';
+import { ListarClientes } from '@/services/generales/ListarClientesService';
+import ListarEquipos from '@/services/generales/ListarEquiposService';
+import { ListarProyectos } from '@/services/generales/ListarProyectos';
+import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
 import Divider from '@mui/material/Divider';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import Select from '@mui/material/Select';
-import Grid from '@mui/material/Unstable_Grid2';
-import Alert from '@mui/material/Alert';
-import Snackbar from '@mui/material/Snackbar'; // Alertas Flotantes
 import { SelectChangeEvent } from '@mui/material/Select'; // Asegúrate de tener esta importación
-import InputSelect from '../../../componentes_generales/formulario/Select'
+import Snackbar from '@mui/material/Snackbar'; // Alertas Flotantes
+import Grid from '@mui/material/Unstable_Grid2';
+import * as React from 'react';
+import InputSelect from '../../../componentes_generales/formulario/Select';
 import FormularioValidator from '@/components/dashboard/componentes_generales/formulario/ValidarCampos';
-import { ListarClientes } from '@/services/generales/ListarClientesService';
-import { ListarReferencias } from '@/services/generales/ListarReferenciasServices';
-import { UserContext } from '@/contexts/user-context';
-
-const EstadoCliente = [
-    { value: '1', label: 'Activo' },
-    { value: '2', label: 'Inactivo' },
-]
-
-
 
 const Empresas = [
     { value: '1', label: 'Empresa/Cliente #1' },
     { value: '2', label: 'Empresa/Cliente #2' },
     { value: '3', label: 'Cinnamom Overdressed Ceere Software SAS' },
 ]
+
+//Interface para equipo
+interface Equipo {
+    value: string | number,
+    label: string,
+    estado: 'Reparación' | 'Disponible' | 'No disponible',
+}
+interface Option {
+    value: string
+    label: React.ReactNode
+}
+
+//Se mapean los colores para los estados
+const estadoColor: Record<Equipo['estado'], string> = {
+    Disponible: '#4caf50',    // verde
+    "No disponible": '#f44336', // rojo
+    Reparación: '#ff9800',    // amarillo
+}
+
+interface EquipoEstadoOption {
+    value: string | number;
+    label: string;
+    estado: 'Disponible' | 'No disponible' | 'Reparación';
+}
 
 export function FormularioCrearRemision(): React.JSX.Element {
     //Consumir el contexto del usuario
@@ -42,6 +58,119 @@ export function FormularioCrearRemision(): React.JSX.Element {
 
 
     const [mostrarAlerta, setMostrarAlerta] = React.useState<boolean>(false);
+
+    //Llenado para el select de clientes
+    const [clientes, setClientes] = React.useState<{ value: string | number; label: string }[]>([]);
+
+    const CargarClientes = async () => {
+        try {
+            const Clientes = await ListarClientes();
+            setClientes(Clientes);
+        } catch (error) {
+            console.error('Error al listar los clientes: ', error);
+        }
+    };
+
+    const [categorias, setCategoria] = React.useState<{ value: string | number; label: string }[]>([]);
+    const CargarCategorias = async () => {
+        try {
+            const Refe = await ListarCategorias();
+            setCategoria(Refe);
+        } catch (error) {
+            console.error('Error al listar las categorias: ', error);
+        }
+    };
+
+    React.useEffect(() => {
+        const fetchData = async () => {
+            CargarClientes();
+            CargarCategorias();
+        };
+        fetchData();
+    }, []);
+
+
+
+
+
+    //Se maneja el estado para todos los campos del formulario
+    const [datos, setDatos] = React.useState({
+        Cliente: '',
+        Proyecto: '',
+        Categoria: '',
+        Equipo: '',
+        Subarrendatario: '',
+        Bodega: '',
+        EquipoDisponible: '',
+        Bodeguero: '',
+        Despachador: '',
+        Transportador: '',
+        Vehiculo: '',
+        Placa: '',
+        Recibe: '',
+        ObservacionesEmpresa: '',
+        ObservacionesCliente: ''
+    });
+
+
+    //Llenado del select de proyectos
+    const [proyectos, setProyectos] = React.useState<{ value: string | number; label: string }[]>([]);
+    const CargarProyectosDelCliente = async () => {
+        try {
+            let DocumentoCliente = {
+                Cliente: datos.Cliente
+            };
+            const ProyectosDelCliente = await ListarProyectos(DocumentoCliente);
+            setProyectos(ProyectosDelCliente);
+        } catch (error) {
+            console.error('Error al listar los proyectos del cliente: ', error);
+        }
+    };
+
+    React.useEffect(() => {
+        const FetchDataCargarProyectosDelCliente = async () => {
+            CargarProyectosDelCliente();
+        };
+        FetchDataCargarProyectosDelCliente();
+    }, [datos.Cliente])
+
+    //Llenado para el select de los equipos
+    const [equipos, setEquipos] = React.useState<Equipo[]>([])
+    const CargarEquiposPorCategoria = async () => {
+        try {
+            const ValorCategoria = { IdCategoria: datos.Categoria };
+            const EquiposPorCategoria: Equipo[] = await ListarEquipos(ValorCategoria);
+
+            // Mapear directamente sin JSX
+            const opciones: EquipoEstadoOption[] = EquiposPorCategoria.map(equipo => ({
+                value: equipo.value,
+                label: equipo.label,  // solo string
+                estado: equipo.estado,
+            }));
+
+            setEquipos(opciones);
+        } catch (error) {
+            console.error('Error al listar los equipos: ', error);
+        }
+    };
+    React.useEffect(() => {
+        const FetchDataCargarEquiposPorCategoria = async () => {
+            CargarEquiposPorCategoria();
+        };
+        FetchDataCargarEquiposPorCategoria();
+    }, [datos.Categoria]);
+
+    //Función para manejar el cambio en todos los campos del formulario
+    const handleChange = async (e: SelectChangeEvent<string | number> | React.ChangeEvent<HTMLInputElement> | { target: { value: string | number; name?: string } }) => {
+        const { name, value } = e.target;
+        setDatos((prevDatos) => ({
+            ...prevDatos,
+            [name ?? '']: value,
+            // Si cambia Cliente limpiar proyecto seleccionado
+            ...(name === 'Cliente' ? { Proyecto: '' } : {}),
+            ...(name === 'Categoria' ? { Equipo: '' } : {}),
+        }));
+    };
 
 
     //Prueba
@@ -54,6 +183,11 @@ export function FormularioCrearRemision(): React.JSX.Element {
         // let ValorAleatorio = Math.floor(Math.random() * 10) + 1;
         // console.error(ValorAleatorio);
         setNombre(Valores[indiceAleatorio]);
+
+        console.log('Valor cliente: ', datos.Cliente);
+        console.log('Valor categoria: ', datos.Categoria);
+        console.log('Valor proyecto: ', datos.Proyecto);
+        console.log('Valor equipo: ', datos.Equipo);
     }
     React.useEffect(() => {
         console.log('Montado o cambió "nombre"');
@@ -71,22 +205,6 @@ export function FormularioCrearRemision(): React.JSX.Element {
         setEmpresa(newValue);
     };
 
-    //Estado para las referencias
-    const [Referencias, setReferencias] = React.useState('');
-    React.useEffect(() => {
-        const ListarReferencia = async () => {
-            try {
-                const data = await ListarReferencias();
-                setReferencias(data);
-                console.log(data);
-                // const DatosMapeados = Referencias
-            } catch (error) {
-                console.error('Error al listar las referencias: ', error);
-            }
-        };
-        ListarReferencia();
-    }, []);
-
     // const handleCrearCliente = () => {
     //     setMostrarAlerta(true);
     // };
@@ -100,7 +218,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
         }, 3000);
     };
     return (
-        <Card style={{ height: '200vh' }}>
+        <Card>
             <CardHeader
                 title="Creación de remisión" size="small"
                 sx={{
@@ -114,99 +232,170 @@ export function FormularioCrearRemision(): React.JSX.Element {
                     <Grid md={3} xs={12} mt={0.5}>
                         <InputSelect
                             label='Empresa/Cliente'
-                            value={Empresa}
-                            options={Empresas}
+                            value={datos.Cliente}
+                            options={clientes}
                             size='small'
-                            onChange={handleChangeEmpresa}
+                            onChange={handleChange}
+                            valorname='Cliente'
+                        />
+                    </Grid>
+                    <Grid md={3} xs={12} mt={0.5}>
+                        <InputSelect
+                            label='Proyecto'
+                            value={datos.Proyecto}
+                            options={proyectos}
+                            size='small'
+                            onChange={handleChange}
+                            valorname='Proyecto'
+                        />
+                    </Grid>
+                    <Grid md={3} xs={12} mt={0.5}>
+                        <InputSelect
+                            label='Categoría'
+                            value={datos.Categoria}
+                            options={categorias}
+                            size='small'
+                            onChange={handleChange}
+                            valorname='Categoria'
                         />
                     </Grid>
                     {/* <Grid md={3} xs={12} mt={0.5}>
                         <InputSelect
-                            label='Proyecto'
+                            label='Equipo'
+                            value={datos.Equipo}
+                            options={equipos}
+                            size='small'
+                            onChange={handleChange}
+                            valorname='Equipo'
+                        />
+                    </Grid> */}
+                    <Grid md={3} xs={12} mt={0.5}>
+                        <InputSelectConEstado
+                            label="Equipo"
+                            value={datos.Equipo}
+                            options={equipos} // array de tipo EquipoEstadoOption[]
+                            size="small"
+                            onChange={handleChange}
+                            valorname="Equipo"
+                        // required
+                        />
+                    </Grid>
+                    <Grid md={3} xs={12} mt={0.5}>
+                        <InputSelect
+                            label='Subarrandatario'
                             value={Empresa}
                             options={Empresas}
                             size='small'
                             onChange={handleChangeEmpresa}
                         />
-                    </Grid> */}
-                    {/* <Grid md={3} xs={12} mt={0.5}>
-                       <InputSelect
-                          label='Referencia'
-                          value={Referencia}
-                          options={}
-                          size='small'
-                        //   onChange={handleChangevariable}
-                       />
-                    </Grid> */}
-                    <Grid md={6} xs={12}>
-                        <FormControl fullWidth required>
-                            <InputLabel>Nombre</InputLabel>
-                            <OutlinedInput defaultValue="Constructions" label="Nombre" name="Nombre" size="small" />
-                        </FormControl>
                     </Grid>
-                    <Grid md={3} xs={12}>
-                        <FormControl fullWidth required>
-                            <InputLabel>Documento</InputLabel>
-                            <OutlinedInput defaultValue="Rivers" label="Documento" name="lastName" size="small" />
-                        </FormControl>
+                    <Grid md={3} xs={12} mt={0.5}>
+                        <InputSelect
+                            label='Bodega'
+                            value={Empresa}
+                            options={Empresas}
+                            size='small'
+                            onChange={handleChangeEmpresa}
+                        />
                     </Grid>
-                    <Grid md={3} xs={12}>
-                        <FormControl fullWidth required>
-                            <InputLabel>Dirección</InputLabel>
-                            <OutlinedInput defaultValue="Rivers" label="Dirección" name="lastName" size="small" />
-                        </FormControl>
-                    </Grid>
-                    <Grid md={3} xs={12} mt={1}>
-                        <FormControl fullWidth required>
-                            <InputLabel>Teléfono</InputLabel>
-                            <OutlinedInput defaultValue="Rivers" label="Teléfono" name="lastName" size="small" />
-                        </FormControl>
-                    </Grid>
-                    <Grid md={3} xs={12} mt={1}>
-                        <FormControl fullWidth required>
-                            <InputLabel>Celular</InputLabel>
-                            <OutlinedInput defaultValue="Rivers" label="Celular" name="lastName" size="small" />
-                        </FormControl>
-                    </Grid>
-                    {/* <Grid md={3} xs={12} mt={1}>
-                        <FormControl fullWidth>
-                            <InputLabel>Estado</InputLabel>
-                            <Select defaultValue="Activo" label="Estado" name="state" variant="outlined" size="small">
-                                {EstadoCliente.map((option) => (
-                                    <MenuItem key={option.value} value={option.value}>
-                                        {option.label}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Grid> */}
-                    <Grid md={3} xs={12} mt={1}>
-                        <FormControl fullWidth required>
-                            <InputLabel>Correo</InputLabel>
-                            <OutlinedInput defaultValue="Rivers" label="Correo" name="lastName" size="small" />
-                        </FormControl>
-                    </Grid>
-                    <Grid md={3} xs={12} mt={1}>
-                        <FormControl fullWidth required>
-                            <InputLabel shrink htmlFor="fecha">
-                                Fecha
-                            </InputLabel>
-                            <OutlinedInput
-                                id="fecha"
-                                type="date"
-                                name="fecha"
-                                notched
-                                label="Fecha"
-                                size="small"
-                            />
-                        </FormControl>
+                    <Grid md={3} xs={12} mt={0.5}>
+                        <InputSelect
+                            label='Equipo disponible'
+                            value={Empresa}
+                            options={Empresas}
+                            size='small'
+                            onChange={handleChangeEmpresa}
+                        />
                     </Grid>
                 </Grid>
-                {/* {mostrarAlerta && (
-                    <Alert severity="success" sx={{ mt: 1 }}>
-                        Este es un mensaje de error!
-                    </Alert>
-                )} */}
+            </CardContent>
+            <Divider />
+
+            <CardContent>
+                <Grid container spacing={1}>
+                    <Grid md={3} xs={12} mt={0.5}>
+                        <InputSelect
+                            label='Bodeguero'
+                            value={Empresa}
+                            options={Empresas}
+                            size='small'
+                            onChange={handleChangeEmpresa}
+                        />
+                    </Grid>
+                    <Grid md={3} xs={12} mt={0.5}>
+                        <InputSelect
+                            label='Despachador'
+                            value={Empresa}
+                            options={Empresas}
+                            size='small'
+                            onChange={handleChangeEmpresa}
+                        />
+                    </Grid>
+                    <Grid md={3} xs={12} mt={0.5}>
+                        <InputSelect
+                            label='Transportador'
+                            value={Empresa}
+                            options={Empresas}
+                            size='small'
+                            onChange={handleChangeEmpresa}
+                        />
+                    </Grid>
+                    <Grid md={3} xs={12} mt={0.5}>
+                        <InputSelect
+                            label='Vehículo'
+                            value={Empresa}
+                            options={Empresas}
+                            size='small'
+                            onChange={handleChangeEmpresa}
+                        />
+                    </Grid>
+                    <Grid md={3} xs={12} mt={0.5}>
+                        <Input
+                            label='Placa'
+                            value={Empresa}
+                            // onChange={}
+                            // required
+                            tamano='small'
+                            tipo_input='text'
+                        />
+                    </Grid>
+                    <Grid md={3} xs={12} mt={0.5}>
+                        <Input
+                            label='Recibe'
+                            value={Empresa}
+                            // onChange={}
+                            // required
+                            tamano='small'
+                            tipo_input='text'
+                        />
+                    </Grid>
+                </Grid>
+            </CardContent>
+            <CardContent style={{ paddingTop: '0px' }}>
+                <Grid container spacing={1}>
+                    <Grid md={6} xs={12} mt={0.5} >
+                        <Input
+                            label='Observaciones Empresa'
+                            value={datos.ObservacionesEmpresa}
+                            onChange={handleChange}
+                            // required
+                            tamano='small'
+                            tipo_input='textarea'
+                            valorname='ObservacionesEmpresa'
+                        />
+                    </Grid>
+                    <Grid md={6} xs={12} mt={0.5} >
+                        <Input
+                            label='Observaciones Cliente'
+                            value={datos.ObservacionesCliente}
+                            onChange={handleChange}
+                            // required
+                            tamano='small'
+                            tipo_input='textarea'
+                            valorname='ObservacionesCliente'
+                        />
+                    </Grid>
+                </Grid>
             </CardContent>
             <Divider />
             <CardActions sx={{ justifyContent: 'flex-end' }}>

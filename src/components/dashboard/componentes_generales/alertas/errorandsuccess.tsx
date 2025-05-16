@@ -1,5 +1,5 @@
+import { Alert, AlertColor, Snackbar } from '@mui/material';
 import React from 'react';
-import { Snackbar, Alert, AlertColor } from '@mui/material';
 
 interface MensajeAlertaProps {
     open: boolean;
@@ -28,7 +28,7 @@ const MensajeAlerta: React.FC<MensajeAlertaProps> = ({
                 sx={{ width: '100%' }}
                 onClose={onClose}
             >
-                <strong>{mensaje}</strong>
+                <strong style={{ color: '#000000' }}>{mensaje}</strong>
             </Alert>
         </Snackbar>
     );

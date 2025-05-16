@@ -28,7 +28,7 @@ const Caracteristica = [
     { value: '3', label: 'Reparación' },
 ]
 
-const Referencias = [
+const Categorias = [
     { value: '1', label: 'ACCESORIOS' },
     { value: '2', label: 'ANDAMIOS DE CARGA - SISTEMA DALMINE' },
     { value: '3', label: 'ANDAMIOS Y COMPLEMENTARIOS' },
@@ -68,7 +68,7 @@ export function FormularioCrearEquipo(): React.JSX.Element {
     //Arreglo para manejar el estado de todos los campos
     const [datos, setDatos] = React.useState({
         NombreEquipo: '',
-        ReferenciaEquipo: '1',
+        CategoriaEquipo: '1',
         PrecioVenta: '',
         PrecioAlquiler: '',
         PrecioReparacion: '',
@@ -79,7 +79,7 @@ export function FormularioCrearEquipo(): React.JSX.Element {
     //Se definen las reglas con su respectivo mensaje de alerta
     const reglasValidacion = [
         { campo: 'NombreEquipo', mensaje: 'El nombre es obligatorio.' },
-        { campo: 'ReferenciaEquipo', mensaje: 'La referencia es obligatoria.' },
+        { campo: 'CategoriaEquipo', mensaje: 'La categoria es obligatoria.' },
         { campo: 'PrecioReparacion', mensaje: 'El precio de reparación es obligatorio.' },
         { campo: 'EstadoEquipo', mensaje: 'El estado es obligatorio.' },
     ];
@@ -122,7 +122,7 @@ export function FormularioCrearEquipo(): React.JSX.Element {
                 // Limpiar formulario
                 setDatos({
                     NombreEquipo: '',
-                    ReferenciaEquipo: '1',
+                    CategoriaEquipo: '1',
                     PrecioVenta: '',
                     PrecioAlquiler: '',
                     PrecioReparacion: '',
@@ -199,11 +199,11 @@ export function FormularioCrearEquipo(): React.JSX.Element {
                     <Grid md={4} xs={12} mt={0.5}>
                         <InputSelect
                             label='Referencia'
-                            value={datos.ReferenciaEquipo}
-                            options={Referencias}
+                            value={datos.CategoriaEquipo}
+                            options={Categorias}
                             size='small'
                             onChange={handleChange}
-                            valorname='ReferenciaEquipo'
+                            valorname='CategoriaEquipo'
                         />
                     </Grid>
                     <Grid md={2} xs={12} mt={0.5}>

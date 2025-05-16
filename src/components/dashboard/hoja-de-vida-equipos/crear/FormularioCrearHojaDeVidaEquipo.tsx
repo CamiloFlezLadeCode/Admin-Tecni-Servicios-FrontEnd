@@ -76,22 +76,22 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
 
         if (newValue === '1') {
             setNit('EMPRESA 1');
-        }else {
+        } else {
             setNit('');
         }
 
-        switch(newValue){
+        switch (newValue) {
             case '1':
                 setNit('EMPRESA #1');
-            break;
+                break;
 
             case '2':
                 setNit('EMPRESAS #2');
-            break;
+                break;
 
             default:
                 setNit('NADA')
-            break;
+                break;
         }
     };
 

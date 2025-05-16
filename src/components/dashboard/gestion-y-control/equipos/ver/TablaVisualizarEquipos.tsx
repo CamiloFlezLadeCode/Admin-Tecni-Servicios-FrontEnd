@@ -11,7 +11,7 @@ import { TraerEquipos } from '@/services/gestionycontrol/equipos/TraerEquiposReg
 
 interface Client {
     Nombre: string;
-    ReferenciaEquipo: string;
+    CategoriaEquipo: string;
     PrecioVenta: number;
     PrecioAlquiler: number;
     PrecioReparacion: number;
@@ -71,7 +71,8 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
     }, []);
 
     const filteredData = equipos.filter(equipo =>
-        equipo.NombreEquipo.toLowerCase().includes(searchTerm.toLowerCase())
+        equipo.NombreEquipo.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        equipo.IdEquipo.toString().toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const paginatedData = filteredData.slice(
@@ -102,8 +103,9 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
                         <Table>
                             <TableHead>
                                 <TableRow>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Id</TableCell>
                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Nombre</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Referencia/Familia</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Categoria/Familia</TableCell>
                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Precio Venta</TableCell>
                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Precio Alquiler</TableCell>
                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Precio Reparación</TableCell>
@@ -119,8 +121,9 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
 
                                     return (
                                         <TableRow key={equipo.IdEquipo}>
+                                            <TableCell>{equipo.IdEquipo}</TableCell>
                                             <TableCell>{equipo.NombreEquipo}</TableCell>
-                                            <TableCell>{equipo.ReferenciaEquipo}</TableCell>
+                                            <TableCell>{equipo.CategoriaEquipo}</TableCell>
                                             <TableCell>{equipo.PrecioVenta}</TableCell>
                                             <TableCell>{equipo.PrecioAlquiler}</TableCell>
                                             <TableCell>{equipo.PrecioReparacion}</TableCell>
