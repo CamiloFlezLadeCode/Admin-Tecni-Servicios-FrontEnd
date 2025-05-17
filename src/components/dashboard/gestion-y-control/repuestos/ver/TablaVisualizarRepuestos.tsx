@@ -15,7 +15,7 @@ import Select from '@mui/material/Select';
 import Grid from '@mui/material/Unstable_Grid2';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar'; // Alertas Flotantes
-
+import { Typography } from '@mui/material';
 
 import {
     Table,
@@ -46,49 +46,51 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
     const [searchTerm, setSearchTerm] = React.useState<string>('');
 
     const filteredData = data.filter(item =>
-        ( item.name.toLowerCase().includes(searchTerm.toLowerCase()) ) 
-        || ( item.email.toLowerCase().includes(searchTerm.toLowerCase()) )
+        (item.name.toLowerCase().includes(searchTerm.toLowerCase()))
+        || (item.email.toLowerCase().includes(searchTerm.toLowerCase()))
     );
     return (
         <Card>
-            <CardHeader
+            {/* <CardHeader
                 title="Visualización de proyectos"
                 sx={{
                     fontSize: '0.875rem', // Tamaño de fuente más pequeño
                     padding: '8px', // Espaciado interno más pequeño
                 }}
-            />
+            /> */}
+            <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Visualización de proyectos</Typography>
+
             <Divider />
-            <CardContent>
-            <Paper style={{border: 'solid green'}}>
-            <TextField
-                variant="outlined"
-                placeholder="Buscar proyecto..."
-                onChange={e => setSearchTerm(e.target.value)}
-                style={{ margin: '16px' }}
-                size='small'
-            />
-            <TableContainer>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>ID</TableCell>
-                            <TableCell>Nombre</TableCell>
-                            <TableCell>Email</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {filteredData.map(item => (
-                            <TableRow key={item.id}>
-                                <TableCell>{item.id}</TableCell>
-                                <TableCell>{item.name}</TableCell>
-                                <TableCell>{item.email}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </Paper>
+            <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
+                <Paper style={{ border: 'solid green' }}>
+                    <TextField
+                        variant="outlined"
+                        placeholder="Buscar proyecto..."
+                        onChange={e => setSearchTerm(e.target.value)}
+                        style={{ margin: '16px' }}
+                        size='small'
+                    />
+                    <TableContainer>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>ID</TableCell>
+                                    <TableCell>Nombre</TableCell>
+                                    <TableCell>Email</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {filteredData.map(item => (
+                                    <TableRow key={item.id}>
+                                        <TableCell>{item.id}</TableCell>
+                                        <TableCell>{item.name}</TableCell>
+                                        <TableCell>{item.email}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Paper>
             </CardContent>
         </Card>
     )

@@ -4,7 +4,7 @@ import * as React from 'react';
 import {
     Card, CardContent, CardHeader, Divider, Chip,
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-    TextField, Paper, TablePagination
+    TextField, Paper, TablePagination, Typography
 } from '@mui/material';
 
 import { TraerEquipos } from '@/services/gestionycontrol/equipos/TraerEquiposRegistradosService';
@@ -71,7 +71,7 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
     }, []);
 
     const filteredData = equipos.filter(equipo =>
-        equipo.NombreEquipo.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        equipo.NombreEquipo.toLowerCase().includes(searchTerm.toLowerCase()) ||
         equipo.IdEquipo.toString().toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -82,12 +82,14 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
 
     return (
         <Card>
-            <CardHeader
+            {/* <CardHeader
                 title="Visualización de equipos"
                 sx={{ fontSize: '0.875rem', padding: '8px' }}
-            />
+            /> */}
+            <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Visualización de equipos</Typography>
+
             <Divider />
-            <CardContent>
+            <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                 <Paper>
                     <TextField
                         variant="outlined"

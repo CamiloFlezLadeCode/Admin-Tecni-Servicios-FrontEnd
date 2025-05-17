@@ -16,7 +16,7 @@ import Divider from '@mui/material/Divider';
 import { SelectChangeEvent } from '@mui/material/Select'; // Asegúrate de tener esta importación
 import Grid from '@mui/material/Unstable_Grid2';
 import * as React from 'react';
-
+import { Typography } from '@mui/material';
 
 
 
@@ -137,15 +137,17 @@ export function FormularioCrearProyecto(): React.JSX.Element {
 
     return (
         <Card>
-            <CardHeader
+            {/* <CardHeader
                 title="Creación de proyecto" size="small"
                 sx={{
                     fontSize: '0.875rem', // Tamaño de fuente más pequeño
                     padding: '8px', // Espaciado interno más pequeño
                 }}
-            />
+            /> */}
+            <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Creación de proyecto</Typography>
+
             <Divider />
-            <CardContent>
+            <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                 <Grid container spacing={1}>
                     <Grid md={4} xs={12} mt={0.5}>
                         <Input

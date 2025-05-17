@@ -6,7 +6,7 @@ import {
     FormControl, InputLabel, MenuItem, OutlinedInput, Select,
     Grid, Alert, Snackbar, TablePagination, Chip,
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-    TextField, Paper
+    TextField, Paper, Typography
 } from '@mui/material';
 
 import { ConsultarMecanicos } from '@/services/gestionycontrol/mecanicos/ConsultarMecanicosService';
@@ -68,12 +68,14 @@ export function TablaVisualizarMecanicos(): React.JSX.Element {
 
     return (
         <Card>
-            <CardHeader
+            {/* <CardHeader
                 title="Visualización de mecánicos"
                 sx={{ fontSize: '0.875rem', padding: '8px' }}
-            />
+            /> */}
+            <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Visualización de mecánicos</Typography>
+
             <Divider />
-            <CardContent>
+            <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                 <Paper>
                     <TextField
                         variant="outlined"

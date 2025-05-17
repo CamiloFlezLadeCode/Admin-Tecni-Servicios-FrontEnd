@@ -15,7 +15,7 @@ import Select from '@mui/material/Select';
 import Grid from '@mui/material/Unstable_Grid2';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar'; // Alertas Flotantes
-
+import { Typography } from '@mui/material';
 
 const EstadoCliente = [
     { value: '1', label: 'Activo' },
@@ -39,15 +39,17 @@ export function FormularioCrearRepuesto(): React.JSX.Element {
     };
     return (
         <Card>
-            <CardHeader
+            {/* <CardHeader
                 title="Creación de repuesto" size="small"
                 sx={{
                     fontSize: '0.875rem', // Tamaño de fuente más pequeño
                     padding: '8px', // Espaciado interno más pequeño
                 }}
-            />
+            /> */}
+            <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Creación de repuesto</Typography>
+
             <Divider />
-            <CardContent>
+            <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                 <Grid container spacing={1}>
                     <Grid md={6} xs={12}>
                         <FormControl fullWidth required>

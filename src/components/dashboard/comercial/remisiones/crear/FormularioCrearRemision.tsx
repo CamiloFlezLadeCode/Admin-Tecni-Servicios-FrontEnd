@@ -20,6 +20,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import * as React from 'react';
 import InputSelect from '../../../componentes_generales/formulario/Select';
 import FormularioValidator from '@/components/dashboard/componentes_generales/formulario/ValidarCampos';
+import { Typography } from '@mui/material';
 
 const Empresas = [
     { value: '1', label: 'Empresa/Cliente #1' },
@@ -219,15 +220,17 @@ export function FormularioCrearRemision(): React.JSX.Element {
     };
     return (
         <Card>
-            <CardHeader
+            {/* <CardHeader
                 title="Creación de remisión" size="small"
                 sx={{
                     fontSize: '0.875rem', // Tamaño de fuente más pequeño
                     padding: '8px', // Espaciado interno más pequeño
                 }}
-            />
+            /> */}
+            <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Creación de remisión</Typography>
+
             <Divider />
-            <CardContent>
+            <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                 <Grid container spacing={1}>
                     <Grid md={3} xs={12} mt={0.5}>
                         <InputSelect

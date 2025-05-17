@@ -16,6 +16,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar'; // Alertas Flotantes
 import { ConsultarProyectos } from '@/services/gestionycontrol/proyectos/ConsultarProyectosService';
+import { Typography } from '@mui/material';
 
 import {
     Table,
@@ -108,15 +109,17 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
 
     return (
         <Card>
-            <CardHeader
+            {/* <CardHeader
                 title="Visualización de proyectos"
                 sx={{
                     fontSize: '0.875rem', // Tamaño de fuente más pequeño
                     padding: '8px', // Espaciado interno más pequeño
                 }}
-            />
+            /> */}
+            <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Visualización de proyectos</Typography>
+
             <Divider />
-            <CardContent>
+            <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                 <Paper>
                     <TextField
                         variant="outlined"

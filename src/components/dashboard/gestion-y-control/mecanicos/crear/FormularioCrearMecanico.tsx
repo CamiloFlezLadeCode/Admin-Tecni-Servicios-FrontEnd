@@ -18,6 +18,7 @@ import TipoDocumentos from '@/services/TipoDocumentos';
 import { CrearMecanico } from '@/services/gestionycontrol/mecanicos/CrearMecanicoService';
 import { UserContext } from '@/contexts/user-context';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
+import { Typography } from '@mui/material';
 
 
 const EstadoMecanico = [
@@ -199,15 +200,17 @@ export function FormularioCrearMecanico(): React.JSX.Element {
 
     return (
         <Card>
-            <CardHeader
+            {/* <CardHeader
                 title="Creación de mecánico" size="small"
                 sx={{
                     fontSize: '0.875rem', // Tamaño de fuente más pequeño
                     padding: '8px', // Espaciado interno más pequeño
                 }}
-            />
+            /> */}
+            <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Creación de mecánico</Typography>
+
             <Divider />
-            <CardContent>
+            <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                 <Grid container spacing={1}>
                     <Grid md={3} xs={12} mt={0.5}>
                         <Input

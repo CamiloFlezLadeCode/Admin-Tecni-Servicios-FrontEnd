@@ -51,7 +51,7 @@
 //     return { error: 'Social authentication not implemented' };
 //   }
 
-//   async signInWithPassword(params: SignInWithPasswordParams): Promise<{ error?: string }> {
+//   async signInWithPassword(_params: SignInWithPasswordParams): Promise<{ error?: string }> {
 //     const { email, password } = params;
 
 //     // Make API request
@@ -140,18 +140,18 @@
 // }
 
 // class AuthClient {
-//   async signUp(params: SignUpParams): Promise<{ error?: string }> {
+//   async signUp(_params: SignUpParams): Promise<{ error?: string }> {
 //     const token = generateToken();
 //     localStorage.setItem('custom-auth-token', token);
 //     console.log('Token de registro almacenado:', token);
 //     return {};
 //   }
 
-//   async signInWithOAuth(params: SignInWithOAuthParams): Promise<{ error?: string }> {
+//   async signInWithOAuth(_params: SignInWithOAuthParams): Promise<{ error?: string }> {
 //     return { error: 'Autenticación social no implementada' };
 //   }
 
-//   async signInWithPassword(params: SignInWithPasswordParams): Promise<{ credenciales?: string; nombre?: string; error?: string }> {
+//   async signInWithPassword(_params: SignInWithPasswordParams): Promise<{ credenciales?: string; nombre?: string; error?: string }> {
 //     const { email, password } = params;
 
 //     // Llama a tu API de autenticación
@@ -168,11 +168,11 @@
 //   }
 
 
-//   async resetPassword(params: ResetPasswordParams): Promise<{ error?: string }> {
+//   async resetPassword(_params: ResetPasswordParams): Promise<{ error?: string }> {
 //     return { error: 'Restablecimiento de contraseña no implementado' };
 //   }
 
-//   async updatePassword(params: ResetPasswordParams): Promise<{ error?: string }> {
+//   async updatePassword(_params: ResetPasswordParams): Promise<{ error?: string }> {
 //     return { error: 'Actualización de contraseña no implementada' };
 //   }
 
@@ -241,18 +241,18 @@
 // }
 
 // class AuthClient {
-//   async signUp(params: SignUpParams): Promise<{ error?: string }> {
+//   async signUp(_params: SignUpParams): Promise<{ error?: string }> {
 //     const token = generateToken();
 //     localStorage.setItem('custom-auth-token', token);
 //     console.log('Token de registro almacenado:', token);
 //     return {};
 //   }
 
-//   async signInWithOAuth(params: SignInWithOAuthParams): Promise<{ error?: string }> {
+//   async signInWithOAuth(_params: SignInWithOAuthParams): Promise<{ error?: string }> {
 //     return { error: 'Autenticación social no implementada' };
 //   }
 
-//   async signInWithPassword(params: SignInWithPasswordParams): Promise<{ credenciales?: string; nombre?: string; error?: string }> {
+//   async signInWithPassword(_params: SignInWithPasswordParams): Promise<{ credenciales?: string; nombre?: string; error?: string }> {
 //     const { email, password } = params;
 
 //     // Llama a tu API de autenticación
@@ -267,11 +267,11 @@
 //     return { credenciales, nombre }; // Devuelve también el nombre
 //   }
 
-//   async resetPassword(params: ResetPasswordParams): Promise<{ error?: string }> {
+//   async resetPassword(_params: ResetPasswordParams): Promise<{ error?: string }> {
 //     return { error: 'Restablecimiento de contraseña no implementado' };
 //   }
 
-//   async updatePassword(params: ResetPasswordParams): Promise<{ error?: string }> {
+//   async updatePassword(_params: ResetPasswordParams): Promise<{ error?: string }> {
 //     return { error: 'Actualización de contraseña no implementada' };
 //   }
 
@@ -335,19 +335,19 @@ export interface ResetPasswordParams {
 }
 
 class AuthClient {
-  async signUp(params: SignUpParams): Promise<{ error?: string }> {
+  async signUp(_params: SignUpParams): Promise<{ error?: string }> {
     const token = generateToken();
     localStorage.setItem('custom-auth-token', token);
     console.log('Token de registro almacenado:', token);
     return {};
   }
 
-  async signInWithOAuth(params: SignInWithOAuthParams): Promise<{ error?: string }> {
+  async signInWithOAuth(_params: SignInWithOAuthParams): Promise<{ error?: string }> {
     return { error: 'Autenticación social no implementada' };
   }
 
-  async signInWithPassword(params: SignInWithPasswordParams): Promise<{ credenciales?: string; nombre?: string; documento?: string; error?: string; correo?: string; }> {
-    const { email, password } = params;
+  async signInWithPassword(_params: SignInWithPasswordParams): Promise<{ credenciales?: string; nombre?: string; documento?: string; error?: string; correo?: string; }> {
+    const { email, password } = _params;
 
     const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
       NombreUsuario: email,
@@ -368,11 +368,11 @@ class AuthClient {
     return { credenciales, nombre, documento, correo };
   }
 
-  async resetPassword(params: ResetPasswordParams): Promise<{ error?: string }> {
+  async resetPassword(_params: ResetPasswordParams): Promise<{ error?: string }> {
     return { error: 'Restablecimiento de contraseña no implementado' };
   }
 
-  async updatePassword(params: ResetPasswordParams): Promise<{ error?: string }> {
+  async updatePassword(_params: ResetPasswordParams): Promise<{ error?: string }> {
     return { error: 'Actualización de contraseña no implementada' };
   }
 

@@ -1,26 +1,26 @@
-const ImplementacionEnFrontEnd = `
-    import Input from '@/components/dashboard/componentes_generales/formulario/Input';
-    import Paises from '@/services/Paises';
+// const ImplementacionEnFrontEnd = `
+//     import Input from '@/components/dashboard/componentes_generales/formulario/Input';
+//     import Paises from '@/services/Paises';
     
-    //Estado Pais
-    const [Pais, setPais] = React.useState<string>('48');
-    const handleChangePais = (event: SelectChangeEvent<string>) => {
-        const newValue = event.target.value;
-        setPais(newValue);
-    };
+//     //Estado Pais
+//     const [Pais, setPais] = React.useState<string>('48');
+//     const handleChangePais = (event: SelectChangeEvent<string>) => {
+//         const newValue = event.target.value;
+//         setPais(newValue);
+//     };
 
-    //Dentro del componente que retorna
-    <Grid md={2} xs={12} mt={0.5} style={{display: 'block'}}>
-        <InputSelect
-            label='País'
-            value={Pais}
-            options={Paises}
-            size='small'
-            onChange={handleChangePais}
-            valorname='Pais'
-        />
-    </Grid>
-`;
+//     //Dentro del componente que retorna
+//     <Grid md={2} xs={12} mt={0.5} style={{display: 'block'}}>
+//         <InputSelect
+//             label='País'
+//             value={Pais}
+//             options={Paises}
+//             size='small'
+//             onChange={handleChangePais}
+//             valorname='Pais'
+//         />
+//     </Grid>
+// `;
 
 const Paises = [
     {
