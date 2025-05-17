@@ -36,6 +36,7 @@ import {
   Kanban, //Ideal para representar gestión de proyectos
   Money, //Billete
   CurrencyDollarSimple, //Signo de peso normal
+  UsersFour, //Múltiples usuarios
 } from '@phosphor-icons/react/dist/ssr';
 
 export const navIcons = {
@@ -58,6 +59,7 @@ export const navIcons = {
   'icono-precio1': CurrencyDollarSimple,
   'icono-precio2': CurrencyDollar,
   'icono-precio3': Money,
+  'usuarios-generales': UsersFour,
   user: UserIcon,
   users: UsersIcon,
 } as Record<string, Icon>;

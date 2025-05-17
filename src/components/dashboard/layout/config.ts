@@ -131,6 +131,16 @@ export const navItems = [
           type: 'startsWith',
           href: paths.dashboard.gestionycontrolrepuestos
         }
+      },
+      {
+        key: 'usuariosgenerales',
+        title: 'Usuarios generales',
+        icon: 'usuarios-generales',
+        href: paths.dashboard.gestionycontrolusuariosgenerales,
+        matcher: {
+          type: 'startsWith',
+          href: paths.dashboard.gestionycontrolusuariosgenerales,
+        }
       }
     ]
   },

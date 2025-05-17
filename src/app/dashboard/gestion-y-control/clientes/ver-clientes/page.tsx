@@ -6,12 +6,14 @@ import { TablaVisualizarCientes } from '@/components/dashboard/gestion-y-control
 
 
 export const metadata = { title: `Visualizar clientes | ${config.site.name}` } satisfies Metadata;
-export default function Page(): React.JSX.Element {
-//   return (
-//     <div>
-//       <Typography variant="h4">Vista de clientes</Typography>
-//     </div>
-//   );
 
+//Sin carga original
+export default function Page(): React.JSX.Element {
     return <TablaVisualizarCientes />;
 }
+
+// //Con carga
+// export default async function Page() {
+//     await new Promise((resolve) => setTimeout(resolve, 12000));
+//     return <TablaVisualizarCientes />;
+// }

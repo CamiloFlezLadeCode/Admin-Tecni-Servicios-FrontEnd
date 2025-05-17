@@ -18,6 +18,8 @@ import Snackbar from '@mui/material/Snackbar'; // Alertas Flotantes
 import { TraerClientes } from '@/services/gestionycontrol/clientes/TraerClientesRegistrados';
 import Chip from '@mui/material/Chip';
 import TablePagination from '@mui/material/TablePagination';
+import { Typography } from '@mui/material';
+
 
 import {
     Table,
@@ -108,12 +110,13 @@ export function TablaVisualizarCientes(): React.JSX.Element {
 
     return (
         <Card>
-            <CardHeader
+            {/* <CardHeader
                 title="Visualización de clientes"
                 sx={{ fontSize: '0.875rem', padding: '8px' }}
-            />
+            /> */}
+            <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Visualización de clientes</Typography>
             <Divider />
-            <CardContent>
+            <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                 <Paper>
                     <TextField
                         variant="outlined"
@@ -125,7 +128,7 @@ export function TablaVisualizarCientes(): React.JSX.Element {
                     <Button
                         onClick={() => setMostrarTodasLasColumnas(!mostrarTodasLasColumnas)}
                         variant="text"
-                        // sx={{ margin: '16px' }}
+                    // sx={{ margin: '16px' }}
                     >
                         {mostrarTodasLasColumnas ? 'Mostrar menos columnas' : 'Mostrar más columnas'}
                     </Button>

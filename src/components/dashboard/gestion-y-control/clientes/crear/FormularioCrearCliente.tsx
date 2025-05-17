@@ -18,6 +18,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import * as React from 'react';
 import { UserContext } from '@/contexts/user-context';
 import { CrearUsuario } from '@/services/gestionycontrol/usuarios/CrearUsuarioService';
+import { Typography } from '@mui/material';
 
 
 const EstadoCliente = [
@@ -236,15 +237,20 @@ export function FormularioCrearCliente(): React.JSX.Element {
     return (
         <Card>
             {/* <CircularProgressWithLabel value={10}/> */}
-            <CardHeader
+            {/* <CardHeader
                 title="Creación de cliente" size="small"
                 sx={{
-                    fontSize: '0.875rem', // Tamaño de fuente más pequeño
-                    padding: '8px', // Espaciado interno más pequeño
+                    // fontSize: '0.875rem', // Tamaño de fuente más pequeño
+                    padding: '4px', // Espaciado interno más pequeño
+                    fontWeight: 'lighter',
+                    color: '#000000'
                 }}
+                
             />
+            <Divider /> */}
+            <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Creación de cliente</Typography>
             <Divider />
-            <CardContent>
+            <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                 <Grid container spacing={1}>
                     <Grid md={4} xs={12} mt={0.5}>
                         <Input

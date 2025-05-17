@@ -72,6 +72,11 @@ export const paths = {
     gestionycontrolrepuestoscrear: '/dashboard/gestion-y-control/repuestos/crear-repuesto',
     gestionycontrolrepuestosver: '/dashboard/gestion-y-control/repuestos/ver-repuestos',
 
+    // Usuarios Generales
+    gestionycontrolusuariosgenerales: '/dashboard/gestion-y-control/usuarios-generales',
+    gestionycontrolusuariosgeneralescrear: '/dashboard/gestion-y-control/usuarios-generales/crear-usuario-general',
+    gestionycontrolusuariosgeneralesver: '/dashboard/gestion-y-control/usuarios-generales/ver-usuarios-generales',
+
   },
   errors: { notFound: '/errors/not-found' },
 } as const;
