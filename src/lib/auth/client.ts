@@ -360,7 +360,7 @@ class AuthClient {
 
     const { credenciales, nombre, documento, correo } = response.data;
 
-    localStorage.setItem('custom-auth-token', credenciales);
+    // localStorage.setItem('custom-auth-token', credenciales);
     localStorage.setItem('custom-auth-name', nombre); // Guardamos el nombre completo
     localStorage.setItem('custom-auth-documento', documento);
     localStorage.setItem('custom-auth-correo', correo);

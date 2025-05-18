@@ -247,7 +247,8 @@ export function SignInForm(): React.JSX.Element {
         }
 
         // Almacenar las credenciales
-        localStorage.setItem('custom-auth-token', result.credenciales);
+        // localStorage.setItem('custom-auth-token', result.credenciales);
+        localStorage.setItem('custom-auth-token', 'TOKEN');
         localStorage.setItem('custom-auth-name', result.nombre); // No olvides guardar el nombre
         localStorage.setItem('custom-auth-documento', result.documento);
 

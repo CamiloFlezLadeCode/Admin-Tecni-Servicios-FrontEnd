@@ -9,7 +9,7 @@ export const metadata = { title: `Remisiones | ${config.site.name}` } satisfies 
 export default function Page(): React.JSX.Element{
     return (
         <div>
-            <Typography variant="h5" style={{fontWeight: 'bold'}}>Inicio</Typography>
+            <Typography variant="h6" style={{fontWeight: 'bold'}}>Inicio</Typography>
         </div>
     );
 }
