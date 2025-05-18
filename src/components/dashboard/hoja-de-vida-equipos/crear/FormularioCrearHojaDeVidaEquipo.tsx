@@ -361,15 +361,16 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
     return (
         <div>
             <Card>
-                <CardHeader
+                {/* <CardHeader
                     title="Creación de hoja de vida de equipo" size="small"
                     sx={{
                         fontSize: '0.875rem', // Tamaño de fuente más pequeño
                         padding: '8px', // Espaciado interno más pequeño
                     }}
-                />
+                /> */}
+                <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Creación de hoja de vida de equipo</Typography>
                 <Divider />
-                <CardContent>
+                <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                     <Grid container spacing={1}>
                         <Grid md={8} xs={12}>
                             <span>MANTENIMIENTO PREVENTIVO</span>

@@ -314,7 +314,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
             </CardContent>
             <Divider />
 
-            <CardContent>
+            <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                 <Grid container spacing={1}>
                     <Grid md={3} xs={12} mt={0.5}>
                         <InputSelect
@@ -354,7 +354,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
                     </Grid>
                     <Grid md={3} xs={12} mt={0.5}>
                         <Input
-                            label='Placa'
+                            label='Recibe'
                             value={Empresa}
                             // onChange={}
                             // required
@@ -364,7 +364,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
                     </Grid>
                     <Grid md={3} xs={12} mt={0.5}>
                         <Input
-                            label='Recibe'
+                            label='Placa'
                             value={Empresa}
                             // onChange={}
                             // required
@@ -374,7 +374,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
                     </Grid>
                 </Grid>
             </CardContent>
-            <CardContent style={{ paddingTop: '0px' }}>
+            <CardContent style={{ paddingTop: '0px', paddingBottom: '10px' }}>
                 <Grid container spacing={1}>
                     <Grid md={6} xs={12} mt={0.5} >
                         <Input

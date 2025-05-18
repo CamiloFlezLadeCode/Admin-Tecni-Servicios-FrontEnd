@@ -408,7 +408,8 @@ class AuthClient {
 
       return { data: user };
     } catch (error) {
-      console.error('Error en getUser:', error);
+      // console.log('Error en getUser:', error);
+      console.log(error);
       return { data: null, error: 'No autenticado o sesión expirada' };
     }
   }

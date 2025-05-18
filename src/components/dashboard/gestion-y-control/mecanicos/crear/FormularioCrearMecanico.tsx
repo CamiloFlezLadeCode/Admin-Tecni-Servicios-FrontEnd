@@ -19,7 +19,7 @@ import { CrearMecanico } from '@/services/gestionycontrol/mecanicos/CrearMecanic
 import { UserContext } from '@/contexts/user-context';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import { Typography } from '@mui/material';
-
+import { ListarNiveles } from '@/services/generales/ListarNivelesService';
 
 const EstadoMecanico = [
     { value: '1', label: 'Activo' },
@@ -70,7 +70,8 @@ export function FormularioCrearMecanico(): React.JSX.Element {
         Correo: '@gmail.com',
         UsuarioCreacion: documentoUsuarioActivo,
         Estado: '1',
-        Roles: '2'
+        Roles: '2',
+        Nivel: ''
     });
 
     //Se definen las reglas con su respectivo mensaje de alerta
@@ -81,7 +82,8 @@ export function FormularioCrearMecanico(): React.JSX.Element {
         { campo: 'Direccion', mensaje: 'La dirección es obligatoria.' },
         { campo: 'Celular', mensaje: 'El celular es obligatorio y debe ser un número válido de 10 dígitos.' },
         { campo: 'Correo', mensaje: 'El correo es obligatorio y debe ser válido.' },
-        { campo: 'Estado', mensaje: 'El estado es obligatorio' }
+        { campo: 'Estado', mensaje: 'El estado es obligatorio' },
+        { campo: 'Nivel', mensaje: 'El nivel es obligatorio' }
     ];
 
     const manejarValidacionExitosa = () => {
@@ -129,7 +131,8 @@ export function FormularioCrearMecanico(): React.JSX.Element {
                     Correo: '@gmail.com',
                     UsuarioCreacion: documentoUsuarioActivo,
                     Estado: '1',
-                    Roles: '2'
+                    Roles: '2',
+                    Nivel: ''
                 });
             } catch (error) {
                 if (progressInterval) clearInterval(progressInterval); // Limpiar
@@ -194,9 +197,21 @@ export function FormularioCrearMecanico(): React.JSX.Element {
         setMostrarAlertas(true);
     };
 
+    //Cargar los niveles
+    const [niveles, setNiveles] = React.useState<{ value: string | number; label: string }[]>([]);
+    const CargarNiveles = async () => {
+        try {
+            const Niveles = await ListarNiveles();
+            console.log(Niveles);
+            setNiveles(Niveles);
+        } catch (error) {
+            console.error('Error al listar los niveles: ', error);
+        }
+    };
 
-
-
+    React.useEffect(() => {
+        CargarNiveles();
+    }, []);
 
     return (
         <Card>
@@ -309,6 +324,16 @@ export function FormularioCrearMecanico(): React.JSX.Element {
                             onChange={handleChange}
                             valorname='Roles'
                             bloqueado={true}
+                        />
+                    </Grid>
+                    <Grid md={2} xs={12} mt={0.5}>
+                        <InputSelect
+                            label='Nivel'
+                            value={datos.Nivel}
+                            options={niveles}
+                            size='small'
+                            onChange={handleChange}
+                            valorname='Nivel'
                         />
                     </Grid>
                 </Grid>

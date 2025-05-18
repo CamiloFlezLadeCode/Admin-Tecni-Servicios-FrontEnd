@@ -15,6 +15,7 @@ import Select from '@mui/material/Select';
 import Grid from '@mui/material/Unstable_Grid2';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar'; // Alertas Flotantes
+import { Typography } from '@mui/material';
 
 
 import {
@@ -51,15 +52,17 @@ export function TablaVisualizarHojasDeVidaEquipos(): React.JSX.Element {
     );
     return (
         <Card>
-            <CardHeader
+            {/* <CardHeader
                 title="Visualización de hojas de vida de equipos"
                 sx={{
                     fontSize: '0.875rem', // Tamaño de fuente más pequeño
                     padding: '8px', // Espaciado interno más pequeño
                 }}
-            />
+            /> */}
+                        <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Visualización de hojas de vida de equipos</Typography>
+            
             <Divider />
-            <CardContent>
+            <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
             <Paper style={{border: 'solid green'}}>
             <TextField
                 variant="outlined"
