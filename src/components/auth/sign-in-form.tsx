@@ -241,14 +241,19 @@ export function SignInForm(): React.JSX.Element {
 
         const result = await Login({ NombreUsuario, ClaveUsuario });
 
-        if (!result || !result.credenciales) {
+        // if (!result || !result.credenciales) {
+        //   setError('root', { type: 'server', message: 'Error al iniciar sesión' });
+        //   return;
+        // }
+
+        if (!result || !result.rol) {
           setError('root', { type: 'server', message: 'Error al iniciar sesión' });
           return;
         }
 
         // Almacenar las credenciales
         // localStorage.setItem('custom-auth-token', result.credenciales);
-        localStorage.setItem('custom-auth-token', 'TOKEN');
+        // localStorage.setItem('custom-auth-token', 'TOKEN');
         localStorage.setItem('custom-auth-name', result.nombre); // No olvides guardar el nombre
         localStorage.setItem('custom-auth-documento', result.documento);
 

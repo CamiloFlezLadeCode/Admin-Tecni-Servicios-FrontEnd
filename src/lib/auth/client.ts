@@ -336,9 +336,9 @@ export interface ResetPasswordParams {
 
 class AuthClient {
   async signUp(_params: SignUpParams): Promise<{ error?: string }> {
-    const token = generateToken();
-    localStorage.setItem('custom-auth-token', token);
-    console.log('Token de registro almacenado:', token);
+    // const token = generateToken();
+    // localStorage.setItem('custom-auth-token', token);
+    // console.log('Token de registro almacenado:', token);
     return {};
   }
 
@@ -346,26 +346,39 @@ class AuthClient {
     return { error: 'Autenticación social no implementada' };
   }
 
-  async signInWithPassword(_params: SignInWithPasswordParams): Promise<{ credenciales?: string; nombre?: string; documento?: string; error?: string; correo?: string; }> {
+  async signInWithPassword(_params: SignInWithPasswordParams): Promise<{ nombre?: string; documento?: string; error?: string; correo?: string; }> {
     const { email, password } = _params;
 
-    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
-      NombreUsuario: email,
-      ClaveUsuario: password
-    });
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/login`,
+        {
+          NombreUsuario: email,
+          ClaveUsuario: password,
+        },
+        {
+          withCredentials: true, // 👈 Esto permite que la cookie se guarde automáticamente
+        }
+      );
 
-    if (response.status !== 200) {
-      return { error: 'Credenciales incorrectas' };
+      console.log('Cookies en document.cookie:', document.cookie);
+      if (response.status !== 200) {
+        return { error: 'Credenciales incorrectas' };
+      };
+
+      const { nombre, documento, correo } = response.data;
+
+      // Podés guardar esto en memoria/localStorage si lo necesitás para mostrar en la UI
+      localStorage.setItem('custom-auth-name', nombre);
+      localStorage.setItem('custom-auth-documento', documento);
+      localStorage.setItem('custom-auth-correo', correo);
+
+      return { nombre, documento, correo };
+
+    } catch (error) {
+      console.error('Error en signInWithPassword: ', error);
+      return { error: 'Error al iniciar sesión' };
     }
-
-    const { credenciales, nombre, documento, correo } = response.data;
-
-    // localStorage.setItem('custom-auth-token', credenciales);
-    localStorage.setItem('custom-auth-name', nombre); // Guardamos el nombre completo
-    localStorage.setItem('custom-auth-documento', documento);
-    localStorage.setItem('custom-auth-correo', correo);
-
-    return { credenciales, nombre, documento, correo };
   }
 
   async resetPassword(_params: ResetPasswordParams): Promise<{ error?: string }> {
@@ -377,33 +390,40 @@ class AuthClient {
   }
 
   async getUser(): Promise<{ data?: User | null; error?: string }> {
-    const token = localStorage.getItem('custom-auth-token');
-    const name = localStorage.getItem('custom-auth-name');
-    const documento = localStorage.getItem('custom-auth-documento');
-    const correousuario = localStorage.getItem('custom-auth-correo');
+    try {
+      // Esta ruta debe estar protegida con el middleware verificarToken
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/perfil`, {
+        withCredentials: true, // 👈 Enviamos la cookie JWT al backend
+      });
 
-    if (!token || !name || !documento || !correousuario) {
-      return { data: null };
+      const { nombre, correo, documento } = response.data;
+
+      const user: User = {
+        id: 'USR-001',
+        avatar: '/assets/avatar.png',
+        fullName: nombre,
+        email: correo,
+        documento: documento,
+      };
+
+      return { data: user };
+    } catch (error) {
+      console.error('Error en getUser:', error);
+      return { data: null, error: 'No autenticado o sesión expirada' };
     }
-
-    const user: User = {
-      id: 'USR-001',
-      avatar: '/assets/avatar.png',
-      fullName: name,
-      email: correousuario, // Puedes llenarlo si lo tuvieras en la respuesta del backend
-      documento: documento,
-    };
-
-    return { data: user };
   }
 
   async signOut(): Promise<{ error?: string }> {
-    localStorage.removeItem('custom-auth-token');
-    localStorage.removeItem('custom-auth-name');
-    localStorage.removeItem('custom-auth-documento');
-    localStorage.removeItem('custom-auth-correo');
-    console.log('Usuario desconectado. Token, nombre, correo y documento eliminados.');
-    return {};
+    try {
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/logout`, {}, { withCredentials: true });
+      localStorage.removeItem('custom-auth-name');
+      localStorage.removeItem('custom-auth-documento');
+      localStorage.removeItem('custom-auth-correo');
+      return {};
+    } catch (error) {
+      console.error('Error en signOut:', error);
+      return { error: 'Error al cerrar sesión' };
+    }
   }
 }
 

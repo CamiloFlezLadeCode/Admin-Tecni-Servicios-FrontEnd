@@ -14,8 +14,8 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "noUnusedLocals": true, //Recomentable, usar solo en desarrollo //nuevo para checkear errores, estas lineas impiden la construcción pnpm run build, con dependencias sin usar, es estremandamente estricto
-    "noUnusedParameters": true, //Recomentable, usar solo en desarrollo //nuevo para checkear errores, estas lineas impiden la construcción pnpm run build, con dependencias sin usar, es estremandamente estricto
+    // "noUnusedLocals": true, //Recomentable, usar solo en desarrollo //nuevo para checkear errores, estas lineas impiden la construcción pnpm run build, con dependencias sin usar, es estremandamente estricto
+    // "noUnusedParameters": true, //Recomentable, usar solo en desarrollo //nuevo para checkear errores, estas lineas impiden la construcción pnpm run build, con dependencias sin usar, es estremandamente estricto
     "plugins": [
       {
         "name": "next"

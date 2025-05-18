@@ -150,22 +150,41 @@ export function UserProvider({ children }: UserProviderProps): React.JSX.Element
     isLoading: true,
   });
 
+  // const checkSession = React.useCallback(async (): Promise<void> => {
+  //   try {
+  //     const { data, error } = await authClient.getUser();
+
+  //     if (error) {
+  //       logger.error(error);
+  //       setState({ user: null, error: 'Error al obtener el usuario', isLoading: false });
+  //       return;
+  //     }
+
+  //     setState({ user: data ?? null, error: null, isLoading: false });
+  //   } catch (err) {
+  //     logger.error(err);
+  //     setState({ user: null, error: 'Error inesperado', isLoading: false });
+  //   }
+  // }, []);
+
   const checkSession = React.useCallback(async (): Promise<void> => {
     try {
       const { data, error } = await authClient.getUser();
 
-      if (error) {
-        logger.error(error);
-        setState({ user: null, error: 'Error al obtener el usuario', isLoading: false });
+      if (error || !data) {
+        // ⚠️ Importante: NO marques error si simplemente no hay sesión
+        setState({ user: null, error: null, isLoading: false });
         return;
       }
 
-      setState({ user: data ?? null, error: null, isLoading: false });
+      setState({ user: data, error: null, isLoading: false });
     } catch (err) {
       logger.error(err);
+      // ⚠️ De nuevo, error inesperado del servidor va a error, pero permití render
       setState({ user: null, error: 'Error inesperado', isLoading: false });
     }
   }, []);
+
 
   React.useEffect(() => {
     checkSession().catch((err: unknown) => {
