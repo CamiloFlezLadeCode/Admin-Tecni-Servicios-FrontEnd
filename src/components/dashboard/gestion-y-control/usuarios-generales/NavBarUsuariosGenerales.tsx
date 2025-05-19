@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
-import { Plus, Eye } from '@phosphor-icons/react/dist/ssr';
+import { Plus, Eye, PencilSimple } from '@phosphor-icons/react/dist/ssr';
 import Card from '@mui/material/Card';
 import RouterLink from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -22,7 +22,12 @@ const ItemsNavDevoluciones = [
         label: 'Crear usuario general',
         path: paths.dashboard.gestionycontrolusuariosgeneralescrear,
         icon: Plus
-    }
+    },
+    {
+        label: 'Editar usuario general',
+        path: paths.dashboard.gestionycontrolusuariosgeneraleseditar,
+        icon: PencilSimple
+    },
 ]
 export function NavBarUsuariosGenerales(): React.JSX.Element {
     const pathname = usePathname();

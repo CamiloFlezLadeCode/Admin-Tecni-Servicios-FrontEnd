@@ -64,6 +64,8 @@ const FormularioValidator = forwardRef<FormularioValidatorRef, FormularioValidat
                 if (!esCorreoValido) {
                     mensajesFaltantes.push(mensaje);
                 }
+            } else if (campo === 'Roles' && datos.Roles.length === 0) {
+                mensajesFaltantes.push(mensaje);
             }
         });
 
