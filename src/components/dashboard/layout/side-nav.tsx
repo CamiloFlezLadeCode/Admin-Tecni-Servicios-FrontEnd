@@ -80,7 +80,7 @@ export function SideNav(): React.JSX.Element {
         </Box> */}
       </Stack>
       <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)' }} />
-      <Box component="nav" sx={{ flex: '1 1 auto', p: '12px', overflowY: 'scroll', scrollbarWidth: 'none', '&::-webkit-scrollbar': {display: 'none'} } } tabIndex={0}>
+      <Box component="nav" sx={{ flex: '1 1 auto', p: '12px', overflowY: 'scroll', scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' } }} tabIndex={0}>
         {renderNavItems({ pathname, items: navItems })}
       </Box>
       <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)' }} />
@@ -381,7 +381,11 @@ interface NavItemProps extends Omit<NavItemConfig, 'items'> {
 
 
 function NavItem({ disabled, external, href, icon, matcher, pathname, title, items }: NavItemProps): React.JSX.Element {
-  const [open, setOpen] = React.useState(false);
+  const isChildActive = items?.some((item) =>
+    isNavItemActive({ ...item, pathname })
+  );
+  const [open, setOpen] = React.useState(isChildActive);
+  // const [open, setOpen] = React.useState(false);
   const active = isNavItemActive({ disabled, external, href, matcher, pathname });
   const Icon = icon ? navIcons[icon] : null;
   const hasChildren = items && items.length > 0;
@@ -395,11 +399,11 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
       <Box
         {...(href
           ? {
-              component: external ? 'a' : RouterLink,
-              href,
-              target: external ? '_blank' : undefined,
-              rel: external ? 'noreferrer' : undefined,
-            }
+            component: external ? 'a' : RouterLink,
+            href,
+            target: external ? '_blank' : undefined,
+            rel: external ? 'noreferrer' : undefined,
+          }
           : { role: 'button' })}
         onClick={handleToggle}
         sx={{
