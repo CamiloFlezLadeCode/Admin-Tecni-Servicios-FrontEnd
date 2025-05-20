@@ -259,6 +259,9 @@ export function SignInForm(): React.JSX.Element {
 
         localStorage.setItem('custom-auth-correo', result.correo);
 
+        localStorage.setItem('custom-auth-token-autenticacion', result.token);
+        // sessionStorage.setItem('custom-auth-token-autenticacion', result.token);
+
         await checkSession?.();
         // router.push('/'); // 👈 Redirige aquí a la ruta deseada
         router.refresh(); // Redirige a la página principal

@@ -346,7 +346,7 @@ class AuthClient {
     return { error: 'Autenticación social no implementada' };
   }
 
-  async signInWithPassword(_params: SignInWithPasswordParams): Promise<{ nombre?: string; documento?: string; error?: string; correo?: string; }> {
+  async signInWithPassword(_params: SignInWithPasswordParams): Promise<{ nombre?: string; documento?: string; error?: string; correo?: string; token?: string; }> {
     const { email, password } = _params;
 
     try {
@@ -366,14 +366,22 @@ class AuthClient {
         return { error: 'Credenciales incorrectas' };
       };
 
-      const { nombre, documento, correo } = response.data;
+      const { nombre, documento, correo, token } = response.data;
 
       // Podés guardar esto en memoria/localStorage si lo necesitás para mostrar en la UI
       localStorage.setItem('custom-auth-name', nombre);
       localStorage.setItem('custom-auth-documento', documento);
       localStorage.setItem('custom-auth-correo', correo);
+      // localStorage.setItem('custom-auth-token-autenticacion', token);
 
-      return { nombre, documento, correo };
+      //Permanece token aún cerrando la pestaña ó navegador
+      localStorage.setItem('custom-auth-token-autenticacion', token);
+
+      //Token se retirar cuando se cierra la pestaña ó navegador
+      // sessionStorage.setItem('custom-auth-token-autenticacion', token);
+
+
+      return { nombre, documento, correo, token };
 
     } catch (error) {
       console.error('Error en signInWithPassword: ', error);
@@ -391,9 +399,19 @@ class AuthClient {
 
   async getUser(): Promise<{ data?: User | null; error?: string }> {
     try {
+
+      const TokenAutorizado = localStorage.getItem('custom-auth-token-autenticacion');
+      // const TokenAutorizado = sessionStorage.getItem('custom-auth-token-autenticacion');
+
       // Esta ruta debe estar protegida con el middleware verificarToken
+      // const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/perfil`, {
+      //   withCredentials: true, // 👈 Enviamos la cookie JWT al backend
+      // });
+
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/perfil`, {
-        withCredentials: true, // 👈 Enviamos la cookie JWT al backend
+        headers: {
+          Authorization: `Bearer ${TokenAutorizado}`, // 👈 Aquí lo envías de forma segura
+        },
       });
 
       const { nombre, correo, documento } = response.data;
@@ -420,6 +438,12 @@ class AuthClient {
       localStorage.removeItem('custom-auth-name');
       localStorage.removeItem('custom-auth-documento');
       localStorage.removeItem('custom-auth-correo');
+
+      //Permanece token aún cerrando la pestaña ó navegador
+      localStorage.removeItem('custom-auth-token-autenticacion');
+
+      //Token se retirar cuando se cierra la pestaña ó navegador
+      // sessionStorage.removeItem('custom-auth-token-autenticacion');
       return {};
     } catch (error) {
       console.error('Error en signOut:', error);
