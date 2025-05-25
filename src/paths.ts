@@ -77,6 +77,11 @@ export const paths = {
     gestionycontrolusuariosgeneralescrear: '/dashboard/gestion-y-control/usuarios-generales/crear-usuario-general',
     gestionycontrolusuariosgeneralesver: '/dashboard/gestion-y-control/usuarios-generales/ver-usuarios-generales',
     gestionycontrolusuariosgeneraleseditar: '/dashboard/gestion-y-control/usuarios-generales/editar-usuario-general',
+
+    // Vehículos
+    gestionycontrolvehiculos: '/dashboard/gestion-y-control/vehiculos',
+    gestionycontrolvehiculoscrear: '/dashboard/gestion-y-control/vehiculos/crear-vehiculo',
+    gestionycontrolvehiculosver: '/dashboard/gestion-y-control/vehiculos/ver-vehiculos',
   },
   errors: { notFound: '/errors/not-found' },
 } as const;

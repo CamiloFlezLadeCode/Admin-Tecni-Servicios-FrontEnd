@@ -38,6 +38,7 @@ import {
   CurrencyDollarSimple, //Signo de peso normal
   UsersFour, //Múltiples usuarios
   PencilSimple, //Lapiz para representar editar
+  Truck, //Camión
 } from '@phosphor-icons/react/dist/ssr';
 
 export const navIcons = {
@@ -62,6 +63,7 @@ export const navIcons = {
   'icono-precio3': Money,
   'usuarios-generales': UsersFour,
   'icono-editar': PencilSimple,
+  'icono-vehiculos': Truck,
   user: UserIcon,
   users: UsersIcon,
 } as Record<string, Icon>;

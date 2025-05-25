@@ -1,0 +1,317 @@
+'use client';
+
+import { FormularioEditarUsuarioGeneral } from '@/components/dashboard/gestion-y-control/usuarios-generales/editar/FormularioEditarUsuarioGeneral';
+// import { useWebSocket } from '@/hooks/use-WebSocket'; //Se llama la configuración del WebSocket
+import { useSocketIO } from '@/hooks/use-WebSocket';
+
+import { ConsultarUsuariosGenerales } from '@/services/gestionycontrol/usuariosgenerales/ConsultarUsuariosGeneralesService';
+import {
+    Box,
+    Card, CardContent,
+    Chip,
+    Divider,
+    IconButton, Modal,
+    Paper,
+    Table,
+    TableBody, TableCell,
+    TableContainer, TableHead,
+    TablePagination,
+    TableRow, TextField,
+    Typography,
+    useMediaQuery,
+    useTheme
+} from '@mui/material';
+import { FilePdf, PencilSimple, Printer, Trash, X } from '@phosphor-icons/react/dist/ssr';
+import * as React from 'react';
+
+interface UsuarioGeneral {
+    IdUsuario: string;
+    Nombre: string;
+    TipoDocumento: string;
+    Documento: string;
+    Correo: string;
+    Direccion: string;
+    Telefono: string;
+    Celular: string;
+    RolesLabel: string;
+    RolesValue: string;
+    Nivel: string;
+    UsuarioCreacion: string;
+    FechaCreacion: string;
+    Estado: string;
+};
+
+type EstadoDb = 'activo' | 'inactivo';
+type EstadoKey = 'active' | 'inactive';
+
+const estadoMap: Record<EstadoDb, EstadoKey> = {
+    activo: 'active',
+    inactivo: 'inactive',
+};
+
+const Estado: Record<EstadoKey, { label: string; color: 'success' | 'error' }> = {
+    active: { label: 'Activo', color: 'success' },
+    inactive: { label: 'Inactivo', color: 'error' },
+};
+
+export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
+    const [usuarios, setUsuarios] = React.useState<any[]>([]);
+    const [loading, setLoading] = React.useState(true);
+    const [error, setError] = React.useState<string | null>(null);
+    const [searchTerm, setSearchTerm] = React.useState('');
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+
+    //Actualizar
+    const [usuarioEditando, setUsuarioEditando] = React.useState<any | null>(null);
+    const [modalAbierto, setModalAbierto] = React.useState(false);
+    // const manejarEditarUsuario = (usuario: any) => {
+    //     setUsuarioEditando(usuario);     // Carga el usuario en el estado
+    //     setModalAbierto(true);           // Abre el modal
+    //     // alert(usuarioEditando)
+    //     // console.log(usuario);
+    //     return usuario;
+    // }
+    const manejarEditarUsuario = (usuario: UsuarioGeneral) => {
+        setUsuarioEditando(usuario);
+        setModalAbierto(true);
+        return usuario;
+    }
+
+    // Dentro del componente:
+    const theme = useTheme();
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('lg'));
+    // ...
+
+
+    // const fetchUsuarios = async () => {
+    //     try {
+    //         const data = await ConsultarUsuariosGenerales();
+    //         // Simula un delay de 1 segundo (opcional)
+    //         // await new Promise((resolve) => setTimeout(resolve, 5000));
+    //         setUsuarios(data);
+    //     } catch (err) {
+    //         setError(`Error al cargar los usuarios: ${err}`);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+    // React.useEffect(() => {
+    //     fetchUsuarios();
+    // }, []);
+
+    // Implementación de WebSocket
+    const { messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
+    const cargarUsuarios = async () => {
+        try {
+            const data = await ConsultarUsuariosGenerales();
+            setUsuarios(data);
+        } catch (error) {
+            setError(`Error al cargar los usuarios: ${error}`);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    React.useEffect(() => {
+        cargarUsuarios(); // Al iniciar
+    }, []);
+
+    React.useEffect(() => {
+        if (messages.length > 0) {
+            const ultimoMensaje = messages[messages.length - 1];
+
+            if (ultimoMensaje.tipo === 'usuario-actualizado') {
+                cargarUsuarios();
+            }
+        }
+    }, [messages]);
+    // ...
+
+    const filteredData = usuarios.filter(usuariogeneral =>
+        usuariogeneral.Nombre.toLowerCase().includes(searchTerm.toLocaleLowerCase()) ||
+        usuariogeneral.Documento.toLowerCase().includes(searchTerm.toLocaleLowerCase())
+    );
+    const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
+    if (loading) return <p>Cargando usuarios...</p>;
+    if (error) return <p>{error}</p>;
+
+    return (
+        <Card>
+            <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Visualización de usuarios generales</Typography>
+            <Divider />
+            <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
+                <Paper>
+                    <TextField
+                        variant="outlined"
+                        placeholder="Buscar usuario general..."
+                        onChange={e => setSearchTerm(e.target.value)}
+                        // style={{ margin: '16px' }}
+                        size='small'
+                    />
+                    <TableContainer>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Nombre</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Tipo Documento</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Documento</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Correo</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Dirección</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Celular</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Roles</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Nivel</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Creado Por</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Fecha Creación</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Estado</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }} align="center">Acciones</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {paginatedData.map((usuariogeneral, index) => {
+                                    const estadoKey = estadoMap[usuariogeneral.Estado.toLowerCase() as EstadoDb] ?? 'inactive';
+                                    return (
+                                        <TableRow key={usuariogeneral.IdUsuario}>
+                                            <TableCell>{usuariogeneral.Nombre}</TableCell>
+                                            <TableCell>{usuariogeneral.TipoDocumento}</TableCell>
+                                            <TableCell>{usuariogeneral.Documento}</TableCell>
+                                            <TableCell>{usuariogeneral.Correo}</TableCell>
+                                            <TableCell>{usuariogeneral.Direccion}</TableCell>
+                                            <TableCell>{usuariogeneral.Celular}</TableCell>
+                                            <TableCell>{usuariogeneral.RolesLabel}</TableCell>
+                                            <TableCell>{usuariogeneral.Nivel}</TableCell>
+                                            <TableCell>{usuariogeneral.UsuarioCreacion}</TableCell>
+                                            <TableCell>{usuariogeneral.FechaCreacion}</TableCell>
+                                            <TableCell>
+                                                <Chip
+                                                    label={Estado[estadoKey].label}
+                                                    color={Estado[estadoKey].color}
+                                                    size="small"
+                                                    sx={{ width: 90, justifyContent: 'center' }}
+                                                />
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                <IconButton
+                                                    size="small"
+                                                    color="primary"
+                                                    onClick={() => manejarEditarUsuario(usuariogeneral)}
+                                                >
+                                                    <PencilSimple size={20} weight="bold" />
+                                                </IconButton>
+                                                <IconButton
+                                                    size="small"
+                                                    color="primary"
+                                                >
+                                                    <Trash size={20} weight="bold" />
+                                                </IconButton>
+                                                <IconButton
+                                                    size="small"
+                                                    color="primary"
+                                                >
+                                                    <Printer size={20} weight='bold' />
+                                                </IconButton>
+                                                <IconButton
+                                                    size="small"
+                                                    color="primary"
+                                                >
+                                                    <FilePdf size={20} weight='bold' />
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Paper>
+                <TablePagination
+                    component="div"
+                    count={filteredData.length}
+                    page={page}
+                    onPageChange={(_, newPage) => setPage(newPage)}
+                    rowsPerPage={rowsPerPage}
+                    onRowsPerPageChange={(event) => {
+                        setRowsPerPage(parseInt(event.target.value, 10));
+                        setPage(0);
+                    }}
+                    labelRowsPerPage="Filas por página"
+                    rowsPerPageOptions={[5, 10, 25]}
+                />
+            </CardContent>
+            {/* <Modal open={modalAbierto} onClose={() => setModalAbierto(false)}>
+                <Box sx={{ width: 600, margin: 'auto', mt: 10, bgcolor: 'white', p: 3, borderRadius: 2 }}>
+                    <Typography variant="h6" mb={2}>
+                        Editar Usuario
+                    </Typography>
+                    <FormularioEditarUsuarioGeneral />
+                    <FormularioUsuario
+                        datosIniciales={usuarioEditando}
+                        onClose={() => setModalAbierto(false)}
+                        modo="editar"
+                    />
+                </Box>
+            </Modal> */}
+            <Modal
+                open={modalAbierto}
+                // onClose={() => setModalAbierto(false)}
+                onClose={(_, reason) => {
+                    if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
+                        setModalAbierto(false);
+                    }
+                }}
+            >
+                <Box
+                    // sx={{
+                    //     position: 'absolute',
+                    //     top: '50%',
+                    //     left: '50%',
+                    //     transform: 'translate(-50%, -50%)',
+                    //     width: isSmallScreen ? '90%' : 600,
+                    //     bgcolor: 'background.paper',
+                    //     boxShadow: 24,
+                    //     p: 3,
+                    //     borderRadius: 2,
+                    //     maxHeight: '90vh',
+                    //     overflowY: 'auto',
+                    // }}
+
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        // width: '90%',
+                        // maxWidth: 1000,
+                        width: '80%',
+                        [theme.breakpoints.down('xl')]: {
+                            // width: 700,
+                        },
+                        bgcolor: 'background.paper',
+                        boxShadow: 24,
+                        p: 3,
+                        borderRadius: 2,
+                        maxHeight: '90vh',
+                        overflowY: 'auto',
+                    }}
+                >
+                    <IconButton
+                        onClick={() => setModalAbierto(false)}
+                        sx={{
+                            position: 'absolute',
+                            top: 8,
+                            right: 8,
+                        }}
+                    >
+                        <X />
+                    </IconButton>
+                    <Typography variant="h6" mb={2}>
+                        Actualizar Usuario
+                    </Typography>
+                    <FormularioEditarUsuarioGeneral DatosUsuarioAActualizar={usuarioEditando} />
+                </Box>
+            </Modal>
+        </Card>
+    );
+};

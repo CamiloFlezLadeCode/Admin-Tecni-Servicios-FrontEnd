@@ -6,6 +6,7 @@
 /** @type {import('next').NextConfig} */
 const config = {
     reactStrictMode: true,
+    // reactStricMode: false,
     // Otras configuraciones que necesites
   };
   

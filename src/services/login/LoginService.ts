@@ -37,8 +37,8 @@ export const Login = async (datos: { NombreUsuario: string; ClaveUsuario: string
     });
 
     if (response.status === 200) {
-      const { credenciales, rol, nombre, documento, correo, token } = response.data;
-      return { credenciales, rol, nombre, documento, correo, token };
+      const { credenciales, rol, nombre, documento, correo, token, accesohabilitado } = response.data;
+      return { credenciales, rol, nombre, documento, correo, token, accesohabilitado };
     }
   } catch (error) {
     console.error('Error al consultar las credenciales => ', error);

@@ -49,7 +49,7 @@ export function TablaVisualizarMecanicos(): React.JSX.Element {
             try {
                 const data = await ConsultarMecanicos();
                 setMecanicos(data);
-                console.log(data);
+                // console.log(data);
             } catch (err) {
                 setError('Error al cargar los mecánicos');
                 console.error(err);
@@ -61,7 +61,8 @@ export function TablaVisualizarMecanicos(): React.JSX.Element {
     }, []);
 
     const filteredData = mecanicos.filter(mecanico =>
-        mecanico.Nombre.toLowerCase().includes(searchTerm.toLowerCase())
+        mecanico.Nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        mecanico.Documento.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);

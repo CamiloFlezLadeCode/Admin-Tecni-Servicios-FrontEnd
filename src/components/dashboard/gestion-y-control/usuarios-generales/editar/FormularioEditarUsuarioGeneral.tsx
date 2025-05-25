@@ -9,9 +9,9 @@ import { UserContext } from '@/contexts/user-context';
 import { ListarNiveles } from '@/services/generales/ListarNivelesService';
 import { ListarRoles } from '@/services/generales/ListarRolesService';
 import { ListarTiposDeDocumentos } from '@/services/generales/ListarTipoDeDocumentosService';
-import { CrearUsuarioGeneral } from '@/services/gestionycontrol/usuariosgenerales/CrearUsuarioGeneralService';
+import { ActualizarUsuarioGeneral } from '@/services/gestionycontrol/usuariosgenerales/ActualizarUsuarioGeneralService';
+import { ConsultarUsuarioGeneralPorDocumento } from '@/services/gestionycontrol/usuariosgenerales/ConsultarUsuarioGeneralPorDocumentoService';
 import { VerificarExistenciaUsuario } from '@/services/gestionycontrol/usuariosgenerales/VerificarExistenciaUsuarioGeneralService';
-import { Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -20,20 +20,28 @@ import Divider from '@mui/material/Divider';
 import { SelectChangeEvent } from '@mui/material/Select'; // Asegúrate de tener esta importación
 import Grid from '@mui/material/Unstable_Grid2';
 import * as React from 'react';
-import SelectConBuscador from '@/components/dashboard/componentes_generales/formulario/SelectConBuscador';
-
+// import { useWebSocket } from '@/hooks/use-WebSocket'; //Se llama la configuración del WebSocket
+import { useSocketIO } from '@/hooks/use-WebSocket';
 
 const EstadoUsuarioGeneral = [
     { value: 1, label: 'Activo' },
     { value: 2, label: 'Inactivo' },
 ]
 
-export function FormularioCrearUsuarioGeneral(): React.JSX.Element {
+export function FormularioEditarUsuarioGeneral({ DatosUsuarioAActualizar }: any): React.JSX.Element {
+    const [input, setInput] = React.useState('');
+    const { sendMessage, messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
+    const handleSend = () => {
+        if (input.trim()) {
+            // sendMessage(input);
+            sendMessage('usuario-actualizado', {});
+            setInput('');
+        }
+    };
     // Consumir el contexto del usuario
     const { user } = React.useContext(UserContext) || { user: null };
     // Obtener el nombre del usuario, si existe
     const documentoUsuarioActivo = user ? `${user.documento}` : null;
-
     //Listar tipos de documentos
     const [tipodedocumentos, setTiposDeDocumentos] = React.useState<{ value: string | number; label: string }[]>([]);
     const CargarTiposDeDocumentos = async () => {
@@ -73,7 +81,7 @@ export function FormularioCrearUsuarioGeneral(): React.JSX.Element {
     const [datos, setDatos] = React.useState({
         Nombres: '',
         Apellidos: '',
-        TipoDocumento: '1',
+        TipoDocumento: '',
         Documento: '',
         Direccion: '',
         Celular: '',
@@ -83,7 +91,105 @@ export function FormularioCrearUsuarioGeneral(): React.JSX.Element {
         Roles: [],
         Nivel: ''
     });
+    //Se consulta usuario general a editar
+    const ConsultarUsuarioGeneral = async (DocumentoUsuarioGeneral: string) => {
+        try {
+            const DatosUsuarioGeneral = await ConsultarUsuarioGeneralPorDocumento(DocumentoUsuarioGeneral);
+            return DatosUsuarioGeneral;
+        } catch (error) {
+            console.error('Error...', error);
+        }
+    }
+    // React.useEffect(() => {
+    //     const fetchUsuarioGeneral = async () => {
+    //         const documento = DatosUsuarioAActualizar.Documento;
+    //         if (documento && documento.length > 0) {
+    //             console.log('Documento a consultar:', documento);
+    //             try {
+    //                 const usuarioGeneralData = await ConsultarUsuarioGeneral(documento);
+    //                 console.log('Datos del usuario general:', usuarioGeneralData);
+    //                 if (usuarioGeneralData && usuarioGeneralData.length > 0) {
+    //                     const userData = usuarioGeneralData[0]; // Accede al primer elemento del arreglo
+    //                     // Crear un mapa de roles para facilitar la transformación
+    //                     const rolesMap = new Map(roles.map(role => [role.value, role.label]));
+    //                     setDatos({
+    //                         Nombres: userData.Nombres ?? '',
+    //                         Apellidos: userData.Apellidos ?? '',
+    //                         TipoDocumento: userData.TipoDocumento ?? '',
+    //                         Documento: userData.Documento ?? '',
+    //                         Direccion: userData.Direccion ?? '',
+    //                         Celular: userData.Celular ?? '',
+    //                         Correo: userData.Correo ?? '@gmail.com',
+    //                         UsuarioCreacion: documentoUsuarioActivo,
+    //                         Estado: userData.Estado ?? '1',
+    //                         // Roles: (userData.Roles ?? '').split(',').map((role: string) => role.trim()),
+    //                         Roles: (userData.Roles ?? '').split(',').map((roleId: string) => rolesMap.get(Number(roleId.trim())) ?? roleId), // Aquí transformas los IDs a nombres
+    //                         Nivel: userData.Nivel ?? ''
+    //                     });
+    //                 } else {
+    //                     console.error('No se encontraron datos del usuario.');
+    //                 }
+    //             } catch (error) {
+    //                 console.error("Error al consultar el usuario general:", error);
+    //             }
+    //         } else {
+    //             console.error("Documento inválido");
+    //         }
+    //     };
+
+    //     fetchUsuarioGeneral();
+    // }, [DatosUsuarioAActualizar.Documento]);
+
     //Se definen las reglas con su respectivo mensaje de alerta
+    React.useEffect(() => {
+        const fetchUsuarioGeneral = async () => {
+            const documento = DatosUsuarioAActualizar.Documento;
+            if (documento && documento.length > 0) {
+                // console.log('Documento a consultar:', documento);
+                try {
+                    const usuarioGeneralData = await ConsultarUsuarioGeneral(documento);
+                    // console.log('Datos del usuario general:', usuarioGeneralData);
+                    if (usuarioGeneralData && usuarioGeneralData.length > 0) {
+                        const userData = usuarioGeneralData[0]; // Accede al primer elemento del arreglo
+
+                        // Crear un mapa de roles para facilitar la transformación
+                        const rolesMap = new Map(roles.map(role => [role.value, role.label]));
+
+                        // Transformar los roles de IDs a nombres
+                        const rolesArray = (userData.Roles ?? '')
+                            .split(',')
+                            .map((roleId: any) => {
+                                const trimmedId = Number(roleId.trim());
+                                return rolesMap.get(trimmedId) || trimmedId; // Devuelve el nombre o el ID si no se encuentra
+                            });
+
+                        setDatos({
+                            Nombres: userData.Nombres ?? '',
+                            Apellidos: userData.Apellidos ?? '',
+                            TipoDocumento: userData.TipoDocumento ?? '',
+                            Documento: userData.Documento ?? '',
+                            Direccion: userData.Direccion ?? '',
+                            Celular: userData.Celular ?? '',
+                            Correo: userData.Correo ?? '@gmail.com',
+                            UsuarioCreacion: documentoUsuarioActivo,
+                            Estado: userData.Estado ?? '1',
+                            Roles: rolesArray, // Asigna el array transformado
+                            Nivel: userData.Nivel ?? ''
+                        });
+                    } else {
+                        console.error('No se encontraron datos del usuario.');
+                    }
+                } catch (error) {
+                    console.error("Error al consultar el usuario general:", error);
+                }
+            } else {
+                console.error("Documento inválido");
+            }
+        };
+
+        fetchUsuarioGeneral();
+    }, [DatosUsuarioAActualizar.Documento]);
+
     const reglasValidacion = [
         { campo: 'Nombres', mensaje: 'El nombre es obligatorio.' },
         { campo: 'Apellidos', mensaje: 'El apellido es obligatorio.' },
@@ -103,30 +209,50 @@ export function FormularioCrearUsuarioGeneral(): React.JSX.Element {
     // Crear una referencia para el FormularioValidator
     // const formularioRef = React.useRef<{ manejarValidacion: () => void }>(null);
     const formularioRef = React.useRef<{ manejarValidacion: () => Promise<boolean> }>(null);
-    const handleCrearUsuarioGeneral = async () => {
-        // Validar formulario
-        const esValido = await formularioRef.current?.manejarValidacion();
-        if (esValido) {
-            try {
-                await CrearUsuarioGeneral(datos);
-                mostrarMensaje('Usuario general creado exitosamente', 'success');
-                // Limpiar formulario
-                setDatos({
-                    Nombres: '',
-                    Apellidos: '',
-                    TipoDocumento: '1',
-                    Documento: '',
-                    Direccion: '',
-                    Celular: '',
-                    Correo: '@gmail.com',
-                    UsuarioCreacion: documentoUsuarioActivo,
-                    Estado: '1',
-                    Roles: [],
-                    Nivel: ''
-                });
-            } catch (error) {
-                mostrarMensaje(`Error al crear el usuario general: ${error}`, 'error');
-            }
+    const handleActualizarUsuarioGeneral = async () => {
+        // // Validar formulario
+        // const esValido = await formularioRef.current?.manejarValidacion();
+        // if (esValido) {
+        //     try {
+        //         await CrearUsuarioGeneral(datos);
+        //         mostrarMensaje('Usuario general creado exitosamente', 'success');
+        //         // Limpiar formulario
+        //         setDatos({
+        //             Nombres: '',
+        //             Apellidos: '',
+        //             TipoDocumento: '1',
+        //             Documento: '',
+        //             Direccion: '',
+        //             Celular: '',
+        //             Correo: '@gmail.com',
+        //             UsuarioCreacion: documentoUsuarioActivo,
+        //             Estado: '1',
+        //             Roles: [],
+        //             Nivel: ''
+        //         });
+        //     } catch (error) {
+        //         mostrarMensaje(`Error al crear el usuario general: ${error}`, 'error');
+        //     }
+        // }
+        try {
+            await ActualizarUsuarioGeneral(datos);
+            mostrarMensaje('Usuario general actualizado exitosamente', 'success');
+            // // Limpiar formulario
+            // setDatos({
+            //     Nombres: '',
+            //     Apellidos: '',
+            //     TipoDocumento: '1',
+            //     Documento: '',
+            //     Direccion: '',
+            //     Celular: '',
+            //     Correo: '@gmail.com',
+            //     UsuarioCreacion: documentoUsuarioActivo,
+            //     Estado: '1',
+            //     Roles: [],
+            //     Nivel: ''
+            // });
+        } catch (error) {
+            mostrarMensaje(`Error al crear el usuario general: ${error}`, 'error');
         }
     }
     // Dentro del estado:
@@ -166,8 +292,8 @@ export function FormularioCrearUsuarioGeneral(): React.JSX.Element {
     };
     return (
         <Card>
-            <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Creación de usuario general</Typography>
-            <Divider />
+            {/* <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Creación de usuario general</Typography>
+            <Divider /> */}
             <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                 <Grid container spacing={1}>
                     <Grid md={3} xs={12} mt={0.5}>
@@ -281,8 +407,8 @@ export function FormularioCrearUsuarioGeneral(): React.JSX.Element {
             </CardContent>
             <Divider />
             <CardActions sx={{ justifyContent: 'flex-end' }}>
-                <Button variant="contained" onClick={handleCrearUsuarioGeneral}>
-                    Crear usuario
+                <Button variant="contained" onClick={handleActualizarUsuarioGeneral}>
+                    Guardar cambios
                 </Button>
                 <FormularioValidator
                     ref={formularioRef}

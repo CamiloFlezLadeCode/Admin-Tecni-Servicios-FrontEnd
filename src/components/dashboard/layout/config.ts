@@ -141,6 +141,16 @@ export const navItems = [
           type: 'startsWith',
           href: paths.dashboard.gestionycontrolusuariosgenerales,
         }
+      },
+      {
+        key: 'vehiculos',
+        title: 'Vehículos',
+        icon: 'icono-vehiculos',
+        href: paths.dashboard.gestionycontrolvehiculos,
+        matcher: {
+          type: 'startsWith',
+          href: paths.dashboard.gestionycontrolvehiculos,
+        }
       }
     ]
   },
@@ -179,5 +189,5 @@ export const navItems = [
     ]
   },
   { key: 'account', title: 'Cuenta', href: paths.dashboard.account, icon: 'user' },
-  { key: 'settings', title: 'Ajustes', href: paths.dashboard.settings, icon: 'gear-six' },
+  { key: 'settings', title: 'Ajustes/Configuraciones', href: paths.dashboard.settings, icon: 'gear-six' },
 ] satisfies NavItemConfig[];

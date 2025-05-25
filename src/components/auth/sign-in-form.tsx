@@ -246,21 +246,39 @@ export function SignInForm(): React.JSX.Element {
         //   return;
         // }
 
-        if (!result || !result.rol) {
+        // if (!result || result.accesohabilitado === false) {
+        //   setError('root', { type: 'server', message: 'Usuario inhabilitado' });
+        //   return;
+        // }
+
+        // if (!result || !result.rol) {
+        //   setError('root', { type: 'server', message: 'Error al iniciar sesión' });
+        //   return;
+        // }
+
+        // console.table(result);
+        if (!result) {
           setError('root', { type: 'server', message: 'Error al iniciar sesión' });
           return;
         }
 
+        if (!result.accesohabilitado) {
+          setError('root', { type: 'server', message: 'Usuario inhabilitado' });
+          return;
+        }
+
+        if (!result.rol) {
+          setError('root', { type: 'server', message: 'Error al iniciar sesión' });
+          return;
+        }
+
+
         // Almacenar las credenciales
-        // localStorage.setItem('custom-auth-token', result.credenciales);
-        // localStorage.setItem('custom-auth-token', 'TOKEN');
+        localStorage.setItem('custom-auth-rol', result.rol);
         localStorage.setItem('custom-auth-name', result.nombre); // No olvides guardar el nombre
         localStorage.setItem('custom-auth-documento', result.documento);
-
         localStorage.setItem('custom-auth-correo', result.correo);
-
         localStorage.setItem('custom-auth-token-autenticacion', result.token);
-        // sessionStorage.setItem('custom-auth-token-autenticacion', result.token);
 
         await checkSession?.();
         // router.push('/'); // 👈 Redirige aquí a la ruta deseada

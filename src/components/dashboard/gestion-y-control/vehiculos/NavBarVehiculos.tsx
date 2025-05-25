@@ -14,22 +14,17 @@ import { paths } from '@/paths';
 
 const ItemsNavDevoluciones = [
     {
-        label: 'Ver usuarios generales',
-        path: paths.dashboard.gestionycontrolusuariosgeneralesver,
+        label: 'Ver vehículos',
+        path: paths.dashboard.gestionycontrolvehiculosver,
         icon: Eye
     },
     {
-        label: 'Crear usuario general',
-        path: paths.dashboard.gestionycontrolusuariosgeneralescrear,
+        label: 'Crear vehículo',
+        path: paths.dashboard.gestionycontrolvehiculoscrear,
         icon: Plus
-    },
-    // {
-    //     label: 'Editar usuario general',
-    //     path: paths.dashboard.gestionycontrolusuariosgeneraleseditar,
-    //     icon: PencilSimple
-    // },
+    }
 ]
-export function NavBarUsuariosGenerales(): React.JSX.Element {
+export function NavBarVehiculos(): React.JSX.Element {
     const pathname = usePathname();
 
     return (
