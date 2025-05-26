@@ -16,9 +16,16 @@ export function useSocketIO(url: string) {
             console.log('🔌 Conectado con Socket.IO, ID:', socket.id);
         });
 
+        //Socket para usuario actulizado
         socket.on('usuario-actualizado', (data) => {
             console.log('📨 Evento usuario-actualizado recibido:', data);
             setMessages((prev) => [...prev, { tipo: 'usuario-actualizado', data }]);
+        });
+
+        //Socket para vehiculo actualizado
+        socket.on('vehiculo-actualizado', (data) => {
+            console.log('📨 Evento vehiculo-actualizado recibido:', data);
+            setMessages((prev) => [...prev, { tipo: 'vehiculo-actualizado', data }]);
         });
 
         socket.on('disconnect', (reason) => {

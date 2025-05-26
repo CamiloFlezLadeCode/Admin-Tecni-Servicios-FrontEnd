@@ -19,7 +19,8 @@ import {
     TableRow, TextField,
     Typography,
     useMediaQuery,
-    useTheme
+    useTheme,
+    Button
 } from '@mui/material';
 import { FilePdf, PencilSimple, Printer, Trash, X } from '@phosphor-icons/react/dist/ssr';
 import * as React from 'react';
@@ -102,7 +103,8 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
     // }, []);
 
     // Implementación de WebSocket
-    const { messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
+    // const { messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
+    const { sendMessage, messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
     const cargarUsuarios = async () => {
         try {
             const data = await ConsultarUsuariosGenerales();
@@ -193,13 +195,18 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
                                                 />
                                             </TableCell>
                                             <TableCell align="center">
-                                                <IconButton
+                                                {/* <IconButton
                                                     size="small"
                                                     color="primary"
                                                     onClick={() => manejarEditarUsuario(usuariogeneral)}
                                                 >
                                                     <PencilSimple size={20} weight="bold" />
-                                                </IconButton>
+                                                </IconButton> */}
+                                                <Button onClick={() => console.log(usuariogeneral.Documento)}>Prueba</Button>
+                                                <FormularioEditarUsuarioGeneral
+                                                    DatosUsuarioAActualizar={usuariogeneral.Documento}
+                                                    sendMessage={sendMessage}
+                                                />
                                                 <IconButton
                                                     size="small"
                                                     color="primary"
@@ -240,78 +247,6 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
                     rowsPerPageOptions={[5, 10, 25]}
                 />
             </CardContent>
-            {/* <Modal open={modalAbierto} onClose={() => setModalAbierto(false)}>
-                <Box sx={{ width: 600, margin: 'auto', mt: 10, bgcolor: 'white', p: 3, borderRadius: 2 }}>
-                    <Typography variant="h6" mb={2}>
-                        Editar Usuario
-                    </Typography>
-                    <FormularioEditarUsuarioGeneral />
-                    <FormularioUsuario
-                        datosIniciales={usuarioEditando}
-                        onClose={() => setModalAbierto(false)}
-                        modo="editar"
-                    />
-                </Box>
-            </Modal> */}
-            <Modal
-                open={modalAbierto}
-                // onClose={() => setModalAbierto(false)}
-                onClose={(_, reason) => {
-                    if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
-                        setModalAbierto(false);
-                    }
-                }}
-            >
-                <Box
-                    // sx={{
-                    //     position: 'absolute',
-                    //     top: '50%',
-                    //     left: '50%',
-                    //     transform: 'translate(-50%, -50%)',
-                    //     width: isSmallScreen ? '90%' : 600,
-                    //     bgcolor: 'background.paper',
-                    //     boxShadow: 24,
-                    //     p: 3,
-                    //     borderRadius: 2,
-                    //     maxHeight: '90vh',
-                    //     overflowY: 'auto',
-                    // }}
-
-                    sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        // width: '90%',
-                        // maxWidth: 1000,
-                        width: '80%',
-                        [theme.breakpoints.down('xl')]: {
-                            // width: 700,
-                        },
-                        bgcolor: 'background.paper',
-                        boxShadow: 24,
-                        p: 3,
-                        borderRadius: 2,
-                        maxHeight: '90vh',
-                        overflowY: 'auto',
-                    }}
-                >
-                    <IconButton
-                        onClick={() => setModalAbierto(false)}
-                        sx={{
-                            position: 'absolute',
-                            top: 8,
-                            right: 8,
-                        }}
-                    >
-                        <X />
-                    </IconButton>
-                    <Typography variant="h6" mb={2}>
-                        Actualizar Usuario
-                    </Typography>
-                    <FormularioEditarUsuarioGeneral DatosUsuarioAActualizar={usuarioEditando} />
-                </Box>
-            </Modal>
         </Card>
     );
 };

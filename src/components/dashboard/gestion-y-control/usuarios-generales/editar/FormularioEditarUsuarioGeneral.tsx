@@ -12,25 +12,45 @@ import { ListarTiposDeDocumentos } from '@/services/generales/ListarTipoDeDocume
 import { ActualizarUsuarioGeneral } from '@/services/gestionycontrol/usuariosgenerales/ActualizarUsuarioGeneralService';
 import { ConsultarUsuarioGeneralPorDocumento } from '@/services/gestionycontrol/usuariosgenerales/ConsultarUsuarioGeneralPorDocumentoService';
 import { VerificarExistenciaUsuario } from '@/services/gestionycontrol/usuariosgenerales/VerificarExistenciaUsuarioGeneralService';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Divider from '@mui/material/Divider';
+import {
+    Box,
+    Button,
+    Card,
+    CardActions,
+    CardContent,
+    Divider,
+    IconButton,
+    Modal,
+    Typography,
+    useMediaQuery,
+    useTheme
+} from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select'; // Asegúrate de tener esta importación
 import Grid from '@mui/material/Unstable_Grid2';
+import { PencilSimple, X } from '@phosphor-icons/react/dist/ssr';
 import * as React from 'react';
-// import { useWebSocket } from '@/hooks/use-WebSocket'; //Se llama la configuración del WebSocket
-import { useSocketIO } from '@/hooks/use-WebSocket';
 
 const EstadoUsuarioGeneral = [
     { value: 1, label: 'Activo' },
     { value: 2, label: 'Inactivo' },
 ]
 
-export function FormularioEditarUsuarioGeneral({ DatosUsuarioAActualizar }: any): React.JSX.Element {
+export function FormularioEditarUsuarioGeneral({ DatosUsuarioAActualizar, sendMessage }: { DatosUsuarioAActualizar: string; sendMessage: (event: string, payload: any) => void; }): React.JSX.Element {
+    const [modalAbierto, setModalAbierto] = React.useState(false);
+    const EditarUsuarioGeneral = async () => {
+        try {
+            await ConsultarUsuarioGeneral(DatosUsuarioAActualizar);
+            setModalAbierto(true);
+        } catch (error) {
+            mostrarMensaje(`Error al cargar los datos del usuario general. Error: ${error}`, 'error');
+        }
+    };
+    const theme = useTheme();
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('lg'));
+
+
     const [input, setInput] = React.useState('');
-    const { sendMessage, messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
+    // const { sendMessage, messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
     const handleSend = () => {
         if (input.trim()) {
             // sendMessage(input);
@@ -95,101 +115,31 @@ export function FormularioEditarUsuarioGeneral({ DatosUsuarioAActualizar }: any)
     const ConsultarUsuarioGeneral = async (DocumentoUsuarioGeneral: string) => {
         try {
             const DatosUsuarioGeneral = await ConsultarUsuarioGeneralPorDocumento(DocumentoUsuarioGeneral);
+            // Transformar los roles de IDs a nombres
+            const rolesArray = (DatosUsuarioGeneral[0].Roles ?? '')
+                .split(',')
+                .map((roleId: any) => {
+                    const trimmedId = Number(roleId.trim());
+                    return trimmedId; // Devuelve el nombre o el ID si no se encuentra
+                });
+            setDatos({
+                Nombres: DatosUsuarioGeneral[0].Nombres,
+                Apellidos: DatosUsuarioGeneral[0].Apellidos,
+                TipoDocumento: DatosUsuarioGeneral[0].TipoDocumento,
+                Documento: DatosUsuarioGeneral[0].Documento,
+                Direccion: DatosUsuarioGeneral[0].Direccion,
+                Celular: DatosUsuarioGeneral[0].Celular,
+                Correo: DatosUsuarioGeneral[0].Correo,
+                UsuarioCreacion: DatosUsuarioGeneral[0].UsuarioCreacion,
+                Estado: DatosUsuarioGeneral[0].Estado,
+                Roles: rolesArray,
+                Nivel: DatosUsuarioGeneral[0].Nivel
+            })
             return DatosUsuarioGeneral;
         } catch (error) {
             console.error('Error...', error);
         }
     }
-    // React.useEffect(() => {
-    //     const fetchUsuarioGeneral = async () => {
-    //         const documento = DatosUsuarioAActualizar.Documento;
-    //         if (documento && documento.length > 0) {
-    //             console.log('Documento a consultar:', documento);
-    //             try {
-    //                 const usuarioGeneralData = await ConsultarUsuarioGeneral(documento);
-    //                 console.log('Datos del usuario general:', usuarioGeneralData);
-    //                 if (usuarioGeneralData && usuarioGeneralData.length > 0) {
-    //                     const userData = usuarioGeneralData[0]; // Accede al primer elemento del arreglo
-    //                     // Crear un mapa de roles para facilitar la transformación
-    //                     const rolesMap = new Map(roles.map(role => [role.value, role.label]));
-    //                     setDatos({
-    //                         Nombres: userData.Nombres ?? '',
-    //                         Apellidos: userData.Apellidos ?? '',
-    //                         TipoDocumento: userData.TipoDocumento ?? '',
-    //                         Documento: userData.Documento ?? '',
-    //                         Direccion: userData.Direccion ?? '',
-    //                         Celular: userData.Celular ?? '',
-    //                         Correo: userData.Correo ?? '@gmail.com',
-    //                         UsuarioCreacion: documentoUsuarioActivo,
-    //                         Estado: userData.Estado ?? '1',
-    //                         // Roles: (userData.Roles ?? '').split(',').map((role: string) => role.trim()),
-    //                         Roles: (userData.Roles ?? '').split(',').map((roleId: string) => rolesMap.get(Number(roleId.trim())) ?? roleId), // Aquí transformas los IDs a nombres
-    //                         Nivel: userData.Nivel ?? ''
-    //                     });
-    //                 } else {
-    //                     console.error('No se encontraron datos del usuario.');
-    //                 }
-    //             } catch (error) {
-    //                 console.error("Error al consultar el usuario general:", error);
-    //             }
-    //         } else {
-    //             console.error("Documento inválido");
-    //         }
-    //     };
-
-    //     fetchUsuarioGeneral();
-    // }, [DatosUsuarioAActualizar.Documento]);
-
-    //Se definen las reglas con su respectivo mensaje de alerta
-    React.useEffect(() => {
-        const fetchUsuarioGeneral = async () => {
-            const documento = DatosUsuarioAActualizar.Documento;
-            if (documento && documento.length > 0) {
-                // console.log('Documento a consultar:', documento);
-                try {
-                    const usuarioGeneralData = await ConsultarUsuarioGeneral(documento);
-                    // console.log('Datos del usuario general:', usuarioGeneralData);
-                    if (usuarioGeneralData && usuarioGeneralData.length > 0) {
-                        const userData = usuarioGeneralData[0]; // Accede al primer elemento del arreglo
-
-                        // Crear un mapa de roles para facilitar la transformación
-                        const rolesMap = new Map(roles.map(role => [role.value, role.label]));
-
-                        // Transformar los roles de IDs a nombres
-                        const rolesArray = (userData.Roles ?? '')
-                            .split(',')
-                            .map((roleId: any) => {
-                                const trimmedId = Number(roleId.trim());
-                                return rolesMap.get(trimmedId) || trimmedId; // Devuelve el nombre o el ID si no se encuentra
-                            });
-
-                        setDatos({
-                            Nombres: userData.Nombres ?? '',
-                            Apellidos: userData.Apellidos ?? '',
-                            TipoDocumento: userData.TipoDocumento ?? '',
-                            Documento: userData.Documento ?? '',
-                            Direccion: userData.Direccion ?? '',
-                            Celular: userData.Celular ?? '',
-                            Correo: userData.Correo ?? '@gmail.com',
-                            UsuarioCreacion: documentoUsuarioActivo,
-                            Estado: userData.Estado ?? '1',
-                            Roles: rolesArray, // Asigna el array transformado
-                            Nivel: userData.Nivel ?? ''
-                        });
-                    } else {
-                        console.error('No se encontraron datos del usuario.');
-                    }
-                } catch (error) {
-                    console.error("Error al consultar el usuario general:", error);
-                }
-            } else {
-                console.error("Documento inválido");
-            }
-        };
-
-        fetchUsuarioGeneral();
-    }, [DatosUsuarioAActualizar.Documento]);
-
     const reglasValidacion = [
         { campo: 'Nombres', mensaje: 'El nombre es obligatorio.' },
         { campo: 'Apellidos', mensaje: 'El apellido es obligatorio.' },
@@ -210,49 +160,12 @@ export function FormularioEditarUsuarioGeneral({ DatosUsuarioAActualizar }: any)
     // const formularioRef = React.useRef<{ manejarValidacion: () => void }>(null);
     const formularioRef = React.useRef<{ manejarValidacion: () => Promise<boolean> }>(null);
     const handleActualizarUsuarioGeneral = async () => {
-        // // Validar formulario
-        // const esValido = await formularioRef.current?.manejarValidacion();
-        // if (esValido) {
-        //     try {
-        //         await CrearUsuarioGeneral(datos);
-        //         mostrarMensaje('Usuario general creado exitosamente', 'success');
-        //         // Limpiar formulario
-        //         setDatos({
-        //             Nombres: '',
-        //             Apellidos: '',
-        //             TipoDocumento: '1',
-        //             Documento: '',
-        //             Direccion: '',
-        //             Celular: '',
-        //             Correo: '@gmail.com',
-        //             UsuarioCreacion: documentoUsuarioActivo,
-        //             Estado: '1',
-        //             Roles: [],
-        //             Nivel: ''
-        //         });
-        //     } catch (error) {
-        //         mostrarMensaje(`Error al crear el usuario general: ${error}`, 'error');
-        //     }
-        // }
         try {
             await ActualizarUsuarioGeneral(datos);
+            sendMessage('usuario-actualizado', {});
             mostrarMensaje('Usuario general actualizado exitosamente', 'success');
-            // // Limpiar formulario
-            // setDatos({
-            //     Nombres: '',
-            //     Apellidos: '',
-            //     TipoDocumento: '1',
-            //     Documento: '',
-            //     Direccion: '',
-            //     Celular: '',
-            //     Correo: '@gmail.com',
-            //     UsuarioCreacion: documentoUsuarioActivo,
-            //     Estado: '1',
-            //     Roles: [],
-            //     Nivel: ''
-            // });
         } catch (error) {
-            mostrarMensaje(`Error al crear el usuario general: ${error}`, 'error');
+            mostrarMensaje(`Error al actualizar el usuario general: ${error}`, 'error');
         }
     }
     // Dentro del estado:
@@ -291,138 +204,190 @@ export function FormularioEditarUsuarioGeneral({ DatosUsuarioAActualizar }: any)
         }
     };
     return (
-        <Card>
-            {/* <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Creación de usuario general</Typography>
-            <Divider /> */}
-            <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
-                <Grid container spacing={1}>
-                    <Grid md={3} xs={12} mt={0.5}>
-                        <Input
-                            label='Nombres'
-                            value={datos.Nombres}
-                            onChange={handleChange}
-                            // required
-                            tamano='small'
-                            tipo_input='text'
-                            valorname='Nombres'
-                        />
-                    </Grid>
-                    <Grid md={3} xs={12} mt={0.5}>
-                        <Input
-                            label='Apellidos'
-                            value={datos.Apellidos}
-                            onChange={handleChange}
-                            // required
-                            tamano='small'
-                            tipo_input='text'
-                            valorname='Apellidos'
-                        />
-                    </Grid>
-                    <Grid md={3} xs={12} mt={0.5}>
-                        <InputSelect
-                            label='Tipo de documento'
-                            value={datos.TipoDocumento}
-                            options={tipodedocumentos}
-                            size='small'
-                            onChange={handleChange}
-                            valorname='TipoDocumento'
-                        />
-                    </Grid>
-                    <Grid md={3} xs={12} mt={0.5}>
-                        <Input
-                            label='Documento'
-                            value={datos.Documento}
-                            onChange={handleChange}
-                            // required
-                            tamano='small'
-                            tipo_input='text'
-                            valorname='Documento'
-                        />
-                    </Grid>
-                    <Grid md={4} xs={12} mt={0.5}>
-                        <Input
-                            label='Dirección'
-                            value={datos.Direccion}
-                            onChange={handleChange}
-                            // required
-                            tamano='small'
-                            tipo_input='text'
-                            valorname='Direccion'
-                        />
-                    </Grid>
-                    <Grid md={2} xs={12} mt={0.5}>
-                        <Input
-                            label='Celular'
-                            value={datos.Celular}
-                            onChange={handleChange}
-                            // required
-                            tamano='small'
-                            tipo_input='text'
-                            valorname='Celular'
-                            maximalongitud={10}
-                        />
-                    </Grid>
-                    <Grid md={4} xs={12} mt={0.5}>
-                        <Input
-                            label='Correo'
-                            value={datos.Correo}
-                            onChange={handleChange}
-                            // required
-                            tamano='small'
-                            tipo_input='text'
-                            valorname='Correo'
-                        />
-                    </Grid>
-                    <Grid md={2} xs={12} mt={0.5}>
-                        <InputSelect
-                            label='Estado'
-                            value={datos.Estado}
-                            options={EstadoUsuarioGeneral}
-                            size='small'
-                            valorname='Estado'
-                            // onChange={handleChangeEstado}
-                            onChange={handleChange}
-                        />
-                    </Grid>
-                    <Grid md={10} xs={12} mt={0.5}>
-                        <SelectMultiple
-                            label='Rol/es'
-                            options={roles}
-                            value={datos.Roles}
-                            onChange={handleChange}
-                            valorname='Roles'
-                        />
-                    </Grid>
-                    <Grid md={2} xs={12} mt={0.5}>
-                        <InputSelect
-                            label='Nivel'
-                            value={datos.Nivel}
-                            options={niveles}
-                            size='small'
-                            onChange={handleChange}
-                            valorname='Nivel'
-                        />
-                    </Grid>
-                </Grid>
-            </CardContent>
-            <Divider />
-            <CardActions sx={{ justifyContent: 'flex-end' }}>
-                <Button variant="contained" onClick={handleActualizarUsuarioGeneral}>
-                    Guardar cambios
-                </Button>
-                <FormularioValidator
-                    ref={formularioRef}
-                    datos={datos}
-                    reglasValidacion={reglasValidacion}
-                    onValid={manejarValidacionExitosa}
-                />
-            </CardActions>
+        <>
+            <IconButton
+                size="small"
+                color="primary"
+                onClick={EditarUsuarioGeneral}
+            >
+                <PencilSimple size={20} weight="bold" />
+            </IconButton>
             <MensajeAlerta
                 open={mostrarAlertas}
                 tipo={tipoAlerta}
                 mensaje={mensajeAlerta}
                 onClose={() => setMostrarAlertas(false)}
             />
-        </Card>
+            <Modal
+                open={modalAbierto}
+                onClose={(_, reason) => {
+                    if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
+                        setModalAbierto(false);
+                    }
+                }}
+            >
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        // width: '90%',
+                        // maxWidth: 1000,
+                        width: '80%',
+                        [theme.breakpoints.down('xl')]: {
+                            // width: 700,
+                        },
+                        bgcolor: 'background.paper',
+                        boxShadow: 24,
+                        p: 3,
+                        borderRadius: 2,
+                        maxHeight: '90vh',
+                        overflowY: 'auto',
+                    }}
+                >
+                    <IconButton
+                        onClick={() => setModalAbierto(false)}
+                        sx={{
+                            position: 'absolute',
+                            top: 8,
+                            right: 8,
+                        }}
+                    >
+                        <X />
+                    </IconButton>
+                    <Typography variant="subtitle1" mb={1}>
+                        Actualizar Usuario
+                    </Typography>
+                    <Card>
+                        {/* <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Creación de usuario general</Typography>
+            <Divider /> */}
+                        <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
+                            <Grid container spacing={1}>
+                                <Grid md={3} xs={12} mt={0.5}>
+                                    <Input
+                                        label='Nombres'
+                                        value={datos.Nombres}
+                                        onChange={handleChange}
+                                        // required
+                                        tamano='small'
+                                        tipo_input='text'
+                                        valorname='Nombres'
+                                    />
+                                </Grid>
+                                <Grid md={3} xs={12} mt={0.5}>
+                                    <Input
+                                        label='Apellidos'
+                                        value={datos.Apellidos}
+                                        onChange={handleChange}
+                                        // required
+                                        tamano='small'
+                                        tipo_input='text'
+                                        valorname='Apellidos'
+                                    />
+                                </Grid>
+                                <Grid md={3} xs={12} mt={0.5}>
+                                    <InputSelect
+                                        label='Tipo de documento'
+                                        value={datos.TipoDocumento}
+                                        options={tipodedocumentos}
+                                        size='small'
+                                        onChange={handleChange}
+                                        valorname='TipoDocumento'
+                                    />
+                                </Grid>
+                                <Grid md={3} xs={12} mt={0.5}>
+                                    <Input
+                                        label='Documento'
+                                        value={datos.Documento}
+                                        onChange={handleChange}
+                                        // required
+                                        tamano='small'
+                                        tipo_input='text'
+                                        valorname='Documento'
+                                    />
+                                </Grid>
+                                <Grid md={4} xs={12} mt={0.5}>
+                                    <Input
+                                        label='Dirección'
+                                        value={datos.Direccion}
+                                        onChange={handleChange}
+                                        // required
+                                        tamano='small'
+                                        tipo_input='text'
+                                        valorname='Direccion'
+                                    />
+                                </Grid>
+                                <Grid md={2} xs={12} mt={0.5}>
+                                    <Input
+                                        label='Celular'
+                                        value={datos.Celular}
+                                        onChange={handleChange}
+                                        // required
+                                        tamano='small'
+                                        tipo_input='text'
+                                        valorname='Celular'
+                                        maximalongitud={10}
+                                    />
+                                </Grid>
+                                <Grid md={4} xs={12} mt={0.5}>
+                                    <Input
+                                        label='Correo'
+                                        value={datos.Correo}
+                                        onChange={handleChange}
+                                        // required
+                                        tamano='small'
+                                        tipo_input='text'
+                                        valorname='Correo'
+                                    />
+                                </Grid>
+                                <Grid md={2} xs={12} mt={0.5}>
+                                    <InputSelect
+                                        label='Estado'
+                                        value={datos.Estado}
+                                        options={EstadoUsuarioGeneral}
+                                        size='small'
+                                        valorname='Estado'
+                                        // onChange={handleChangeEstado}
+                                        onChange={handleChange}
+                                    />
+                                </Grid>
+                                <Grid md={10} xs={12} mt={0.5}>
+                                    <SelectMultiple
+                                        label='Rol/es'
+                                        options={roles}
+                                        value={datos.Roles}
+                                        onChange={handleChange}
+                                        valorname='Roles'
+                                    />
+                                </Grid>
+                                <Grid md={2} xs={12} mt={0.5}>
+                                    <InputSelect
+                                        label='Nivel'
+                                        value={datos.Nivel}
+                                        options={niveles}
+                                        size='small'
+                                        onChange={handleChange}
+                                        valorname='Nivel'
+                                    />
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                        <Divider />
+                        <CardActions sx={{ justifyContent: 'flex-end' }}>
+                            <Button variant="contained" onClick={handleActualizarUsuarioGeneral}>
+                                Guardar cambios
+                            </Button>
+                            <FormularioValidator
+                                ref={formularioRef}
+                                datos={datos}
+                                reglasValidacion={reglasValidacion}
+                                onValid={manejarValidacionExitosa}
+                            />
+                        </CardActions>
+                    </Card>
+                </Box>
+            </Modal>
+        </>
     );
 };

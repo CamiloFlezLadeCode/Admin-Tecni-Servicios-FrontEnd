@@ -8,6 +8,7 @@ import InputSelect from '@/components/dashboard/componentes_generales/formulario
 import { CrearVehiculo } from '@/services/gestionycontrol/vehiculos/CrearVehiculoService';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import FormularioValidator from '@/components/dashboard/componentes_generales/formulario/ValidarCampos';
+import { UserContext } from '@/contexts/user-context';
 
 const EstadoVehiculo = [
     { value: 1, label: 'Activo' },
@@ -15,9 +16,15 @@ const EstadoVehiculo = [
 ];
 
 export function FormularioCrearVehiculo(): React.JSX.Element {
+    // Consumir el contexto del usuario
+    const { user } = React.useContext(UserContext) || { user: null };
+    // Obtener el nombre del usuario, si existe
+    const documentoUsuarioActivo = user ? `${user.documento}` : null;
+
     const [datos, setDatos] = React.useState({
         Placa: '',
-        IdEstado: ''
+        IdEstado: '',
+        UsuarioCreacion: documentoUsuarioActivo
     });
     //Validación del formulario
     const reglasValidacion = [
@@ -38,6 +45,11 @@ export function FormularioCrearVehiculo(): React.JSX.Element {
                 const result = await CrearVehiculo(datos);
                 if (result) {
                     mostrarMensaje('Vehículo creado correctamente', 'success');
+                    setDatos({
+                        Placa: '',
+                        IdEstado: '',
+                        UsuarioCreacion: documentoUsuarioActivo
+                    });
                 }
             } catch (error) {
                 console.error("Error al crear el vehículo: ", error);
@@ -46,7 +58,10 @@ export function FormularioCrearVehiculo(): React.JSX.Element {
         }
     }
     const handleChange = async (e: SelectChangeEvent<string | string[]> | React.ChangeEvent<HTMLInputElement> | { target: { value: string | number; name?: string } }) => {
-        const { name, value } = e.target;
+        let { name, value } = e.target;
+        if (name === 'Placa' && typeof value === 'string') {
+            value = value.toUpperCase();
+        }
         setDatos((prevDatos) => ({
             ...prevDatos,
             // [name]: value

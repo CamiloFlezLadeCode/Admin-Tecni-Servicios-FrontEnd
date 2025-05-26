@@ -23,6 +23,8 @@ export const apiRoutes = {
     },
     vehiculos: {
         crearvehiculo: `${API_BASE_URL}/crear-vehiculo`,
-        vervehiculos: `${API_BASE_URL}/ver-vehiculos`
+        vervehiculos: `${API_BASE_URL}/ver-vehiculos`,
+        consultarvehiculoporid: (IdVehiculo: string) => `${API_BASE_URL}/ver-vehiculo/${IdVehiculo}`,
+        actualizarvehiculo: `${API_BASE_URL}/actualizar-vehiculo`
     }
 };
