@@ -28,6 +28,12 @@ export function useSocketIO(url: string) {
             setMessages((prev) => [...prev, { tipo: 'vehiculo-actualizado', data }]);
         });
 
+        //Socket para vehiculo creado
+        socket.on('vehiculo-creado', (data) => {
+            console.log('📨 Evento vehiculo-creado recibido:', data);
+            setMessages((prev) => [...prev, { tipo: 'vehiculo-creado', data }]);
+        });
+
         socket.on('disconnect', (reason) => {
             console.log('❌ Socket desconectado:', reason);
         });

@@ -9,6 +9,7 @@ import { CrearVehiculo } from '@/services/gestionycontrol/vehiculos/CrearVehicul
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import FormularioValidator from '@/components/dashboard/componentes_generales/formulario/ValidarCampos';
 import { UserContext } from '@/contexts/user-context';
+import { useSocketIO } from '@/hooks/use-WebSocket';
 
 const EstadoVehiculo = [
     { value: 1, label: 'Activo' },
@@ -36,14 +37,15 @@ export function FormularioCrearVehiculo(): React.JSX.Element {
         console.log("Validación exitosa. Procesar datos...", datos);
 
     };
+    const { sendMessage, messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
     const formularioRef = React.useRef<{ manejarValidacion: () => Promise<boolean> }>(null);
-
     const HandleCrearVehiculo = async () => {
         const esValido = await formularioRef.current?.manejarValidacion();
         if (esValido) {
             try {
                 const result = await CrearVehiculo(datos);
                 if (result) {
+                    sendMessage('vehiculo-creado', {});
                     mostrarMensaje('Vehículo creado correctamente', 'success');
                     setDatos({
                         Placa: '',

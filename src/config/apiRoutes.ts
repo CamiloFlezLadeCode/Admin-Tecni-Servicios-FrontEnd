@@ -26,5 +26,12 @@ export const apiRoutes = {
         vervehiculos: `${API_BASE_URL}/ver-vehiculos`,
         consultarvehiculoporid: (IdVehiculo: string) => `${API_BASE_URL}/ver-vehiculo/${IdVehiculo}`,
         actualizarvehiculo: `${API_BASE_URL}/actualizar-vehiculo`
+    },
+    generales: {
+        listarsubarrendatarios: `${API_BASE_URL}/listar-subarrendatarios`,
+        listarbodegueros: `${API_BASE_URL}/listar-bodegueros`,
+        listardespachadores: `${API_BASE_URL}/listar-despachadores`,
+        listartransportadores: `${API_BASE_URL}/listar-transportadores`,
+        listarvehiculos: `${API_BASE_URL}/listar-vehiculos`
     }
 };

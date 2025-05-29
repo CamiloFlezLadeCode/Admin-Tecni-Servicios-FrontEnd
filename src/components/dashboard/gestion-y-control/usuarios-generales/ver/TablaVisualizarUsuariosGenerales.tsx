@@ -1,16 +1,13 @@
 'use client';
 
 import { FormularioEditarUsuarioGeneral } from '@/components/dashboard/gestion-y-control/usuarios-generales/editar/FormularioEditarUsuarioGeneral';
-// import { useWebSocket } from '@/hooks/use-WebSocket'; //Se llama la configuración del WebSocket
 import { useSocketIO } from '@/hooks/use-WebSocket';
-
 import { ConsultarUsuariosGenerales } from '@/services/gestionycontrol/usuariosgenerales/ConsultarUsuariosGeneralesService';
 import {
-    Box,
     Card, CardContent,
     Chip,
     Divider,
-    IconButton, Modal,
+    IconButton,
     Paper,
     Table,
     TableBody, TableCell,
@@ -19,10 +16,9 @@ import {
     TableRow, TextField,
     Typography,
     useMediaQuery,
-    useTheme,
-    Button
+    useTheme
 } from '@mui/material';
-import { FilePdf, PencilSimple, Printer, Trash, X } from '@phosphor-icons/react/dist/ssr';
+import { FilePdf, Printer, Trash } from '@phosphor-icons/react/dist/ssr';
 import * as React from 'react';
 
 interface UsuarioGeneral {
@@ -63,47 +59,12 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-
-    //Actualizar
-    const [usuarioEditando, setUsuarioEditando] = React.useState<any | null>(null);
-    const [modalAbierto, setModalAbierto] = React.useState(false);
-    // const manejarEditarUsuario = (usuario: any) => {
-    //     setUsuarioEditando(usuario);     // Carga el usuario en el estado
-    //     setModalAbierto(true);           // Abre el modal
-    //     // alert(usuarioEditando)
-    //     // console.log(usuario);
-    //     return usuario;
-    // }
-    const manejarEditarUsuario = (usuario: UsuarioGeneral) => {
-        setUsuarioEditando(usuario);
-        setModalAbierto(true);
-        return usuario;
-    }
-
     // Dentro del componente:
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('lg'));
     // ...
 
-
-    // const fetchUsuarios = async () => {
-    //     try {
-    //         const data = await ConsultarUsuariosGenerales();
-    //         // Simula un delay de 1 segundo (opcional)
-    //         // await new Promise((resolve) => setTimeout(resolve, 5000));
-    //         setUsuarios(data);
-    //     } catch (err) {
-    //         setError(`Error al cargar los usuarios: ${err}`);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-    // React.useEffect(() => {
-    //     fetchUsuarios();
-    // }, []);
-
     // Implementación de WebSocket
-    // const { messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
     const { sendMessage, messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
     const cargarUsuarios = async () => {
         try {
@@ -133,7 +94,8 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
 
     const filteredData = usuarios.filter(usuariogeneral =>
         usuariogeneral.Nombre.toLowerCase().includes(searchTerm.toLocaleLowerCase()) ||
-        usuariogeneral.Documento.toLowerCase().includes(searchTerm.toLocaleLowerCase())
+        usuariogeneral.Documento.toLowerCase().includes(searchTerm.toLocaleLowerCase()) ||
+        usuariogeneral.RolesLabel.toLowerCase().includes(searchTerm.toLocaleLowerCase())
     );
     const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
@@ -195,19 +157,11 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
                                                 />
                                             </TableCell>
                                             <TableCell align="center">
-                                                {/* <IconButton
-                                                    size="small"
-                                                    color="primary"
-                                                    onClick={() => manejarEditarUsuario(usuariogeneral)}
-                                                >
-                                                    <PencilSimple size={20} weight="bold" />
-                                                </IconButton> */}
-                                                <Button onClick={() => console.log(usuariogeneral.Documento)}>Prueba</Button>
                                                 <FormularioEditarUsuarioGeneral
                                                     DatosUsuarioAActualizar={usuariogeneral.Documento}
                                                     sendMessage={sendMessage}
                                                 />
-                                                <IconButton
+                                                {/* <IconButton
                                                     size="small"
                                                     color="primary"
                                                 >
@@ -224,7 +178,7 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
                                                     color="primary"
                                                 >
                                                     <FilePdf size={20} weight='bold' />
-                                                </IconButton>
+                                                </IconButton> */}
                                             </TableCell>
                                         </TableRow>
                                     );

@@ -12,9 +12,10 @@ interface InputTextProps {
     tipo_input: 'text' | 'input' | 'date' | 'time' | 'number' | 'textarea';
     valorname?: string;
     maximalongitud?: number;
+    bloqueado?: boolean;
 }
 
-const InputText: React.FC<InputTextProps> = ({ label, value, onChange, required = false, tamano, tipo_input, valorname, maximalongitud }) => {
+const InputText: React.FC<InputTextProps> = ({ label, value, onChange, required = false, tamano, tipo_input, valorname, maximalongitud, bloqueado }) => {
     const [focused, setFocused] = React.useState(false);
     return (
         <FormControl fullWidth required={required} variant="outlined">
@@ -50,6 +51,7 @@ const InputText: React.FC<InputTextProps> = ({ label, value, onChange, required 
                 inputProps={{
                     maxLength: maximalongitud || undefined, // Establecer longitud máxima si se proporciona
                 }}
+                disabled={bloqueado}
             />
         </FormControl>
     );

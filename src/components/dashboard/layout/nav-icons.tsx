@@ -39,6 +39,7 @@ import {
   UsersFour, //Múltiples usuarios
   PencilSimple, //Lapiz para representar editar
   Truck, //Camión
+  Lockers, //Referencia a bodega
 } from '@phosphor-icons/react/dist/ssr';
 
 export const navIcons = {
@@ -64,6 +65,7 @@ export const navIcons = {
   'usuarios-generales': UsersFour,
   'icono-editar': PencilSimple,
   'icono-vehiculos': Truck,
+  'icono-bodegas': Lockers,
   user: UserIcon,
   users: UsersIcon,
 } as Record<string, Icon>;

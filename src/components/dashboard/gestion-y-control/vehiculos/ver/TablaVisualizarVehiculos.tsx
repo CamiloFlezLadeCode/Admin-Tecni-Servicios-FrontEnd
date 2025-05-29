@@ -73,7 +73,10 @@ export function TablaVisualizarVehiculos(): React.JSX.Element {
     React.useEffect(() => {
         if (messages.length > 0) {
             const UltimoMensajeEmitdo = messages[messages.length - 1];
-            if (UltimoMensajeEmitdo.tipo === 'vehiculo-actualizado') {
+            if (
+                    UltimoMensajeEmitdo.tipo === 'vehiculo-actualizado' || 
+                    UltimoMensajeEmitdo.tipo === 'vehiculo-creado'
+                ) {
                 CargarVehiculos();
             }
         }
@@ -129,7 +132,7 @@ export function TablaVisualizarVehiculos(): React.JSX.Element {
                                                     sx={{ width: 90, justifyContent: 'center' }}
                                                 />
                                             </TableCell>
-                                            <TableCell style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                            <TableCell>
                                                 <FormularioModalEditarVehiculo
                                                     IdVehiculo={vehiculo.IdVehiculo}
                                                     sendMessage={sendMessage} // 👈 pásalo como prop

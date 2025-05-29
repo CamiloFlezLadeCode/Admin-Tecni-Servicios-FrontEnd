@@ -47,17 +47,6 @@ export function FormularioEditarUsuarioGeneral({ DatosUsuarioAActualizar, sendMe
     };
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('lg'));
-
-
-    const [input, setInput] = React.useState('');
-    // const { sendMessage, messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
-    const handleSend = () => {
-        if (input.trim()) {
-            // sendMessage(input);
-            sendMessage('usuario-actualizado', {});
-            setInput('');
-        }
-    };
     // Consumir el contexto del usuario
     const { user } = React.useContext(UserContext) || { user: null };
     // Obtener el nombre del usuario, si existe
@@ -234,7 +223,13 @@ export function FormularioEditarUsuarioGeneral({ DatosUsuarioAActualizar, sendMe
                         transform: 'translate(-50%, -50%)',
                         // width: '90%',
                         // maxWidth: 1000,
-                        width: '80%',
+                        // width: '80%',
+                        width: {
+                            xs: '95%',
+                            sm: '90%',
+                            md: '80%',
+                            lg: '70%',
+                        },
                         [theme.breakpoints.down('xl')]: {
                             // width: 700,
                         },
@@ -305,6 +300,7 @@ export function FormularioEditarUsuarioGeneral({ DatosUsuarioAActualizar, sendMe
                                         tamano='small'
                                         tipo_input='text'
                                         valorname='Documento'
+                                        bloqueado={true}
                                     />
                                 </Grid>
                                 <Grid md={4} xs={12} mt={0.5}>

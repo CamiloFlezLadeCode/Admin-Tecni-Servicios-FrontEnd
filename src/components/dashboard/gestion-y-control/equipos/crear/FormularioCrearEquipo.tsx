@@ -16,7 +16,7 @@ import { SelectChangeEvent } from '@mui/material/Select'; // Asegúrate de tener
 import Grid from '@mui/material/Unstable_Grid2';
 import * as React from 'react';
 import { Typography } from '@mui/material';
-
+import { ListarSubarrendatarios } from '@/services/generales/ListarSubarrendatariosService';
 
 const EstadoEquipo = [
     { value: '3', label: 'Disponible' },
@@ -175,6 +175,22 @@ export function FormularioCrearEquipo(): React.JSX.Element {
         setMostrarAlertas(true);
     };
 
+    //Llenado para el select del subarrendatario
+    const [subarrendatario, setSubarrendatario] = React.useState<{ value: string | number; label: string }[]>([]);
+    const CargarSubarrendatarios = async () => {
+        try {
+            const Subarrendatarios = await ListarSubarrendatarios();
+            setSubarrendatario(Subarrendatarios);
+        } catch (error) {
+            console.error('Error al listar los subarrendatarios: ', error);
+        }
+    };
+    //...
+
+    React.useEffect(() => {
+        CargarSubarrendatarios();
+    }, []);
+
     return (
         <Card>
             {/* <CardHeader
@@ -189,6 +205,16 @@ export function FormularioCrearEquipo(): React.JSX.Element {
             <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                 <Grid container spacing={1}>
                     <Grid md={4} xs={12} mt={0.5}>
+                        <InputSelect
+                            label='Referencia'
+                            value={datos.CategoriaEquipo}
+                            options={Categorias}
+                            size='small'
+                            onChange={handleChange}
+                            valorname='CategoriaEquipo'
+                        />
+                    </Grid>
+                    <Grid md={4} xs={12} mt={0.5}>
                         <Input
                             label='Nombre'
                             value={datos.NombreEquipo}
@@ -199,14 +225,14 @@ export function FormularioCrearEquipo(): React.JSX.Element {
                             valorname='NombreEquipo'
                         />
                     </Grid>
-                    <Grid md={4} xs={12} mt={0.5}>
+                    <Grid md={2} xs={12} mt={0.5}>
                         <InputSelect
-                            label='Referencia'
-                            value={datos.CategoriaEquipo}
-                            options={Categorias}
+                            label='Subarrendatario'
+                            value={datos.EstadoEquipo}
+                            options={subarrendatario}
                             size='small'
                             onChange={handleChange}
-                            valorname='CategoriaEquipo'
+                            valorname='EstadoEquipo'
                         />
                     </Grid>
                     <Grid md={2} xs={12} mt={0.5}>

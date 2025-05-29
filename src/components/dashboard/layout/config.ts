@@ -82,16 +82,16 @@ export const navItems = [
     key: 'gestionycontrol',
     title: 'Gestión y control',
     items: [
-      {
-        key: 'clientes',
-        title: 'Clientes',
-        icon: 'icono-clientes',
-        href: paths.dashboard.gestionycontrolclientes,
-        matcher: {
-          type: 'startsWith',
-          href: paths.dashboard.gestionycontrolclientes
-        }
-      },
+      // {
+      //   key: 'clientes',
+      //   title: 'Clientes',
+      //   icon: 'icono-clientes',
+      //   href: paths.dashboard.gestionycontrolclientes,
+      //   matcher: {
+      //     type: 'startsWith',
+      //     href: paths.dashboard.gestionycontrolclientes
+      //   }
+      // },
       {
         key: 'equipos',
         title: 'Equipos',
@@ -102,16 +102,16 @@ export const navItems = [
           href: paths.dashboard.gestionycontrolequipos
         }
       },
-      {
-        key: 'mecanicos',
-        title: 'Mecánicos',
-        icon: 'icono-mecanicos',
-        href: paths.dashboard.gestionycontrolmecanicos,
-        matcher: {
-          type: 'startsWith',
-          href: paths.dashboard.gestionycontrolmecanicos
-        }
-      },
+      // {
+      //   key: 'mecanicos',
+      //   title: 'Mecánicos',
+      //   icon: 'icono-mecanicos',
+      //   href: paths.dashboard.gestionycontrolmecanicos,
+      //   matcher: {
+      //     type: 'startsWith',
+      //     href: paths.dashboard.gestionycontrolmecanicos
+      //   }
+      // },
       {
         key: 'proyectos',
         title: 'Proyectos',
