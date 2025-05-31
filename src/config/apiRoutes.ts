@@ -33,5 +33,15 @@ export const apiRoutes = {
         listardespachadores: `${API_BASE_URL}/listar-despachadores`,
         listartransportadores: `${API_BASE_URL}/listar-transportadores`,
         listarvehiculos: `${API_BASE_URL}/listar-vehiculos`
+    },
+    comercial: {
+        remisiones: {
+            crearremision: `${API_BASE_URL}/crear-remision`,
+            consultarcantidaddisponiblequipo: (IdEquipo: number) => `${API_BASE_URL}/ver-cantidad-disponible-equipo/${IdEquipo}`,
+            consultarsiguientenoremision: `${API_BASE_URL}/siguiente-no-remision`
+        },
+        devoluciones: {
+            creardevolucion: `${API_BASE_URL}/crear-devolucion`
+        }
     }
 };

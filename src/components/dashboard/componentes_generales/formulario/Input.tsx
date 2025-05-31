@@ -13,9 +13,10 @@ interface InputTextProps {
     valorname?: string;
     maximalongitud?: number;
     bloqueado?: boolean;
+    LongitudMaxima?: number;
 }
 
-const InputText: React.FC<InputTextProps> = ({ label, value, onChange, required = false, tamano, tipo_input, valorname, maximalongitud, bloqueado }) => {
+const InputText: React.FC<InputTextProps> = ({ label, value, onChange, required = false, tamano, tipo_input, valorname, maximalongitud, bloqueado, LongitudMaxima }) => {
     const [focused, setFocused] = React.useState(false);
     return (
         <FormControl fullWidth required={required} variant="outlined">

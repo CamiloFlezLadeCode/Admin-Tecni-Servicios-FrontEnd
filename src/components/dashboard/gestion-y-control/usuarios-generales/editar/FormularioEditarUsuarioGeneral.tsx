@@ -105,12 +105,20 @@ export function FormularioEditarUsuarioGeneral({ DatosUsuarioAActualizar, sendMe
         try {
             const DatosUsuarioGeneral = await ConsultarUsuarioGeneralPorDocumento(DocumentoUsuarioGeneral);
             // Transformar los roles de IDs a nombres
+            // const rolesArray = (DatosUsuarioGeneral[0].Roles ?? '')
+            //     .split(',')
+            //     .map((roleId: any) => {
+            //         const trimmedId = Number(roleId.trim());
+            //         return trimmedId; // Devuelve el nombre o el ID si no se encuentra
+            // });
             const rolesArray = (DatosUsuarioGeneral[0].Roles ?? '')
                 .split(',')
                 .map((roleId: any) => {
-                    const trimmedId = Number(roleId.trim());
-                    return trimmedId; // Devuelve el nombre o el ID si no se encuentra
-                });
+                    const trimmedId = roleId.trim();
+                    return trimmedId ? Number(trimmedId) : null; // Devuelve null si el ID está vacío
+                })
+                .filter((roleId: any) => roleId !== null); // Filtra los valores nulos
+
             setDatos({
                 Nombres: DatosUsuarioGeneral[0].Nombres,
                 Apellidos: DatosUsuarioGeneral[0].Apellidos,

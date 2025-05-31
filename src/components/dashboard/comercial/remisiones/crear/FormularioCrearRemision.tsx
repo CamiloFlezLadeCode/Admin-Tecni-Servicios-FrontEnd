@@ -36,6 +36,11 @@ import {
     X,
     Info
 } from '@phosphor-icons/react/dist/ssr';
+import { width } from '@mui/system';
+import { CrearRemision } from '@/services/comercial/remisiones/CrearRemisionService';
+import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
+import { ConsultarCantidadDisponibleEquipo } from '@/services/comercial/remisiones/ConsultarCantidadDisponibleEquipoService';
+import { ConsultarSiguienteNoRemision } from '@/services/comercial/remisiones/ConsultarSiguienteNoRemisionService';
 
 const Bodegas = [
     { value: '1', label: 'Bodega #1' },
@@ -77,6 +82,8 @@ type Items = {
     Subarrendatario?: string;
     PrecioUnidad?: number;
     PrecioTotal?: number;
+    IVA?: number;
+    PrecioTotalSinIVA?: number;
 };
 
 
@@ -130,7 +137,6 @@ export function FormularioCrearRemision(): React.JSX.Element {
                     ListarTransportadores(),
                     ListarVehiculos()
                 ]);
-
                 setClientes(clientesRes);
                 setCategoria(categoriasRes);
                 setSubarrendatarios(subarrRes);
@@ -147,15 +153,30 @@ export function FormularioCrearRemision(): React.JSX.Element {
     }, []);
     //...
 
+    //Para el llenado del siguiente No Remisión
+    const CargarSiguienteNoRemision = async () => {
+        try {
+            const SiguienteNoRemision = await ConsultarSiguienteNoRemision();
+            setDatos(prev => ({ ...prev, NoRemision: SiguienteNoRemision[0].SiguienteNoRemision }));
+        } catch (error) {
+            console.error(`Error al cargar el siguiente No Resolución. ${error}`);
+        }
+    };
+    React.useEffect(() => {
+        CargarSiguienteNoRemision();
+    }, []);
+    //...
+
     //Se maneja el estado para todos los campos del formulario
     const [datos, setDatos] = React.useState({
         Cliente: '',
         Proyecto: '',
         Categoria: '',
         Equipo: '',
-        Cantidad: 0,
+        Cantidad: 1,
         PrecioUnidad: 0,
         PrecioTotal: 0,
+        IVA: 19,
         PrecioTotalGeneral: 0,
         Subarrendatario: '',
         Bodega: '',
@@ -168,7 +189,8 @@ export function FormularioCrearRemision(): React.JSX.Element {
         Recibe: '',
         ObservacionesEmpresa: '',
         ObservacionesCliente: '',
-        UsuarioCrecion: documentoUsuarioActivo
+        UsuarioCrecion: documentoUsuarioActivo,
+        NoRemision: '',
     });
 
 
@@ -219,6 +241,41 @@ export function FormularioCrearRemision(): React.JSX.Element {
         FetchDataCargarEquiposPorCategoria();
     }, [datos.Categoria]);
 
+    //Para consultar la cantidad disponible del equipo seleccionado
+    const [cantidaddisponible, setCantidadDisponible] = React.useState(0);
+    const prevEquipoRef = React.useRef(datos.Equipo); // Referencia para almacenar el valor anterior
+
+    const CargarCantidadDisponibleEquipo = async () => {
+        try {
+            const CantidadDisponibleEquipo = await ConsultarCantidadDisponibleEquipo(Number(datos.Equipo));
+            setCantidadDisponible(CantidadDisponibleEquipo[0].CantidadDisponible);
+        } catch (error) {
+            console.error(`Error al consultar la cantidad disponible del equipo. ${error}`);
+        }
+    };
+
+    React.useEffect(() => {
+        // Verificar si el valor de datos.Equipo ha cambiado
+        if (prevEquipoRef.current !== datos.Equipo) {
+            CargarCantidadDisponibleEquipo();
+            prevEquipoRef.current = datos.Equipo; // Actualizar la referencia con el nuevo valor
+        }
+        setDatos(prev => ({ ...prev, Cantidad: 1 }));
+    }, [datos.Equipo]);
+    //...
+
+    //Para mostrar error cuando la cantidad supera a la cantidad disponible
+    const prevCantidadDisponibleRef = React.useRef(cantidaddisponible);
+    React.useEffect(() => {
+        if (prevCantidadDisponibleRef.current !== cantidaddisponible) {
+            if (datos.Cantidad > cantidaddisponible) {
+                mostrarMensaje('La cantidad no puede ser mayor a la cantidad disponible', 'error');
+                return;
+            }
+        }
+    }, [datos.Cantidad, cantidaddisponible]);
+    //...
+
     //Función para manejar el cambio en todos los campos del formulario
     const handleChange = async (e: SelectChangeEvent<string | number> | React.ChangeEvent<HTMLInputElement> | { target: { value: string | number; name?: string } }) => {
         const { name, value } = e.target;
@@ -231,56 +288,16 @@ export function FormularioCrearRemision(): React.JSX.Element {
         }));
     };
 
-
-    //Prueba
-    const [nombre, setNombre] = React.useState('');
-    const CambiarValorAnombre = () => {
-
-        let Valores = ['1', '2', '3', '4', '5', '6', '7', '7'];
-        const indiceAleatorio = Math.floor(Math.random() * Valores.length);
-        console.log(indiceAleatorio);
-        // let ValorAleatorio = Math.floor(Math.random() * 10) + 1;
-        // console.error(ValorAleatorio);
-        setNombre(Valores[indiceAleatorio]);
-
-        console.log('Valor cliente: ', datos.Cliente);
-        console.log('Valor categoria: ', datos.Categoria);
-        console.log('Valor proyecto: ', datos.Proyecto);
-        console.log('Valor equipo: ', datos.Equipo);
-    }
-    React.useEffect(() => {
-        console.log('Montado o cambió "nombre"');
-
-        return () => {
-            console.log('Cleanup por cambio de "nombre" o desmontaje');
-        };
-    }, [nombre]);
-
-    //Empresa
-    const [Empresa, setEmpresa] = React.useState<string>('');
-    //Empresa
-    const handleChangeEmpresa = (event: SelectChangeEvent<string>) => {
-        const newValue = event.target.value;
-        setEmpresa(newValue);
-    };
-
-    // const handleCrearCliente = () => {
-    //     setMostrarAlerta(true);
-    // };
-
-    const handleCrearCliente = () => {
-        setMostrarAlerta(true);
-
-        // Ocultar después de 3 segundos
-        setTimeout(() => {
-            setMostrarAlerta(false);
-        }, 3000);
-    };
     //Para calcular el precio total
     React.useEffect(() => {
         const total = BigInt(datos.Cantidad) * BigInt(datos.PrecioUnidad);
-        setDatos(prev => ({ ...prev, PrecioTotal: Number(total) }));
-    }, [datos.Cantidad, datos.PrecioUnidad]);
+        // setDatos(prev => ({ ...prev, PrecioTotal: Number(total) }));
+        const IVACapturado = Number(datos.IVA);
+        const TotalConIVAIncluido = Number(total) * (1 + IVACapturado / 100);
+        // Redondear a 2 decimales
+        const PrecioTotalConDosDecimales = parseFloat(TotalConIVAIncluido.toFixed(2));
+        setDatos(prev => ({ ...prev, PrecioTotal: Number(PrecioTotalConDosDecimales) }));
+    }, [datos.Cantidad, datos.PrecioUnidad, datos.IVA]);
     // const CalcularPrecioTotalItem = () => {
     //     let PrecioTotal = (datos.Cantidad * datos.PrecioUnidad);
     //     setDatos(prev => ({
@@ -325,6 +342,8 @@ export function FormularioCrearRemision(): React.JSX.Element {
                     PrecioUnidad: datos.PrecioUnidad,
                     PrecioTotal: datos.PrecioTotal,
                     ObservacionesCliente: datos.ObservacionesCliente, // <- Idem
+                    IVA: datos.IVA,
+                    PrecioTotalSinIVA: Number(datos.Cantidad * datos.PrecioUnidad)
                 };
                 setItemsRemision(prev => [...prev, nuevoItem]);
             }
@@ -336,6 +355,129 @@ export function FormularioCrearRemision(): React.JSX.Element {
         setItemsRemision(prev => prev.filter(item => item.value !== id));
     };
 
+    //...
+
+    //Se capturan los datos a enviar
+    const DatosRemision = {
+        // Datos generales
+        NoRemision: datos.NoRemision,
+        DocumentoCliente: datos.Cliente,
+        IdProyecto: datos.Proyecto,
+        IdBodega: datos.Bodega,
+        DocumentoBodeguero: datos.Bodeguero,
+        DocumentoDespachador: datos.Despachador,
+        DocumentoTransportador: datos.Transportador,
+        IdVehiculo: datos.Vehiculo,
+        PlacaVehiculoRecibe: datos.Placa,
+        NombrePersonaRecibe: datos.Recibe,
+        ObservacionesEmpresa: datos.ObservacionesEmpresa,
+        UsuarioCreacion: datos.UsuarioCrecion,
+        IdEstado: 1,
+        PrecioTotalGeneralSinIVA: itemsRemision.reduce((acc, item) => acc + (item.PrecioTotalSinIVA ?? 0), 0),
+        IVA: datos.IVA,
+        PrecioTotalGeneralConIVA: itemsRemision.reduce((acc, item) => acc + (item.PrecioTotal ?? 0), 0),
+        // Aquí es lo importante:
+        Detalles: itemsRemision.map(item => ({
+            DocumentoSubarrendatario: datos.Subarrendatario,
+            IdCategoria: datos.Categoria,
+            IdEquipo: item.value,
+            Cantidad: item.Cantidad,
+            PrecioUnidad: item.PrecioUnidad,
+            PrecioTotal: item.PrecioTotal,
+            ObservacionesCliente: item.ObservacionesCliente
+        }))
+    };
+    //...
+
+    //Estados para el manejo de las notificaciones/alertas
+    const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
+    const [mensajeAlerta, setMensajeAlerta] = React.useState('');
+    const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
+    //...
+
+    //Función para abrir la alerta
+    const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error') => {
+        setMensajeAlerta(mensaje);
+        setTipoAlerta(tipo);
+        setMostrarAlertas(true);
+    };
+    //....
+
+    //Se definen las reglas con su respectivo mensaje de alerta
+    const reglasValidacion = [
+        { campo: 'Cliente', mensaje: 'El cliente es obligatorio.' },
+        { campo: 'Proyecto', mensaje: 'El proyecto es obligatorio.' },
+        { campo: 'Subarrendatario', mensaje: 'El subarrendatario es obligatorio.' },
+        { campo: 'Bodeguero', mensaje: 'El bodeguero es obligatorio.' },
+        { campo: 'Despachador', mensaje: 'El despachador es obligatorio.' },
+        { campo: 'Transportador', mensaje: 'El transportador es obligatorio.' },
+        { campo: 'Vehiculo', mensaje: 'El vehículo es obligatorio.' },
+        // { campo: '', mensaje: '' },
+    ]
+    //...
+
+    //Se define lógica para la validación exitosa
+    const manejarValidacionExitosa = () => {
+        // Lógica para manejar la validación exitosa
+        console.log("Validación exitosa. Procesar datos...", datos);
+
+    };
+    //...
+
+    //Se crea referencia para el formulario validador
+    const formularioRef = React.useRef<{ manejarValidacion: () => Promise<boolean> }>(null);
+    //...
+    //Función para crear la remisión
+    const handleCrearCliente = async () => {
+        const esValido = await formularioRef.current?.manejarValidacion();
+        if (esValido) {
+            try {
+                await CrearRemision(DatosRemision);
+                mostrarMensaje('Remisión creada correctamente', 'success');
+                //Se limpia el formulario
+                setDatos({
+                    Cliente: '',
+                    Proyecto: '',
+                    Categoria: '',
+                    Equipo: '',
+                    Cantidad: 1,
+                    PrecioUnidad: 0,
+                    PrecioTotal: 0,
+                    IVA: 19,
+                    PrecioTotalGeneral: 0,
+                    Subarrendatario: '',
+                    Bodega: '',
+                    EquipoDisponible: '',
+                    Bodeguero: '',
+                    Despachador: '',
+                    Transportador: '',
+                    Vehiculo: '',
+                    Placa: '',
+                    Recibe: '',
+                    ObservacionesEmpresa: '',
+                    ObservacionesCliente: '',
+                    UsuarioCrecion: documentoUsuarioActivo,
+                    NoRemision: '',
+                });
+                //...
+
+                //Se retiran los items almacenados
+                setItemsRemision([]);
+                //...
+
+                //Se limpia la cantidad disponible
+                setCantidadDisponible(0);
+                //...
+
+                //Se llama la función para mostrar el siguiente No Remisión
+                CargarSiguienteNoRemision();
+                //...
+            } catch (error) {
+                mostrarMensaje(`Error al crear la remisión: ${error}`, 'error');
+                console.error(`Error al crear la remisión. Error: ${error}`);
+            }
+        }
+    };
     //...
     return (
         <Card>
@@ -351,8 +493,16 @@ export function FormularioCrearRemision(): React.JSX.Element {
                 <Typography variant="subtitle1" color="text.primary">
                     Creación de remisión
                 </Typography>
-                <Typography variant="subtitle2" color="text.secondary">
-                    Consecutivo No: 1
+                <Typography variant="subtitle2" color="text.secondary" width="140px" mb={.5} mt={.5}>
+                    <Input
+                        label='Remisión No:'
+                        value={datos.NoRemision}
+                        onChange={handleChange}
+                        // required
+                        tamano='small'
+                        tipo_input='text'
+                        valorname='NoRemision'
+                    />
                 </Typography>
             </Box>
             <Divider />
@@ -421,10 +571,11 @@ export function FormularioCrearRemision(): React.JSX.Element {
                     <Grid md={3} xs={12} mt={0.5}>
                         <InputSelect
                             label='Bodega'
-                            value={Empresa}
+                            value={datos.Bodega}
                             options={Bodegas}
                             size='small'
-                            onChange={handleChangeEmpresa}
+                            onChange={handleChange}
+                            valorname="Bodega"
                         />
                     </Grid>
                     <Grid md={3} xs={12} mt={0.5}>
@@ -438,7 +589,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
                         // required
                         />
                     </Grid>
-                    <Grid md={3} xs={12} mt={0.5}>
+                    <Grid md={1.5} xs={12} mt={0.5}>
                         <Input
                             label='Cantidad'
                             value={datos.Cantidad}
@@ -460,6 +611,18 @@ export function FormularioCrearRemision(): React.JSX.Element {
                             valorname='PrecioUnidad'
                         />
                     </Grid>
+                    <Grid md={1.5} xs={12} mt={0.5}>
+                        <Input
+                            label='IVA %'
+                            value={datos.IVA}
+                            onChange={handleChange}
+                            // required
+                            tamano='small'
+                            tipo_input='number'
+                            valorname='IVA'
+                            bloqueado={false}
+                        />
+                    </Grid>
                     <Grid md={3} xs={12} mt={0.5}>
                         <Input
                             label='Precio total'
@@ -469,6 +632,15 @@ export function FormularioCrearRemision(): React.JSX.Element {
                             tamano='small'
                             tipo_input='number'
                             valorname='PrecioTotal'
+                            bloqueado={true}
+                        />
+                    </Grid>
+                    <Grid md={3} xs={12} mt={0.5}>
+                        <Input
+                            label='Cantidad disponible'
+                            value={cantidaddisponible}
+                            tamano='small'
+                            tipo_input='number'
                             bloqueado={true}
                         />
                     </Grid>
@@ -572,9 +744,6 @@ export function FormularioCrearRemision(): React.JSX.Element {
                 <Button variant="text" onClick={agregarItem}>
                     Agregar item
                 </Button>
-                {/* <Button  onClick={() => {}}>
-                    Ver
-                </Button> */}
                 <ModalVerItemsRemision
                     items={itemsRemision}
                     onEliminarItem={eliminarItem}
@@ -583,19 +752,19 @@ export function FormularioCrearRemision(): React.JSX.Element {
                 <Button variant="contained" onClick={handleCrearCliente}>
                     Crear remisión
                 </Button>
+                <FormularioValidator
+                    ref={formularioRef}
+                    datos={datos}
+                    reglasValidacion={reglasValidacion}
+                    onValid={manejarValidacionExitosa}
+                />
             </CardActions>
-
-            {/* Snackbar con alerta */}
-            <Snackbar
-                open={mostrarAlerta}
-                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                autoHideDuration={3000}
-                onClose={() => setMostrarAlerta(false)}
-            >
-                <Alert severity="success" sx={{ width: '100%' }} onClose={() => setMostrarAlerta(false)}>
-                    Remisión creada exitosamente
-                </Alert>
-            </Snackbar>
+            <MensajeAlerta
+                open={mostrarAlertas}
+                tipo={tipoAlerta}
+                mensaje={mensajeAlerta}
+                onClose={() => setMostrarAlertas(false)}
+            />
         </Card>
     );
 };

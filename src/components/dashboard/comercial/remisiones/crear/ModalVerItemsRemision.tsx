@@ -28,11 +28,13 @@ type EquipoItem = {
     value: string | number;
     label: string;
     Categoria?: string;
-    cantidad?: number;
+    Cantidad?: number;
     PrecioUnidad?: number;
     PrecioTotal?: number;
     ObservacionesCliente?: string;
     Subarrendatario?: string;
+    IVA?: number;
+    PrecioTotalSinIVA?: number;
 };
 
 
@@ -123,7 +125,9 @@ export default function ModalVerItemsRemision({ items, onEliminarItem, precioTot
                                             <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Equipo</TableCell>
                                             <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Cantidad</TableCell>
                                             <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Precio Unidad</TableCell>
-                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Precio Total</TableCell>
+                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Total Sin IVA</TableCell>
+                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>IVA%</TableCell>
+                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Total Con IVA</TableCell>
                                             <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Observaciones</TableCell>
                                             <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Acciones</TableCell>
                                         </TableRow>
@@ -160,8 +164,10 @@ export default function ModalVerItemsRemision({ items, onEliminarItem, precioTot
                                                 <TableCell>{item.Subarrendatario}</TableCell>
                                                 <TableCell>{item.Categoria ?? '-'}</TableCell>
                                                 <TableCell>{item.label}</TableCell>
-                                                <TableCell>{item.cantidad ?? 1}</TableCell>
+                                                <TableCell>{item.Cantidad ?? 1}</TableCell>
                                                 <TableCell>{item.PrecioUnidad ?? 0}</TableCell>
+                                                <TableCell>{item.PrecioTotalSinIVA ?? 0}</TableCell>
+                                                <TableCell>{item.IVA ?? 0}</TableCell>
                                                 <TableCell>{item.PrecioTotal ?? 0}</TableCell>
                                                 <TableCell sx={{ maxWidth: 200 }}>
                                                     <Box
@@ -188,9 +194,9 @@ export default function ModalVerItemsRemision({ items, onEliminarItem, precioTot
                                     </TableBody>
                                 </Table>
                             </TableContainer>
-                            <Divider/>
-                            <Box border="solid green 2px" display="flex" justifyContent="right">
-                                <Typography mt={1}>Precio total: {precioTotalGeneral}</Typography>
+                            <Divider />
+                            <Box textAlign="right" padding="10px">
+                                <Typography mt={1} style={{ fontWeight: 'bolder', color: '#000000' }}>Precio total general: <span style={{ fontWeight: 'normal' }}>{precioTotalGeneral}</span></Typography>
                             </Box>
                         </CardContent>
                     </Card>

@@ -92,11 +92,17 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
     }, [messages]);
     // ...
 
+    // const filteredData = usuarios.filter(usuariogeneral =>
+    //     usuariogeneral.Nombre.toLowerCase().includes(searchTerm.toLocaleLowerCase()) ||
+    //     usuariogeneral.Documento.toLowerCase().includes(searchTerm.toLocaleLowerCase()) ||
+    //     usuariogeneral.RolesLabel.toLowerCase().includes(searchTerm.toLocaleLowerCase())
+    // );
     const filteredData = usuarios.filter(usuariogeneral =>
-        usuariogeneral.Nombre.toLowerCase().includes(searchTerm.toLocaleLowerCase()) ||
-        usuariogeneral.Documento.toLowerCase().includes(searchTerm.toLocaleLowerCase()) ||
-        usuariogeneral.RolesLabel.toLowerCase().includes(searchTerm.toLocaleLowerCase())
-    );
+    (usuariogeneral.Nombre && usuariogeneral.Nombre.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (usuariogeneral.Documento && usuariogeneral.Documento.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (usuariogeneral.RolesLabel && usuariogeneral.RolesLabel.toLowerCase().includes(searchTerm.toLowerCase()))
+);
+
     const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
     if (loading) return <p>Cargando usuarios...</p>;
