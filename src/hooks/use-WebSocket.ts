@@ -16,11 +16,18 @@ export function useSocketIO(url: string) {
             console.log('🔌 Conectado con Socket.IO, ID:', socket.id);
         });
 
+        //SOCKETS PARA USUARIOS
         //Socket para usuario actulizado
         socket.on('usuario-actualizado', (data) => {
             console.log('📨 Evento usuario-actualizado recibido:', data);
             setMessages((prev) => [...prev, { tipo: 'usuario-actualizado', data }]);
         });
+        //Socket para usuario creado
+        socket.on('usuario-creado', (data) => {
+            console.log('📨 Evento usuario-creado recibido:', data);
+            setMessages((prev) => [...prev, { tipo: 'usuario-creado', data }]);
+        })
+        // ...
 
         //Socket para vehiculo actualizado
         socket.on('vehiculo-actualizado', (data) => {
@@ -34,11 +41,17 @@ export function useSocketIO(url: string) {
             setMessages((prev) => [...prev, { tipo: 'vehiculo-creado', data }]);
         });
 
-        //Socket para equipo actualizado
+        //SOCKETS PARA EQUIPOS
+        //Para equipo actualizado
         socket.on('equipo-actualizado', (data) => {
             console.log('📨 Evento equipo-actualizado recibido:', data);
             setMessages((prev) => [...prev, { tipo: 'equipo-actualizado', data }]);
         });
+        //Para equipo creado
+        socket.on('equipo-creado', (data) => {
+            console.log('📨 Evento equipo-creado recibido:', data);
+            setMessages((prev) => [...prev, { tipo: 'equipo-creado', data }]);
+        })
         //...
 
         socket.on('disconnect', (reason) => {

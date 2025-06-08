@@ -78,7 +78,7 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
     React.useEffect(() => {
         if (messages.length > 0) {
             const ultimomensajes = messages[messages.length - 1];
-            if (ultimomensajes.tipo === 'equipo-actualizado') {
+            if (ultimomensajes.tipo === 'equipo-actualizado' || ultimomensajes.tipo === 'equipo-creado') {
                 CargarEquipos();
             }
         }

@@ -21,7 +21,7 @@ import { SelectChangeEvent } from '@mui/material/Select'; // Asegúrate de tener
 import Grid from '@mui/material/Unstable_Grid2';
 import * as React from 'react';
 import SelectConBuscador from '@/components/dashboard/componentes_generales/formulario/SelectConBuscador';
-
+import { useSocketIO } from '@/hooks/use-WebSocket';
 
 const EstadoUsuarioGeneral = [
     { value: 1, label: 'Activo' },
@@ -103,12 +103,16 @@ export function FormularioCrearUsuarioGeneral(): React.JSX.Element {
     // Crear una referencia para el FormularioValidator
     // const formularioRef = React.useRef<{ manejarValidacion: () => void }>(null);
     const formularioRef = React.useRef<{ manejarValidacion: () => Promise<boolean> }>(null);
+    //Se implementa el uso del websocket
+    const { sendMessage, messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
+    // ...
     const handleCrearUsuarioGeneral = async () => {
         // Validar formulario
         const esValido = await formularioRef.current?.manejarValidacion();
         if (esValido) {
             try {
                 await CrearUsuarioGeneral(datos);
+                sendMessage('usuario-creado', {});
                 mostrarMensaje('Usuario general creado exitosamente', 'success');
                 // Limpiar formulario
                 setDatos({

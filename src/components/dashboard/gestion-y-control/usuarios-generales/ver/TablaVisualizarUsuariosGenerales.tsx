@@ -85,7 +85,7 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
         if (messages.length > 0) {
             const ultimoMensaje = messages[messages.length - 1];
 
-            if (ultimoMensaje.tipo === 'usuario-actualizado') {
+            if (ultimoMensaje.tipo === 'usuario-actualizado' || ultimoMensaje.tipo === 'usuario-creado') {
                 cargarUsuarios();
             }
         }
@@ -98,10 +98,10 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
     //     usuariogeneral.RolesLabel.toLowerCase().includes(searchTerm.toLocaleLowerCase())
     // );
     const filteredData = usuarios.filter(usuariogeneral =>
-    (usuariogeneral.Nombre && usuariogeneral.Nombre.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (usuariogeneral.Documento && usuariogeneral.Documento.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (usuariogeneral.RolesLabel && usuariogeneral.RolesLabel.toLowerCase().includes(searchTerm.toLowerCase()))
-);
+        (usuariogeneral.Nombre && usuariogeneral.Nombre.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (usuariogeneral.Documento && usuariogeneral.Documento.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (usuariogeneral.RolesLabel && usuariogeneral.RolesLabel.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
 
     const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 

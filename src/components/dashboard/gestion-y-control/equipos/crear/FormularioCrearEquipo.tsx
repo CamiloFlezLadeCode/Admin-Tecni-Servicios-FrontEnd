@@ -17,6 +17,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import * as React from 'react';
 import { Typography } from '@mui/material';
 import { ListarSubarrendatarios } from '@/services/generales/ListarSubarrendatariosService';
+import { useSocketIO } from '@/hooks/use-WebSocket';
 
 const EstadoEquipo = [
     { value: '3', label: 'Disponible' },
@@ -98,6 +99,9 @@ export function FormularioCrearEquipo(): React.JSX.Element {
 
     const [progress, setProgress] = React.useState(0);
     const [cargando, setCargando] = React.useState<boolean>(false);
+    //Se implementa el uso del websocket
+    const { sendMessage, messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
+    // ...
     const handleCrearEquipo = async () => {
         // Validar formulario
         const esValido = await formularioRef.current?.manejarValidacion();
@@ -120,7 +124,7 @@ export function FormularioCrearEquipo(): React.JSX.Element {
                 const data = await CrearEquipo(datos);
                 clearInterval(progressInterval); // Limpiar intervalo
                 setProgress(100);
-
+                sendMessage('equipo-creado', {});
                 mostrarMensaje('Equipo creado exitosamente', 'success');
 
                 // Limpiar formulario
