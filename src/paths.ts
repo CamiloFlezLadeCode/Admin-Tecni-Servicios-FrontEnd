@@ -43,6 +43,9 @@ export const paths = {
     comercialdevolucionescrear: '/dashboard/comercial/devoluciones/crear-devolucion',
     comercialdevolucionesver: '/dashboard/comercial/devoluciones/ver-devoluciones',
 
+    // Órdenes de servicio
+    comercialordenesdeservicio: '/dashboard/comercial/ordenes-de-servicio',
+    //...
 
     // MODULO GESTIÓN Y CONTROL (EQUIPOS, CLIENTES, MACANICOS, PROYECTOS, REPUESTOS)
     gestionycontrol: '/dashboard/gestion-y-control',
@@ -82,6 +85,12 @@ export const paths = {
     gestionycontrolvehiculos: '/dashboard/gestion-y-control/vehiculos',
     gestionycontrolvehiculoscrear: '/dashboard/gestion-y-control/vehiculos/crear-vehiculo',
     gestionycontrolvehiculosver: '/dashboard/gestion-y-control/vehiculos/ver-vehiculos',
+
+    // Bodegas
+    gestionycontrolbodegas: '/dashboard/gestion-y-control/bodegas',
+    gestionycontrolbodegascrear: '/dashboard/gestion-y-control/bodegas/crear-bodega',
+    gestionycontrolbodegasver: '/dashboard/gestion-y-control/bodegas/ver-bodegas',
+    //...
   },
   errors: { notFound: '/errors/not-found' },
 } as const;

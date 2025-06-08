@@ -7,6 +7,6 @@ export const CrearRemision = async (datos: any) => {
         return data;
     } catch (error: any) {
         console.log("Error al crear la remisión");
-        throw new Error(`Error => ${error.response.data.error}`);
+        throw new Error(` => ${error.response.data.error}`);
     }
 };

@@ -12,23 +12,23 @@ import { usePathname } from 'next/navigation';
 import { paths } from '@/paths';
 
 
-const ItemsNavEquipos = [
+const ItemsNavBodegas = [
     {
-        label: 'Ver equipos',
-        path: paths.dashboard.gestionycontrolequiposver,
+        label: 'Ver bodegas',
+        path: paths.dashboard.gestionycontrolbodegasver,
         icon: Eye
     },
     {
-        label: 'Crear equipo',
-        path: paths.dashboard.gestionycontrolequiposcrear,
+        label: 'Crear bodega',
+        path: paths.dashboard.gestionycontrolbodegascrear,
         icon: Plus
     }
 ]
-export function NavBarEquipos(): React.JSX.Element {
+export function NavBarBodegas(): React.JSX.Element {
     const pathname = usePathname();
 
     return (
-        <Card>
+        <Card style={{ height: '40px' }}>
             <Box
                 component="header"
                 sx={{
@@ -45,7 +45,7 @@ export function NavBarEquipos(): React.JSX.Element {
                     sx={{ alignItems: 'center', justifyContent: 'space-between', px: 2 }}
                 >
                     <Stack direction="row" spacing={2}>
-                        {ItemsNavEquipos.map(({ path, label, icon: Icon }) => {
+                        {ItemsNavBodegas.map(({ path, label, icon: Icon }) => {
                             const isActive = pathname.startsWith(path); // usamos startsWith para subrutas también
 
                             return (

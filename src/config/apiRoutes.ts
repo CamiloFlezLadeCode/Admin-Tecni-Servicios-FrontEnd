@@ -32,7 +32,8 @@ export const apiRoutes = {
         listarbodegueros: `${API_BASE_URL}/listar-bodegueros`,
         listardespachadores: `${API_BASE_URL}/listar-despachadores`,
         listartransportadores: `${API_BASE_URL}/listar-transportadores`,
-        listarvehiculos: `${API_BASE_URL}/listar-vehiculos`
+        listarvehiculos: `${API_BASE_URL}/listar-vehiculos`,
+        listarestados: `${API_BASE_URL}/listar-estados`
     },
     comercial: {
         remisiones: {
@@ -42,6 +43,12 @@ export const apiRoutes = {
         },
         devoluciones: {
             creardevolucion: `${API_BASE_URL}/crear-devolucion`
+        }
+    },
+    gestionycontrol: {
+        equipos: {
+            verequipoporid: (IdEquipo: number) => `${API_BASE_URL}/ver-equipo/${IdEquipo}`,
+            actualizarequipo: `${API_BASE_URL}/actualizar-equipo`
         }
     }
 };

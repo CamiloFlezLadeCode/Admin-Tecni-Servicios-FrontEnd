@@ -8,6 +8,8 @@ import {
 } from '@mui/material';
 
 import { TraerEquipos } from '@/services/gestionycontrol/equipos/TraerEquiposRegistradosService';
+import { FormularioEditarEquipo } from '../editar/FormularioEditarEquipo';
+import { useSocketIO } from '@/hooks/use-WebSocket';
 
 interface Client {
     Nombre: string;
@@ -20,6 +22,8 @@ interface Client {
     Estado: string;
     IdEquipo: number;
     NombreEquipo: string;
+    Cantidad: number;
+    Subarrendatario: string;
 }
 
 type EstadoDb = 'Disponible' | 'No disponible' | 'Reparación';
@@ -54,21 +58,47 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-    React.useEffect(() => {
-        const fetchEquipos = async () => {
-            try {
-                const data = await TraerEquipos();
-                setEquipos(data);
-            } catch (error) {
-                console.error('❌ Error al traer los equipos:', error);
-                setError('Error al cargar equipos');
-            } finally {
-                setLoading(false);
-            }
-        };
+    //Implementación de WebSocket
+    const { sendMessage, messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
+    const CargarEquipos = async () => {
+        try {
+            const data = await TraerEquipos();
+            setEquipos(data);
+        } catch (error) {
+            setError(`Error al cargar los equipos: ${error}`);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-        fetchEquipos();
+    React.useEffect(() => {
+        CargarEquipos();
     }, []);
+
+    React.useEffect(() => {
+        if (messages.length > 0) {
+            const ultimomensajes = messages[messages.length - 1];
+            if (ultimomensajes.tipo === 'equipo-actualizado') {
+                CargarEquipos();
+            }
+        }
+    }, [messages]);
+    //...
+    // React.useEffect(() => {
+    //     const fetchEquipos = async () => {
+    //         try {
+    //             const data = await TraerEquipos();
+    //             setEquipos(data);
+    //         } catch (error) {
+    //             console.error('❌ Error al traer los equipos:', error);
+    //             setError('Error al cargar equipos');
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+
+    //     fetchEquipos();
+    // }, []);
 
     const filteredData = equipos.filter(equipo =>
         equipo.NombreEquipo.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -108,12 +138,15 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Id</TableCell>
                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Nombre</TableCell>
                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Categoria/Familia</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Cantidad</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Subarrendatario</TableCell>
                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Precio Venta</TableCell>
                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Precio Alquiler</TableCell>
                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Precio Reparación</TableCell>
                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Creado Por</TableCell>
                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Fecha Creación</TableCell>
                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Estado</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Acciones</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -126,6 +159,8 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
                                             <TableCell>{equipo.IdEquipo}</TableCell>
                                             <TableCell>{equipo.NombreEquipo}</TableCell>
                                             <TableCell>{equipo.CategoriaEquipo}</TableCell>
+                                            <TableCell>{equipo.Cantidad}</TableCell>
+                                            <TableCell>{equipo.Subarrendatario}</TableCell>
                                             <TableCell>{equipo.PrecioVenta}</TableCell>
                                             <TableCell>{equipo.PrecioAlquiler}</TableCell>
                                             <TableCell>{equipo.PrecioReparacion}</TableCell>
@@ -137,6 +172,12 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
                                                     color={estadoKey ? Estado[estadoKey].color : 'default'}
                                                     size="small"
                                                     sx={{ width: 120, justifyContent: 'center' }}
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <FormularioEditarEquipo
+                                                    IdEquipo={equipo.IdEquipo}
+                                                    sendMessage={sendMessage}
                                                 />
                                             </TableCell>
                                         </TableRow>

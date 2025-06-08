@@ -75,7 +75,9 @@ export function FormularioCrearEquipo(): React.JSX.Element {
         PrecioAlquiler: '',
         PrecioReparacion: '',
         UsuarioCreacion: documentoUsuarioActivo,
-        EstadoEquipo: '3'
+        EstadoEquipo: '3',
+        Cantidad: 1,
+        DocumentoSubarrendatario: ''
     });
 
     //Se definen las reglas con su respectivo mensaje de alerta
@@ -129,7 +131,9 @@ export function FormularioCrearEquipo(): React.JSX.Element {
                     PrecioAlquiler: '',
                     PrecioReparacion: '',
                     UsuarioCreacion: documentoUsuarioActivo,
-                    EstadoEquipo: '3'
+                    EstadoEquipo: '3',
+                    Cantidad: 1,
+                    DocumentoSubarrendatario: ''
                 });
             } catch (error) {
                 if (progressInterval) clearInterval(progressInterval); // Limpiar
@@ -226,13 +230,24 @@ export function FormularioCrearEquipo(): React.JSX.Element {
                         />
                     </Grid>
                     <Grid md={2} xs={12} mt={0.5}>
+                        <Input
+                            label='Cantidad'
+                            value={datos.Cantidad}
+                            onChange={handleChange}
+                            // required
+                            tamano='small'
+                            tipo_input='number'
+                            valorname='Cantidad'
+                        />
+                    </Grid>
+                    <Grid md={2} xs={12} mt={0.5}>
                         <InputSelect
                             label='Subarrendatario'
-                            value={datos.EstadoEquipo}
+                            value={datos.DocumentoSubarrendatario}
                             options={subarrendatario}
                             size='small'
                             onChange={handleChange}
-                            valorname='EstadoEquipo'
+                            valorname='DocumentoSubarrendatario'
                         />
                     </Grid>
                     <Grid md={2} xs={12} mt={0.5}>

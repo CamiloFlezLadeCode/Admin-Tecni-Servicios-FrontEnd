@@ -363,7 +363,8 @@ export function FormularioCrearRemision(): React.JSX.Element {
         NoRemision: datos.NoRemision,
         DocumentoCliente: datos.Cliente,
         IdProyecto: datos.Proyecto,
-        IdBodega: datos.Bodega,
+        // IdBodega: datos.Bodega,
+        IdBodega: null,
         DocumentoBodeguero: datos.Bodeguero,
         DocumentoDespachador: datos.Despachador,
         DocumentoTransportador: datos.Transportador,
@@ -372,7 +373,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
         NombrePersonaRecibe: datos.Recibe,
         ObservacionesEmpresa: datos.ObservacionesEmpresa,
         UsuarioCreacion: datos.UsuarioCrecion,
-        IdEstado: 1,
+        IdEstado: 8,
         PrecioTotalGeneralSinIVA: itemsRemision.reduce((acc, item) => acc + (item.PrecioTotalSinIVA ?? 0), 0),
         IVA: datos.IVA,
         PrecioTotalGeneralConIVA: itemsRemision.reduce((acc, item) => acc + (item.PrecioTotal ?? 0), 0),
@@ -568,7 +569,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
                             valorname='Categoria'
                         />
                     </Grid> */}
-                    <Grid md={3} xs={12} mt={0.5}>
+                    {/* <Grid md={3} xs={12} mt={0.5}>
                         <InputSelect
                             label='Bodega'
                             value={datos.Bodega}
@@ -577,7 +578,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
                             onChange={handleChange}
                             valorname="Bodega"
                         />
-                    </Grid>
+                    </Grid> */}
                     <Grid md={3} xs={12} mt={0.5}>
                         <InputSelectConEstado
                             label="Equipo disponible"

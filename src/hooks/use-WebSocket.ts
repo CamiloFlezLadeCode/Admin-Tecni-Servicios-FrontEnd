@@ -34,6 +34,13 @@ export function useSocketIO(url: string) {
             setMessages((prev) => [...prev, { tipo: 'vehiculo-creado', data }]);
         });
 
+        //Socket para equipo actualizado
+        socket.on('equipo-actualizado', (data) => {
+            console.log('📨 Evento equipo-actualizado recibido:', data);
+            setMessages((prev) => [...prev, { tipo: 'equipo-actualizado', data }]);
+        });
+        //...
+
         socket.on('disconnect', (reason) => {
             console.log('❌ Socket desconectado:', reason);
         });

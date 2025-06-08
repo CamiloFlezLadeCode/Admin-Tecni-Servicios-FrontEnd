@@ -40,6 +40,7 @@ import {
   PencilSimple, //Lapiz para representar editar
   Truck, //Camión
   Lockers, //Referencia a bodega
+  ClipboardText, //Hace referencia a ordenes de servicio
 } from '@phosphor-icons/react/dist/ssr';
 
 export const navIcons = {
@@ -66,6 +67,7 @@ export const navIcons = {
   'icono-editar': PencilSimple,
   'icono-vehiculos': Truck,
   'icono-bodegas': Lockers,
+  'icono-ordenes-de-servicio': ClipboardText,
   user: UserIcon,
   users: UsersIcon,
 } as Record<string, Icon>;

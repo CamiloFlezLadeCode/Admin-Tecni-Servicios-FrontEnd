@@ -73,6 +73,16 @@ export const navItems = [
           type: 'startsWith',
           href: paths.dashboard.comercialdevoluciones
         }
+      },
+      {
+        key: 'comercial_ordenes_de_servicio',
+        title: 'Órdenes de servicio',
+        href: paths.dashboard.comercialordenesdeservicio,
+        icon: 'icono-ordenes-de-servicio',
+        matcher: {
+          type: 'startsWith',
+          href: paths.dashboard.comercialordenesdeservicio
+        }
       }
     ]
   },
@@ -82,6 +92,16 @@ export const navItems = [
     key: 'gestionycontrol',
     title: 'Gestión y control',
     items: [
+      // {
+      //   key: 'bodegas',
+      //   title: 'Bodegas',
+      //   icon: 'icono-bodegas',
+      //   href: paths.dashboard.gestionycontrolbodegas,
+      //   matcher: {
+      //     type: 'startsWith',
+      //     href: paths.dashboard.gestionycontrolbodegas,
+      //   }
+      // },
       // {
       //   key: 'clientes',
       //   title: 'Clientes',
