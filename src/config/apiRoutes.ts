@@ -25,7 +25,8 @@ export const apiRoutes = {
         crearvehiculo: `${API_BASE_URL}/crear-vehiculo`,
         vervehiculos: `${API_BASE_URL}/ver-vehiculos`,
         consultarvehiculoporid: (IdVehiculo: string) => `${API_BASE_URL}/ver-vehiculo/${IdVehiculo}`,
-        actualizarvehiculo: `${API_BASE_URL}/actualizar-vehiculo`
+        actualizarvehiculo: `${API_BASE_URL}/actualizar-vehiculo`,
+        eliminarvehiculo: (IdVehiculo: number) => `${API_BASE_URL}/eliminar-vehiculo/${IdVehiculo}`
     },
     generales: {
         listarsubarrendatarios: `${API_BASE_URL}/listar-subarrendatarios`,
@@ -49,6 +50,10 @@ export const apiRoutes = {
         equipos: {
             verequipoporid: (IdEquipo: number) => `${API_BASE_URL}/ver-equipo/${IdEquipo}`,
             actualizarequipo: `${API_BASE_URL}/actualizar-equipo`
+        },
+        repuestos: {
+            crear_repuesto: `${API_BASE_URL}/crear-repuesto`,
+            ver_repuestos: `${API_BASE_URL}/ver-repuestos`
         }
     }
 };

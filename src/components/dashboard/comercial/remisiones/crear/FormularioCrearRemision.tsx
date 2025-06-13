@@ -245,10 +245,30 @@ export function FormularioCrearRemision(): React.JSX.Element {
     const [cantidaddisponible, setCantidadDisponible] = React.useState(0);
     const prevEquipoRef = React.useRef(datos.Equipo); // Referencia para almacenar el valor anterior
 
+    //Se manejan los estados para los 3 tipos de precios
+    const [precioAlquiler, setPrecioAlquiler] = React.useState(0);
+    const [precioVenta, setPrecioVenta] = React.useState(0);
+    const [precioReparacion, setPrecioReparacion] = React.useState(0);
+    // ...
     const CargarCantidadDisponibleEquipo = async () => {
         try {
             const CantidadDisponibleEquipo = await ConsultarCantidadDisponibleEquipo(Number(datos.Equipo));
             setCantidadDisponible(CantidadDisponibleEquipo[0].CantidadDisponible);
+
+            //Se asignan los precios
+            //alquiler
+            const PrecioAlquiler = await ConsultarCantidadDisponibleEquipo(Number(datos.Equipo));
+            setPrecioAlquiler(PrecioAlquiler[0].PrecioAlquiler);
+            setDatos(prev => ({ ...prev, PrecioUnidad: Number(PrecioAlquiler[0].PrecioAlquiler) ?? 0 }));
+            //venta
+            const PrecioVenta = await ConsultarCantidadDisponibleEquipo(Number(datos.Equipo));
+            setPrecioVenta(PrecioVenta[0].PrecioVenta);
+            // setDatos(prev => ({ ...prev, PrecioUnidad: PrecioVenta[0].PrecioVenta }));
+            //reparación
+            const PrecioReparacion = await ConsultarCantidadDisponibleEquipo(Number(datos.Equipo));
+            setPrecioReparacion(PrecioReparacion[0].PrecioReparacion);
+            // setDatos(prev => ({ ...prev, PrecioUnidad: PrecioReparacion[0].PrecioReparacion }));
+            // ...
         } catch (error) {
             console.error(`Error al consultar la cantidad disponible del equipo. ${error}`);
         }

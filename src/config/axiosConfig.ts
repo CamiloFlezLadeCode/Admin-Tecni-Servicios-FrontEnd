@@ -12,7 +12,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.response.use(
   response => response,
   error => {
-    console.error('Error en respuesta:', error.response ?? error.message);
+    // console.error('Error en respuesta:', error.response ?? error.message);
     return Promise.reject(error);
   }
 );

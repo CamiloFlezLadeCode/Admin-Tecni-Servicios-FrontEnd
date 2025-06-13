@@ -29,17 +29,25 @@ export function useSocketIO(url: string) {
         })
         // ...
 
+        // SOCKETS PARA VEHÍCULOS
+        //Socket para vehiculo creado
+        socket.on('vehiculo-creado', (data) => {
+            console.log('📨 Evento vehiculo-creado recibido:', data);
+            setMessages((prev) => [...prev, { tipo: 'vehiculo-creado', data }]);
+        });
+
         //Socket para vehiculo actualizado
         socket.on('vehiculo-actualizado', (data) => {
             console.log('📨 Evento vehiculo-actualizado recibido:', data);
             setMessages((prev) => [...prev, { tipo: 'vehiculo-actualizado', data }]);
         });
 
-        //Socket para vehiculo creado
-        socket.on('vehiculo-creado', (data) => {
-            console.log('📨 Evento vehiculo-creado recibido:', data);
-            setMessages((prev) => [...prev, { tipo: 'vehiculo-creado', data }]);
-        });
+        // Socket para equipo eliminado
+        socket.on('vehiculo-eliminado', (data) => {
+            console.log('📨 Evento vehiculo-eliminado recibido:', data);
+            setMessages((prev) => [...prev, { tipo: 'vehiculo-eliminado', data }]);
+        })
+        // ...
 
         //SOCKETS PARA EQUIPOS
         //Para equipo actualizado
@@ -51,8 +59,15 @@ export function useSocketIO(url: string) {
         socket.on('equipo-creado', (data) => {
             console.log('📨 Evento equipo-creado recibido:', data);
             setMessages((prev) => [...prev, { tipo: 'equipo-creado', data }]);
-        })
+        });
         //...
+
+        // SOCKETS PARA REPUESTOS
+        socket.on('repuesto-creado', (data) => {
+            console.log('📨 Evento repuesto-creado recibido:', data);
+            setMessages((prev) => [...prev, { tipo: 'repuesto-creado', data }]);
+        });
+        // ...
 
         socket.on('disconnect', (reason) => {
             console.log('❌ Socket desconectado:', reason);

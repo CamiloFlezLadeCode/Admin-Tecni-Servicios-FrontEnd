@@ -1,26 +1,23 @@
 'use client';
 
-import * as React from 'react';
+import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
+import { useSocketIO } from '@/hooks/use-WebSocket';
+import { ConsultarVehiculos } from '@/services/gestionycontrol/vehiculos/ConsultarVehiculosService';
 import {
-    Box,
     Card, CardContent,
     Chip,
     Divider,
-    IconButton, Modal,
     Paper,
     Table,
     TableBody, TableCell,
     TableContainer, TableHead,
     TablePagination,
     TableRow, TextField,
-    Typography,
-    useMediaQuery,
-    useTheme
+    Typography
 } from '@mui/material';
-import { ConsultarVehiculos } from '@/services/gestionycontrol/vehiculos/ConsultarVehiculosService';
-import { PencilSimple } from '@phosphor-icons/react/dist/ssr';
+import * as React from 'react';
 import { FormularioModalEditarVehiculo } from '../editar/FormularioEditarVehiculo';
-import { useSocketIO } from '@/hooks/use-WebSocket';
+import AlertaEliminarVehiculo from '../eliminar/AlertaEliminarVehiculo';
 
 interface Vehiculo {
     IdVehiculo: string;
@@ -69,18 +66,36 @@ export function TablaVisualizarVehiculos(): React.JSX.Element {
         CargarVehiculos();
     }, []);
 
-    //Se cargan nuevamente cuando un vehiculo es actualizado
+    //Se cargan nuevamente cuando un vehiculo es creado, actualizado ó eliminado
     React.useEffect(() => {
+        // console.log("Mensajes recibidos:", messages); // ← añade esto
         if (messages.length > 0) {
             const UltimoMensajeEmitdo = messages[messages.length - 1];
             if (
-                    UltimoMensajeEmitdo.tipo === 'vehiculo-actualizado' || 
-                    UltimoMensajeEmitdo.tipo === 'vehiculo-creado'
-                ) {
+                UltimoMensajeEmitdo.tipo === 'vehiculo-actualizado' ||
+                UltimoMensajeEmitdo.tipo === 'vehiculo-creado' ||
+                UltimoMensajeEmitdo.tipo === 'vehiculo-eliminado'
+            ) {
                 CargarVehiculos();
             }
         }
     }, [messages]);
+
+    // Se implementó acá porque si se dejaba en el componente "AlertaEliminarVehiculo.tsx", se perdía al momento de eliminar el vehículo
+    // ya que al no estar presente en la tabla, este desmontaba el componente por completo impidiendo la visualización de la alerta de confirmación
+    // Se declaran los estados para las alertas para la eliminación del vehículo
+    const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
+    const [mensajeAlerta, setMensajeAlerta] = React.useState('');
+    const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
+    // ...
+
+    // Funcionalidad para abrir/mostrar la alerta para la eliminación del vehículo
+    const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error') => {
+        setMensajeAlerta(mensaje);
+        setTipoAlerta(tipo);
+        setMostrarAlertas(true);
+    };
+    // ...
 
     const filteredData = vehiculos.filter(vehiculo =>
         vehiculo.Placa.toLowerCase().includes(searchTerm.toLocaleLowerCase())
@@ -91,74 +106,88 @@ export function TablaVisualizarVehiculos(): React.JSX.Element {
     if (error) return <p>{error}</p>;
 
     return (
-        <Card>
-            <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Visualización de vehículos</Typography>
-            <Divider />
-            <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
-                <Paper>
-                    <TextField
-                        variant="outlined"
-                        placeholder="Buscar vehículo..."
-                        onChange={e => setSearchTerm(e.target.value)}
-                        // style={{ margin: '16px' }}
-                        size='small'
+        <>
+            <MensajeAlerta
+                open={mostrarAlertas}
+                tipo={tipoAlerta}
+                mensaje={mensajeAlerta}
+                onClose={() => setMostrarAlertas(false)}
+            />
+            <Card>
+                <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Visualización de vehículos</Typography>
+                <Divider />
+                <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
+                    <Paper>
+                        <TextField
+                            variant="outlined"
+                            placeholder="Buscar vehículo..."
+                            onChange={e => setSearchTerm(e.target.value)}
+                            // style={{ margin: '16px' }}
+                            size='small'
+                        />
+                        <TableContainer>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>IdVehículo</TableCell>
+                                        <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Placa</TableCell>
+                                        <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Creado Por</TableCell>
+                                        <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Fecha Creación</TableCell>
+                                        <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Estado</TableCell>
+                                        <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Acciones</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {paginatedData.map((vehiculo, index) => {
+                                        const estadokey = estadoMap[vehiculo.Estado.toLowerCase() as EstadoDb] ?? 'inactive';
+                                        return (
+                                            <TableRow key={vehiculo.IdVehiculo}>
+                                                <TableCell>{vehiculo.IdVehiculo}</TableCell>
+                                                <TableCell>{vehiculo.Placa}</TableCell>
+                                                <TableCell>{vehiculo.UsuarioCreacion}</TableCell>
+                                                <TableCell>{vehiculo.FechaCreacion}</TableCell>
+                                                <TableCell>
+                                                    <Chip
+                                                        label={Estado[estadokey].label}
+                                                        color={Estado[estadokey].color}
+                                                        size="small"
+                                                        sx={{ width: 90, justifyContent: 'center' }}
+                                                    />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <FormularioModalEditarVehiculo
+                                                        IdVehiculo={vehiculo.IdVehiculo}
+                                                        sendMessage={sendMessage} // 👈 pásalo como prop
+                                                    />
+                                                    <AlertaEliminarVehiculo
+                                                        IdVehiculo={vehiculo.IdVehiculo}
+                                                        NombrePlacaVehiculo={vehiculo.Placa}
+                                                        sendMessage={sendMessage} // 👈 pásalo como prop
+                                                        mostrarMensaje={mostrarMensaje}
+                                                    />
+                                                </TableCell>
+                                            </TableRow>
+                                        )
+                                    })}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Paper>
+                    <TablePagination
+                        component="div"
+                        count={filteredData.length}
+                        page={page}
+                        onPageChange={(_, newPage) => setPage(newPage)}
+                        rowsPerPage={rowsPerPage}
+                        onRowsPerPageChange={(event) => {
+                            setRowsPerPage(parseInt(event.target.value, 10));
+                            setPage(0);
+                        }}
+                        labelRowsPerPage="Filas por página"
+                        rowsPerPageOptions={[5, 10, 25]}
                     />
-                    <TableContainer>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>IdVehículo</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Placa</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Creado Por</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Fecha Creación</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Estado</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Acciones</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {paginatedData.map((vehiculo, index) => {
-                                    const estadokey = estadoMap[vehiculo.Estado.toLowerCase() as EstadoDb] ?? 'inactive';
-                                    return (
-                                        <TableRow key={vehiculo.IdVehiculo}>
-                                            <TableCell>{vehiculo.IdVehiculo}</TableCell>
-                                            <TableCell>{vehiculo.Placa}</TableCell>
-                                            <TableCell>{vehiculo.UsuarioCreacion}</TableCell>
-                                            <TableCell>{vehiculo.FechaCreacion}</TableCell>
-                                            <TableCell>
-                                                <Chip
-                                                    label={Estado[estadokey].label}
-                                                    color={Estado[estadokey].color}
-                                                    size="small"
-                                                    sx={{ width: 90, justifyContent: 'center' }}
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                <FormularioModalEditarVehiculo
-                                                    IdVehiculo={vehiculo.IdVehiculo}
-                                                    sendMessage={sendMessage} // 👈 pásalo como prop
-                                                />
-                                            </TableCell>
-                                        </TableRow>
-                                    )
-                                })}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </Paper>
-                <TablePagination
-                    component="div"
-                    count={filteredData.length}
-                    page={page}
-                    onPageChange={(_, newPage) => setPage(newPage)}
-                    rowsPerPage={rowsPerPage}
-                    onRowsPerPageChange={(event) => {
-                        setRowsPerPage(parseInt(event.target.value, 10));
-                        setPage(0);
-                    }}
-                    labelRowsPerPage="Filas por página"
-                    rowsPerPageOptions={[5, 10, 25]}
-                />
-            </CardContent>
-        </Card>
+                </CardContent>
+            </Card>
+        </>
     );
 };
