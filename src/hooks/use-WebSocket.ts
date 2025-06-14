@@ -63,9 +63,15 @@ export function useSocketIO(url: string) {
         //...
 
         // SOCKETS PARA REPUESTOS
+        // Para repuesto creado
         socket.on('repuesto-creado', (data) => {
             console.log('📨 Evento repuesto-creado recibido:', data);
             setMessages((prev) => [...prev, { tipo: 'repuesto-creado', data }]);
+        });
+        // Para repuesto actualizado
+        socket.on('repuesto-actualizado', (data) => {
+            console.log('📨 Evento repuesto-actualizado recibido:', data);
+            setMessages((prev) => [...prev, { tipo: 'repuesto-actualizado', data }]);
         });
         // ...
 

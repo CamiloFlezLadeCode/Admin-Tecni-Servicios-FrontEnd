@@ -4,6 +4,7 @@ export interface User {
   avatar?: string;
   email?: string;
   documento?: string;
+  rol?: string;
 
   [key: string]: unknown;
 }

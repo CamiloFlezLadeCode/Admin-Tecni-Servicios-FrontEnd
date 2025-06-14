@@ -99,7 +99,7 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
     React.useEffect(() => {
         if (messages.length > 0) {
             const ultimomensajes = messages[messages.length - 1];
-            if (ultimomensajes.tipo === 'repuesto-creado') {
+            if (ultimomensajes.tipo === 'repuesto-creado' || ultimomensajes.tipo === 'repuesto-actualizado') {
                 HandleCargarRepuestos();
             }
         }
@@ -182,6 +182,7 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
                                             <TableCell>
                                                 <FormularioEditarRepuesto
                                                     IdRepuesto={repuesto.IdRepuesto}
+                                                    sendMessage={sendMessage}
                                                 />
                                             </TableCell>
                                         </TableRow>

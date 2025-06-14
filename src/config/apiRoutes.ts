@@ -47,6 +47,9 @@ export const apiRoutes = {
         }
     },
     gestionycontrol: {
+        cuenta: {
+            ver_informacion_usuario_activo: (DocumentoUsuarioActivo: string) => `${API_BASE_URL}/ver-informacion-usuario/${DocumentoUsuarioActivo}`
+        },
         equipos: {
             verequipoporid: (IdEquipo: number) => `${API_BASE_URL}/ver-equipo/${IdEquipo}`,
             actualizarequipo: `${API_BASE_URL}/actualizar-equipo`
@@ -54,7 +57,8 @@ export const apiRoutes = {
         repuestos: {
             crear_repuesto: `${API_BASE_URL}/crear-repuesto`,
             ver_repuestos: `${API_BASE_URL}/ver-repuestos`,
-            consultar_repuesto_por_id: (IdRepuesto: number) => `${API_BASE_URL}/ver-repuesto/${IdRepuesto}`
+            consultar_repuesto_por_id: (IdRepuesto: number) => `${API_BASE_URL}/ver-repuesto/${IdRepuesto}`,
+            actualizar_repuesto: `${API_BASE_URL}/actualizar-repuesto`
         }
     }
 };

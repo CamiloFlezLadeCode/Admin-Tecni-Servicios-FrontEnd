@@ -209,5 +209,5 @@ export const navItems = [
     ]
   },
   { key: 'account', title: 'Cuenta', href: paths.dashboard.account, icon: 'user' },
-  { key: 'settings', title: 'Ajustes/Configuraciones', href: paths.dashboard.settings, icon: 'gear-six' },
+  { key: 'settings', title: 'Ajustes/Configuraciones', href: paths.dashboard.settings, icon: 'gear-six', roles: ['Administrador'] },
 ] satisfies NavItemConfig[];

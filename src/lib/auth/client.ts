@@ -346,7 +346,7 @@ class AuthClient {
     return { error: 'Autenticación social no implementada' };
   }
 
-  async signInWithPassword(_params: SignInWithPasswordParams): Promise<{ nombre?: string; documento?: string; error?: string; correo?: string; token?: string; }> {
+  async signInWithPassword(_params: SignInWithPasswordParams): Promise<{ nombre?: string; documento?: string; error?: string; correo?: string; token?: string; rol?: string; }> {
     const { email, password } = _params;
 
     try {
@@ -366,12 +366,13 @@ class AuthClient {
         return { error: 'Credenciales incorrectas' };
       };
 
-      const { nombre, documento, correo, token } = response.data;
+      const { nombre, documento, correo, token, rol } = response.data;
 
       // Podés guardar esto en memoria/localStorage si lo necesitás para mostrar en la UI
       localStorage.setItem('custom-auth-name', nombre);
       localStorage.setItem('custom-auth-documento', documento);
       localStorage.setItem('custom-auth-correo', correo);
+      localStorage.setItem('custom-auth-rol', rol);
       // localStorage.setItem('custom-auth-token-autenticacion', token);
 
       //Permanece token aún cerrando la pestaña ó navegador
@@ -381,7 +382,7 @@ class AuthClient {
       // sessionStorage.setItem('custom-auth-token-autenticacion', token);
 
 
-      return { nombre, documento, correo, token };
+      return { nombre, documento, correo, token, rol };
 
     } catch (error) {
       console.error('Error en signInWithPassword: ', error);
@@ -414,7 +415,7 @@ class AuthClient {
         },
       });
 
-      const { nombre, correo, documento } = response.data;
+      const { nombre, correo, documento, rol } = response.data;
 
       const user: User = {
         id: 'USR-001',
@@ -422,6 +423,7 @@ class AuthClient {
         fullName: nombre,
         email: correo,
         documento: documento,
+        rol: rol
       };
 
       return { data: user };
@@ -438,6 +440,7 @@ class AuthClient {
       localStorage.removeItem('custom-auth-name');
       localStorage.removeItem('custom-auth-documento');
       localStorage.removeItem('custom-auth-correo');
+      localStorage.removeItem('custom-auth-rol');
 
       //Permanece token aún cerrando la pestaña ó navegador
       localStorage.removeItem('custom-auth-token-autenticacion');

@@ -1,7 +1,11 @@
 'use client';
 
-import * as React from 'react';
-import { PencilSimple, X } from '@phosphor-icons/react/dist/ssr';
+import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
+import Input from '@/components/dashboard/componentes_generales/formulario/Input';
+import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
+import { ListarEstados } from '@/services/generales/ListarEstadosService';
+import { ActualizarRepuesto } from '@/services/gestionycontrol/repuestos/ActualizarRepuestoService';
+import { ConsultarRepuestoPorId } from '@/services/gestionycontrol/repuestos/ConsultarRepuestoPorIdService';
 import {
     Box,
     Button,
@@ -11,19 +15,15 @@ import {
     Divider,
     IconButton,
     Modal,
-    Typography,
-    useMediaQuery,
-    useTheme,
     SelectChangeEvent,
+    Typography,
+    useTheme
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
-import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
-import Input from '@/components/dashboard/componentes_generales/formulario/Input';
-import { ListarEstados } from '@/services/generales/ListarEstadosService';
-import { ConsultarRepuestoPorId } from '@/services/gestionycontrol/repuestos/ConsultarRepuestoPorIdService';
+import { PencilSimple, X } from '@phosphor-icons/react/dist/ssr';
+import * as React from 'react';
 
-
-export function FormularioEditarRepuesto({ IdRepuesto }: { IdRepuesto: number; }): React.JSX.Element {
+export function FormularioEditarRepuesto({ IdRepuesto, sendMessage }: { IdRepuesto: number; sendMessage: (event: string, payload: any) => void; }): React.JSX.Element {
     // Se implementa estado para todos los campos del formulario
     const [datos, setDatos] = React.useState({
         NuevoNombreRepuesto: '',
@@ -83,6 +83,29 @@ export function FormularioEditarRepuesto({ IdRepuesto }: { IdRepuesto: number; }
         }));
     };
     //...
+
+    //Para el manejo de las notificiones/alertas
+    const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
+    const [mensajeAlerta, setMensajeAlerta] = React.useState('');
+    const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
+    const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error') => {
+        setMensajeAlerta(mensaje);
+        setTipoAlerta(tipo);
+        setMostrarAlertas(true);
+    };
+    //...
+
+    // Se implementa la actualización del repuesto
+    const HandleActualizarRepuesto = async () => {
+        try {
+            await ActualizarRepuesto(datos);
+            sendMessage('repuesto-actualizado', {});
+            mostrarMensaje('Repuesto actualizado correctamente.', 'success');
+        } catch (error) {
+            mostrarMensaje(`Error al actualizar el repuesto: ${error}`, 'error');
+        }
+    };
+    // ...
     return (
         <>
             <IconButton
@@ -93,7 +116,12 @@ export function FormularioEditarRepuesto({ IdRepuesto }: { IdRepuesto: number; }
             >
                 <PencilSimple size={20} weight="bold" />
             </IconButton>
-
+            <MensajeAlerta
+                open={mostrarAlertas}
+                tipo={tipoAlerta}
+                mensaje={mensajeAlerta}
+                onClose={() => setMostrarAlertas(false)}
+            />
             <Modal
                 open={modalAbierto}
                 onClose={(_, reason) => {
@@ -169,7 +197,7 @@ export function FormularioEditarRepuesto({ IdRepuesto }: { IdRepuesto: number; }
                                 </Grid>
                                 <Grid md={4} xs={12} mt={0.5}>
                                     <InputSelect
-                                        label='Referencia'
+                                        label='Estado'
                                         value={datos.NuevoEstadoRepuesto}
                                         options={estados}
                                         size='small'
@@ -181,7 +209,7 @@ export function FormularioEditarRepuesto({ IdRepuesto }: { IdRepuesto: number; }
                         </CardContent>
                         <Divider />
                         <CardActions sx={{ justifyContent: 'flex-end' }}>
-                            <Button variant="contained">Guardar cambios</Button>
+                            <Button variant="contained" onClick={HandleActualizarRepuesto}>Guardar cambios</Button>
                         </CardActions>
                     </Card>
                 </Box>

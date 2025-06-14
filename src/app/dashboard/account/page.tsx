@@ -14,7 +14,7 @@ export default function Page(): React.JSX.Element {
   return (
     <Stack spacing={3}>
       <div>
-        <Typography variant="h5" style={{fontWeight: 'bold'}}>Cuenta</Typography>
+        <Typography variant="h6" style={{ fontWeight: 'bold' }}>Cuenta</Typography>
       </div>
       <Grid container spacing={3}>
         <Grid lg={4} md={6} xs={12}>

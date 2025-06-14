@@ -2,6 +2,7 @@
 
 import { FormularioEditarUsuarioGeneral } from '@/components/dashboard/gestion-y-control/usuarios-generales/editar/FormularioEditarUsuarioGeneral';
 import { useSocketIO } from '@/hooks/use-WebSocket';
+import { UserContext } from '@/contexts/user-context';
 import { ConsultarUsuariosGenerales } from '@/services/gestionycontrol/usuariosgenerales/ConsultarUsuariosGeneralesService';
 import {
     Card, CardContent,
@@ -105,6 +106,11 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
 
     const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
+    // Se captura el rol del usuario activo para ocultar ó mostrar la columna de acciones
+    const { user } = React.useContext(UserContext) || { user: null };
+    const mostrarAcciones = user?.rol === 'Administrador';
+    // ...
+
     if (loading) return <p>Cargando usuarios...</p>;
     if (error) return <p>{error}</p>;
 
@@ -136,7 +142,16 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Creado Por</TableCell>
                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Fecha Creación</TableCell>
                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Estado</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }} align="center">Acciones</TableCell>
+                                    {/* <TableCell style={{ fontWeight: 'bold', color: '#000000' }} align="center">Acciones</TableCell> */}
+                                    {mostrarAcciones && (
+                                        <TableCell
+                                            style={{ fontWeight: 'bold', color: '#000000' }}
+                                            align="center"
+                                        >
+                                            Acciones
+                                        </TableCell>
+                                    )}
+
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -162,12 +177,13 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
                                                     sx={{ width: 90, justifyContent: 'center' }}
                                                 />
                                             </TableCell>
-                                            <TableCell align="center">
-                                                <FormularioEditarUsuarioGeneral
-                                                    DatosUsuarioAActualizar={usuariogeneral.Documento}
-                                                    sendMessage={sendMessage}
-                                                />
-                                                {/* <IconButton
+                                            {mostrarAcciones && (
+                                                <TableCell align="center">
+                                                    <FormularioEditarUsuarioGeneral
+                                                        DatosUsuarioAActualizar={usuariogeneral.Documento}
+                                                        sendMessage={sendMessage}
+                                                    />
+                                                    {/* <IconButton
                                                     size="small"
                                                     color="primary"
                                                 >
@@ -185,7 +201,9 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
                                                 >
                                                     <FilePdf size={20} weight='bold' />
                                                 </IconButton> */}
-                                            </TableCell>
+                                                </TableCell>
+                                            )}
+
                                         </TableRow>
                                     );
                                 })}
