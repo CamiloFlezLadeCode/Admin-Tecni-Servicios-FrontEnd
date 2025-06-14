@@ -14,6 +14,7 @@ import CardContent from '@mui/material/CardContent';
 import Divider from '@mui/material/Divider';
 import * as React from 'react';
 import { useSocketIO } from '@/hooks/use-WebSocket';
+import { FormularioEditarRepuesto } from '../editar/FormularioEditarRepuesto';
 
 interface Client {
     id: number;
@@ -79,7 +80,6 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
         try {
             const Repuestos = await ConsultarRepuestos();
             setRepuestos(Repuestos);
-            console.log(JSON.stringify(Repuestos));
         } catch (error) {
             setError(`Error al cargar los repuestos: ${error}`);
         } finally {
@@ -179,7 +179,11 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
                                                     sx={{ width: 120, justifyContent: 'center' }}
                                                 />
                                             </TableCell>
-                                            <TableCell>Editar / Eliminar</TableCell>
+                                            <TableCell>
+                                                <FormularioEditarRepuesto
+                                                    IdRepuesto={repuesto.IdRepuesto}
+                                                />
+                                            </TableCell>
                                         </TableRow>
                                     )
                                 })}

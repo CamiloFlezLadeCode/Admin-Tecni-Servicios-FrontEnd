@@ -53,7 +53,8 @@ export const apiRoutes = {
         },
         repuestos: {
             crear_repuesto: `${API_BASE_URL}/crear-repuesto`,
-            ver_repuestos: `${API_BASE_URL}/ver-repuestos`
+            ver_repuestos: `${API_BASE_URL}/ver-repuestos`,
+            consultar_repuesto_por_id: (IdRepuesto: number) => `${API_BASE_URL}/ver-repuesto/${IdRepuesto}`
         }
     }
 };

@@ -133,7 +133,7 @@ export function FormularioCrearRepuesto(): React.JSX.Element {
                             onChange={handleChange}
                             // required
                             tamano='small'
-                            tipo_input='text'
+                            tipo_input='number'
                             valorname='Cantidad'
                         />
                     </Grid>

@@ -6,7 +6,7 @@ export const ConsultarRepuestos = async () => {
         const { data } = await axiosInstance.get(apiRoutes.gestionycontrol.repuestos.ver_repuestos);
         return data;
     } catch (error) {
-        console.log("Error al consultar los mecánicos");
+        console.log("Error al consultar los repuestos");
         throw error; // Lanza el error para manejarlo en el controlador
     }
 };
