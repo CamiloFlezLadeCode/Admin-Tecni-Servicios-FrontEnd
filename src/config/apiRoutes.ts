@@ -47,6 +47,9 @@ export const apiRoutes = {
         }
     },
     gestionycontrol: {
+        ajustes: {
+            actualizar_credenciales_usuario_activo: `${API_BASE_URL}/actualizar-credenciales`,
+        },
         cuenta: {
             ver_informacion_usuario_activo: (DocumentoUsuarioActivo: string) => `${API_BASE_URL}/ver-informacion-usuario/${DocumentoUsuarioActivo}`,
             subir_guardar_avatar: `${API_BASE_URL}/subir-avatar`,

@@ -13,9 +13,9 @@ export default function Page(): React.JSX.Element {
   return (
     <Stack spacing={3}>
       <div>
-        <Typography variant="h5" style={{fontWeight: 'bold'}}>Ajustes</Typography>
+        <Typography variant="h6" style={{fontWeight: 'bold'}}>Ajustes</Typography>
       </div>
-      <Notifications />
+      {/* <Notifications /> */}
       <UpdatePasswordForm />
     </Stack>
   );
