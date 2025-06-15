@@ -75,6 +75,19 @@ export function useSocketIO(url: string) {
         });
         // ...
 
+        // SOCKETS PARA CUENTA
+        // Para avatar guardado en servidor
+        socket.on('avatar-guardado', (data) => {
+            console.log('📨 Evento avatar-guardado recibido:', data);
+            setMessages((prev) => [...prev, { tipo: 'avatar-guardado', data }]);
+        });
+        // Para actualizar información usuario actual activo
+        socket.on('informacion-usuario-activo-actualizada', (data) => {
+            console.log('📨 Evento informacion-usuario-activo-actualizada recibido:', data);
+            setMessages((prev) => [...prev, { tipo: 'informacion-usuario-activo-actualizada', data }]);
+        })
+        // ...
+
         socket.on('disconnect', (reason) => {
             console.log('❌ Socket desconectado:', reason);
         });

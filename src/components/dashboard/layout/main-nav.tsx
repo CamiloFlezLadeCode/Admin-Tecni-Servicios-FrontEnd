@@ -22,6 +22,9 @@ import { string } from 'zod';
 import { UserContext } from '@/contexts/user-context'; // Asegúrate de que la ruta sea correcta
 import GuardarBackUp from '@/services/generales/GuardarBackUpService';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
+import { MostrarAvatar } from '@/services/gestionycontrol/cuenta/MostrarAvatarService';
+import Skeleton from '@mui/material/Skeleton';
+import { useSocketIO } from '@/hooks/use-WebSocket';
 
 export function MainNav(): React.JSX.Element {
   const [openNav, setOpenNav] = React.useState<boolean>(false);
@@ -60,6 +63,47 @@ export function MainNav(): React.JSX.Element {
       console.error('Error al guardar el backup: ', error);
     }
   };
+
+  // Se captura el documento del usuario actual activo
+  const DocumentoUsuarioActivo = user ? `${user.documento}` : '';
+  // ...
+
+  // Funcionalidad para motrar el avatar del usuario actual activo
+  const [avatarUrl, setAvatarUrl] = React.useState('');
+  const [cargandoAvatar, setCargandoAvatar] = React.useState(true);
+
+  const CargarAvatar = async () => {
+    if (DocumentoUsuarioActivo) {
+      setCargandoAvatar(true);
+      const url = await MostrarAvatar(DocumentoUsuarioActivo);
+      setAvatarUrl(url || '/assets/AvatarDefault.png');
+      setCargandoAvatar(false);
+    }
+  }
+  React.useEffect(() => {
+    // const cargarAvatar = async () => {
+    //   if (DocumentoUsuarioActivo) {
+    //     setCargandoAvatar(true);
+    //     const url = await MostrarAvatar(DocumentoUsuarioActivo);
+    //     setAvatarUrl(url || '/assets/AvatarDefault.png');
+    //     setCargandoAvatar(false);
+    //   }
+    // };
+    CargarAvatar();
+  }, [DocumentoUsuarioActivo]);
+  // ...
+
+  // Implementacion de WebSocket
+  const { sendMessage, messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
+  React.useEffect(() => {
+    if (messages.length > 0) {
+      const ultimomensajes = messages[messages.length - 1];
+      if (ultimomensajes.tipo === 'avatar-guardado') {
+        CargarAvatar();
+      }
+    }
+  }, [messages]);
+  // ...
   return (
     <React.Fragment>
       <Box
@@ -115,13 +159,29 @@ export function MainNav(): React.JSX.Element {
             <Button style={{ fontWeight: 'bold' }} onClick={RealizarBackUp}>
               Guardar BackUp
             </Button>
-            <Avatar
+            {/* <Avatar
               onClick={userPopover.handleOpen}
               ref={userPopover.anchorRef}
               // src="/assets/avatar.png"
-              src="/assets/favicon.ico"
+              // src="/assets/favicon.ico"
+              src="/assets/AvatarDefault.png"
               sx={{ cursor: 'pointer' }}
-            />
+            /> */}
+            {cargandoAvatar ? (
+              <Skeleton variant="circular" width={80} height={80} />
+            ) : (
+              <Avatar
+                onClick={userPopover.handleOpen}
+                ref={userPopover.anchorRef}
+                sx={{ cursor: 'pointer' }}
+                src={avatarUrl}
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.onerror = null;
+                  target.src = '/assets/AvatarDefault.png';
+                }}
+              />
+            )}
           </Stack>
         </Stack>
         <MensajeAlerta

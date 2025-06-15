@@ -48,7 +48,10 @@ export const apiRoutes = {
     },
     gestionycontrol: {
         cuenta: {
-            ver_informacion_usuario_activo: (DocumentoUsuarioActivo: string) => `${API_BASE_URL}/ver-informacion-usuario/${DocumentoUsuarioActivo}`
+            ver_informacion_usuario_activo: (DocumentoUsuarioActivo: string) => `${API_BASE_URL}/ver-informacion-usuario/${DocumentoUsuarioActivo}`,
+            subir_guardar_avatar: `${API_BASE_URL}/subir-avatar`,
+            mostrar_avatar_usuario_activo: (DocumentoUsuarioActivo: string) => `${API_BASE_URL}/mostrar-avatar/${DocumentoUsuarioActivo}`,
+            actualizar_informacion_usuario_activo: `${API_BASE_URL}/actualizar-informacion-usuario`
         },
         equipos: {
             verequipoporid: (IdEquipo: number) => `${API_BASE_URL}/ver-equipo/${IdEquipo}`,

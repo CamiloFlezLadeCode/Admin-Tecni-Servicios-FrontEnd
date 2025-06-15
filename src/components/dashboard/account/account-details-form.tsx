@@ -18,6 +18,10 @@ import { UserContext } from '@/contexts/user-context';
 import { ConsultarInformacionUsuarioActivo } from '@/services/gestionycontrol/cuenta/ConsultarInformacionUsuarioActivoService';
 import Input from '@/components/dashboard/componentes_generales/formulario/Input';
 import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
+import { ActualizarInformacionUsuarioActivo } from '@/services/gestionycontrol/cuenta/ActualizarInformacionUsuarioActivoService';
+import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
+import { useSocketIO } from '@/hooks/use-WebSocket';
+import FormularioValidator from '@/components/dashboard/componentes_generales/formulario/ValidarCampos';
 
 const states = [
   { value: 'alabama', label: 'Alabama' },
@@ -34,23 +38,23 @@ export function AccountDetailsForm(): React.JSX.Element {
 
   // Se maneja el estado para la información del usuario
   const [informacionUsuarioActivo, setinformacionUsuarioActivo] = React.useState({
-    Nombres: '',
-    Apellidos: '',
-    Correo: '',
-    Direccion: '',
-    Telefono: '',
-    Celular: '',
+    NombresUsuario: '',
+    ApellidosUsuario: '',
+    CorreoUsuario: '',
+    DireccionUsuario: '',
+    CelularUsuario: '',
+    DocumentoUsuario: DocumentoUsuarioActivo
   });
   const CargarInformacionDelUsuarioActivo = async () => {
     try {
       const Info = await ConsultarInformacionUsuarioActivo(DocumentoUsuarioActivo);
       setinformacionUsuarioActivo({
-        Nombres: Info[0].Nombres,
-        Apellidos: Info[0].Apellidos,
-        Correo: Info[0].Correo,
-        Direccion: Info[0].Direccion,
-        Telefono: Info[0].Telefono,
-        Celular: Info[0].Celular,
+        NombresUsuario: Info[0].Nombres,
+        ApellidosUsuario: Info[0].Apellidos,
+        CorreoUsuario: Info[0].Correo,
+        DireccionUsuario: Info[0].Direccion,
+        CelularUsuario: Info[0].Celular,
+        DocumentoUsuario: DocumentoUsuarioActivo
       });
     } catch (error) {
       console.error(`Error al cargar la información del usuario activo: ${error}`);
@@ -86,7 +90,7 @@ export function AccountDetailsForm(): React.JSX.Element {
   ) => {
     const { name, value } = e.target;
 
-    if (name === 'Celular') {
+    if (name === 'CelularUsuario') {
       const soloNumeros = value.replace(/\D/g, ''); // Solo números
       if (soloNumeros.length > 10) return; // No actualiza si supera 10
 
@@ -102,14 +106,77 @@ export function AccountDetailsForm(): React.JSX.Element {
       }));
     }
   };
-
   //  ... 
+
+  //Para el manejo de las notificiones/alertas
+  const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
+  const [mensajeAlerta, setMensajeAlerta] = React.useState('');
+  const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error' | 'warning'>('success');
+  const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error' | 'warning') => {
+    setMensajeAlerta(mensaje);
+    setTipoAlerta(tipo);
+    setMostrarAlertas(true);
+  };
+  //...
+
+  //Se implementa el uso del websocket
+  const { sendMessage, messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
+  // ...
+
+  // Se definen las reglas con su respectivo mensaje de alerta
+  const reglasValidacion = [
+    { campo: 'NombresUsuario', mensaje: 'El nombre es obligatorio' },
+    { campo: 'CorreoUsuario', mensaje: 'El correo es obligatorio y debe ser válido.' },
+    { campo: 'CelularUsuario', mensaje: 'El celular es obligatorio y debe ser un número válido de 10 dígitos.' },
+  ];
+  // ...
+
+  // Se maneja la validación exitosa del formulario
+  const manejarValidacionExitosa = () => {
+    // Lógica para manejar la validación exitosa
+    console.log("Validación exitosa. Procesar datos...", informacionUsuarioActivo);
+
+  };
+  // ...
+
+  // Se crea referencia para el formulario validador
+  const formularioRef = React.useRef<{ manejarValidacion: () => void }>(null);
+  // ...
+
+  // Se maneja funcionalidad para la actualización de los datos del usuario activo
+  const HandleActualizarInformacionUsuarioActivo = async () => {
+    // Validar formulario
+    const esValido = await formularioRef.current?.manejarValidacion();
+
+    if (esValido) {
+      try {
+        await ActualizarInformacionUsuarioActivo(informacionUsuarioActivo);
+        sendMessage('informacion-usuario-activo-actualizada', {});
+        mostrarMensaje(
+          'Información actualizada correctamente. Si cambiaste el nombre, cierra sesión y vuelve a ingresar para que el cambio se refleje.',
+          'success'
+        );
+      } catch (error) {
+        mostrarMensaje(`Errro al actualizar la información: ${error}`, 'error');
+      }
+    }
+
+  };
+  // ...
   return (
     <form
       onSubmit={(event) => {
         event.preventDefault();
       }}
     >
+      <MensajeAlerta
+        open={mostrarAlertas}
+        tipo={tipoAlerta}
+        mensaje={mensajeAlerta}
+        onClose={() => setMostrarAlertas(false)}
+        duracion={5000}
+      />
+
       <Card>
         <CardHeader subheader="La información se puede editar" title="Perfil" />
         <Divider />
@@ -121,12 +188,12 @@ export function AccountDetailsForm(): React.JSX.Element {
                 <OutlinedInput defaultValue="Sofia" label="First name" name="firstName" /> */}
                 <Input
                   label="Nombres"
-                  value={informacionUsuarioActivo.Nombres}
+                  value={informacionUsuarioActivo.NombresUsuario}
                   onChange={handleChange}
                   // required
                   tamano="small"
                   tipo_input="text"
-                  valorname='Nombres'
+                  valorname='NombresUsuario'
                 />
               </FormControl>
             </Grid>
@@ -137,12 +204,12 @@ export function AccountDetailsForm(): React.JSX.Element {
               </FormControl> */}
               <Input
                 label="Apellidos"
-                value={informacionUsuarioActivo.Apellidos}
+                value={informacionUsuarioActivo.ApellidosUsuario}
                 onChange={handleChange}
                 // required
                 tamano="small"
                 tipo_input="text"
-                valorname='Apellidos'
+                valorname='ApellidosUsuario'
               />
             </Grid>
             <Grid md={6} xs={12}>
@@ -152,12 +219,12 @@ export function AccountDetailsForm(): React.JSX.Element {
               </FormControl> */}
               <Input
                 label="Correo"
-                value={informacionUsuarioActivo.Correo}
+                value={informacionUsuarioActivo.CorreoUsuario}
                 onChange={handleChange}
                 // required
                 tamano="small"
                 tipo_input="text"
-                valorname='Correo'
+                valorname='CorreoUsuario'
               />
             </Grid>
             <Grid md={6} xs={12}>
@@ -167,12 +234,22 @@ export function AccountDetailsForm(): React.JSX.Element {
               </FormControl> */}
               <Input
                 label="Celular"
-                value={informacionUsuarioActivo.Celular}
+                value={informacionUsuarioActivo.CelularUsuario}
                 onChange={handleChange}
                 // required
                 tamano="small"
                 tipo_input="text"
-                valorname='Celular'
+                valorname='CelularUsuario'
+              />
+            </Grid>
+            <Grid md={6} xs={12}>
+              <Input
+                label="Dirección"
+                value={informacionUsuarioActivo.DireccionUsuario}
+                onChange={handleChange}
+                tamano="small"
+                tipo_input="text"
+                valorname='DireccionUsuario'
               />
             </Grid>
             {/* <Grid md={6} xs={12}>
@@ -197,7 +274,13 @@ export function AccountDetailsForm(): React.JSX.Element {
         </CardContent>
         <Divider />
         <CardActions sx={{ justifyContent: 'flex-end' }}>
-          <Button variant="contained">Guardar cambios</Button>
+          <Button variant="contained" onClick={HandleActualizarInformacionUsuarioActivo}>Guardar cambios</Button>
+          <FormularioValidator
+            ref={formularioRef}
+            datos={informacionUsuarioActivo}
+            reglasValidacion={reglasValidacion}
+            onValid={manejarValidacionExitosa}
+          />
         </CardActions>
       </Card>
     </form>

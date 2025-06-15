@@ -11,25 +11,25 @@ import type { Icon } from '@phosphor-icons/react/dist/lib/types';
 // import { Detective } from '@phosphor-icons/react/dist/ssr/Detective'; 
 // import { CurrencyDollar } from '@phosphor-icons/react/dist/ssr/CurrencyDollar';
 
-import { 
-  ChartPie as ChartPieIcon, 
-  GearSix as GearSixIcon, 
-  PlugsConnected as PlugsConnectedIcon, 
-  User as UserIcon, 
-  Users as UsersIcon, 
-  XSquare, 
-  SquareHalf, 
-  ArrowCircleRight, 
-  ArrowCircleLeft, 
-  Detective, 
+import {
+  ChartPie as ChartPieIcon,
+  GearSix as GearSixIcon,
+  PlugsConnected as PlugsConnectedIcon,
+  User as UserIcon,
+  Users as UsersIcon,
+  XSquare,
+  SquareHalf,
+  ArrowCircleRight,
+  ArrowCircleLeft,
+  Detective,
   CurrencyDollar,
   ReadCvLogo,
   FileText, //Representa la gestión de documentos o informes.
-  ChartPie , //Ideal para representar análisis o informes de gestión.
+  ChartPie, //Ideal para representar análisis o informes de gestión.
   Clipboard, //Puede simbolizar tareas, listas o gestión de proyectos.
   Package, //Representa paquetes o productos, adecuado para gestionar envíos y devoluciones.
   Swap, //Ideal para representar el intercambio de productos o mercancías.
-  CaretDown, 
+  CaretDown,
   CraneTower, //Ideal para representar maquinaria-equipos
   Wrench, //Ideal para representar equipos, herramientas
   Nut, //Ideal para representar repuestos
@@ -41,6 +41,7 @@ import {
   Truck, //Camión
   Lockers, //Referencia a bodega
   ClipboardText, //Hace referencia a ordenes de servicio
+  Crown, //Hace referencia a alto rango, máximo nivel
 } from '@phosphor-icons/react/dist/ssr';
 
 export const navIcons = {
@@ -68,6 +69,7 @@ export const navIcons = {
   'icono-vehiculos': Truck,
   'icono-bodegas': Lockers,
   'icono-ordenes-de-servicio': ClipboardText,
+  'icono-configuraciones-alto-nivel': Crown,
   user: UserIcon,
   users: UsersIcon,
 } as Record<string, Icon>;

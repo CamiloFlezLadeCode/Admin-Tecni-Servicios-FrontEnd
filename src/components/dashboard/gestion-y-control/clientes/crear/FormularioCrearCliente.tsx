@@ -226,10 +226,10 @@ export function FormularioCrearCliente(): React.JSX.Element {
     // Dentro del estado:
     const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
     const [mensajeAlerta, setMensajeAlerta] = React.useState('');
-    const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
+    const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error' | 'warning'>('success');
 
     // Función para abrir alerta
-    const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error') => {
+    const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error' | 'warning') => {
         setMensajeAlerta(mensaje);
         setTipoAlerta(tipo);
         setMostrarAlertas(true);

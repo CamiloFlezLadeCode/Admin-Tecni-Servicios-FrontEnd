@@ -49,7 +49,7 @@ const FormularioValidator = forwardRef<FormularioValidatorRef, FormularioValidat
         reglasValidacion.forEach(({ campo, mensaje }) => {
             if (!datos[campo]) {
                 mensajesFaltantes.push(mensaje);
-            } else if (campo === 'Celular') {
+            } else if (campo === 'Celular' || campo === 'CelularUsuario') {
                 const celular = datos[campo];
 
                 // Verifica que el celular solo contenga dígitos y tenga exactamente 10 caracteres
@@ -58,7 +58,7 @@ const FormularioValidator = forwardRef<FormularioValidatorRef, FormularioValidat
                 if (!esNumeroValido) {
                     mensajesFaltantes.push(mensaje);
                 }
-            } else if (campo === 'Correo') {
+            } else if (campo === 'Correo' || campo === 'CorreoUsuario') {
                 const Correo = datos[campo];
                 const esCorreoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(Correo);
                 if (!esCorreoValido) {
