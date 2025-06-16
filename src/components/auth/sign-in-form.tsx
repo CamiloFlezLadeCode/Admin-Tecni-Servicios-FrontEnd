@@ -280,7 +280,7 @@ export function SignInForm(): React.JSX.Element {
         localStorage.setItem('custom-auth-correo', result.correo);
         localStorage.setItem('custom-auth-token-autenticacion', result.token);
 
-        document.cookie = `custom-auth-rol=${result.rol}; path=/`;
+        document.cookie = `custom-auth-rol=${result.rol}; path=/; max-age=${60 * 60 * 24 * 1}`;
 
         await checkSession?.();
         // router.push('/'); // 👈 Redirige aquí a la ruta deseada
