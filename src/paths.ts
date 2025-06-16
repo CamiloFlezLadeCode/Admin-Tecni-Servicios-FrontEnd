@@ -50,9 +50,6 @@ export const paths = {
     // MODULO GESTIÓN Y CONTROL (EQUIPOS, CLIENTES, MACANICOS, PROYECTOS, REPUESTOS)
     gestionycontrol: '/dashboard/gestion-y-control',
 
-    // Configuraciones
-    gestionycontrolconfiguraciones: '/dashboard/gestion-y-control/configuraciones',
-
     // Clientes
     gestionycontrolclientes: '/dashboard/gestion-y-control/clientes',
     gestionycontrolclientescrear: '/dashboard/gestion-y-control/clientes/crear-cliente',
@@ -94,6 +91,10 @@ export const paths = {
     gestionycontrolbodegascrear: '/dashboard/gestion-y-control/bodegas/crear-bodega',
     gestionycontrolbodegasver: '/dashboard/gestion-y-control/bodegas/ver-bodegas',
     //...
+
+    // Configuraciones
+    configuraciones: '/dashboard/configuraciones',
+    // ...
   },
   errors: { notFound: '/errors/not-found' },
 } as const;

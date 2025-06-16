@@ -66,5 +66,11 @@ export const apiRoutes = {
             consultar_repuesto_por_id: (IdRepuesto: number) => `${API_BASE_URL}/ver-repuesto/${IdRepuesto}`,
             actualizar_repuesto: `${API_BASE_URL}/actualizar-repuesto`
         }
+    },
+    configuraciones: {
+        listar_profesionales_pertenecientes: `${API_BASE_URL}/ver-profesionales-pertenecientes`,
+        consultar_credenciales_del_profesional: (DocumentoProfesional: string) => `${API_BASE_URL}/consultar-credenciales-del-profesional/${DocumentoProfesional}`,
+        crear_credenciales_profesional_por_administrador: `${API_BASE_URL}/crear-credenciales-profesional`,
+        actualizar_credenciales_profesional_por_administrador: `${API_BASE_URL}/actualizar-credenciales-profesional`
     }
 };

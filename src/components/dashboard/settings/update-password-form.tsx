@@ -234,7 +234,7 @@ export function UpdatePasswordForm(): React.JSX.Element {
         <Divider />
         <CardContent>
           <Grid container spacing={1}>
-            <Grid md={4} xs={12} display="flex" alignItems="flex-start">
+            <Grid md={12} xs={12} display="flex" alignItems="flex-start">
               {/* <Controller
                 name="User"
                 control={control}
@@ -265,12 +265,13 @@ export function UpdatePasswordForm(): React.JSX.Element {
                       //   ),
                       // }}
                       endAdornment={
-                        <IconButton onClick={() => setShowConfirmPassword((prev) => !prev)}>
-                          {showConfirmPassword ? <EyeIcon /> : <EyeSlashIcon />}
+                        <IconButton style={{ cursor: 'default' }}>
+                          {/* {showConfirmPassword ? <EyeIcon /> : <EyeSlashIcon />} */}
+                          {/* <Box width="25px" /> */}
+                          <Box width="25px" height="25px" sx={{ cursor: 'default' }} />
                         </IconButton>
                       }
                     />
-
                   </Box>
                 )}
               />
@@ -283,7 +284,7 @@ export function UpdatePasswordForm(): React.JSX.Element {
           </Grid>
 
           <Grid container spacing={1} mt={2}>
-            <Grid md={4} xs={12} display="flex" alignItems="flex-start">
+            <Grid md={12} xs={12} display="flex" alignItems="flex-start">
               <Controller
                 name="Password"
                 control={control}
@@ -310,8 +311,8 @@ export function UpdatePasswordForm(): React.JSX.Element {
                       //   ),
                       // }}
                       endAdornment={
-                        <IconButton onClick={() => setShowConfirmPassword((prev) => !prev)}>
-                          {showConfirmPassword ? <EyeIcon /> : <EyeSlashIcon />}
+                        <IconButton onClick={() => setShowPassword((prev) => !prev)}>
+                          {showPassword ? <EyeIcon /> : <EyeSlashIcon />}
                         </IconButton>
                       }
                     />
@@ -330,7 +331,7 @@ export function UpdatePasswordForm(): React.JSX.Element {
           </Grid>
 
           <Grid container spacing={1} mt={2}>
-            <Grid md={4} xs={12} display="flex" alignItems="flex-start">
+            <Grid md={12} xs={12} display="flex" alignItems="flex-start">
               <Controller
                 name="ConfirmPassword"
                 control={control}

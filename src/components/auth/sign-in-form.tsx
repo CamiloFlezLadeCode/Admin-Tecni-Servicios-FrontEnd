@@ -280,9 +280,15 @@ export function SignInForm(): React.JSX.Element {
         localStorage.setItem('custom-auth-correo', result.correo);
         localStorage.setItem('custom-auth-token-autenticacion', result.token);
 
+        document.cookie = `custom-auth-rol=${result.rol}; path=/`;
+
         await checkSession?.();
         // router.push('/'); // 👈 Redirige aquí a la ruta deseada
-        router.refresh(); // Redirige a la página principal
+        // router.refresh(); // Redirige a la página principal
+        // window.location.href = '/';
+        router.push('/dashboard');
+
+
       } catch (error) {
         const errorMessage = (error as Error).message || 'Error desconocido';
         setError('root', { type: 'server', message: errorMessage });

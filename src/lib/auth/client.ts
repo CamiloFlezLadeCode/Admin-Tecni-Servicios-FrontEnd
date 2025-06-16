@@ -378,6 +378,8 @@ class AuthClient {
       //Permanece token aún cerrando la pestaña ó navegador
       localStorage.setItem('custom-auth-token-autenticacion', token);
 
+      document.cookie = `custom-auth-rol=${rol}; path=/`;
+
       //Token se retirar cuando se cierra la pestaña ó navegador
       // sessionStorage.setItem('custom-auth-token-autenticacion', token);
 
@@ -444,6 +446,8 @@ class AuthClient {
 
       //Permanece token aún cerrando la pestaña ó navegador
       localStorage.removeItem('custom-auth-token-autenticacion');
+
+      document.cookie = "custom-auth-rol=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
       //Token se retirar cuando se cierra la pestaña ó navegador
       // sessionStorage.removeItem('custom-auth-token-autenticacion');
