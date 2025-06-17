@@ -1,9 +1,9 @@
-import axios from 'axios';
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+import axiosInstance from '@/config/axiosConfig';
+import { apiRoutes } from '@/config/apiRoutes';
 
 export const ConsultarMecanicos = async () => {
     try {
-        const { data } = await axios.get(`${apiUrl}/ver-mecanicos`);
+        const { data } = await axiosInstance.get(apiRoutes.gestionycontrol.mecanicos.ver_todos_los_mecanicos);
         return data;
     } catch (error) {
         console.log("Error al consultar los mecánicos");

@@ -1,9 +1,9 @@
-import axios from 'axios';
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+import axiosInstance from '@/config/axiosConfig';
+import { apiRoutes } from '@/config/apiRoutes';
 
 const ListarEquipos = async (datos: any) => {
     try {
-        const { data } = await axios.get(`${apiUrl}/listar-equipos`, {
+        const { data } = await axiosInstance.get(apiRoutes.generales.listarequipos, {
             params: datos
         });
         return data;

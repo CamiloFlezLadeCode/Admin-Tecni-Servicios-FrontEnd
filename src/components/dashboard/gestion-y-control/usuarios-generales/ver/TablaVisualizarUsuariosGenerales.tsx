@@ -67,7 +67,7 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
     // ...
 
     // Implementación de WebSocket
-    const { sendMessage, messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
+    const { sendMessage, messages } = useSocketIO();
     const cargarUsuarios = async () => {
         try {
             setError(null);

@@ -21,7 +21,6 @@ export const MostrarAvatar = async (DocumentoUsuarioActivo: string): Promise<str
   try {
     // HEAD pide solo headers, no descarga la imagen
     await axiosInstance.head(url);
-    console.log(url);
     return url; // La imagen existe
   } catch (error: any) {
     // Si falla, usamos avatar por defecto

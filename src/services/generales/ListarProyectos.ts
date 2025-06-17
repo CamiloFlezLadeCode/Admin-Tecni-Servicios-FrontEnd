@@ -1,5 +1,5 @@
-import axios from 'axios';
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+import axiosInstance from '@/config/axiosConfig';
+import { apiRoutes } from '@/config/apiRoutes';
 
 // export const ListarProyectos = async (datos: any) => {
 //     try {
@@ -14,7 +14,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export const ListarProyectos = async (datos: any) => {
     try {
-        const { data } = await axios.get(`${apiUrl}/listar-proyectos`, {
+        const { data } = await axiosInstance.get(apiRoutes.generales.listarproyectos, {
             params: datos, // 👈 esto es clave
         });
         return data;

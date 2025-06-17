@@ -1,9 +1,9 @@
-import axios from 'axios';
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+import axiosInstance from '@/config/axiosConfig';
+import { apiRoutes } from '@/config/apiRoutes';
 
 export const ListarClientes = async () => {
     try {
-        const { data } = await axios.get(`${apiUrl}/listar-clientes`);
+        const { data } = await axiosInstance.get(apiRoutes.generales.listarclientes);
         return data;
     } catch (error) {
         console.log("Error al listar los clientes");

@@ -49,7 +49,7 @@ export function TablaVisualizarVehiculos(): React.JSX.Element {
 
     // const { messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
     // 👇 ÚNICA instancia del socket
-    const { sendMessage, messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
+    const { sendMessage, messages } = useSocketIO();
 
     const CargarVehiculos = async () => {
         try {

@@ -120,7 +120,7 @@ export function AccountDetailsForm(): React.JSX.Element {
   //...
 
   //Se implementa el uso del websocket
-  const { sendMessage, messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
+  const { sendMessage, messages } = useSocketIO();
   // ...
 
   // Se definen las reglas con su respectivo mensaje de alerta

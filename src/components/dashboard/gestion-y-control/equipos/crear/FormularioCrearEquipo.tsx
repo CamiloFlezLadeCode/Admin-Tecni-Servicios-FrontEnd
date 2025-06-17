@@ -100,7 +100,7 @@ export function FormularioCrearEquipo(): React.JSX.Element {
     const [progress, setProgress] = React.useState(0);
     const [cargando, setCargando] = React.useState<boolean>(false);
     //Se implementa el uso del websocket
-    const { sendMessage, messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
+    const { sendMessage, messages } = useSocketIO();
     // ...
     const handleCrearEquipo = async () => {
         // Validar formulario

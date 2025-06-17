@@ -1,9 +1,9 @@
-import axios from 'axios';
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+import axiosInstance from '@/config/axiosConfig';
+import { apiRoutes } from '@/config/apiRoutes';
 
 export const crearCliente = async (datos: any) => {
     try {
-        const { data } = await axios.post(`${apiUrl}/crearclientecompleto`, datos);
+        const { data } = await axiosInstance.post(apiRoutes.gestionycontrol.clientes.crear_cliente_completo, datos);
         return data;
     } catch (error) {
         console.log("Error al crear el cliente");
@@ -32,12 +32,9 @@ export const crearCliente = async (datos: any) => {
 
 export const verificarClienteExistenteService = async (identificacion: string) => {
     try {
-        const apiUrlCompleta = `${apiUrl}/buscarclientepordocumento/${identificacion}`;
-        console.log('Consultando en la URL:', apiUrlCompleta); // Log para verificar la URL completa
-
         // Realizamos la consulta
-        const { data } = await axios.get(apiUrlCompleta);
-        
+        const { data } = await axiosInstance.get(apiRoutes.gestionycontrol.clientes.buscar_existencia_cliente(identificacion));
+
         // Depuramos el contenido de la respuesta
         console.log('Respuesta de la API:', data);
 

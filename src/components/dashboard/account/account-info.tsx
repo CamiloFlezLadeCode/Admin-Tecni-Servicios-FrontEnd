@@ -134,7 +134,7 @@ const userold = {
 
 export function AccountInfo(): React.JSX.Element {
   //Se implementa el uso del websocket
-  const { sendMessage, messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
+  const { sendMessage, messages } = useSocketIO();
   // ...
   const { user } = React.useContext(UserContext) || { user: null };
   const nombreUsuarioActivo = user ? `${user.fullName}` : null;

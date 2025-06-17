@@ -49,7 +49,7 @@ interface Remision {
 export function TablaVisualizarRemisiones(): React.JSX.Element {
     // 3. Hooks de React y otros hooks de librerías
     const theme = useTheme();
-    const { sendMessage, messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
+    const { sendMessage, messages } = useSocketIO();
 
     // 4. Estados
     // const [remisiones, setRemisiones] = React.useState<any[]>([]);

@@ -1,9 +1,9 @@
-import axios from 'axios';
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+import axiosInstance from '@/config/axiosConfig';
+import { apiRoutes } from '@/config/apiRoutes';
 
 export const CrearEquipo = async (datos: any) => {
     try {
-        const { data } = await axios.post(`${apiUrl}/crear-equipo`, datos);
+        const { data } = await axiosInstance.post(apiRoutes.gestionycontrol.equipos.crear_equipo, datos);
         return data;
     } catch (error) {
         console.log("Error al crear el equipo");

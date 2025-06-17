@@ -306,7 +306,9 @@
 'use client';
 
 import type { User } from '@/types/user';
-import axios from 'axios';
+import axiosInstance from '@/config/axiosConfig';
+import { apiRoutes } from '@/config/apiRoutes';
+
 
 function generateToken(): string {
   const arr = new Uint8Array(12);
@@ -350,8 +352,8 @@ class AuthClient {
     const { email, password } = _params;
 
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/login`,
+      const response = await axiosInstance.post(
+        apiRoutes.login.iniciar_sesion,
         {
           NombreUsuario: email,
           ClaveUsuario: password,
@@ -411,7 +413,7 @@ class AuthClient {
       //   withCredentials: true, // 👈 Enviamos la cookie JWT al backend
       // });
 
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/perfil`, {
+      const response = await axiosInstance.get(apiRoutes.login.perfil, {
         headers: {
           Authorization: `Bearer ${TokenAutorizado}`, // 👈 Aquí lo envías de forma segura
         },
@@ -438,7 +440,7 @@ class AuthClient {
 
   async signOut(): Promise<{ error?: string }> {
     try {
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/logout`, {}, { withCredentials: true });
+      await axiosInstance.post(apiRoutes.login.cerrar_sesion, {}, { withCredentials: true });
       localStorage.removeItem('custom-auth-name');
       localStorage.removeItem('custom-auth-documento');
       localStorage.removeItem('custom-auth-correo');

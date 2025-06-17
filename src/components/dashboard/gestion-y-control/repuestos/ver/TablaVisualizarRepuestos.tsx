@@ -98,7 +98,7 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
     // ...
 
     // Implementacion de WebSocket
-    const { sendMessage, messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
+    const { sendMessage, messages } = useSocketIO();
     React.useEffect(() => {
         if (messages.length > 0) {
             const ultimomensajes = messages[messages.length - 1];

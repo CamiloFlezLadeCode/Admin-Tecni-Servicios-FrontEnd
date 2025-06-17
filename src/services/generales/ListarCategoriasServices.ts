@@ -1,9 +1,9 @@
-import axios from 'axios';
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+import axiosInstance from '@/config/axiosConfig';
+import { apiRoutes } from '@/config/apiRoutes';
 
 export const ListarCategorias = async () => {
     try {
-        const { data } = await axios.get(`${apiUrl}/listar-categorias`);
+        const { data } = await axiosInstance.get(apiRoutes.generales.listarcategorias);
         return data;
     } catch (error) {
         console.log("Error al listar las categorias");

@@ -60,7 +60,7 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
     //Implementación de WebSocket
-    const { sendMessage, messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
+    const { sendMessage, messages } = useSocketIO();
     const CargarEquipos = async () => {
         try {
             setError(null);

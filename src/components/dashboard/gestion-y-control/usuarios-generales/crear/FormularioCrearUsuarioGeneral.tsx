@@ -104,7 +104,7 @@ export function FormularioCrearUsuarioGeneral(): React.JSX.Element {
     // const formularioRef = React.useRef<{ manejarValidacion: () => void }>(null);
     const formularioRef = React.useRef<{ manejarValidacion: () => Promise<boolean> }>(null);
     //Se implementa el uso del websocket
-    const { sendMessage, messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
+    const { sendMessage, messages } = useSocketIO();
     // ...
     const handleCrearUsuarioGeneral = async () => {
         // Validar formulario

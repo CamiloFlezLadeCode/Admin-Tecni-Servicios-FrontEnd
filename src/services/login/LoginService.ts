@@ -7,7 +7,7 @@
 //         const response = await axios.post(`${apiUrl}/login`, datos, {
 //              withCredentials: true,  // <--- ESTA LÍNEA ES CLAVE
 //         });
-        
+
 //         // Manejar la respuesta, por ejemplo, guardando los datos en el estado o en el almacenamiento local
 //         if (response.status === 200) {
 //             const { credenciales, rol, nombre, documento, correo } = response.data;
@@ -26,13 +26,18 @@
 // };
 
 
-import axios from 'axios';
+// import axios from 'axios';
+import axiosInstance from '@/config/axiosConfig';
+import { apiRoutes } from '@/config/apiRoutes';
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+// const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export const Login = async (datos: { NombreUsuario: string; ClaveUsuario: string }) => {
   try {
-    const response = await axios.post(`${apiUrl}/login`, datos, {
+    // const response = await axios.post(`${apiUrl}/login`, datos, {
+    //   withCredentials: true,  // <--- ESTA LÍNEA ES CLAVE
+    // });
+    const response = await axiosInstance.post(apiRoutes.login.iniciar_sesion, datos, {
       withCredentials: true,  // <--- ESTA LÍNEA ES CLAVE
     });
 

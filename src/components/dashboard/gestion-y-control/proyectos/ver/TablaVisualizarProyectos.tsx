@@ -90,7 +90,6 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
                 // await new Promise((resolve) => setTimeout(resolve, 2000));
                 const data = await ConsultarProyectos();
                 setProyectos(data);
-                console.log(data);
             } catch (err) {
                 setError('Error al cargar los mecánicos');
                 console.error(err);

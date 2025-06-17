@@ -37,7 +37,7 @@ export function FormularioCrearVehiculo(): React.JSX.Element {
         console.log("Validación exitosa. Procesar datos...", datos);
 
     };
-    const { sendMessage, messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
+    const { sendMessage, messages } = useSocketIO();
     const formularioRef = React.useRef<{ manejarValidacion: () => Promise<boolean> }>(null);
     const HandleCrearVehiculo = async () => {
         const esValido = await formularioRef.current?.manejarValidacion();

@@ -1,9 +1,9 @@
-import axios from 'axios';
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+import axiosInstance from '@/config/axiosConfig';
+import { apiRoutes } from '@/config/apiRoutes';
 
 const GuardarBackUp = async () => {
     try {
-        const { data } = await axios.post(`${apiUrl}/crear-backup`);
+        const { data } = await axiosInstance.post(apiRoutes.guardar_backup);
         return data;
     } catch (error) {
         console.log("Error al guardar BackUp");

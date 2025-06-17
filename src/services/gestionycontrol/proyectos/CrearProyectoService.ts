@@ -1,9 +1,9 @@
-import axios from 'axios';
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+import axiosInstance from '@/config/axiosConfig';
+import { apiRoutes } from '@/config/apiRoutes';
 
 export const CrearProyecto = async (datos: any) => {
     try {
-        const { data } = await axios.post(`${apiUrl}/crear-proyecto`, datos);
+        const { data } = await axiosInstance.post(apiRoutes.gestionycontrol.proyectos.crear_proyecto, datos);
         return data;
     } catch (error) {
         console.log("Error al crear el proyecto");
