@@ -20,6 +20,7 @@ import {
     useTheme
 } from '@mui/material';
 import { FilePdf, Printer, Trash } from '@phosphor-icons/react/dist/ssr';
+import { Loader, ErrorDisplay } from '@/components/dashboard/componentes_generales/mensajedecarga/Loader';
 import * as React from 'react';
 
 interface UsuarioGeneral {
@@ -54,7 +55,7 @@ const Estado: Record<EstadoKey, { label: string; color: 'success' | 'error' }> =
 
 export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
     const [usuarios, setUsuarios] = React.useState<any[]>([]);
-    const [loading, setLoading] = React.useState(true);
+    const [cargando, setCargando] = React.useState(true);
     const [error, setError] = React.useState<string | null>(null);
     const [searchTerm, setSearchTerm] = React.useState('');
     const [page, setPage] = React.useState(0);
@@ -69,12 +70,14 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
     const { sendMessage, messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
     const cargarUsuarios = async () => {
         try {
+            setError(null);
+            // await new Promise((resolve) => setTimeout(resolve, 2000));
             const data = await ConsultarUsuariosGenerales();
             setUsuarios(data);
         } catch (error) {
             setError(`Error al cargar los usuarios: ${error}`);
         } finally {
-            setLoading(false);
+            setCargando(false);
         }
     };
 
@@ -111,8 +114,8 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
     const mostrarAcciones = user?.rol === 'Administrador';
     // ...
 
-    if (loading) return <p>Cargando usuarios...</p>;
-    if (error) return <p>{error}</p>;
+    if (cargando) return <Loader />;
+    if (error) return <ErrorDisplay message={error} />;
 
     return (
         <Card>

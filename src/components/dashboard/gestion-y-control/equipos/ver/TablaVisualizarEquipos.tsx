@@ -10,6 +10,7 @@ import {
 import { TraerEquipos } from '@/services/gestionycontrol/equipos/TraerEquiposRegistradosService';
 import { FormularioEditarEquipo } from '../editar/FormularioEditarEquipo';
 import { useSocketIO } from '@/hooks/use-WebSocket';
+import { Loader, ErrorDisplay } from '@/components/dashboard/componentes_generales/mensajedecarga/Loader';
 
 interface Client {
     Nombre: string;
@@ -50,9 +51,9 @@ const normalizarEstado = (estado: string): EstadoDb | null => {
 };
 
 export function TablaVisualizarEquipos(): React.JSX.Element {
+    const [cargando, setCargando] = React.useState(true);
     const [searchTerm, setSearchTerm] = React.useState('');
     const [equipos, setEquipos] = React.useState<Client[]>([]);
-    const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState<string | null>(null);
 
     const [page, setPage] = React.useState(0);
@@ -62,12 +63,14 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
     const { sendMessage, messages } = useSocketIO(process.env.NEXT_PUBLIC_WS_URL!);
     const CargarEquipos = async () => {
         try {
+            setError(null);
+            // await new Promise((resolve) => setTimeout(resolve, 6000));
             const data = await TraerEquipos();
             setEquipos(data);
         } catch (error) {
             setError(`Error al cargar los equipos: ${error}`);
         } finally {
-            setLoading(false);
+            setCargando(false);
         }
     };
 
@@ -109,6 +112,9 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
     );
+
+        if (cargando) return <Loader />;
+        if (error) return <ErrorDisplay message={error} />;
 
     return (
         <Card>

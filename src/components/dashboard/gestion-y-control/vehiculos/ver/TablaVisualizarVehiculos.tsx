@@ -18,6 +18,7 @@ import {
 import * as React from 'react';
 import { FormularioModalEditarVehiculo } from '../editar/FormularioEditarVehiculo';
 import AlertaEliminarVehiculo from '../eliminar/AlertaEliminarVehiculo';
+import { Loader, ErrorDisplay } from '@/components/dashboard/componentes_generales/mensajedecarga/Loader';
 
 interface Vehiculo {
     IdVehiculo: string;
@@ -40,7 +41,7 @@ const Estado: Record<EstadoKey, { label: string; color: 'success' | 'error' }> =
 
 export function TablaVisualizarVehiculos(): React.JSX.Element {
     const [vehiculos, setVehiculos] = React.useState<any[]>([]);
-    const [loading, setLoading] = React.useState(true);
+    const [cargando, setCargando] = React.useState(true);
     const [error, setError] = React.useState<string | null>(null);
     const [searchTerm, setSearchTerm] = React.useState('');
     const [page, setPage] = React.useState(0);
@@ -52,12 +53,14 @@ export function TablaVisualizarVehiculos(): React.JSX.Element {
 
     const CargarVehiculos = async () => {
         try {
+            setError(null);
+            // await new Promise((resolve) => setTimeout(resolve, 2000));
             const data = await ConsultarVehiculos();
             setVehiculos(data);
         } catch (error) {
             setError(`Error al cargar los vehículos: ${error}`);
         } finally {
-            setLoading(false);
+            setCargando(false);
         }
     };
 
@@ -102,8 +105,8 @@ export function TablaVisualizarVehiculos(): React.JSX.Element {
     );
     const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
-    if (loading) return <p>Cargando vehículos...</p>;
-    if (error) return <p>{error}</p>;
+    if (cargando) return <Loader />;
+    if (error) return <ErrorDisplay message={error} />;
 
     return (
         <>

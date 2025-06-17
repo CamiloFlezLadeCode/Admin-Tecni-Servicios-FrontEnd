@@ -15,6 +15,7 @@ import Divider from '@mui/material/Divider';
 import * as React from 'react';
 import { useSocketIO } from '@/hooks/use-WebSocket';
 import { FormularioEditarRepuesto } from '../editar/FormularioEditarRepuesto';
+import { Loader, ErrorDisplay } from '@/components/dashboard/componentes_generales/mensajedecarga/Loader';
 
 interface Client {
     id: number;
@@ -71,19 +72,21 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
     // ...
 
     // Se declara el estado para error y Cargando...
-    const [loading, setLoading] = React.useState(true);
+    const [cargando, setCargando] = React.useState(true);
     const [error, setError] = React.useState<string | null>(null);
     // ...
 
     // Funcionalidad para cargar los repuestos
     const HandleCargarRepuestos = async () => {
         try {
+            setError(null);
+            // await new Promise((resolve) => setTimeout(resolve, 2000));
             const Repuestos = await ConsultarRepuestos();
             setRepuestos(Repuestos);
         } catch (error) {
             setError(`Error al cargar los repuestos: ${error}`);
         } finally {
-            setLoading(false);
+            setCargando(false);
         }
     }
     // ...
@@ -123,8 +126,8 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
     // ...
 
     // Se maneja el texto de carga y de error
-    if (loading) return <p>Cargando vehículos...</p>;
-    if (error) return <p>{error}</p>;
+    if (cargando) return <Loader />;
+    if (error) return <ErrorDisplay message={error} />;
     // ...
     return (
         <Card>

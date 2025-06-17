@@ -17,7 +17,7 @@ import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar'; // Alertas Flotantes
 import { ConsultarProyectos } from '@/services/gestionycontrol/proyectos/ConsultarProyectosService';
 import { Typography } from '@mui/material';
-
+import { Loader, ErrorDisplay } from '@/components/dashboard/componentes_generales/mensajedecarga/Loader';
 import {
     Table,
     TableBody,
@@ -74,7 +74,7 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
     // );
 
     const [error, setError] = React.useState<string | null>(null);
-    const [loading, setLoading] = React.useState(true);
+    const [cargando, setCargando] = React.useState(true);
     // const [proyectos, setProyectos] = React.useState<Proyecto[]>([]);
 
     const [searchTerm, setSearchTerm] = React.useState<string>('');
@@ -86,6 +86,8 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
     React.useEffect(() => {
         const fetchData = async () => {
             try {
+                setError(null);
+                // await new Promise((resolve) => setTimeout(resolve, 2000));
                 const data = await ConsultarProyectos();
                 setProyectos(data);
                 console.log(data);
@@ -93,7 +95,7 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
                 setError('Error al cargar los mecánicos');
                 console.error(err);
             } finally {
-                setLoading(false);
+                setCargando(false);
             }
         };
         fetchData();
@@ -106,6 +108,9 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
     );
 
     const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
+    if (cargando) return <Loader />;
+    if (error) return <ErrorDisplay message={error} />;
 
     return (
         <Card>

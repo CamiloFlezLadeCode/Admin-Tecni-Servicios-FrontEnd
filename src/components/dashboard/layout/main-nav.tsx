@@ -25,11 +25,24 @@ import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/
 import { MostrarAvatar } from '@/services/gestionycontrol/cuenta/MostrarAvatarService';
 import Skeleton from '@mui/material/Skeleton';
 import { useSocketIO } from '@/hooks/use-WebSocket';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import {
+  Paper,
+} from '@mui/material';
+import MensajeDeCarga from '../componentes_generales/mensajedecarga/BackDropCircularProgress';
+import { tree } from 'next/dist/build/templates/app-page';
+
 
 export function MainNav(): React.JSX.Element {
   const [openNav, setOpenNav] = React.useState<boolean>(false);
 
   const userPopover = usePopover<HTMLDivElement>();
+
+  // Estados para mostrar mensaje de carga
+  const [mostrarMensajeDeCarga, setMostrarMensajeDeCarga] = React.useState(false);
+  const [mensajeDeCarga, setMensajeDeCarga] = React.useState('');
+  // ...
 
   // Consumir el contexto del usuario
   const { user } = React.useContext(UserContext) || { user: null };
@@ -48,6 +61,8 @@ export function MainNav(): React.JSX.Element {
     setMostrarAlertas(true);
   };
   const RealizarBackUp = async () => {
+    setMostrarMensajeDeCarga(true);
+    setMensajeDeCarga('Guardando Backup. Por favor espere');
     try {
       // Simular error manualmente, por ejemplo:
       // throw new Error('Error simulado en RealizarBackUp');
@@ -55,10 +70,12 @@ export function MainNav(): React.JSX.Element {
       // await Promise.reject('Error simulado de promesa rechazada');
       const data = await GuardarBackUp();
       if (data) {
-        // console.log(data);
+        setMostrarMensajeDeCarga(false);
+        setMensajeDeCarga('');
         mostrarMensaje('BackUp guardado correctamente', 'success');
       }
     } catch (error) {
+      setMostrarMensajeDeCarga(false);
       mostrarMensaje(`Error al guardar el Backup: ${error}`, 'error');
       console.error('Error al guardar el backup: ', error);
     }
@@ -81,14 +98,6 @@ export function MainNav(): React.JSX.Element {
     }
   }
   React.useEffect(() => {
-    // const cargarAvatar = async () => {
-    //   if (DocumentoUsuarioActivo) {
-    //     setCargandoAvatar(true);
-    //     const url = await MostrarAvatar(DocumentoUsuarioActivo);
-    //     setAvatarUrl(url || '/assets/AvatarDefault.png');
-    //     setCargandoAvatar(false);
-    //   }
-    // };
     CargarAvatar();
   }, [DocumentoUsuarioActivo]);
   // ...
@@ -106,6 +115,10 @@ export function MainNav(): React.JSX.Element {
   // ...
   return (
     <React.Fragment>
+      <MensajeDeCarga
+        Mensaje={mensajeDeCarga}
+        MostrarMensaje={mostrarMensajeDeCarga}
+      />
       <Box
         component="header"
         sx={{
