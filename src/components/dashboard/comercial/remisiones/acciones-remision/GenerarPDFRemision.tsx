@@ -260,7 +260,8 @@ interface Props {
 
 
 export function GenerarPDFRemision({ IdRemision }: Props): React.JSX.Element {
-    const manejarImpresionOriginal = async () => {
+    // Con vista directa de impresión en la misma pestaña
+    const manejarImpresion = async () => {
         try {
             const blob = await VisualizarPDFRemision(IdRemision);
             const blobURL = URL.createObjectURL(blob);
@@ -295,7 +296,8 @@ export function GenerarPDFRemision({ IdRemision }: Props): React.JSX.Element {
         }
     };
 
-    const manejarImpresion = async () => {
+    // Con PDF en nueva pestaña
+    const manejarImpresionC = async () => {
         try {
             const blob = await VisualizarPDFRemision(IdRemision);
             const blobURL = URL.createObjectURL(blob);
