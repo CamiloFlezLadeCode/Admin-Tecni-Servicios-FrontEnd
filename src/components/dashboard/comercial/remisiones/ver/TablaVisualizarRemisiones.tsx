@@ -28,9 +28,10 @@ import {
     from '@phosphor-icons/react/dist/ssr';
 import { useSocketIO } from '@/hooks/use-WebSocket';
 import { ConsultarRemisiones } from '@/services/comercial/remisiones/ConsultarRemisionesService';
-import { GenerarPDFRemision } from '@/app/dashboard/comercial/remisiones/acciones-remision/GenerarPDFRemision';
-import { EliminarRemision } from '@/app/dashboard/comercial/remisiones/acciones-remision/EliminarRemision';
-import { EditarRemision } from '@/app/dashboard/comercial/remisiones/acciones-remision/EditarRemision';
+import { GenerarPDFRemision } from '@/components/dashboard/comercial/remisiones/acciones-remision/GenerarPDFRemision';
+import { EliminarRemision } from '@/components/dashboard/comercial/remisiones/acciones-remision/EliminarRemision';
+import { EditarRemision } from '@/components/dashboard/comercial/remisiones/acciones-remision/EditarRemision';
+
 
 // 1. Tipos / Interfaces locales
 interface Remision {
@@ -145,7 +146,7 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
                                         <TableCell>{remision.EstadoRemision}</TableCell>
                                         <TableCell>
                                             <EditarRemision />
-                                            <GenerarPDFRemision />
+                                            <GenerarPDFRemision IdRemision={remision.IdRemision}/>
                                             <EliminarRemision />
                                         </TableCell>
                                     </TableRow>

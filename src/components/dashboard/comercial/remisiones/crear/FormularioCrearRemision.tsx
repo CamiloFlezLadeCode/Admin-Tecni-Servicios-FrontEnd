@@ -366,6 +366,16 @@ export function FormularioCrearRemision(): React.JSX.Element {
                     PrecioTotalSinIVA: Number(datos.Cantidad * datos.PrecioUnidad)
                 };
                 setItemsRemision(prev => [...prev, nuevoItem]);
+                setDatos((prev) => ({
+                    ...prev,
+                    Categoria: '',
+                    Equipo: '',
+                    PrecioUnidad: 0,
+                    IVA: 19,
+                    PrecioTotal: 0
+                }));
+                setCantidadDisponible(0);
+                mostrarMensaje('Item agregado correctamente a la remisión', 'success');
             }
         }
     };
@@ -762,6 +772,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
             </CardContent>
             <Divider />
             <CardActions sx={{ justifyContent: 'flex-end' }}>
+                <Typography>Total items: {itemsRemision.length}</Typography>
                 <Button variant="text" onClick={agregarItem}>
                     Agregar item
                 </Button>
