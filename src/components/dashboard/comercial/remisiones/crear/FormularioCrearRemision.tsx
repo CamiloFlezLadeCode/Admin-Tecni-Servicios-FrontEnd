@@ -372,7 +372,8 @@ export function FormularioCrearRemision(): React.JSX.Element {
                     Equipo: '',
                     PrecioUnidad: 0,
                     IVA: 19,
-                    PrecioTotal: 0
+                    PrecioTotal: 0,
+                    ObservacionesCliente: ''
                 }));
                 setCantidadDisponible(0);
                 mostrarMensaje('Item agregado correctamente a la remisión', 'success');
