@@ -179,6 +179,9 @@ import { Controller, useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
 import { Login } from '@/services/login/LoginService'; // Asegúrate de que la ruta sea correcta
 import { useUser } from '@/hooks/use-user';
+import {
+  SignIn
+} from '@phosphor-icons/react'
 
 const schema = zod.object({
   email: zod.string().min(1, { message: 'El usuario es requerido' }),
@@ -349,8 +352,35 @@ export function SignInForm(): React.JSX.Element {
             )}
           />
           {errors.root ? <Alert color="error" severity="error">{errors.root.message}</Alert> : null}
-          <Button disabled={isPending} type="submit" variant="contained">
-            Ir
+          {/* <Button disabled={isPending} type="submit" variant="contained" style={{fontWeight: 'bold'}}>
+            Ingresar
+          </Button> */}
+          <Button
+            startIcon={!isPending && <SignIn />}
+            disabled={isPending}
+            type="submit"
+            variant="contained"
+            sx={{
+              fontWeight: '500', // Más sutil que 'bold'
+              textTransform: 'none', // Evita mayúsculas forzadas
+              borderRadius: '8px', // Esquinas ligeramente redondeadas
+              padding: '8px 24px', // Espaciado interno equilibrado
+              backgroundColor: '#1976d2', // Color primario discreto
+              color: 'white',
+              boxShadow: 'none', // Sin sombra para minimalismo
+              transition: 'all 0.2s ease-in-out', // Transición suave
+              '&:hover': {
+                backgroundColor: '#1565c0', // Color hover sutil
+                transform: 'translateY(-1px)', // Efecto de elevación sutil
+              },
+              '&:disabled': {
+                backgroundColor: 'rgba(0, 0, 0, 0.12)', // Estilo para disabled
+                color: 'rgba(0, 0, 0, 0.26)',
+              },
+            }}
+          >
+            {/* {isPending ? 'Cargando...' : 'Ingresar'} */}
+            Ingresar
           </Button>
         </Stack>
       </form>

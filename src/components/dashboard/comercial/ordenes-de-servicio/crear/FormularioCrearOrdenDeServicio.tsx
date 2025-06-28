@@ -1,6 +1,6 @@
 'use client';
 
-import * as React from 'React';
+import * as React from 'react';
 import Input from '@/components/dashboard/componentes_generales/formulario/Input';
 import InputSelect from '../../../componentes_generales/formulario/Select';
 import {
