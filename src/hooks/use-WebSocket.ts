@@ -100,14 +100,29 @@ export function useSocketIO() {
         })
         // ...
 
+        // SOCKETS PARA PROYECTOS
+        // Para crear proyecto
+        socket.on('proyecto-creado', (data) => {
+            setMessages((prev) => [...prev, { tipo: 'proyecto-creado', data }]);
+        });
+        // Para actualizar proyecto
+        socket.on('proyecto-actualizado', (data) => {
+            setMessages((prev) => [...prev, { tipo: 'proyecto-actualizado', data }]);
+        });
+        // ...
+
+        // SOCKET DESCONECTADO
         socket.on('disconnect', (reason) => {
             // console.log('❌ Socket desconectado:', reason);
             reason ? sessionStorage.setItem('Socket desconectado:', reason) : null;
         });
+        // ...
 
+        // ERROR DE CONEXIÓN EN EL SOCKET
         socket.on('connect_error', (err) => {
             console.error('⚠️ Error de conexión con socket.io:', err);
         });
+        // ...
 
         return () => {
             socket.disconnect();

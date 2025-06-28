@@ -68,7 +68,9 @@ export const apiRoutes = {
             ver_pdf_remision: (IdRemision: number) => `${API_BASE_URL}/obtener-pdf-remision/${IdRemision}`
         },
         devoluciones: {
-            creardevolucion: `${API_BASE_URL}/crear-devolucion`
+            creardevolucion: `${API_BASE_URL}/crear-devolucion`,
+            ver_remisiones_del_cliente: `${API_BASE_URL}/ver-remisiones-cliente`,
+            mostrar_items_remision: `${API_BASE_URL}/ver-items-remision`
         }
     },
     gestionycontrol: {
@@ -104,7 +106,9 @@ export const apiRoutes = {
         },
         proyectos: {
             ver_todos_los_proyectos: `${API_BASE_URL}/ver-proyectos`,
-            crear_proyecto: `${API_BASE_URL}/crear-proyecto`
+            crear_proyecto: `${API_BASE_URL}/crear-proyecto`,
+            ver_proyecto_por_id: `${API_BASE_URL}/ver-proyecto-por-id`,
+            actualizar_proyecto: `${API_BASE_URL}/actualizar-proyecto`
         },
         usuarios: {
             crear_usuario: `${API_BASE_URL}/crear-usuario`

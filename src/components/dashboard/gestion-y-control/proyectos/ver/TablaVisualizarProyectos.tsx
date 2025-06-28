@@ -1,6 +1,7 @@
 'use client'; // Esto dice que este archivo se renderiza en el lado del cliente
 
 import * as React from 'react';
+import { useSocketIO } from '@/hooks/use-WebSocket';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -30,19 +31,14 @@ import {
     TablePagination,
     Chip
 } from '@mui/material';
+import { ModalFormularioEditarProyecto } from '../editar/ModalFormularioEditarProyecto';
+import { TABLE_PADDING } from '@/styles/theme/padding-table';
 
 interface Client {
     id: number;
     name: string;
     email: string;
 }
-
-const data: Client[] = [
-    { id: 1, name: 'Cliente 1', email: 'cliente1@example.com' },
-    { id: 2, name: 'Cliente 2', email: 'cliente2@example.com' },
-    { id: 3, name: 'Cliente 3', email: 'cliente3@example.com' },
-    // Agrega más datos según sea necesario
-];
 
 interface Proyecto {
     IdProyecto: number;
@@ -83,22 +79,35 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
 
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
+    //Implementación de WebSocket
+    const { sendMessage, messages } = useSocketIO();
+
     React.useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setError(null);
-                // await new Promise((resolve) => setTimeout(resolve, 2000));
-                const data = await ConsultarProyectos();
-                setProyectos(data);
-            } catch (err) {
-                setError('Error al cargar los mecánicos');
-                console.error(err);
-            } finally {
-                setCargando(false);
-            }
-        };
-        fetchData();
+        CargarProyectos();
     }, []);
+
+    React.useEffect(() => {
+        if (messages.length > 0) {
+            const ultimomensajes = messages[messages.length - 1];
+            if (ultimomensajes.tipo === 'proyecto-actualizado' || ultimomensajes.tipo === 'proyecto-creado') {
+                CargarProyectos();
+            }
+        }
+    }, [messages]);
+
+    const CargarProyectos = async () => {
+        try {
+            setError(null);
+            // await new Promise((resolve) => setTimeout(resolve, 2000));
+            const data = await ConsultarProyectos();
+            setProyectos(data);
+        } catch (err) {
+            setError('Error al cargar los mecánicos');
+            console.error(err);
+        } finally {
+            setCargando(false);
+        }
+    };
 
 
     const filteredData = proyectos.filter(proyecto =>
@@ -142,6 +151,7 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Creado Por</TableCell>
                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Fecha Creación</TableCell>
                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Estado</TableCell>
+                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Acciones</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -149,17 +159,26 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
                                     const estadoKey = estadoMap[proyecto.EstadoProyecto.toLowerCase() as EstadoDb] ?? 'inactive';
                                     return (
                                         <TableRow key={proyecto.IdProyecto}>
-                                            <TableCell>{proyecto.NombreProyecto}</TableCell>
-                                            <TableCell>{proyecto.Cliente}</TableCell>
-                                            <TableCell>{proyecto.DireccionProyecto}</TableCell>
-                                            <TableCell>{proyecto.UsuarioCreacion}</TableCell>
-                                            <TableCell>{proyecto.FechaCreacion}</TableCell>
-                                            <TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{proyecto.NombreProyecto}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{proyecto.Cliente}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{proyecto.DireccionProyecto}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{proyecto.UsuarioCreacion}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{proyecto.FechaCreacion}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>
                                                 <Chip
                                                     label={Estado[estadoKey].label}
                                                     color={Estado[estadoKey].color}
                                                     size="small"
                                                     sx={{ width: 90, justifyContent: 'center' }}
+                                                />
+                                            </TableCell>
+                                            <TableCell sx={TABLE_PADDING}>
+                                                <ModalFormularioEditarProyecto
+                                                    // ProyectoAEditar={proyecto.IdProyecto}
+                                                    ProyectoAEditar={
+                                                        { IdProyecto: proyecto.IdProyecto }
+                                                    }
+                                                    sendMessage={sendMessage}
                                                 />
                                             </TableCell>
                                         </TableRow>

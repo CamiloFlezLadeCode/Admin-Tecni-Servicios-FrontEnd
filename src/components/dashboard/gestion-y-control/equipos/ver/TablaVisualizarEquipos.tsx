@@ -11,6 +11,7 @@ import { TraerEquipos } from '@/services/gestionycontrol/equipos/TraerEquiposReg
 import { FormularioEditarEquipo } from '../editar/FormularioEditarEquipo';
 import { useSocketIO } from '@/hooks/use-WebSocket';
 import { Loader, ErrorDisplay } from '@/components/dashboard/componentes_generales/mensajedecarga/Loader';
+import { TABLE_PADDING } from '@/styles/theme/padding-table';
 
 interface Client {
     Nombre: string;
@@ -113,8 +114,8 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
         page * rowsPerPage + rowsPerPage
     );
 
-        if (cargando) return <Loader />;
-        if (error) return <ErrorDisplay message={error} />;
+    if (cargando) return <Loader />;
+    if (error) return <ErrorDisplay message={error} />;
 
     return (
         <Card>
@@ -162,17 +163,17 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
 
                                     return (
                                         <TableRow key={equipo.IdEquipo}>
-                                            <TableCell>{equipo.IdEquipo}</TableCell>
-                                            <TableCell>{equipo.NombreEquipo}</TableCell>
-                                            <TableCell>{equipo.CategoriaEquipo}</TableCell>
-                                            <TableCell>{equipo.Cantidad}</TableCell>
-                                            <TableCell>{equipo.Subarrendatario}</TableCell>
-                                            <TableCell>{equipo.PrecioVenta}</TableCell>
-                                            <TableCell>{equipo.PrecioAlquiler}</TableCell>
-                                            <TableCell>{equipo.PrecioReparacion}</TableCell>
-                                            <TableCell>{equipo.UsuarioCreacion}</TableCell>
-                                            <TableCell>{equipo.FechaCreacion}</TableCell>
-                                            <TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{equipo.IdEquipo}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{equipo.NombreEquipo}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{equipo.CategoriaEquipo}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{equipo.Cantidad}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{equipo.Subarrendatario}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{equipo.PrecioVenta}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{equipo.PrecioAlquiler}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{equipo.PrecioReparacion}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{equipo.UsuarioCreacion}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{equipo.FechaCreacion}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>
                                                 <Chip
                                                     label={estadoKey ? Estado[estadoKey].label : equipo.Estado}
                                                     color={estadoKey ? Estado[estadoKey].color : 'default'}
@@ -180,7 +181,7 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
                                                     sx={{ width: 120, justifyContent: 'center' }}
                                                 />
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell sx={TABLE_PADDING}>
                                                 <FormularioEditarEquipo
                                                     IdEquipo={equipo.IdEquipo}
                                                     sendMessage={sendMessage}

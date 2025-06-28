@@ -4,7 +4,7 @@ import { FormControl, InputLabel, Select, MenuItem, Grid, SelectChangeEvent } fr
 
 interface InputSelectProps {
   label: string;
-  value: string;
+  value: string | number;
   onChange: (event: SelectChangeEvent<string>) => void; // Cambiado a SelectChangeEvent
   options: { value: string | number; label: string }[]; // Array de opciones
   required?: boolean;
@@ -68,7 +68,7 @@ const InputSelect: React.FC<InputSelectProps> = ({ label, value, onChange, optio
         <Select
           labelId={labelId} // aquí conectamos bien
           id={valorname ?? label}
-          value={value}
+          value={String(value)}
           name={valorname}
           onChange={onChange}
           label={label}

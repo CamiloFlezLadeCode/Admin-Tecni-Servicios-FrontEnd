@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 
 import { ConsultarMecanicos } from '@/services/gestionycontrol/mecanicos/ConsultarMecanicosService';
+import { TABLE_PADDING } from '@/styles/theme/padding-table';
 
 interface Mecanico {
     Nombre: string;
@@ -105,15 +106,15 @@ export function TablaVisualizarMecanicos(): React.JSX.Element {
                                     const estadoKey = estadoMap[mecanico.Estado.toLowerCase() as EstadoDb] ?? 'inactive';
                                     return (
                                         <TableRow key={index}>
-                                            <TableCell>{mecanico.Nombre}</TableCell>
-                                            <TableCell>{mecanico.TipoDocumento}</TableCell>
-                                            <TableCell>{mecanico.Documento}</TableCell>
-                                            <TableCell>{mecanico.Correo}</TableCell>
-                                            <TableCell>{mecanico.Direccion}</TableCell>
-                                            <TableCell>{mecanico.Celular}</TableCell>
-                                            <TableCell>{mecanico.UsuarioCreacion}</TableCell>
-                                            <TableCell>{mecanico.FechaCreacion}</TableCell>
-                                            <TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{mecanico.Nombre}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{mecanico.TipoDocumento}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{mecanico.Documento}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{mecanico.Correo}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{mecanico.Direccion}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{mecanico.Celular}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{mecanico.UsuarioCreacion}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{mecanico.FechaCreacion}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>
                                                 <Chip
                                                     label={Estado[estadoKey].label}
                                                     color={Estado[estadoKey].color}

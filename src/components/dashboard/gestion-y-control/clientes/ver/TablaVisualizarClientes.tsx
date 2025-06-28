@@ -19,7 +19,7 @@ import { TraerClientes } from '@/services/gestionycontrol/clientes/TraerClientes
 import Chip from '@mui/material/Chip';
 import TablePagination from '@mui/material/TablePagination';
 import { Typography } from '@mui/material';
-
+import { TABLE_PADDING } from '@/styles/theme/padding-table';
 
 import {
     Table,
@@ -160,20 +160,20 @@ export function TablaVisualizarCientes(): React.JSX.Element {
                             <TableBody>
                                 {paginatedData.map(item => (
                                     <TableRow key={item.Documento}>
-                                        <TableCell>{item.Nombre}</TableCell>
-                                        <TableCell>{item.TipoDocumento}</TableCell>
-                                        <TableCell>{item.Documento}</TableCell>
-                                        <TableCell>{item.Correo}</TableCell>
-                                        <TableCell>{item.Direccion}</TableCell>
+                                        <TableCell sx={TABLE_PADDING}>{item.Nombre}</TableCell>
+                                        <TableCell sx={TABLE_PADDING}>{item.TipoDocumento}</TableCell>
+                                        <TableCell sx={TABLE_PADDING}>{item.Documento}</TableCell>
+                                        <TableCell sx={TABLE_PADDING}>{item.Correo}</TableCell>
+                                        <TableCell sx={TABLE_PADDING}>{item.Direccion}</TableCell>
                                         {mostrarTodasLasColumnas && (
                                             <>
-                                                <TableCell>{item.Telefono}</TableCell>
-                                                <TableCell>{item.Celular}</TableCell>
-                                                <TableCell>{item.CreadoPor}</TableCell>
-                                                <TableCell>{item.FechaCreacion}</TableCell>
+                                                <TableCell sx={TABLE_PADDING}>{item.Telefono}</TableCell>
+                                                <TableCell sx={TABLE_PADDING}>{item.Celular}</TableCell>
+                                                <TableCell sx={TABLE_PADDING}>{item.CreadoPor}</TableCell>
+                                                <TableCell sx={TABLE_PADDING}>{item.FechaCreacion}</TableCell>
                                             </>
                                         )}
-                                        <TableCell>
+                                        <TableCell sx={TABLE_PADDING}>
                                             <Chip
                                                 label={Estado[estadoMap[item.Estado.toLowerCase() as EstadoDb]]?.label || item.Estado}
                                                 color={Estado[estadoMap[item.Estado.toLowerCase() as EstadoDb]]?.color || 'default'}

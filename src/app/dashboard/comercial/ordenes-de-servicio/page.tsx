@@ -9,13 +9,13 @@ import { config } from '@/config';
 // import { Notifications } from '@/components/dashboard/settings/notifications';
 // import { UpdatePasswordForm } from '@/components/dashboard/settings/update-password-form';
 
-export const metadata = { title: `Comercial | ${config.site.name}` } satisfies Metadata;
+export const metadata = { title: `Ordenes de servicio | ${config.site.name}` } satisfies Metadata;
 
 export default function Page(): React.JSX.Element {
   return (
     <Stack spacing={3}>
       <div>
-        <Typography variant="h5" style={{fontWeight: 'bold'}}>Modulo Comercial (Remisiones y Devoluciones)</Typography>
+        {/* <Typography variant="h5" style={{ fontWeight: 'bold' }}>Modulo Comercial (Remisiones y Devoluciones)</Typography> */}
       </div>
     </Stack>
   );

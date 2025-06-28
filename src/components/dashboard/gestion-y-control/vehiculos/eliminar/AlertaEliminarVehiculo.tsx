@@ -62,7 +62,7 @@ export default function AlertaEliminarVehiculo({ IdVehiculo, NombrePlacaVehiculo
         <>
             <IconButton
                 size="small"
-                color="primary"
+                color="error"
                 onClick={() => { setModalAbierto(true) }}
             >
                 <Trash size={20} weight="bold" />
@@ -83,7 +83,8 @@ export default function AlertaEliminarVehiculo({ IdVehiculo, NombrePlacaVehiculo
                         transform: 'translate(-50%, -50%)',
                         // width: '90%',
                         // maxWidth: 1000,
-                        width: '50%',
+                        // width: '50%',
+                        width: { xs: '80%', md: '40%' },
                         [theme.breakpoints.down('xl')]: {
                             // width: 700,
                         },

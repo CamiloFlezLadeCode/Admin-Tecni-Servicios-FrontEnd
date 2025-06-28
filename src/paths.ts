@@ -45,6 +45,8 @@ export const paths = {
 
     // Órdenes de servicio
     comercialordenesdeservicio: '/dashboard/comercial/ordenes-de-servicio',
+    comercialordenesdeserviciocrear: '/dashboard/comercial/ordenes-de-servicio/crear-ordenes-de-servicio',
+    comercialordenesdeserviciover: '/dashboard/comercial/ordenes-de-servicio/ver-ordenes-de-servicio',
     //...
 
     // MODULO GESTIÓN Y CONTROL (EQUIPOS, CLIENTES, MACANICOS, PROYECTOS, REPUESTOS)

@@ -16,6 +16,7 @@ import * as React from 'react';
 import { useSocketIO } from '@/hooks/use-WebSocket';
 import { FormularioEditarRepuesto } from '../editar/FormularioEditarRepuesto';
 import { Loader, ErrorDisplay } from '@/components/dashboard/componentes_generales/mensajedecarga/Loader';
+import { TABLE_PADDING } from '@/styles/theme/padding-table';
 
 interface Client {
     id: number;
@@ -169,12 +170,12 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
                                     const estadoKey = estadoDb ? estadoMap[estadoDb] : null;
                                     return (
                                         <TableRow key={repuesto.IdRepuesto}>
-                                            <TableCell>{repuesto.IdRepuesto}</TableCell>
-                                            <TableCell>{repuesto.NombreRepuesto}</TableCell>
-                                            <TableCell>{repuesto.CantidadRepuesto}</TableCell>
-                                            <TableCell>{repuesto.UsuarioCreacion}</TableCell>
-                                            <TableCell>{repuesto.FechaCreacion}</TableCell>
-                                            <TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{repuesto.IdRepuesto}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{repuesto.NombreRepuesto}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{repuesto.CantidadRepuesto}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{repuesto.UsuarioCreacion}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{repuesto.FechaCreacion}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>
                                                 <Chip
                                                     label={estadoKey ? Estado[estadoKey].label : repuesto.EstadoRepuesto}
                                                     color={estadoKey ? Estado[estadoKey].color : 'default'}
@@ -182,7 +183,7 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
                                                     sx={{ width: 120, justifyContent: 'center' }}
                                                 />
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell sx={TABLE_PADDING}>
                                                 <FormularioEditarRepuesto
                                                     IdRepuesto={repuesto.IdRepuesto}
                                                     sendMessage={sendMessage}

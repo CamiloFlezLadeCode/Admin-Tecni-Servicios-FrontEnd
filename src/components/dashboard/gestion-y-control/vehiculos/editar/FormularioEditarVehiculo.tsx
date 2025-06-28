@@ -21,6 +21,7 @@ import {
 import Grid from '@mui/material/Unstable_Grid2';
 import { PencilSimple, X } from '@phosphor-icons/react/dist/ssr';
 import * as React from 'react';
+import { ListarEstados } from '@/services/generales/ListarEstadosService';
 
 const EstadoVehiculo = [
     { value: 1, label: 'Activo' },
@@ -45,6 +46,9 @@ export function FormularioModalEditarVehiculo({
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('lg'));
 
+    // Estado para almacenar los estados que vienen de la bd
+    const [estados, setEstados] = React.useState<{ value: string | number; label: string }[]>([]);
+    // ...
     // Dentro del estado:
     const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
     const [mensajeAlerta, setMensajeAlerta] = React.useState('');
@@ -69,12 +73,26 @@ export function FormularioModalEditarVehiculo({
     };
     const Consultar = async () => {
         try {
-            const Vehiculo = await ConsultarVehiculoPorId(IdVehiculo);
+            const [
+                Vehiculo,
+                Estados
+            ] = await Promise.all([
+                ConsultarVehiculoPorId(IdVehiculo),
+                ListarEstados()
+            ]);
+
+            // const Vehiculo = await ConsultarVehiculoPorId(IdVehiculo);
             setDatos({
                 IdVehiculo: IdVehiculo,
                 Placa: Vehiculo[0].Placa,
                 IdEstado: Vehiculo[0].IdEstado
             });
+
+            const estadosPermitidos = new Set(['activo', 'inactivo']);
+            const NuevosEstados = Estados.filter((element: any) =>
+                estadosPermitidos.has(element.label.toLowerCase().trim())
+            );
+            setEstados(NuevosEstados);
         } catch (error) {
             console.log(`Error al consultar el vehículo: ${error}`);
         }
@@ -126,7 +144,8 @@ export function FormularioModalEditarVehiculo({
                         transform: 'translate(-50%, -50%)',
                         // width: '90%',
                         // maxWidth: 1000,
-                        width: '80%',
+                        // width: '50%',
+                        width: { xs: '80%', md: '40%' },
                         [theme.breakpoints.down('xl')]: {
                             // width: 700,
                         },
@@ -169,7 +188,7 @@ export function FormularioModalEditarVehiculo({
                                     <InputSelect
                                         label='Estado'
                                         value={datos.IdEstado}
-                                        options={EstadoVehiculo}
+                                        options={estados}
                                         size='small'
                                         valorname='IdEstado'
                                         // onChange={handleChangeEstado}

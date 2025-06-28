@@ -1,6 +1,7 @@
 'use client'; // Esto dice que este archivo se renderiza en el lado del cliente
 
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
+import { useSocketIO } from '@/hooks/use-WebSocket';
 import Input from '@/components/dashboard/componentes_generales/formulario/Input';
 import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
 import FormularioValidator from '@/components/dashboard/componentes_generales/formulario/ValidarCampos';
@@ -43,6 +44,9 @@ export function FormularioCrearProyecto(): React.JSX.Element {
     const documentoUsuarioActivo = user ? `${user.documento}` : null;
     const [mostrarAlerta, setMostrarAlerta] = React.useState<boolean>(false);
 
+    //Implementación de WebSocket
+    const { sendMessage, messages } = useSocketIO();
+
     //Se maneja el estado de todos los campos del formulario
     const [datos, setDatos] = React.useState({
         NombreProyecto: '',
@@ -69,7 +73,8 @@ export function FormularioCrearProyecto(): React.JSX.Element {
         if (esValido) {
             let progressInterval: NodeJS.Timeout | null = null;
             try {
-                const data = await CrearProyecto(datos);
+                await CrearProyecto(datos);
+                sendMessage('proyecto-creado', {});
                 mostrarMensaje('Proyecto creado exitosamente', 'success');
                 setDatos({
                     NombreProyecto: '',

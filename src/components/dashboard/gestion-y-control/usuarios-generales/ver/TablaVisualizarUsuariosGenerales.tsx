@@ -22,6 +22,7 @@ import {
 import { FilePdf, Printer, Trash } from '@phosphor-icons/react/dist/ssr';
 import { Loader, ErrorDisplay } from '@/components/dashboard/componentes_generales/mensajedecarga/Loader';
 import * as React from 'react';
+import { TABLE_PADDING } from '@/styles/theme/padding-table';
 
 interface UsuarioGeneral {
     IdUsuario: string;
@@ -162,17 +163,17 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
                                     const estadoKey = estadoMap[usuariogeneral.Estado.toLowerCase() as EstadoDb] ?? 'inactive';
                                     return (
                                         <TableRow key={usuariogeneral.IdUsuario}>
-                                            <TableCell>{usuariogeneral.Nombre}</TableCell>
-                                            <TableCell>{usuariogeneral.TipoDocumento}</TableCell>
-                                            <TableCell>{usuariogeneral.Documento}</TableCell>
-                                            <TableCell>{usuariogeneral.Correo}</TableCell>
-                                            <TableCell>{usuariogeneral.Direccion}</TableCell>
-                                            <TableCell>{usuariogeneral.Celular}</TableCell>
-                                            <TableCell>{usuariogeneral.RolesLabel}</TableCell>
-                                            <TableCell>{usuariogeneral.Nivel}</TableCell>
-                                            <TableCell>{usuariogeneral.UsuarioCreacion}</TableCell>
-                                            <TableCell>{usuariogeneral.FechaCreacion}</TableCell>
-                                            <TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{usuariogeneral.Nombre}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{usuariogeneral.TipoDocumento}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{usuariogeneral.Documento}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{usuariogeneral.Correo}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{usuariogeneral.Direccion}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{usuariogeneral.Celular}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{usuariogeneral.RolesLabel}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{usuariogeneral.Nivel}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{usuariogeneral.UsuarioCreacion}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>{usuariogeneral.FechaCreacion}</TableCell>
+                                            <TableCell sx={TABLE_PADDING}>
                                                 <Chip
                                                     label={Estado[estadoKey].label}
                                                     color={Estado[estadoKey].color}
@@ -181,7 +182,7 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
                                                 />
                                             </TableCell>
                                             {mostrarAcciones && (
-                                                <TableCell align="center">
+                                                <TableCell sx={TABLE_PADDING} align="center">
                                                     <FormularioEditarUsuarioGeneral
                                                         DatosUsuarioAActualizar={usuariogeneral.Documento}
                                                         sendMessage={sendMessage}

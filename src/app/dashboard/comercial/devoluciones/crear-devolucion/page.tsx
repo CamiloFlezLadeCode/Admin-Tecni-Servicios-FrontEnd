@@ -1,14 +1,9 @@
 import * as React from 'react';
 import type { Metadata } from 'next';
 import { config } from '@/config';
-// import { FormularioCrearCliente } from '@/components/dashboard/maestro/clientes/formulario-crear-cliente';
+import { FormularioCrearDevolucion } from '@/components/dashboard/comercial/devoluciones/crear/FormularioCrearDevolucion';
 export const metadata = { title: `Crear devolución | ${config.site.name}` } satisfies Metadata;
 
 export default function CrearDevolucionPage(): React.JSX.Element {
-  // PARA ANEXAR VARIOS COMPONENTES
-    return (
-      <div>
-            <h5>AQUÍ VAMOS A CREAR LAS DEVOLUCIONES</h5>
-      </div>
-    );
-  }
+  return <FormularioCrearDevolucion />;
+}

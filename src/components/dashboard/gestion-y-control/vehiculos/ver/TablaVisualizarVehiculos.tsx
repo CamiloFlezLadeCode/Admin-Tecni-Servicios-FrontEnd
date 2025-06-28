@@ -19,6 +19,7 @@ import * as React from 'react';
 import { FormularioModalEditarVehiculo } from '../editar/FormularioEditarVehiculo';
 import AlertaEliminarVehiculo from '../eliminar/AlertaEliminarVehiculo';
 import { Loader, ErrorDisplay } from '@/components/dashboard/componentes_generales/mensajedecarga/Loader';
+import { TABLE_PADDING } from '@/styles/theme/padding-table';
 
 interface Vehiculo {
     IdVehiculo: string;
@@ -145,11 +146,11 @@ export function TablaVisualizarVehiculos(): React.JSX.Element {
                                         const estadokey = estadoMap[vehiculo.Estado.toLowerCase() as EstadoDb] ?? 'inactive';
                                         return (
                                             <TableRow key={vehiculo.IdVehiculo}>
-                                                <TableCell>{vehiculo.IdVehiculo}</TableCell>
-                                                <TableCell>{vehiculo.Placa}</TableCell>
-                                                <TableCell>{vehiculo.UsuarioCreacion}</TableCell>
-                                                <TableCell>{vehiculo.FechaCreacion}</TableCell>
-                                                <TableCell>
+                                                <TableCell sx={TABLE_PADDING}>{vehiculo.IdVehiculo}</TableCell>
+                                                <TableCell sx={TABLE_PADDING}>{vehiculo.Placa}</TableCell>
+                                                <TableCell sx={TABLE_PADDING}>{vehiculo.UsuarioCreacion}</TableCell>
+                                                <TableCell sx={TABLE_PADDING}>{vehiculo.FechaCreacion}</TableCell>
+                                                <TableCell sx={TABLE_PADDING}>
                                                     <Chip
                                                         label={Estado[estadokey].label}
                                                         color={Estado[estadokey].color}
@@ -157,7 +158,7 @@ export function TablaVisualizarVehiculos(): React.JSX.Element {
                                                         sx={{ width: 90, justifyContent: 'center' }}
                                                     />
                                                 </TableCell>
-                                                <TableCell>
+                                                <TableCell sx={TABLE_PADDING}>
                                                     <FormularioModalEditarVehiculo
                                                         IdVehiculo={vehiculo.IdVehiculo}
                                                         sendMessage={sendMessage} // 👈 pásalo como prop
