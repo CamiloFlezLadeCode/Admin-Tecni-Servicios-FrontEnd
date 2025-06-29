@@ -73,6 +73,7 @@ interface InputTextProps {
     bloqueado?: boolean;
     LongitudMaxima?: number;
     endAdornment?: React.ReactNode; // 👈 usamos esto
+    mostrar?: 'none' | 'block';
 }
 
 const InputText = React.forwardRef<HTMLInputElement, InputTextProps>((props, ref) => {
@@ -88,19 +89,25 @@ const InputText = React.forwardRef<HTMLInputElement, InputTextProps>((props, ref
         bloqueado,
         LongitudMaxima,
         endAdornment, // 👈 recogido aquí
+        mostrar,
         ...rest
     } = props;
 
     const [focused, setFocused] = React.useState(false);
 
     return (
-        <FormControl fullWidth required={required} variant="outlined">
+        <FormControl
+            sx={{
+                display: mostrar
+            }}
+            fullWidth required={required} variant="outlined">
             <InputLabel
                 htmlFor={label}
                 shrink
                 style={{
                     color: focused ? '#000000' : 'gray',
                     fontWeight: 'bolder',
+                    display: mostrar
                 }}
             >
                 {label}
@@ -125,6 +132,9 @@ const InputText = React.forwardRef<HTMLInputElement, InputTextProps>((props, ref
                 disabled={bloqueado}
                 inputRef={ref}
                 {...rest}
+                sx={{
+                    display: mostrar
+                }}
             />
         </FormControl>
     );

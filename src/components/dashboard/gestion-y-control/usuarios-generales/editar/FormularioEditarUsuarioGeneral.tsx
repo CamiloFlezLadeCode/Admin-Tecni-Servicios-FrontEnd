@@ -35,6 +35,21 @@ const EstadoUsuarioGeneral = [
     { value: 2, label: 'Inactivo' },
 ]
 
+interface Datos {
+    Nombres: string;
+    Apellidos: string;
+    TipoDocumento: string;
+    Documento: string;
+    Direccion: string;
+    Celular: string;
+    Correo: string;
+    UsuarioCreacion: any;
+    Estado: string;
+    Roles: any[];
+    Nivel: string;
+    Contacto: string;
+}
+
 export function FormularioEditarUsuarioGeneral({ DatosUsuarioAActualizar, sendMessage }: { DatosUsuarioAActualizar: string; sendMessage: (event: string, payload: any) => void; }): React.JSX.Element {
     const [modalAbierto, setModalAbierto] = React.useState(false);
     const EditarUsuarioGeneral = async () => {
@@ -87,7 +102,20 @@ export function FormularioEditarUsuarioGeneral({ DatosUsuarioAActualizar, sendMe
         CargarNiveles();
     }, []);
     //Se maneja el estado para todos los campos
-    const [datos, setDatos] = React.useState({
+    // const [datos, setDatos] = React.useState({
+    //     Nombres: '',
+    //     Apellidos: '',
+    //     TipoDocumento: '',
+    //     Documento: '',
+    //     Direccion: '',
+    //     Celular: '',
+    //     Correo: '@gmail.com',
+    //     UsuarioCreacion: documentoUsuarioActivo,
+    //     Estado: '1',
+    //     Roles: [],
+    //     Nivel: ''
+    // });
+    const [datos, setDatos] = React.useState<Datos>({
         Nombres: '',
         Apellidos: '',
         TipoDocumento: '',
@@ -98,8 +126,9 @@ export function FormularioEditarUsuarioGeneral({ DatosUsuarioAActualizar, sendMe
         UsuarioCreacion: documentoUsuarioActivo,
         Estado: '1',
         Roles: [],
-        Nivel: ''
-    });
+        Nivel: '',
+        Contacto: ''
+    })
     //Se consulta usuario general a editar
     const ConsultarUsuarioGeneral = async (DocumentoUsuarioGeneral: string) => {
         try {
@@ -130,7 +159,8 @@ export function FormularioEditarUsuarioGeneral({ DatosUsuarioAActualizar, sendMe
                 UsuarioCreacion: DatosUsuarioGeneral[0].UsuarioCreacion,
                 Estado: DatosUsuarioGeneral[0].Estado,
                 Roles: rolesArray,
-                Nivel: DatosUsuarioGeneral[0].Nivel
+                Nivel: DatosUsuarioGeneral[0].Nivel,
+                Contacto: DatosUsuarioGeneral[0].Contacto,
             })
             return DatosUsuarioGeneral;
         } catch (error) {
@@ -200,6 +230,21 @@ export function FormularioEditarUsuarioGeneral({ DatosUsuarioAActualizar, sendMe
             }
         }
     };
+
+    //Se maneja estado para mostrar y ocultar campo de contacto, cuando se realiza el registro de un usuario con el rol de cliente
+    const [mostrarCampoContacto, setMostrarCampoContacto] = React.useState<'none' | 'block'>('none');
+    //Mostrar y ocultar campo contacto
+    React.useEffect(() => {
+        if (datos.Roles.includes(4)) {
+            setMostrarCampoContacto('block');
+        } else {
+            setMostrarCampoContacto('none');
+            setDatos((prev) => ({
+                ...prev,
+                Contacto: ''
+            }));
+        }
+    }, [datos.Roles])
     return (
         <>
             <IconButton
@@ -373,6 +418,22 @@ export function FormularioEditarUsuarioGeneral({ DatosUsuarioAActualizar, sendMe
                                         size='small'
                                         onChange={handleChange}
                                         valorname='Nivel'
+                                    />
+                                </Grid>
+                                <Grid
+                                    sx={{
+                                        display: mostrarCampoContacto
+                                    }}
+                                    md={4} xs={12} mt={0.5}>
+                                    <Input
+                                        label='Contacto'
+                                        value={datos.Contacto}
+                                        onChange={handleChange}
+                                        // required
+                                        tamano='small'
+                                        tipo_input='text'
+                                        valorname='Contacto'
+                                        mostrar={mostrarCampoContacto}
                                     />
                                 </Grid>
                             </Grid>

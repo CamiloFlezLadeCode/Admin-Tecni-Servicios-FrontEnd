@@ -28,6 +28,21 @@ const EstadoUsuarioGeneral = [
     { value: 2, label: 'Inactivo' },
 ]
 
+interface Datos {
+    Nombres: string;
+    Apellidos: string;
+    TipoDocumento: string;
+    Documento: string;
+    Direccion: string;
+    Celular: string;
+    Correo: string;
+    UsuarioCreacion: any;
+    Estado: string;
+    Roles: any[];
+    Nivel: string;
+    Contacto: string;
+}
+
 export function FormularioCrearUsuarioGeneral(): React.JSX.Element {
     // Consumir el contexto del usuario
     const { user } = React.useContext(UserContext) || { user: null };
@@ -70,7 +85,21 @@ export function FormularioCrearUsuarioGeneral(): React.JSX.Element {
         CargarNiveles();
     }, []);
     //Se maneja el estado para todos los campos
-    const [datos, setDatos] = React.useState({
+    // const [datos, setDatos] = React.useState({
+    //     Nombres: '',
+    //     Apellidos: '',
+    //     TipoDocumento: '1',
+    //     Documento: '',
+    //     Direccion: '',
+    //     Celular: '',
+    //     Correo: '@gmail.com',
+    //     UsuarioCreacion: documentoUsuarioActivo,
+    //     Estado: '1',
+    //     Roles: [],
+    //     Nivel: '',
+    //     Contacto: ''
+    // });
+    const [datos, setDatos] = React.useState<Datos>({
         Nombres: '',
         Apellidos: '',
         TipoDocumento: '1',
@@ -81,8 +110,9 @@ export function FormularioCrearUsuarioGeneral(): React.JSX.Element {
         UsuarioCreacion: documentoUsuarioActivo,
         Estado: '1',
         Roles: [],
-        Nivel: ''
-    });
+        Nivel: '',
+        Contacto: ''
+    })
     //Se definen las reglas con su respectivo mensaje de alerta
     const reglasValidacion = [
         { campo: 'Nombres', mensaje: 'El nombre es obligatorio.' },
@@ -126,7 +156,8 @@ export function FormularioCrearUsuarioGeneral(): React.JSX.Element {
                     UsuarioCreacion: documentoUsuarioActivo,
                     Estado: '1',
                     Roles: [],
-                    Nivel: ''
+                    Nivel: '',
+                    Contacto: ''
                 });
             } catch (error) {
                 mostrarMensaje(`Error al crear el usuario general: ${error}`, 'error');
@@ -153,6 +184,8 @@ export function FormularioCrearUsuarioGeneral(): React.JSX.Element {
             mostrarMensaje('El cliente ya se encuentra registrado.', 'error');
         }
     };
+    //Se maneja estado para mostrar y ocultar campo de contacto, cuando se realiza el registro de un usuario con el rol de cliente
+    const [mostrarCampoContacto, setMostrarCampoContacto] = React.useState<'none' | 'block'>('none');
     //Función para manejar el cambio en todos los campos
     const handleChange = async (e: SelectChangeEvent<string | string[]> | React.ChangeEvent<HTMLInputElement> | { target: { value: string | number; name?: string } }) => {
         const { name, value } = e.target;
@@ -168,6 +201,21 @@ export function FormularioCrearUsuarioGeneral(): React.JSX.Element {
             }
         }
     };
+
+    //Mostrar y ocultar campo contacto
+    React.useEffect(() => {
+        if (datos.Roles.includes(4)) {
+            setMostrarCampoContacto('block');
+        } else {
+            setMostrarCampoContacto('none');
+            setDatos((prev) => ({
+                ...prev,
+                Contacto: ''
+            }));
+        }
+    }, [datos.Roles])
+
+
     return (
         <Card>
             <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Creación de usuario general</Typography>
@@ -279,6 +327,22 @@ export function FormularioCrearUsuarioGeneral(): React.JSX.Element {
                             size='small'
                             onChange={handleChange}
                             valorname='Nivel'
+                        />
+                    </Grid>
+                    <Grid
+                        sx={{
+                            display: mostrarCampoContacto
+                        }}
+                        md={4} xs={12} mt={0.5}>
+                        <Input
+                            label='Contacto'
+                            value={datos.Contacto}
+                            onChange={handleChange}
+                            // required
+                            tamano='small'
+                            tipo_input='text'
+                            valorname='Contacto'
+                            mostrar={mostrarCampoContacto}
                         />
                     </Grid>
                 </Grid>
