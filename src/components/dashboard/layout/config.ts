@@ -184,30 +184,30 @@ export const navItems = [
       href: paths.dashboard.hojadevidaequipos
     }
   },
-  {
-    key: 'Tarifas',
-    title: 'Tarifas',
-    items: [
-      {
-        key: 'Precio1',
-        title: 'Precio1',
-        icon: 'icono-precio1',
-        href: ''
-      },
-      {
-        key: 'Precio2',
-        title: 'Precio2',
-        icon: 'icono-precio2',
-        href: ''
-      },
-      {
-        key: 'Precio3',
-        title: 'Precio3',
-        icon: 'icono-precio3',
-        href: ''
-      }
-    ]
-  },
+  // {
+  //   key: 'Tarifas',
+  //   title: 'Tarifas',
+  //   items: [
+  //     {
+  //       key: 'Precio1',
+  //       title: 'Precio1',
+  //       icon: 'icono-precio1',
+  //       href: ''
+  //     },
+  //     {
+  //       key: 'Precio2',
+  //       title: 'Precio2',
+  //       icon: 'icono-precio2',
+  //       href: ''
+  //     },
+  //     {
+  //       key: 'Precio3',
+  //       title: 'Precio3',
+  //       icon: 'icono-precio3',
+  //       href: ''
+  //     }
+  //   ]
+  // },
   { key: 'account', title: 'Cuenta', href: paths.dashboard.account, icon: 'user' },
   { key: 'settings', title: 'Ajustes', href: paths.dashboard.settings, icon: 'gear-six' },
   { key: 'configuraciones', title: 'Configuraciones', href: paths.dashboard.configuraciones, icon: 'icono-configuraciones-alto-nivel', roles: ['Administrador'] }
