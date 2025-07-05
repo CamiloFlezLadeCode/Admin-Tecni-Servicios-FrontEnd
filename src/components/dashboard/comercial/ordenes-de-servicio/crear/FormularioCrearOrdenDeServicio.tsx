@@ -139,6 +139,7 @@ export function FormularioCrearOrdenDeServicio(): React.JSX.Element {
             // Se asignan los datos que vienen de la bd
             const SiguienteNoOrdenDeServicioReal = SiguienteNoOrdenDeServicio[0]?.SiguienteNoOrdenDeServicio;
             setDatos(prev => ({ ...prev, NoOrdenDeServicio: SiguienteNoOrdenDeServicioReal }));
+            setSiguienteNoOrdenDeServicio(SiguienteNoOrdenDeServicioReal);
         } catch (error) {
             console.error(`Error al describir la acción: ${error}`);
         }

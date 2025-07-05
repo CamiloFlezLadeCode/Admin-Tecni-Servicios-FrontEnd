@@ -35,35 +35,63 @@ export function FormularioEditarRepuesto({ IdRepuesto, sendMessage }: { IdRepues
 
     // Se traen todos los estados de la bd y se seleccionan
     const [estados, setEstados] = React.useState<{ value: string | number; label: string }[]>([]);
-    React.useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [
-                    Estados,
-                    InfoRepuesto
-                ] = await Promise.all([
-                    ListarEstados(),
-                    ConsultarRepuestoPorId(IdRepuesto)
-                ]);
-                const EstadosSeleccionados = [];
-                for (const element of Estados) {
-                    if (element.label.includes('Disponible') || element.label.includes('No disponible')) {
-                        EstadosSeleccionados.push(element);
-                    }
+
+    const CargarDatosIniciales = async () => {
+        try {
+            const [
+                Estados,
+                InfoRepuesto
+            ] = await Promise.all([
+                ListarEstados(),
+                ConsultarRepuestoPorId(IdRepuesto)
+            ]);
+            const EstadosSeleccionados = [];
+            for (const element of Estados) {
+                if (element.label.includes('Disponible') || element.label.includes('No disponible')) {
+                    EstadosSeleccionados.push(element);
                 }
-                setEstados(EstadosSeleccionados);
-                setDatos({
-                    NuevoNombreRepuesto: InfoRepuesto[0].Nombre,
-                    NuevaCantidadRepuesto: InfoRepuesto[0].Cantidad,
-                    NuevoEstadoRepuesto: InfoRepuesto[0].Estado,
-                    IdRepuesto: IdRepuesto
-                });
-            } catch (error) {
-                console.error(`Error al cargar los estados: ${error}`);
             }
-        };
-        fetchData();
-    }, []);
+            setEstados(EstadosSeleccionados);
+            setDatos({
+                NuevoNombreRepuesto: InfoRepuesto[0].Nombre,
+                NuevaCantidadRepuesto: InfoRepuesto[0].Cantidad,
+                NuevoEstadoRepuesto: InfoRepuesto[0].Estado,
+                IdRepuesto: IdRepuesto
+            });
+        } catch (error) {
+            console.error(`Error al cargar los estados: ${error}`);
+        }
+    };
+    // React.useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const [
+    //                 Estados,
+    //                 InfoRepuesto
+    //             ] = await Promise.all([
+    //                 ListarEstados(),
+    //                 ConsultarRepuestoPorId(IdRepuesto)
+    //             ]);
+    //             const EstadosSeleccionados = [];
+    //             for (const element of Estados) {
+    //                 if (element.label.includes('Disponible') || element.label.includes('No disponible')) {
+    //                     EstadosSeleccionados.push(element);
+    //                 }
+    //             }
+    //             setEstados(EstadosSeleccionados);
+    //             setDatos({
+    //                 NuevoNombreRepuesto: InfoRepuesto[0].Nombre,
+    //                 NuevaCantidadRepuesto: InfoRepuesto[0].Cantidad,
+    //                 NuevoEstadoRepuesto: InfoRepuesto[0].Estado,
+    //                 IdRepuesto: IdRepuesto
+    //             });
+    //         } catch (error) {
+    //             console.error(`Error al cargar los estados: ${error}`);
+    //         }
+    //         console.log("HOLISSS");
+    //     };
+    //     fetchData();
+    // }, []);
     // ...
 
     // Se implementa el estado para el modal
@@ -106,13 +134,24 @@ export function FormularioEditarRepuesto({ IdRepuesto, sendMessage }: { IdRepues
         }
     };
     // ...
+
+    //Para abrir el modal para actualizar el equipo
+    const EditarRepuesto = async () => {
+        try {
+            setModalAbierto(true);
+            CargarDatosIniciales();
+        } catch (error) {
+            mostrarMensaje(`Error al cargar los datos del equipo: ${error}`, 'error');
+        }
+    };
+    //...
     return (
         <>
             <IconButton
                 size="small"
                 color="primary"
-                onClick={() => setModalAbierto(true)}
-                title='Editar'
+                onClick={EditarRepuesto}
+            // title='Editar'
             >
                 <PencilSimple size={20} weight="bold" />
             </IconButton>

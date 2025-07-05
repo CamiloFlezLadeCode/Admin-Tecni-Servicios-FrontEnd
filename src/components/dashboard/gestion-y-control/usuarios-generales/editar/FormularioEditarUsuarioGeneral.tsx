@@ -54,8 +54,9 @@ export function FormularioEditarUsuarioGeneral({ DatosUsuarioAActualizar, sendMe
     const [modalAbierto, setModalAbierto] = React.useState(false);
     const EditarUsuarioGeneral = async () => {
         try {
-            await ConsultarUsuarioGeneral(DatosUsuarioAActualizar);
             setModalAbierto(true);
+            CargarDatosIniciales();
+            await ConsultarUsuarioGeneral(DatosUsuarioAActualizar);
         } catch (error) {
             mostrarMensaje(`Error al cargar los datos del usuario general. Error: ${error}`, 'error');
         }
@@ -96,11 +97,30 @@ export function FormularioEditarUsuarioGeneral({ DatosUsuarioAActualizar, sendMe
             console.error('Error al listar los niveles: ', error);
         }
     };
-    React.useEffect(() => {
-        CargarTiposDeDocumentos();
-        CargarRoles();
-        CargarNiveles();
-    }, []);
+
+    const CargarDatosIniciales = async () => {
+        try {
+            const [
+                TipoDocumentos,
+                Roles,
+                Niveles
+            ] = await Promise.all([
+                ListarTiposDeDocumentos(),
+                ListarRoles(),
+                ListarNiveles()
+            ]);
+            setTiposDeDocumentos(TipoDocumentos);
+            setRoles(Roles);
+            setNiveles(Niveles)
+        } catch (error) {
+            console.error(`Error al cargar los datos: ${error}`);
+        }
+    }
+    // React.useEffect(() => {
+    //     CargarTiposDeDocumentos();
+    //     CargarRoles();
+    //     CargarNiveles();
+    // }, []);
     //Se maneja el estado para todos los campos
     // const [datos, setDatos] = React.useState({
     //     Nombres: '',

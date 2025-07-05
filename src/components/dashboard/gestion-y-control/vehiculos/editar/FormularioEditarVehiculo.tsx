@@ -31,7 +31,7 @@ export function FormularioModalEditarVehiculo({
     IdVehiculo,
     sendMessage,
 }: {
-    IdVehiculo: string;
+    IdVehiculo: number;
     sendMessage: (event: string, payload: any) => void;
 }): React.JSX.Element {
     const [modalAbierto, setModalAbierto] = React.useState(false);

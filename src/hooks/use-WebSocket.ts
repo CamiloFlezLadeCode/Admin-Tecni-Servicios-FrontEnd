@@ -111,12 +111,18 @@ export function useSocketIO() {
         });
         // ...
 
-        // SOKECT PARA ORDENES DE SERVICIO
+        // SOCKET PARA REMISIONES
+        socket.on('remision-creada', (data) => {
+            setMessages((prev) => [...prev, { tipo: 'remision-creada', data }]);
+        })
+        // ...
+
+        // SOCKET PARA ORDENES DE SERVICIO
         socket.on('orden-de-servicio-creada', (data) => {
             setMessages((prev) => [...prev, { tipo: 'orden-de-servicio-creada', data }]);
         });
         // ...
-        
+
         // SOCKET DESCONECTADO
         socket.on('disconnect', (reason) => {
             // console.log('❌ Socket desconectado:', reason);

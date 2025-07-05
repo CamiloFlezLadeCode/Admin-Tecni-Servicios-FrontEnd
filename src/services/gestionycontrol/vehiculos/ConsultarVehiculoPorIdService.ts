@@ -1,7 +1,7 @@
 import axiosInstance from "@/config/axiosConfig";
 import { apiRoutes } from "@/config/apiRoutes";
 
-export const ConsultarVehiculoPorId = async (IdVehiculo: string) => {
+export const ConsultarVehiculoPorId = async (IdVehiculo: number) => {
     if (!IdVehiculo) {
         throw new Error("El id del vehículo no puede estar vacío.");
     }

@@ -1,39 +1,191 @@
+// 'use client';
+
+// import * as React from 'react';
+// import { Loader, ErrorDisplay } from '@/components/dashboard/componentes_generales/mensajedecarga/Loader';
+// import {
+//     Card, CardContent,
+//     Chip,
+//     Divider,
+//     IconButton,
+//     Paper,
+//     Table,
+//     TableBody, TableCell,
+//     TableContainer, TableHead,
+//     TablePagination,
+//     TableRow, TextField,
+//     Typography,
+//     useMediaQuery,
+//     useTheme,
+//     Box,
+//     CircularProgress
+// } from '@mui/material';
+// import {
+//     FilePdf,
+//     Printer,
+//     Trash,
+//     PencilSimple
+// }
+//     from '@phosphor-icons/react/dist/ssr';
+// import { useSocketIO } from '@/hooks/use-WebSocket';
+// import { ConsultarRemisiones } from '@/services/comercial/remisiones/ConsultarRemisionesService';
+// import { GenerarPDFRemision } from '@/components/dashboard/comercial/remisiones/acciones-remision/GenerarPDFRemision';
+// import { EliminarRemision } from '@/components/dashboard/comercial/remisiones/acciones-remision/EliminarRemision';
+// import { EditarRemision } from '@/components/dashboard/comercial/remisiones/acciones-remision/EditarRemision';
+
+
+// // 1. Tipos / Interfaces locales
+// interface Remision {
+//     IdRemision: number;
+//     NoRemision: string;
+//     Cliente: string;
+//     Proyecto: string;
+//     CreadoPor: string;
+//     FechaCreacion: string;
+//     ObservacionesInternasEmpresa: string;
+//     EstadoRemision: string;
+// }
+
+
+// // 2. Componente principal
+// export function TablaVisualizarRemisiones(): React.JSX.Element {
+//     // 3. Hooks de React y otros hooks de librerías
+//     const theme = useTheme();
+//     const { sendMessage, messages } = useSocketIO();
+
+//     // 4. Estados
+//     // const [remisiones, setRemisiones] = React.useState<any[]>([]);
+//     const [remisiones, setRemisiones] = React.useState<Remision[]>([]);
+//     const [cargando, setCargando] = React.useState(true);
+//     const [error, setError] = React.useState<string | null>(null);
+//     const [buscarPalabra, setBuscarPalabra] = React.useState('');
+//     const [pagina, setPagina] = React.useState(0);
+//     const [filasPorPagina, setFilasPorPagina] = React.useState(5);
+
+//     // 5. useEffect para carga inicial y sockets
+//     React.useEffect(() => {
+//         ObtenerRemisiones();
+//     }, []);
+
+//     // 6. Funciones del componente
+//     const ObtenerRemisiones = async () => {
+//         try {
+//             setError(null);
+//             // Simula retraso
+//             // await new Promise((resolve) => setTimeout(resolve, 2000));
+//             // Forzar un error de prueba
+//             // throw new Error('Simulación de error al obtener remisiones');
+//             // const data = await ConsultarRemisiones();
+//             const data: Remision[] = await ConsultarRemisiones();
+//             setRemisiones(data);
+//         } catch (error) {
+//             setError(`Error al cargar las remisiones: ${error}`);
+//         } finally {
+//             setCargando(false);
+//         }
+//     };
+
+//     // Filtrado y paginado de tabla
+//     // const FiltrarDatosEnTabla = remisiones.filter(remision =>
+//     //     remision.NoRemision?.toLowerCase().includes(buscarPalabra.toLowerCase())
+//     // );
+//     const FiltrarDatosEnTabla = remisiones.filter((remision) =>
+//         Object.values(remision).some((valor) =>
+//             String(valor).toLowerCase().includes(buscarPalabra.toLowerCase())
+//         )
+//     );
+
+//     const PaginadoTabla = FiltrarDatosEnTabla.slice(
+//         pagina * filasPorPagina,
+//         pagina * filasPorPagina + filasPorPagina
+//     );
+
+//     if (cargando) return <Loader />;
+//     if (error) return <ErrorDisplay message={error} />;
+
+
+//     // 7. Renderizado JSX
+//     return (
+//         <Card>
+//             <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Visualización de remisiones</Typography>
+//             <Divider />
+//             <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
+//                 <Paper>
+//                     <TextField
+//                         variant="outlined"
+//                         placeholder="Buscar remisión..."
+//                         onChange={e => setBuscarPalabra(e.target.value)}
+//                         // style={{ margin: '16px' }}
+//                         size='small'
+//                     />
+//                     <TableContainer>
+//                         <Table>
+//                             <TableHead>
+//                                 <TableRow>
+//                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Id</TableCell>
+//                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>NoRemisión</TableCell>
+//                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Cliente</TableCell>
+//                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Proyecto</TableCell>
+//                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Creado Por</TableCell>
+//                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Fecha Creación</TableCell>
+//                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Observaciones</TableCell>
+//                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Estado</TableCell>
+//                                     <TableCell style={{ fontWeight: 'bold', color: '#000000' }} align="center">Acciones</TableCell>
+//                                 </TableRow>
+//                             </TableHead>
+//                             <TableBody>
+
+//                                 {PaginadoTabla.map((remision: Remision) => (
+//                                     <TableRow key={remision.IdRemision}>
+//                                         <TableCell>{remision.IdRemision}</TableCell>
+//                                         <TableCell>{remision.NoRemision}</TableCell>
+//                                         <TableCell>{remision.Cliente}</TableCell>
+//                                         <TableCell>{remision.Proyecto}</TableCell>
+//                                         <TableCell>{remision.CreadoPor}</TableCell>
+//                                         <TableCell>{remision.FechaCreacion}</TableCell>
+//                                         <TableCell>{remision.ObservacionesInternasEmpresa}</TableCell>
+//                                         <TableCell>{remision.EstadoRemision}</TableCell>
+//                                         <TableCell>
+//                                             <EditarRemision />
+//                                             <GenerarPDFRemision IdRemision={remision.IdRemision}/>
+//                                             <EliminarRemision />
+//                                         </TableCell>
+//                                     </TableRow>
+//                                 ))}
+//                             </TableBody>
+//                         </Table>
+//                     </TableContainer>
+//                 </Paper>
+//                 <TablePagination
+//                     component="div"
+//                     count={FiltrarDatosEnTabla.length}
+//                     page={pagina}
+//                     onPageChange={(_, newPage) => setPagina(newPage)}
+//                     rowsPerPage={filasPorPagina}
+//                     onRowsPerPageChange={(event) => {
+//                         setFilasPorPagina(parseInt(event.target.value, 10));
+//                         setPagina(0);
+//                     }}
+//                     labelRowsPerPage="Filas por página"
+//                     rowsPerPageOptions={[5, 10, 25]}
+//                 />
+//             </CardContent>
+//         </Card>
+//     )
+// };
+
+
 'use client';
 
-import * as React from 'react';
-import { Loader, ErrorDisplay } from '@/components/dashboard/componentes_generales/mensajedecarga/Loader';
-import {
-    Card, CardContent,
-    Chip,
-    Divider,
-    IconButton,
-    Paper,
-    Table,
-    TableBody, TableCell,
-    TableContainer, TableHead,
-    TablePagination,
-    TableRow, TextField,
-    Typography,
-    useMediaQuery,
-    useTheme,
-    Box,
-    CircularProgress
-} from '@mui/material';
-import {
-    FilePdf,
-    Printer,
-    Trash,
-    PencilSimple
-}
-    from '@phosphor-icons/react/dist/ssr';
+import { EliminarRemision } from '@/components/dashboard/comercial/remisiones/acciones-remision/EliminarRemision';
+import { GenerarPDFRemision } from '@/components/dashboard/comercial/remisiones/acciones-remision/GenerarPDFRemision';
+import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useSocketIO } from '@/hooks/use-WebSocket';
 import { ConsultarRemisiones } from '@/services/comercial/remisiones/ConsultarRemisionesService';
-import { GenerarPDFRemision } from '@/components/dashboard/comercial/remisiones/acciones-remision/GenerarPDFRemision';
-import { EliminarRemision } from '@/components/dashboard/comercial/remisiones/acciones-remision/EliminarRemision';
-import { EditarRemision } from '@/components/dashboard/comercial/remisiones/acciones-remision/EditarRemision';
+import { Chip } from '@mui/material';
+import { PencilSimple } from '@phosphor-icons/react/dist/ssr';
+import * as React from 'react';
+// import { EditarRemision } from '@/components/dashboard/comercial/remisiones/acciones-remision/EditarRemision';
 
-
-// 1. Tipos / Interfaces locales
 interface Remision {
     IdRemision: number;
     NoRemision: string;
@@ -45,130 +197,145 @@ interface Remision {
     EstadoRemision: string;
 }
 
-
-// 2. Componente principal
 export function TablaVisualizarRemisiones(): React.JSX.Element {
-    // 3. Hooks de React y otros hooks de librerías
-    const theme = useTheme();
     const { sendMessage, messages } = useSocketIO();
-
-    // 4. Estados
-    // const [remisiones, setRemisiones] = React.useState<any[]>([]);
-    const [remisiones, setRemisiones] = React.useState<Remision[]>([]);
-    const [cargando, setCargando] = React.useState(true);
+    const [data, setData] = React.useState<Remision[]>([]);
+    const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState<string | null>(null);
-    const [buscarPalabra, setBuscarPalabra] = React.useState('');
-    const [pagina, setPagina] = React.useState(0);
-    const [filasPorPagina, setFilasPorPagina] = React.useState(5);
+    const [searchTerm, setSearchTerm] = React.useState('');
 
-    // 5. useEffect para carga inicial y sockets
     React.useEffect(() => {
-        ObtenerRemisiones();
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                const response = await ConsultarRemisiones();
+                setData(response);
+            } catch (err) {
+                setError(`Error al cargar las remisiones: ${err}`);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
     }, []);
 
-    // 6. Funciones del componente
-    const ObtenerRemisiones = async () => {
-        try {
-            setError(null);
-            // Simula retraso
-            // await new Promise((resolve) => setTimeout(resolve, 2000));
-            // Forzar un error de prueba
-            // throw new Error('Simulación de error al obtener remisiones');
-            // const data = await ConsultarRemisiones();
-            const data: Remision[] = await ConsultarRemisiones();
-            setRemisiones(data);
-        } catch (error) {
-            setError(`Error al cargar las remisiones: ${error}`);
-        } finally {
-            setCargando(false);
+    React.useEffect(() => {
+        if (messages.length > 0) {
+            const ultimomensajes = messages[messages.length - 1];
+            if (ultimomensajes.tipo === 'remision-creada') {
+                handleRefresh();
+            }
+        }
+    }, [messages]);
+
+    const getEstadoColor = (estado: string) => {
+        switch (estado) {
+            case 'Activa': return 'success';
+            case 'Pendiente': return 'warning';
+            case 'Cancelada': return 'error';
+            case 'En Proceso': return 'info';
+            case 'Creado': return 'info'
+            default: return 'default';
         }
     };
 
-    // Filtrado y paginado de tabla
-    // const FiltrarDatosEnTabla = remisiones.filter(remision =>
-    //     remision.NoRemision?.toLowerCase().includes(buscarPalabra.toLowerCase())
-    // );
-    const FiltrarDatosEnTabla = remisiones.filter((remision) =>
-        Object.values(remision).some((valor) =>
-            String(valor).toLowerCase().includes(buscarPalabra.toLowerCase())
-        )
-    );
-
-    const PaginadoTabla = FiltrarDatosEnTabla.slice(
-        pagina * filasPorPagina,
-        pagina * filasPorPagina + filasPorPagina
-    );
-
-    if (cargando) return <Loader />;
-    if (error) return <ErrorDisplay message={error} />;
-
-
-    // 7. Renderizado JSX
-    return (
-        <Card>
-            <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Visualización de remisiones</Typography>
-            <Divider />
-            <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
-                <Paper>
-                    <TextField
-                        variant="outlined"
-                        placeholder="Buscar remisión..."
-                        onChange={e => setBuscarPalabra(e.target.value)}
-                        // style={{ margin: '16px' }}
-                        size='small'
-                    />
-                    <TableContainer>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Id</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>NoRemisión</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Cliente</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Proyecto</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Creado Por</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Fecha Creación</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Observaciones</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Estado</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }} align="center">Acciones</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-
-                                {PaginadoTabla.map((remision: Remision) => (
-                                    <TableRow key={remision.IdRemision}>
-                                        <TableCell>{remision.IdRemision}</TableCell>
-                                        <TableCell>{remision.NoRemision}</TableCell>
-                                        <TableCell>{remision.Cliente}</TableCell>
-                                        <TableCell>{remision.Proyecto}</TableCell>
-                                        <TableCell>{remision.CreadoPor}</TableCell>
-                                        <TableCell>{remision.FechaCreacion}</TableCell>
-                                        <TableCell>{remision.ObservacionesInternasEmpresa}</TableCell>
-                                        <TableCell>{remision.EstadoRemision}</TableCell>
-                                        <TableCell>
-                                            <EditarRemision />
-                                            <GenerarPDFRemision IdRemision={remision.IdRemision}/>
-                                            <EliminarRemision />
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </Paper>
-                <TablePagination
-                    component="div"
-                    count={FiltrarDatosEnTabla.length}
-                    page={pagina}
-                    onPageChange={(_, newPage) => setPagina(newPage)}
-                    rowsPerPage={filasPorPagina}
-                    onRowsPerPageChange={(event) => {
-                        setFilasPorPagina(parseInt(event.target.value, 10));
-                        setPagina(0);
-                    }}
-                    labelRowsPerPage="Filas por página"
-                    rowsPerPageOptions={[5, 10, 25]}
+    const columns = [
+        // {
+        //     key: 'IdRemision',
+        //     header: 'ID',
+        //     width: '80px'
+        // },
+        {
+            key: 'NoRemision',
+            header: 'No. Remisión'
+        },
+        {
+            key: 'Cliente',
+            header: 'Cliente'
+        },
+        {
+            key: 'Proyecto',
+            header: 'Proyecto'
+        },
+        {
+            key: 'CreadoPor',
+            header: 'Creado Por'
+        },
+        {
+            key: 'FechaCreacion',
+            header: 'Fecha Creación',
+            // render: (row: Remision) => new Date(row.FechaCreacion).toLocaleDateString()
+        },
+        {
+            key: 'ObservacionesInternasEmpresa',
+            header: 'Observaciones',
+            render: (row: Remision) => row.ObservacionesInternasEmpresa || '-'
+        },
+        {
+            key: 'EstadoRemision',
+            header: 'Estado',
+            render: (row: Remision) => (
+                <Chip
+                    label={row.EstadoRemision}
+                    color={getEstadoColor(row.EstadoRemision)}
+                    size="small"
+                    sx={{ color: 'white', minWidth: 100 }}
                 />
-            </CardContent>
-        </Card>
-    )
-};
+            )
+        }
+    ];
+
+    const actions: ActionDefinition<Remision>[] = [
+        {
+            icon: <PencilSimple size={20} />,
+            tooltip: 'Editar remisión',
+            onClick: (row: Remision) => console.log('Editar:', row.IdRemision),
+            color: 'primary'
+        },
+        {
+            render: (row: Remision) => (
+                <GenerarPDFRemision IdRemision={row.IdRemision} />
+            ),
+            tooltip: 'Generar PDF'
+        },
+        {
+            render: (row: Remision) => (
+                <EliminarRemision />
+            ),
+            tooltip: 'Eliminar remisión',
+            color: 'error'
+        }
+    ];
+
+    const handleRefresh = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            setSearchTerm('');
+            const response = await ConsultarRemisiones();
+            setData(response);
+        } catch (err) {
+            setError(`Error al actualizar: ${err}`);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <DataTable<Remision>
+            data={data}
+            columns={columns}
+            actions={actions}
+            loading={loading}
+            error={error}
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            onRefresh={handleRefresh}
+            emptyMessage="No se encontraron remisiones"
+            rowKey={(row) => row.IdRemision}
+            placeHolderBuscador='Buscar remisiones...'
+        />
+    );
+}

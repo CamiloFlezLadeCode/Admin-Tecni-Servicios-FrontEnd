@@ -40,7 +40,7 @@ export const apiRoutes = {
     vehiculos: {
         crearvehiculo: `${API_BASE_URL}/crear-vehiculo`,
         vervehiculos: `${API_BASE_URL}/ver-vehiculos`,
-        consultarvehiculoporid: (IdVehiculo: string) => `${API_BASE_URL}/ver-vehiculo/${IdVehiculo}`,
+        consultarvehiculoporid: (IdVehiculo: number) => `${API_BASE_URL}/ver-vehiculo/${IdVehiculo}`,
         actualizarvehiculo: `${API_BASE_URL}/actualizar-vehiculo`,
         eliminarvehiculo: (IdVehiculo: number) => `${API_BASE_URL}/eliminar-vehiculo/${IdVehiculo}`
     },
@@ -76,7 +76,8 @@ export const apiRoutes = {
         },
         ordenes_de_servicio: {
             consultar_siguiente_no_orden_de_servicio: `${API_BASE_URL}/siguiente-no-orden-de-servicio`,
-            crear_orden_de_servicio: `${API_BASE_URL}/crear-orden-de-servicio`
+            crear_orden_de_servicio: `${API_BASE_URL}/crear-orden-de-servicio`,
+            ver_todas_las_ordenes_de_servicio: `${API_BASE_URL}/ver-todas-las-ordenes-de-servicio`
         }
     },
     gestionycontrol: {

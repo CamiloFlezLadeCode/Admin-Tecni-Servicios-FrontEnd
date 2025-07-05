@@ -44,42 +44,39 @@ export function FormularioEditarEquipo({ IdEquipo, sendMessage }: { IdEquipo: nu
         IdEquipo: IdEquipo
     });
     //...
-    React.useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [
-                    categorias,
-                    subarrendatarios,
-                    estados,
-                    infoequipo
-                ] = await Promise.all([
-                    ListarCategorias(),
-                    ListarSubarrendatarios(),
-                    ListarEstados(),
-                    ConsultarEquipoPorId(IdEquipo)
-                ]);
-                setCategorias(categorias);
-                setSubarrendatarios(subarrendatarios);
-                setEstados(estados);
-                // Se pasan los datos que vienen de la bd
-                setDatos({
-                    NombreEquipo: infoequipo[0].Nombre,
-                    CategoriaEquipo: infoequipo[0].IdCategoria,
-                    PrecioVenta: infoequipo[0].PrecioVenta,
-                    PrecioAlquiler: infoequipo[0].PrecioAlquiler,
-                    PrecioReparacion: infoequipo[0].PrecioReparacion,
-                    EstadoEquipo: infoequipo[0].IdEstado,
-                    Cantidad: infoequipo[0].Cantidad,
-                    DocumentoSubarrendatario: infoequipo[0].DocumentoSubarrendatario,
-                    IdEquipo: IdEquipo
-                });
-                //...
-            } catch (error) {
-                console.error(`Error al cargar datos: ${error}`);
-            }
-        };
-        fetchData();
-    }, []);
+    const CargarDatosIniciales = async () => {
+        try {
+            const [
+                categorias,
+                subarrendatarios,
+                estados,
+                infoequipo
+            ] = await Promise.all([
+                ListarCategorias(),
+                ListarSubarrendatarios(),
+                ListarEstados(),
+                ConsultarEquipoPorId(IdEquipo)
+            ]);
+            setCategorias(categorias);
+            setSubarrendatarios(subarrendatarios);
+            setEstados(estados);
+            // Se pasan los datos que vienen de la bd
+            setDatos({
+                NombreEquipo: infoequipo[0].Nombre,
+                CategoriaEquipo: infoequipo[0].IdCategoria,
+                PrecioVenta: infoequipo[0].PrecioVenta,
+                PrecioAlquiler: infoequipo[0].PrecioAlquiler,
+                PrecioReparacion: infoequipo[0].PrecioReparacion,
+                EstadoEquipo: infoequipo[0].IdEstado,
+                Cantidad: infoequipo[0].Cantidad,
+                DocumentoSubarrendatario: infoequipo[0].DocumentoSubarrendatario,
+                IdEquipo: IdEquipo
+            });
+            //...
+        } catch (error) {
+            console.error(`Error al cargar datos: ${error}`);
+        }
+    };
     //...
 
     //Para el tema del modal
@@ -102,6 +99,7 @@ export function FormularioEditarEquipo({ IdEquipo, sendMessage }: { IdEquipo: nu
     const EditarEquipo = async () => {
         try {
             setModalAbierto(true);
+            CargarDatosIniciales();
         } catch (error) {
             mostrarMensaje(`Error al cargar los datos del equipo: ${error}`, 'error');
         }
