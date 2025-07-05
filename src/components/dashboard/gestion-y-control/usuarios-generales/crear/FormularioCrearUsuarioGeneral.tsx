@@ -116,7 +116,7 @@ export function FormularioCrearUsuarioGeneral(): React.JSX.Element {
     //Se definen las reglas con su respectivo mensaje de alerta
     const reglasValidacion = [
         { campo: 'Nombres', mensaje: 'El nombre es obligatorio.' },
-        { campo: 'Apellidos', mensaje: 'El apellido es obligatorio.' },
+        // { campo: 'Apellidos', mensaje: 'El apellido es obligatorio.' },
         { campo: 'Documento', mensaje: 'El documento es obligatorio.' },
         { campo: 'Direccion', mensaje: 'La dirección es obligatoria.' },
         { campo: 'Celular', mensaje: 'El celular es obligatorio y debe ser un número válido de 10 dígitos.' },

@@ -57,7 +57,8 @@ export const apiRoutes = {
         listarniveles: `${API_BASE_URL}/listar-niveles`,
         listarproyectos: `${API_BASE_URL}/listar-proyectos`,
         listarroles: `${API_BASE_URL}/listar-roles`,
-        listartiposdedocumentos: `${API_BASE_URL}/listar-tipo-de-documentos`
+        listartiposdedocumentos: `${API_BASE_URL}/listar-tipo-de-documentos`,
+        listarmecanicos: `${API_BASE_URL}/listar-mecanicos`
     },
     comercial: {
         remisiones: {
@@ -70,7 +71,12 @@ export const apiRoutes = {
         devoluciones: {
             creardevolucion: `${API_BASE_URL}/crear-devolucion`,
             ver_remisiones_del_cliente: `${API_BASE_URL}/ver-remisiones-cliente`,
-            mostrar_items_remision: `${API_BASE_URL}/ver-items-remision`
+            mostrar_items_remision: `${API_BASE_URL}/ver-items-remision`,
+            consultar_siguiente_no_devolucion: `${API_BASE_URL}/siguiente-no-devolucion`
+        },
+        ordenes_de_servicio: {
+            consultar_siguiente_no_orden_de_servicio: `${API_BASE_URL}/siguiente-no-orden-de-servicio`,
+            crear_orden_de_servicio: `${API_BASE_URL}/crear-orden-de-servicio`
         }
     },
     gestionycontrol: {

@@ -18,47 +18,13 @@ import * as React from 'react';
 import { Typography } from '@mui/material';
 import { ListarSubarrendatarios } from '@/services/generales/ListarSubarrendatariosService';
 import { useSocketIO } from '@/hooks/use-WebSocket';
-
-const EstadoEquipo = [
-    { value: '3', label: 'Disponible' },
-    { value: '4', label: 'No disponible' },
-    { value: '5', label: 'Reparación' },
-]
+import { ListarCategorias } from '@/services/generales/ListarCategoriasServices';
+import { ListarEstados } from '@/services/generales/ListarEstadosService';
 
 const Caracteristica = [
     { value: '1', label: 'Alquiler' },
     { value: '2', label: 'Venta' },
     { value: '3', label: 'Reparación' },
-]
-
-const Categorias = [
-    { value: '1', label: 'ACCESORIOS' },
-    { value: '2', label: 'ANDAMIOS DE CARGA - SISTEMA DALMINE' },
-    { value: '3', label: 'ANDAMIOS Y COMPLEMENTARIOS' },
-    { value: '4', label: 'BROCAS - MUELAS - CINCELES - DISCOS' },
-    { value: '5', label: 'COBROS Y REPARACIONES' },
-    { value: '6', label: 'COMPRESORES PARA AIRE - PINTURA' },
-    { value: '7', label: 'EQUIPO ELECTROMECÁNICO VARIOS' },
-    { value: '8', label: 'EQUIPO PARA VACIADO DE CONCRETO' },
-    { value: '9', label: 'EQUIPOS PARA COMPACTACIÓN' },
-    { value: '10', label: 'EQUIPOS PARA CORTE' },
-    { value: '11', label: 'EQUIPOS PARA DEMOLICIÓN' },
-    { value: '12', label: 'EQUIPOS PARA ELEVACIÓN - ARRASTRE ' },
-    { value: '13', label: 'EQUIPOS PARA GENERACIÓN DE ENERGIA ' },
-    { value: '14', label: 'EQUIPOS PARA JARDINERIA' },
-    { value: '15', label: 'EQUIPOS PARA TRABAJOS EN ALTURAS' },
-    { value: '16', label: 'FORMALETERIA MAN HOLE - SUMIDERO' },
-    { value: '17', label: 'FORMALETERIA PARA COLUMNA' },
-    { value: '18', label: 'FORMALETERIA PARA LOSA' },
-    { value: '19', label: 'FORMALETERIA PARA MURO' },
-    { value: '20', label: 'FORMALETERIA VARIOS' },
-    { value: '21', label: 'HERRAMIENTA MENOR - OTROS' },
-    { value: '22', label: 'MAQUINARIA PESADA' },
-    { value: '23', label: 'MOTOBOMBAS Y COMPLEMENTARIOS' },
-    { value: '24', label: 'SOLDADORES Y COMPLEMENTARIOS' },
-    { value: '25', label: 'TALADROS' },
-    { value: '26', label: 'TRANSPORTE' },
-    { value: '27', label: 'VENTAS' },
 ]
 
 
@@ -85,7 +51,8 @@ export function FormularioCrearEquipo(): React.JSX.Element {
     const reglasValidacion = [
         { campo: 'NombreEquipo', mensaje: 'El nombre es obligatorio.' },
         { campo: 'CategoriaEquipo', mensaje: 'La categoria es obligatoria.' },
-        { campo: 'PrecioReparacion', mensaje: 'El precio de reparación es obligatorio.' },
+        { campo: 'PrecioAlquiler', mensaje: 'El precio de alquiler es obligatorio.' },
+        // { campo: 'PrecioReparacion', mensaje: 'El precio de reparación es obligatorio.' },
         { campo: 'EstadoEquipo', mensaje: 'El estado es obligatorio.' },
     ];
 
@@ -195,8 +162,39 @@ export function FormularioCrearEquipo(): React.JSX.Element {
     };
     //...
 
+    //Llenado para el select de referencia/familia del equipo
+    const [categorias, setCategorias] = React.useState<{ value: string | number; label: string }[]>([]);
+    const CargarReferencias = async () => {
+        try {
+            const Referencias_Categorias = await ListarCategorias();
+            setCategorias(Referencias_Categorias);
+        } catch (error) {
+            console.error('Error al listar las referencias: ', error);
+        }
+    };
+    // ...
+
+    //Llenado para el select de los estados
+    const [estados, setEstados] = React.useState<{ value: string | number; label: string }[]>([]);
+    const CargarEstados = async () => {
+        try {
+            const Estados = await ListarEstados();
+            console.log(Estados);
+            const estadosPermitidos = new Set(['disponible', 'no disponible', 'reparación']);
+            const NuevosEstados = Estados.filter((element: any) =>
+                estadosPermitidos.has(element.label.toLowerCase().trim())
+            );
+            setEstados(NuevosEstados);
+        } catch (error) {
+            console.error('Error al listar los estados: ', error);
+        }
+    };
+    // ...
+
     React.useEffect(() => {
         CargarSubarrendatarios();
+        CargarReferencias();
+        CargarEstados();
     }, []);
 
     return (
@@ -216,7 +214,7 @@ export function FormularioCrearEquipo(): React.JSX.Element {
                         <InputSelect
                             label='Referencia'
                             value={datos.CategoriaEquipo}
-                            options={Categorias}
+                            options={categorias}
                             size='small'
                             onChange={handleChange}
                             valorname='CategoriaEquipo'
@@ -291,7 +289,7 @@ export function FormularioCrearEquipo(): React.JSX.Element {
                         <InputSelect
                             label='Estado'
                             value={datos.EstadoEquipo}
-                            options={EstadoEquipo}
+                            options={estados}
                             size='small'
                             onChange={handleChange}
                             valorname='EstadoEquipo'

@@ -46,26 +46,54 @@ const FormularioValidator = forwardRef<FormularioValidatorRef, FormularioValidat
         //     }
         // });
 
+        // reglasValidacion.forEach(({ campo, mensaje }) => {
+        //     if (!datos[campo]) {
+        //         mensajesFaltantes.push(mensaje);
+        //     } else if (campo === 'Celular' || campo === 'CelularUsuario') {
+        //         const celular = datos[campo];
+
+        //         // Verifica que el celular solo contenga dígitos y tenga exactamente 10 caracteres
+        //         const esNumeroValido = /^\d{10}$/.test(celular);
+
+        //         if (!esNumeroValido) {
+        //             mensajesFaltantes.push(mensaje);
+        //         }
+        //     } else if (campo === 'Correo' || campo === 'CorreoUsuario') {
+        //         const Correo = datos[campo];
+        //         const esCorreoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(Correo);
+        //         if (!esCorreoValido) {
+        //             mensajesFaltantes.push(mensaje);
+        //         }
+        //     } else if (campo === 'Roles' && datos.Roles.length === 0) {
+        //         mensajesFaltantes.push(mensaje);
+        //     } else if (campo === 'Garantia') {
+        //         // Acepta explícitamente 0 y 1 como válidos
+        //         if (datos[campo] !== 0 && datos[campo] !== 1) {
+        //             mensajesFaltantes.push(mensaje);
+        //         }
+        //     }
+        // });
+
         reglasValidacion.forEach(({ campo, mensaje }) => {
-            if (!datos[campo]) {
+            const valor = datos[campo];
+
+            if (
+                (valor === null || valor === undefined || valor === '') &&
+                campo !== 'Garantia' // excluyes la evaluación genérica de 'Garantia'
+            ) {
                 mensajesFaltantes.push(mensaje);
             } else if (campo === 'Celular' || campo === 'CelularUsuario') {
-                const celular = datos[campo];
-
-                // Verifica que el celular solo contenga dígitos y tenga exactamente 10 caracteres
-                const esNumeroValido = /^\d{10}$/.test(celular);
-
-                if (!esNumeroValido) {
-                    mensajesFaltantes.push(mensaje);
-                }
+                const esNumeroValido = /^\d{10}$/.test(valor);
+                if (!esNumeroValido) mensajesFaltantes.push(mensaje);
             } else if (campo === 'Correo' || campo === 'CorreoUsuario') {
-                const Correo = datos[campo];
-                const esCorreoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(Correo);
-                if (!esCorreoValido) {
+                const esCorreoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor);
+                if (!esCorreoValido) mensajesFaltantes.push(mensaje);
+            } else if (campo === 'Roles' && valor.length === 0) {
+                mensajesFaltantes.push(mensaje);
+            } else if (campo === 'Garantia') {
+                if (valor !== 0 && valor !== 1) {
                     mensajesFaltantes.push(mensaje);
                 }
-            } else if (campo === 'Roles' && datos.Roles.length === 0) {
-                mensajesFaltantes.push(mensaje);
             }
         });
 

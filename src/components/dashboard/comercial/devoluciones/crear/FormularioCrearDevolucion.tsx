@@ -29,6 +29,10 @@ import { ListarClientes } from '@/services/generales/ListarClientesService';
 import { ListarProyectos } from '@/services/generales/ListarProyectos';
 import { VerRemisionesCliente } from '@/services/comercial/devoluciones/VerRemisionesClienteService';
 import { MostrarItemsRemision } from '@/services/comercial/devoluciones/MostrarItemsRemisionService';
+import { ListarEstados } from '@/services/generales/ListarEstadosService';
+import { nullable } from 'zod';
+import { textAlign } from '@mui/system';
+import { ConsultarSiguienteNoDevolucion } from '@/services/comercial/devoluciones/ConsultarSiguienteNoDevolucionService';
 
 // 1. Interfaces
 // interface Devolucion {
@@ -38,7 +42,7 @@ import { MostrarItemsRemision } from '@/services/comercial/devoluciones/MostrarI
 // }
 
 
-// 1. Interfaces
+// 1. INTERFACES
 interface Devolucion {
     NoDevolucion: string;
     Cliente: string;
@@ -47,6 +51,7 @@ interface Devolucion {
     FechaDevolucion: string;
     Observaciones: string;
     UsuarioCreacion: string;
+    EstadoEquipo: number;
 }
 
 interface ItemDevolucion {
@@ -55,7 +60,7 @@ interface ItemDevolucion {
     CantidadArrendada: number;
     CantidadPendiente: number;
     CantidadADevolver: number;
-    Estado: string;
+    EstadoEquipo: number;
     Motivo: string;
     Observaciones: string;
 }
@@ -65,94 +70,21 @@ interface Option {
     label: string;
 }
 
-// 2. Componente Principal
-// export function FormularioCrearDevolucion(): React.JSX.Element {
-//     // 3. Hooks de React y otros hooks de librerías
-//     const theme = 0;
-
-//     // 4. Estados
-//     // const [devolucion, setDevolucion] = React.useState<Devolucion[]>([]);
-//     const [datos, setDatos] = React.useState<Devolucion>({
-//         Cliente: '',
-//         NoDevolucion: '',
-//         UsuarioCreacion: '',
-//     });
-//     const [clientes, setClientes] = React.useState<{ value: string | number; label: string }[]>([]);
-
-//     // 5. useEffect para la carga inicial y sockets
-//     React.useEffect(() => {
-//         ObtenerClientes();
-//     }, []);
-
-//     React.useEffect(() => {
-//         console.log('HOLISS');
-//     }, [datos.Cliente]);
-
-//     const handleChange = async (e: SelectChangeEvent<string | number> | React.ChangeEvent<HTMLInputElement> | { target: { value: string | number; name?: string } }) => {
-//         const { name, value } = e.target;
-//         setDatos(prev => ({ ...prev, [name ?? '']: value }));
-//     };
-
-//     // 6. Funciones del componente
-//     const ObtenerClientes = async () => {
-//         try {
-//             const Clientes = await ListarClientes();
-//             setClientes(Clientes);
-//         } catch (error) {
-//             console.error('Error al obtener clientes:', error);
-//         }
-//     };
-
-//     // 7. Renderizado JSX del componente
-//     return (
-//         <Card>
-//             <Box display="flex" justifyContent="space-between" alignItems="center" px={2} pt={1}>
-//                 <Typography variant="subtitle1" color="text.primary">
-//                     Creación de devolución
-//                 </Typography>
-//                 <Typography variant="subtitle2" color="text.secondary" width="140px" mb={.5} mt={.5}>
-//                     <Input
-//                         label='Devolución No:'
-//                         // value={datos.NoRemision}
-//                         value="|1"
-//                         onChange={() => { }}
-//                         // required
-//                         tamano='small'
-//                         tipo_input='text'
-//                         valorname='NoRemision'
-//                     />
-//                 </Typography>
-//             </Box>
-//             <Divider />
-//             <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
-//                 <Grid container spacing={1}>
-//                     <Grid md={3} xs={12} mt={0.5}>
-//                         <InputSelect
-//                             label='Empresa/Cliente'
-//                             value={datos.Cliente}
-//                             options={clientes}
-//                             size='small'
-//                             onChange={handleChange}
-//                             valorname='Cliente'
-//                         />
-//                     </Grid>
-//                 </Grid>
-//             </CardContent>
-//         </Card>
-//     )
-// }
-
+// 2. COMPONENTE PRINCIPAL
 export function FormularioCrearDevolucion(): React.JSX.Element {
+    // 3. HOOKS DE REACT Y OTROS HOOKS DE LIBRERÍAS
     const { user } = React.useContext(UserContext) || { user: null };
     const documentoUsuarioActivo = user ? `${user.documento}` : null;
 
-    // Estados ampliados
+
+    // 4. ESTADOS
     const [datos, setDatos] = React.useState<Devolucion>({
         Cliente: '',
-        NoDevolucion: 'DEV-001', // Temporal, luego se consulta a la API
+        NoDevolucion: '', // Temporal, luego se consulta a la API
         FechaDevolucion: new Date().toISOString().split('T')[0],
         Observaciones: '',
         UsuarioCreacion: documentoUsuarioActivo || '',
+        EstadoEquipo: 9,
     });
 
     const [clientes, setClientes] = React.useState<Option[]>([]);
@@ -160,9 +92,12 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
     const [remisiones, setRemisiones] = React.useState<Option[]>([]);
     const [itemsRemision, setItemsRemision] = React.useState<ItemDevolucion[]>([]);
 
+    // 5. USEEFFECT PARA LA CARGA INICIAL Y SOCKETS
     // Cargar remisiones pendientes cuando se selecciona cliente y proyecto
     React.useEffect(() => {
         ObtenerClientes();
+        CargarEstados();
+        CargarSiguienteNoDevolucion();
     }, []);
 
     React.useEffect(() => {
@@ -179,6 +114,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
         }
     }, [datos.Cliente, datos.Proyecto]);
 
+    // 6. FUNCIONES DEL COMPONENTE
     const cargarRemisionesPendientes = async (clienteId: string, proyectoId: string) => {
         try {
             // Implementar servicio que consulte remisiones con items pendientes
@@ -190,6 +126,19 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
             console.error('Error al cargar remisiones:', error);
         }
     };
+
+    // Cargar siguiente no devolución
+    const CargarSiguienteNoDevolucion = async () => {
+        try {
+            const SiguienteNoDevolucion = await ConsultarSiguienteNoDevolucion();
+            setDatos(prev => ({
+                ...prev, NoDevolucion: SiguienteNoDevolucion[0].SiguienteNoDevolucion
+            }));
+        } catch (error) {
+            console.error('Error al consultar el siguiente número de devolución: ', error);
+        }
+    };
+    // ...
 
     // Cargar los clientes
     const ObtenerClientes = async () => {
@@ -234,6 +183,22 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
         }
     };
 
+    // Cargar estados
+    const [estados, setEstados] = React.useState<{ value: string | number; label: string }[]>([]);
+    const CargarEstados = async () => {
+        try {
+            const Estados = await ListarEstados();
+            const estadosPermitidos = new Set(['buen estado', 'dañado', 'perdido']);
+            const NuevosEstados = Estados.filter((element: any) =>
+                estadosPermitidos.has(element.label.toLowerCase().trim())
+            );
+            setEstados(NuevosEstados);
+        } catch (error) {
+            console.error('Erro al listar los estados: ', error);
+        }
+    };
+    // ...
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>) => {
         const { name, value } = e.target;
         setDatos(prev => ({ ...prev, [name]: value }));
@@ -252,7 +217,49 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
         }
     };
 
-    // Renderizado
+    //Controlar ingreso a la cantidad a devolver
+    // const actualizarCantidadADevolver = (idEquipo: string, nuevaCantidad: number) => {
+    //     setItemsRemision(prevItems =>
+    //         prevItems.map(item =>
+    //             item.IdEquipo === idEquipo
+    //                 ? { ...item, CantidadADevolver: nuevaCantidad }
+    //                 : item
+    //         )
+    //     );
+    // };
+
+    const actualizarCantidadADevolver = (idEquipo: string, nuevaCantidad: number) => {
+        setItemsRemision(prevItems =>
+            prevItems.map(item => {
+                if (item.IdEquipo === idEquipo) {
+                    const cantidadMaxima = item.CantidadPendiente;
+                    const cantidadFinal = Math.min(
+                        Math.max(nuevaCantidad, 0), // No menor a 0
+                        cantidadMaxima             // No mayor al pendiente
+                    );
+                    return { ...item, CantidadADevolver: cantidadFinal };
+                }
+                return item;
+            })
+        );
+    };
+    // ...
+
+    // Para independizar el estado de entrega para cada item/equipo
+    const actualizarEstadoEntregaEquipo = (idEquipo: string, nuevoEstadoEntregaEquipo: number) => {
+        setItemsRemision(prevItems =>
+            prevItems.map(item => {
+                if (item.IdEquipo === idEquipo) {
+                    const EstadoDeEntregaEquipo = nuevoEstadoEntregaEquipo;
+                    return { ...item, EstadoEquipo: EstadoDeEntregaEquipo };
+                }
+                return item;
+            })
+        );
+    }
+    // ...
+
+    // 7. RENDERIZADO JSX DEL COMPONENTE
     return (
         <Card>
             {/* Cabecera */}
@@ -263,12 +270,12 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                 <Typography variant="subtitle2" color="text.secondary" width="140px" mb={.5} mt={.5}>
                     <Input
                         label='Devolución No:'
-                        value="1"
+                        value={datos.NoDevolucion}
                         onChange={handleChange}
                         // required
                         tamano='small'
                         tipo_input='text'
-                        valorname='NoRemision'
+                        valorname='NoDevolucion'
                     />
                 </Typography>
             </Box>
@@ -322,11 +329,11 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Equipo</TableCell>
-                                        <TableCell style={{ fontWeight: 'bold', color: '#000000' }} align="right">Arrendado</TableCell>
-                                        <TableCell style={{ fontWeight: 'bold', color: '#000000' }} align="right">Pendiente</TableCell>
-                                        <TableCell style={{ fontWeight: 'bold', color: '#000000' }} align="right">A Devolver</TableCell>
-                                        <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Estado</TableCell>
-                                        <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Motivo</TableCell>
+                                        <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Arrendado</TableCell>
+                                        <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Pendiente</TableCell>
+                                        <TableCell style={{ fontWeight: 'bold', color: '#000000', width: '15%' }}>A Devolver</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold', color: '#000000 !important', width: { xs: '18%', md: '20%' } }}>Estado</TableCell>
+                                        {/* <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Motivo</TableCell> */}
                                     </TableRow>
                                 </TableHead>
                                 <TableBody
@@ -334,57 +341,61 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                     {itemsRemision.map((item) => (
                                         <TableRow
                                             key={item.IdEquipo}
-                                            // sx={{
-                                            //     '&:last-child td, &:last-child th': {  // ← Esto afecta específicamente a la última fila
-                                            //         padding: { xs: '6px 8px', md: '8px 12px' },
-                                            //         '& .MuiInputBase-root': {
-                                            //             boxSizing: 'border-box'
-                                            //         }
-                                            //     }
-                                            // }}
                                             sx={{ padding: { xs: '6px 8px', md: '8px 12px' } }}
                                         >
                                             <TableCell>{item.NombreEquipo}</TableCell>
-                                            <TableCell align="right">{item.CantidadArrendada}</TableCell>
-                                            <TableCell align="right">{item.CantidadPendiente}</TableCell>
-                                            <TableCell align="right">
-                                                <TextField
-                                                    type="number"
-                                                    size="small"
+                                            <TableCell>{item.CantidadArrendada}</TableCell>
+                                            <TableCell>{item.CantidadPendiente}</TableCell>
+                                            <TableCell>
+                                                {/* <Grid md={3} xs={12} style={{ width: '30%', textAlign: 'right' }}> */}
+                                                <Input
+                                                    label=""
                                                     value={item.CantidadADevolver}
-                                                    // onChange={(e) => actualizarItem(item.IdEquipo, 'CantidadADevolver', e.target.value)}
-                                                    onChange={() => { }}
-                                                    inputProps={{
-                                                        min: 0,
-                                                        max: item.CantidadPendiente
+                                                    tamano="small"
+                                                    tipo_input='number'
+                                                    onChange={(e) => {
+                                                        const nuevaCantidad = parseInt(e.target.value) || 0;
+                                                        actualizarCantidadADevolver(item.IdEquipo, nuevaCantidad);
                                                     }}
                                                 />
+                                                {/* </Grid> */}
                                             </TableCell>
                                             <TableCell>
-                                                <Select
-                                                    value={item.Estado}
-                                                    // onChange={(e) => actualizarItem(item.IdEquipo, 'Estado', e.target.value)}
-                                                    onChange={() => { }}
-                                                    size="small"
-                                                >
-                                                    <MenuItem value="Bueno">Buen Estado</MenuItem>
-                                                    <MenuItem value="Daniado">Dañado</MenuItem>
-                                                    <MenuItem value="Perdido">Perdido</MenuItem>
-                                                </Select>
+                                                <InputSelect
+                                                    label=""
+                                                    value={item.EstadoEquipo}
+                                                    options={estados}
+                                                    onChange={(e) => {
+                                                        const nuevoEstadoEntregaEquipo = parseInt(e.target.value);
+                                                        actualizarEstadoEntregaEquipo(item.IdEquipo, nuevoEstadoEntregaEquipo);
+                                                    }}
+                                                    valorname="EstadoEquipo"
+                                                />
                                             </TableCell>
-                                            <TableCell>
+                                            {/* <TableCell>
                                                 <TextField
                                                     value={item.Motivo}
                                                     // onChange={(e) => actualizarItem(item.IdEquipo, 'Motivo', e.target.value)}
                                                     onChange={() => { }}
                                                     size="small"
                                                 />
-                                            </TableCell>
+                                            </TableCell> */}
                                         </TableRow>
                                     ))}
                                 </TableBody>
                             </Table>
                         </TableContainer>
+                        <Grid md={6} xs={12} mt={0.5} >
+                            <Input
+                                label='Observaciones'
+                                value={datos.Observaciones}
+                                onChange={handleChange}
+                                // required
+                                tamano='small'
+                                tipo_input='textarea'
+                                valorname='Observaciones'
+                            />
+                        </Grid>
                     </Box>
                 )}
             </CardContent>
