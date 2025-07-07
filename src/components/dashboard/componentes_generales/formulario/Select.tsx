@@ -11,9 +11,10 @@ interface InputSelectProps {
   size?: 'small' | 'medium'; // Tamaño del select
   valorname?: string;
   bloqueado?: boolean;
+  defaultValue?: string; 
 }
 
-const InputSelect: React.FC<InputSelectProps> = ({ label, value, onChange, options, required = false, size = 'small', valorname, bloqueado }) => {
+const InputSelect: React.FC<InputSelectProps> = ({ label, value, onChange, options, required = false, size = 'small', valorname, bloqueado, defaultValue }) => {
   const [focused, setFocused] = React.useState(false);
   // return (
   //   <Grid item md={3} xs={12}>
@@ -78,6 +79,7 @@ const InputSelect: React.FC<InputSelectProps> = ({ label, value, onChange, optio
           onBlur={() => setFocused(false)}
           notched
           disabled={bloqueado}
+          defaultValue={defaultValue}
         >
           {options.map((option) => (
             <MenuItem key={option.value} value={option.value}>

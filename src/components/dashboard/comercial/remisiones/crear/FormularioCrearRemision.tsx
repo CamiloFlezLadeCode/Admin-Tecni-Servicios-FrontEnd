@@ -235,10 +235,9 @@ export function FormularioCrearRemision(): React.JSX.Element {
         }
     };
     React.useEffect(() => {
-        const FetchDataCargarEquiposPorCategoria = async () => {
-            CargarEquiposPorCategoria();
-        };
-        FetchDataCargarEquiposPorCategoria();
+        CargarEquiposPorCategoria();
+        setCantidadDisponible(0);
+        setDatos(prev => ({ ...prev, PrecioUnidad: 0, PrecioTotal: 0, Cantidad: 1 }))
     }, [datos.Categoria]);
 
     //Para consultar la cantidad disponible del equipo seleccionado
@@ -252,31 +251,23 @@ export function FormularioCrearRemision(): React.JSX.Element {
     // ...
     const CargarCantidadDisponibleEquipo = async () => {
         try {
-            const CantidadDisponibleEquipo = await ConsultarCantidadDisponibleEquipo(Number(datos.Equipo));
-            setCantidadDisponible(CantidadDisponibleEquipo[0].CantidadDisponible);
-
-            //Se asignan los precios
-            //alquiler
-            const PrecioAlquiler = await ConsultarCantidadDisponibleEquipo(Number(datos.Equipo));
-            setPrecioAlquiler(PrecioAlquiler[0].PrecioAlquiler);
-            setDatos(prev => ({ ...prev, PrecioUnidad: Number(PrecioAlquiler[0].PrecioAlquiler) ?? 0 }));
-            //venta
-            const PrecioVenta = await ConsultarCantidadDisponibleEquipo(Number(datos.Equipo));
-            setPrecioVenta(PrecioVenta[0].PrecioVenta);
-            // setDatos(prev => ({ ...prev, PrecioUnidad: PrecioVenta[0].PrecioVenta }));
-            //reparación
-            const PrecioReparacion = await ConsultarCantidadDisponibleEquipo(Number(datos.Equipo));
-            setPrecioReparacion(PrecioReparacion[0].PrecioReparacion);
-            // setDatos(prev => ({ ...prev, PrecioUnidad: PrecioReparacion[0].PrecioReparacion }));
-            // ...
+            const [resultado] = await ConsultarCantidadDisponibleEquipo(Number(datos.Equipo));
+            setCantidadDisponible(resultado.CantidadDisponible);
+            setPrecioAlquiler(resultado.PrecioAlquiler);
+            setPrecioVenta(resultado.PrecioVenta);
+            setPrecioReparacion(resultado.PrecioReparacion);
+            setDatos(prev => ({ ...prev, PrecioUnidad: Number(resultado.PrecioAlquiler) || 0 }));
         } catch (error) {
-            console.error(`Error al consultar la cantidad disponible del equipo. ${error}`);
+            console.error(`Error al consultar: ${error}`);
         }
     };
 
     React.useEffect(() => {
         // Verificar si el valor de datos.Equipo ha cambiado
         if (prevEquipoRef.current !== datos.Equipo) {
+            if (!datos.Equipo) {
+                return;
+            }
             CargarCantidadDisponibleEquipo();
             prevEquipoRef.current = datos.Equipo; // Actualizar la referencia con el nuevo valor
         }
@@ -347,6 +338,23 @@ export function FormularioCrearRemision(): React.JSX.Element {
     const [itemsRemision, setItemsRemision] = React.useState<Items[]>([]);
     const precioTotalGeneral = itemsRemision.reduce((acc, item) => acc + (item.PrecioTotal ?? 0), 0);
     const agregarItem = () => {
+        const CantidadIngresada = datos.Cantidad;
+        const CantidadDisponible = cantidaddisponible;
+        if (CantidadIngresada > CantidadDisponible) {
+            mostrarMensaje('La cantidad ingresada no puede ser mayor a la disponible.', 'error');
+            return;
+        }
+        // if (!CantidadIngresada || CantidadIngresada === 0) {
+        //     mostrarMensaje('La cantidad no puede ser 0 ni nula', 'error');
+        //     return;
+        // }
+
+        const cantidad = Number(CantidadIngresada); // convierte a número
+
+        if (!cantidad || cantidad === 0) {
+            mostrarMensaje('La cantidad no puede ser 0 ni nula', 'error');
+            return;
+        }
         const equipoSeleccionado = equipos.find(e => e.value === datos.Equipo);
         const categoriaSeleccionada = categorias.find(e => e.value === datos.Categoria);
         const subarrendatarioSeleccionado = subarrendatarios.find(e => e.value === datos.Subarrendatario);
@@ -463,6 +471,10 @@ export function FormularioCrearRemision(): React.JSX.Element {
     const handleCrearCliente = async () => {
         const esValido = await formularioRef.current?.manejarValidacion();
         if (esValido) {
+            if (!itemsRemision.length) {
+                mostrarMensaje('Debe agregar al menos un item para crear la remisión', 'error');
+                return;
+            };
             try {
                 await CrearRemision(DatosRemision);
                 mostrarMensaje('Remisión creada correctamente', 'success');

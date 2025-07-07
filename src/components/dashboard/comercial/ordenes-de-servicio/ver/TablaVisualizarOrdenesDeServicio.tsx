@@ -601,6 +601,7 @@ export function TablaVisualizarOrdenesDeServicio() {
             render: (row) => (
                 <VerGenerarPDFOrdenDeServicio
                 // data={row}
+                IdOrdenDeServicio={row.IdOrdenDeServicio}
                 // onComplete={() => console.log('PDF generado para', row.IdOrdenDeServicio)}
                 />
             ),

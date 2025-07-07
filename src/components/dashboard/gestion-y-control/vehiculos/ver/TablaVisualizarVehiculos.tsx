@@ -206,6 +206,7 @@ import { ConsultarVehiculos } from '@/services/gestionycontrol/vehiculos/Consult
 import * as React from 'react';
 import { FormularioModalEditarVehiculo } from '../editar/FormularioEditarVehiculo';
 import AlertaEliminarVehiculo from '../eliminar/AlertaEliminarVehiculo';
+import { Chip } from '@mui/material';
 
 interface Vehiculo {
     Estado: string;
@@ -231,28 +232,35 @@ export function TablaVisualizarVehiculos(): React.JSX.Element {
     const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
     // ...
 
-    React.useEffect(() => {
-        const cargarDatos = async () => {
-            try {
-                setLoading(true);
-                const response = await ConsultarVehiculos();
-                setData(response);
-            } catch (err) {
-                setError('Error al cargar los vehiculos');
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
+    const CargarVehiculos = async () => {
+        try {
+            setError(null);
+            const data = await ConsultarVehiculos();
+            setData(data);
+        } catch (error) {
+            setError(`Error al cargar los equipos: ${error}`);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-        cargarDatos();
+    React.useEffect(() => {
+        CargarVehiculos();
     }, []);
+
+    const getEstadoColor = (estado: string) => {
+        switch (estado) {
+            case 'Activo': return 'success';
+            case 'Inactivo': return 'error';
+            default: return 'default';
+        }
+    };
 
     React.useEffect(() => {
         if (messages.length > 0) {
             const ultimomensajes = messages[messages.length - 1];
             if (ultimomensajes.tipo === 'vehiculo-creado' || ultimomensajes.tipo === 'vehiculo-actualizado') {
-                handleRefresh();
+                CargarVehiculos();
             }
         }
     }, [messages]);
@@ -276,7 +284,17 @@ export function TablaVisualizarVehiculos(): React.JSX.Element {
         },
         {
             key: 'Estado',
-            header: 'Estado'
+            header: 'Estado',
+            render: (row: Vehiculo) => {
+                return (
+                    <Chip
+                        label={row.Estado}
+                        color={getEstadoColor(row.Estado)}
+                        size="small"
+                        sx={{ color: 'white', minWidth: 100 }}
+                    />
+                )
+            }
         }
     ];
 

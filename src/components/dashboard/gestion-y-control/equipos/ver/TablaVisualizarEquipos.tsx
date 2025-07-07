@@ -321,7 +321,12 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
         },
         {
             key: 'Cantidad',
-            header: 'Cantidad',
+            header: 'Cantidad Total',
+            align: 'right' as const
+        },
+        {
+            key: 'CantidadDisponible',
+            header: 'Cantidad Disponible',
             align: 'right' as const
         },
         {

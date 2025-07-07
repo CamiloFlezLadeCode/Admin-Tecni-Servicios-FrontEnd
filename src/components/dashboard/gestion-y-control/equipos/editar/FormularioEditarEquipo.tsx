@@ -119,6 +119,10 @@ export function FormularioEditarEquipo({ IdEquipo, sendMessage }: { IdEquipo: nu
     //Función para actualizar el equipo
     const HandleActualizarEquipo = async () => {
         try {
+            if (datos.Cantidad < 0) {
+                mostrarMensaje('La nueva cantidad no puede ser negativa', 'error');
+                return;
+            }
             await ActualizarEquipo(datos);
             sendMessage('equipo-actualizado', {});
             mostrarMensaje(`Equipo actualizado correctamente`, 'success');

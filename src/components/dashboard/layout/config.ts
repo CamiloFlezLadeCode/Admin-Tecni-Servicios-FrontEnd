@@ -174,16 +174,16 @@ export const navItems = [
       }
     ]
   },
-  {
-    key: 'hojadevidaequipos',
-    title: 'Hoja de vida equipos',
-    href: paths.dashboard.hojadevidaequipos,
-    icon: 'read-cv-logo',
-    matcher: {
-      type: 'startsWith',
-      href: paths.dashboard.hojadevidaequipos
-    }
-  },
+  // {
+  //   key: 'hojadevidaequipos',
+  //   title: 'Hoja de vida equipos',
+  //   href: paths.dashboard.hojadevidaequipos,
+  //   icon: 'read-cv-logo',
+  //   matcher: {
+  //     type: 'startsWith',
+  //     href: paths.dashboard.hojadevidaequipos
+  //   }
+  // },
   // {
   //   key: 'Tarifas',
   //   title: 'Tarifas',

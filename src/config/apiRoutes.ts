@@ -72,12 +72,15 @@ export const apiRoutes = {
             creardevolucion: `${API_BASE_URL}/crear-devolucion`,
             ver_remisiones_del_cliente: `${API_BASE_URL}/ver-remisiones-cliente`,
             mostrar_items_remision: `${API_BASE_URL}/ver-items-remision`,
-            consultar_siguiente_no_devolucion: `${API_BASE_URL}/siguiente-no-devolucion`
+            consultar_siguiente_no_devolucion: `${API_BASE_URL}/siguiente-no-devolucion`,
+            ver_todas_las_devoluciones: `${API_BASE_URL}/ver-todas-las-devoluciones`,
+            ver_pdf_devolucion: `${API_BASE_URL}/obtener-pdf-devolucion`
         },
         ordenes_de_servicio: {
             consultar_siguiente_no_orden_de_servicio: `${API_BASE_URL}/siguiente-no-orden-de-servicio`,
             crear_orden_de_servicio: `${API_BASE_URL}/crear-orden-de-servicio`,
-            ver_todas_las_ordenes_de_servicio: `${API_BASE_URL}/ver-todas-las-ordenes-de-servicio`
+            ver_todas_las_ordenes_de_servicio: `${API_BASE_URL}/ver-todas-las-ordenes-de-servicio`,
+            ver_pdf_orden_de_servicio: `${API_BASE_URL}/obtener-pdf-orden-de-servicio`
         }
     },
     gestionycontrol: {

@@ -1,7 +1,7 @@
 import axiosInstance from "@/config/axiosConfig";
 import { apiRoutes } from "@/config/apiRoutes";
 
-export const VerRemisionesCliente = async (DocumentoCliente: string, IdProyecto: any) => {
+export const VerRemisionesCliente = async (DocumentoCliente: string, IdProyecto: number) => {
     try {
         const { data } = await axiosInstance.get(apiRoutes.comercial.devoluciones.ver_remisiones_del_cliente, {
             // params: Datos

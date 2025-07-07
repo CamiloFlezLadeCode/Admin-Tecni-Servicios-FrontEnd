@@ -123,6 +123,12 @@ export function useSocketIO() {
         });
         // ...
 
+        // SOCKET PARA DEVOLUCIONES
+        socket.on('devolucion-creada', (data) => {
+            setMessages((prev) => [...prev, { tipo: 'devolucion-creada', data }]);
+        })
+        // ...
+
         // SOCKET DESCONECTADO
         socket.on('disconnect', (reason) => {
             // console.log('❌ Socket desconectado:', reason);
