@@ -10,7 +10,7 @@ interface ReglaValidacion {
 interface FormularioValidatorProps {
     datos: Record<string, any>;
     reglasValidacion: ReglaValidacion[];
-    onValid: () => void;
+    onValid?: () => void;
 }
 
 export interface FormularioValidatorRef {

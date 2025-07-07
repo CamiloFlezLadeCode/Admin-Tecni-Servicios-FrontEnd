@@ -211,8 +211,6 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
             }));
 
             setItemsRemision(itemsConEstadoInicial);
-            console.log('BD: ', ItemsRemision);
-            console.log('ESTADO INICIAL: ', itemsConEstadoInicial);
         } catch (error) {
             console.error('Error al cargar items:', error);
         }
