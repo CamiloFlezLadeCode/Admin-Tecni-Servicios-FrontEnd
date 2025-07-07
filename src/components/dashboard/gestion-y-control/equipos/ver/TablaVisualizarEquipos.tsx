@@ -229,6 +229,7 @@
 'use client';
 
 import * as React from 'react';
+import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import { DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { TraerEquipos } from '@/services/gestionycontrol/equipos/TraerEquiposRegistradosService';
 import { FormularioEditarEquipo } from '../editar/FormularioEditarEquipo';
@@ -273,12 +274,45 @@ const normalizarEstado = (estado: string): EstadoDb | null => {
     return null;
 };
 
+// 1. Definir tipos para los mensajes
+type TipoMensaje =
+    | 'equipo-actualizado'
+    | 'equipo-creado'
+    | 'remision-creada'
+    | 'devolucion-creada'
+    | 'remision-anulada';
+
+interface Mensaje {
+    tipo: TipoMensaje;
+    // otras propiedades que puedan tener tus mensajes
+    [key: string]: any;
+}
+
+// 2. Definir el tipo para las acciones
+type Acciones = {
+    [key in TipoMensaje]: () => Promise<void>;
+};
+
 export function TablaVisualizarEquipos(): React.JSX.Element {
     const [data, setData] = React.useState<Equipo[]>([]);
     const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState<string | null>(null);
     const [searchTerm, setSearchTerm] = React.useState('');
     const { sendMessage, messages } = useSocketIO();
+    //Estados para el manejo de las notificaciones/alertas
+    const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
+    const [mensajeAlerta, setMensajeAlerta] = React.useState('');
+    const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
+    //...
+
+
+    //Función para abrir la alerta
+    const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error') => {
+        setMensajeAlerta(mensaje);
+        setTipoAlerta(tipo);
+        setMostrarAlertas(true);
+    };
+    //....
 
     const cargarEquipos = async () => {
         try {
@@ -296,14 +330,61 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
         cargarEquipos();
     }, []);
 
+    // React.useEffect(() => {
+    //     if (messages.length > 0) {
+    //         const ultimoMensaje = messages[messages.length - 1];
+    //         if (ultimoMensaje.tipo === 'equipo-actualizado' || ultimoMensaje.tipo === 'equipo-creado') {
+    //             cargarEquipos();
+    //         }
+    //     }
+    // }, [messages]);
+
     React.useEffect(() => {
-        if (messages.length > 0) {
-            const ultimoMensaje = messages[messages.length - 1];
-            if (ultimoMensaje.tipo === 'equipo-actualizado' || ultimoMensaje.tipo === 'equipo-creado') {
-                cargarEquipos();
+        const manejarEventosDeActualizacion = async () => {
+            if (messages.length === 0) return;
+
+            const ultimoMensaje = messages[messages.length - 1] as Mensaje;
+
+            // 3. Verificación de tipo segura
+            if (!ultimoMensaje || !ultimoMensaje.tipo) return;
+
+            try {
+                const acciones: Acciones = {
+                    'equipo-actualizado': cargarEquipos,
+                    'equipo-creado': cargarEquipos,
+                    // 'remision-creada': async () => {
+                    //   await cargarEquipos();
+                    //   const [siguienteNoRemision] = await ConsultarSiguienteNoRemision();
+                    //   setDatos(prev => ({ ...prev, NoRemision: siguienteNoRemision.SiguienteNoRemision }));
+                    // },
+                    'remision-creada': cargarEquipos,
+                    'devolucion-creada': cargarEquipos,
+                    'remision-anulada': cargarEquipos
+                };
+
+                // Verificar que el tipo es una clave válida
+                if (ultimoMensaje.tipo in acciones) {
+                    await acciones[ultimoMensaje.tipo]();
+
+                    const notificaciones: Record<TipoMensaje, string> = {
+                        'equipo-actualizado': 'Equipo actualizado correctamente',
+                        'equipo-creado': 'Nuevo equipo creado exitosamente',
+                        'remision-creada': 'Remisión generada con éxito',
+                        'devolucion-creada': 'Devolución registrada correctamente',
+                        'remision-anulada': 'Remisión anulada exitosamente'
+                    };
+
+                    mostrarMensaje(notificaciones[ultimoMensaje.tipo], 'success');
+                    setMostrarAlertas(false);
+                }
+            } catch (error) {
+                console.error(`Error al procesar ${ultimoMensaje.tipo}:`, error);
+                mostrarMensaje(`Error al procesar ${ultimoMensaje.tipo}`, 'error');
             }
-        }
-    }, [messages]);
+        };
+
+        manejarEventosDeActualizacion();
+    }, [messages, cargarEquipos, mostrarMensaje]);
 
     const columns = [
         {
@@ -317,7 +398,7 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
         },
         {
             key: 'CategoriaEquipo',
-            header: 'Categoría/Familia'
+            header: 'Categoría'
         },
         {
             key: 'Cantidad',
@@ -404,18 +485,27 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
     };
 
     return (
-        <DataTable<Equipo>
-            data={data}
-            columns={columns}
-            actions={actions}
-            loading={loading}
-            error={error}
-            searchTerm={searchTerm}
-            onSearchChange={setSearchTerm}
-            onRefresh={handleRefresh}
-            emptyMessage="No se encontraron equipos"
-            rowKey={(row) => row.IdEquipo}
-            placeHolderBuscador='Buscar equipos...'
-        />
+        <>
+            <DataTable<Equipo>
+                data={data}
+                columns={columns}
+                actions={actions}
+                loading={loading}
+                error={error}
+                searchTerm={searchTerm}
+                onSearchChange={setSearchTerm}
+                onRefresh={handleRefresh}
+                emptyMessage="No se encontraron equipos"
+                rowKey={(row) => row.IdEquipo}
+                placeHolderBuscador='Buscar equipos...'
+            />
+
+            <MensajeAlerta
+                open={mostrarAlertas}
+                tipo={tipoAlerta}
+                mensaje={mensajeAlerta}
+                onClose={() => setMostrarAlertas(false)}
+            />
+        </>
     );
 }

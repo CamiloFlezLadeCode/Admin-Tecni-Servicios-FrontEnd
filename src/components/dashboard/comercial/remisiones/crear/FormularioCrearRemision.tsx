@@ -322,6 +322,16 @@ export function FormularioCrearRemision(): React.JSX.Element {
             return;
         }
 
+        if (datos.PrecioUnidad < 0) {
+            mostrarMensaje('El precio unidad no puede ser menor a cero', 'error');
+            return;
+        }
+
+        if (datos.IVA < 0) {
+            mostrarMensaje('El IVA% no puede ser menor a cero', 'error');
+            return;
+        }
+
         const equipoSeleccionado = equipos.find(e => e.value === datos.Equipo);
         const categoriaSeleccionada = categorias.find(e => e.value === datos.IdCategoria);
         const subarrendatarioSeleccionado = subarrendatarios.find(e => e.value === datos.Subarrendatario);
