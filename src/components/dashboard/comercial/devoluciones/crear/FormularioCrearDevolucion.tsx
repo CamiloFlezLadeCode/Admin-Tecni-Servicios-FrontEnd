@@ -449,7 +449,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                         </Grid>
 
                         {/* Selector de Proyecto (solo si hay cliente seleccionado) */}
-                        {datos.Cliente && (
+                        {/* {datos.Cliente && (
                             <Grid md={4} xs={12}>
                                 <InputSelect
                                     label="Proyecto"
@@ -459,10 +459,19 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                     valorname="IdProyecto"
                                 />
                             </Grid>
-                        )}
+                        )} */}
+                        <Grid md={4} xs={12}>
+                            <InputSelect
+                                label="Proyecto"
+                                value={Number(datos.IdProyecto)}
+                                options={proyectos}
+                                onChange={handleChange}
+                                valorname="IdProyecto"
+                            />
+                        </Grid>
 
                         {/* Selector de Remisión (solo si hay proyecto seleccionado) */}
-                        {datos.IdProyecto && (
+                        {/* {datos.IdProyecto && (
                             <Grid md={4} xs={12}>
                                 <InputSelect
                                     label="Remisión No"
@@ -472,7 +481,16 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                     valorname="IdRemision"
                                 />
                             </Grid>
-                        )}
+                        )} */}
+                        <Grid md={4} xs={12}>
+                            <InputSelect
+                                label="Remisión No"
+                                value={Number(datos.IdRemision)}
+                                options={remisiones}
+                                onChange={handleChange}
+                                valorname="IdRemision"
+                            />
+                        </Grid>
                     </Grid>
 
                     {/* Lista de Items (solo si hay remisión seleccionada) */}
