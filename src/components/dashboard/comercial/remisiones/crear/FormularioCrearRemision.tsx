@@ -430,7 +430,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
 
         try {
             await CrearRemision(datosRemision);
-            mostrarMensaje('Remisión creada exitosamente', 'success');
+            mostrarMensaje('Remisión creada correctamente', 'success');
             sendMessage('remision-creada', {});
 
             // Resetear formulario

@@ -417,19 +417,19 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
         {
             key: 'PrecioVenta',
             header: 'Precio Venta',
-            render: (row: Equipo) => row.PrecioVenta.toLocaleString(),
+            // render: (row: Equipo) => row.PrecioVenta.toLocaleString(),
             align: 'right' as const
         },
         {
             key: 'PrecioAlquiler',
             header: 'Precio Alquiler',
-            render: (row: Equipo) => row.PrecioAlquiler.toLocaleString(),
+            // render: (row: Equipo) => row.PrecioAlquiler.toLocaleString(),
             align: 'right' as const
         },
         {
             key: 'PrecioReparacion',
             header: 'Precio Reparación',
-            render: (row: Equipo) => row.PrecioReparacion.toLocaleString(),
+            // render: (row: Equipo) => row.PrecioReparacion.toLocaleString(),
             align: 'right' as const
         },
         {

@@ -112,9 +112,14 @@ export function useSocketIO() {
         // ...
 
         // SOCKET PARA REMISIONES
+        // Para crear remisión creada
         socket.on('remision-creada', (data) => {
             setMessages((prev) => [...prev, { tipo: 'remision-creada', data }]);
-        })
+        });
+        // Para remisión eliminada
+        socket.on('remision-eliminada', (data) => {
+            setMessages((prev) => [...prev, { tipo: 'remision-eliminada', data }]);
+        });
         // ...
 
         // SOCKET PARA ORDENES DE SERVICIO
@@ -124,8 +129,13 @@ export function useSocketIO() {
         // ...
 
         // SOCKET PARA DEVOLUCIONES
+        // Para devolución creada
         socket.on('devolucion-creada', (data) => {
             setMessages((prev) => [...prev, { tipo: 'devolucion-creada', data }]);
+        });
+        // Para devolución eliminada
+        socket.on('devolucion-eliminada', (data) => {
+            setMessages((prev) => [...prev, { tipo: 'devolucion-eliminada', data }]);
         })
         // ...
 

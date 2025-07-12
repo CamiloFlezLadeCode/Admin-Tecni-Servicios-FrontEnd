@@ -30,7 +30,7 @@ export const paths = {
     hojadevidaequiposcrear: '/dashboard/hoja-de-vida-equipos/crear-hoja-de-vida-equipo',
     hojadevidaequiposver: '/dashboard/hoja-de-vida-equipos/ver-hojas-de-vida-equipos',
 
-    // MUDULO COMERCIAL (REMISIONES Y DEVOLUCIONES)
+    // MUDULO COMERCIAL (REMISIONES, DEVOLUCIONES Y ESTADO_DE_CUENTA)
     comercial: '/dashboard/comercial',
 
     // Remisiones
@@ -47,6 +47,9 @@ export const paths = {
     comercialordenesdeservicio: '/dashboard/comercial/ordenes-de-servicio',
     comercialordenesdeserviciocrear: '/dashboard/comercial/ordenes-de-servicio/crear-ordenes-de-servicio',
     comercialordenesdeserviciover: '/dashboard/comercial/ordenes-de-servicio/ver-ordenes-de-servicio',
+
+    // Estado de cuenta
+    comercialestadodecuenta: '/dashboard/comercial/estado-de-cuenta',
     //...
 
     // MODULO GESTIÓN Y CONTROL (EQUIPOS, CLIENTES, MACANICOS, PROYECTOS, REPUESTOS)

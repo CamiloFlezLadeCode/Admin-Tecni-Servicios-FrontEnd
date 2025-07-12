@@ -185,7 +185,7 @@ export default function ModalVerItemsRemision({ items, onEliminarItem, precioTot
                                                     </Box>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <IconButton size="small" color="primary" onClick={() => onEliminarItem?.(item.value)}>
+                                                    <IconButton size="small" color="error" onClick={() => onEliminarItem?.(item.value)}>
                                                         <Trash size={20} weight="bold" />
                                                     </IconButton>
                                                 </TableCell>

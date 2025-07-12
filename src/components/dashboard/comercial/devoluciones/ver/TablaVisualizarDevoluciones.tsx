@@ -1,10 +1,11 @@
 'use client';
-
+import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import * as React from 'react';
 import { useSocketIO } from '@/hooks/use-WebSocket';
 import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { VerTodasLasDevoluciones } from '@/services/comercial/devoluciones/VerTodasLasDevolucionesService';
 import { GenerarPDFDevolucion } from '../acciones/GenerarPDFDevolucion';
+import { BotonEliminarDevolucion } from '../acciones/EliminarDevolucion';
 import {
     Chip
 } from '@mui/material';
@@ -26,6 +27,11 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
     const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState<string | null>(null);
     const [searchTerm, setSearchTerm] = React.useState('');
+    // Estados para alertas
+    const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
+    const [mensajeAlerta, setMensajeAlerta] = React.useState('');
+    const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
+
 
 
     React.useEffect(() => {
@@ -47,7 +53,7 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
     React.useEffect(() => {
         if (messages.length > 0) {
             const ultimomensajes = messages[messages.length - 1];
-            if (ultimomensajes.tipo === 'devolucion-creada') {
+            if (ultimomensajes.tipo === 'devolucion-creada' || ultimomensajes.tipo === 'devolucion-eliminada') {
                 handleRefresh();
             }
         }
@@ -65,6 +71,13 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
         } finally {
             setLoading(false);
         }
+    };
+
+    // Función para mostrar mensajes de alerta
+    const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error') => {
+        setMensajeAlerta(mensaje);
+        setTipoAlerta(tipo);
+        setMostrarAlertas(true);
     };
 
     const getEstadoColor = (estado: string) => {
@@ -129,22 +142,42 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
                 />
             ),
             tooltip: 'Imprimir'
+        },
+        {
+            render: (row: Devolucion) => (
+                <BotonEliminarDevolucion
+                    IdDevolucion={row.IdDevolucion}
+                    NoDevolucion={row.NoDevolucion}
+                    sendMessage={sendMessage}
+                    mostrarMensaje={mostrarMensaje}
+                />
+            ),
+            tooltip: 'Eliminar'
         }
     ];
 
     return (
-        <DataTable<Devolucion>
-            data={data}
-            columns={columns}
-            actions={actions}
-            loading={loading}
-            error={error}
-            searchTerm={searchTerm}
-            onSearchChange={setSearchTerm}
-            onRefresh={handleRefresh}
-            emptyMessage="No se encontraron remisiones"
-            rowKey={(row) => row.IdDevolucion}
-            placeHolderBuscador='Buscar remisiones...'
-        />
+        <>
+            <DataTable<Devolucion>
+                data={data}
+                columns={columns}
+                actions={actions}
+                loading={loading}
+                error={error}
+                searchTerm={searchTerm}
+                onSearchChange={setSearchTerm}
+                onRefresh={handleRefresh}
+                emptyMessage="No se encontraron devoluciones"
+                rowKey={(row) => row.IdDevolucion}
+                placeHolderBuscador='Buscar devoluciones...'
+            />
+
+            <MensajeAlerta
+                open={mostrarAlertas}
+                tipo={tipoAlerta}
+                mensaje={mensajeAlerta}
+                onClose={() => setMostrarAlertas(false)}
+            />
+        </>
     )
 }

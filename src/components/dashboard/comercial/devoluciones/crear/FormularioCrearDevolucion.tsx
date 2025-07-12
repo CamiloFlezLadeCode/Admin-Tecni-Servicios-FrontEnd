@@ -407,6 +407,14 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
     };
     // ...
 
+    // Función para verificar si todos los items están en 0 para pendiente
+    const todosItemsSinPendiente = itemsRemision.length > 0 &&
+        itemsRemision.every(item =>
+            item.CantidadPendiente === '0' ||
+            Number(item.CantidadPendiente) <= 0
+        );
+    // ...
+
     // 7. RENDERIZADO JSX DEL COMPONENTE
     return (
         <>
@@ -565,6 +573,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                     tamano='small'
                                     tipo_input='textarea'
                                     valorname='Observaciones'
+                                    bloqueado={todosItemsSinPendiente}
                                 />
                             </Grid>
                             <Grid container spacing={2} mt={.5}>
@@ -575,6 +584,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                         options={profesionales}
                                         onChange={handleChange}
                                         valorname="PersonaQueRecibe"
+                                        bloqueado={todosItemsSinPendiente}
                                     />
                                 </Grid>
                                 <Grid md={4} xs={12} >
@@ -586,6 +596,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                         tamano='small'
                                         tipo_input='text'
                                         valorname='PersonaQueEntrega'
+                                        bloqueado={todosItemsSinPendiente}
                                     />
                                 </Grid>
                             </Grid>
@@ -594,7 +605,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                 </CardContent>
                 <Divider />
                 <CardActions sx={{ justifyContent: 'flex-end' }}>
-                    <Button variant="contained" onClick={handleEnviarDevolucion} disabled={itemsRemision.length === 0}>
+                    <Button variant="contained" onClick={handleEnviarDevolucion} disabled={itemsRemision.length === 0 || todosItemsSinPendiente}>
                         Crear devolución
                     </Button>
                 </CardActions>

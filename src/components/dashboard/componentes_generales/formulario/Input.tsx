@@ -1,6 +1,6 @@
 // components/InputText.tsx
 import React from 'react';
-import { FormControl, InputLabel, TextField, Grid, OutlinedInput } from '@mui/material';
+import { FormControl, InputLabel, TextField, Grid, OutlinedInput, FormHelperText } from '@mui/material';
 import { OutlinedInputProps } from '@mui/material';
 
 // interface InputTextProps {
@@ -74,6 +74,11 @@ interface InputTextProps {
     LongitudMaxima?: number;
     endAdornment?: React.ReactNode; // 👈 usamos esto
     mostrar?: 'none' | 'block';
+    error?: boolean;
+    helperText?: string;
+    minimalongitud?: number;
+    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+    inputMode?: "none" | "text" | "search" | "tel" | "url" | "email" | "numeric" | "decimal" | undefined;
 }
 
 const InputText = React.forwardRef<HTMLInputElement, InputTextProps>((props, ref) => {
@@ -90,6 +95,11 @@ const InputText = React.forwardRef<HTMLInputElement, InputTextProps>((props, ref
         LongitudMaxima,
         endAdornment, // 👈 recogido aquí
         mostrar,
+        error = false,
+        helperText = '',
+        minimalongitud,
+        onKeyDown,
+        inputMode,
         ...rest
     } = props;
 
@@ -117,6 +127,7 @@ const InputText = React.forwardRef<HTMLInputElement, InputTextProps>((props, ref
                 name={valorname}
                 value={value}
                 onChange={onChange}
+                onKeyDown={onKeyDown}
                 label={label}
                 size={tamano}
                 type={tipo_input === 'textarea' ? 'text' : tipo_input}
@@ -126,7 +137,9 @@ const InputText = React.forwardRef<HTMLInputElement, InputTextProps>((props, ref
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}
                 inputProps={{
-                    maxLength: maximalongitud || undefined,
+                    maxLength: maximalongitud ?? undefined,
+                    min: minimalongitud,
+                    inputMode: inputMode
                 }}
                 endAdornment={endAdornment} // 👈 ahora sí, correctamente usado
                 disabled={bloqueado}
@@ -135,7 +148,9 @@ const InputText = React.forwardRef<HTMLInputElement, InputTextProps>((props, ref
                 sx={{
                     display: mostrar
                 }}
+                error={error}
             />
+            {helperText && <FormHelperText>{helperText}</FormHelperText>}
         </FormControl>
     );
 });

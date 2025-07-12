@@ -42,6 +42,7 @@ import {
   Lockers, //Referencia a bodega
   ClipboardText, //Hace referencia a ordenes de servicio
   Crown, //Hace referencia a alto rango, máximo nivel
+  Receipt, //Hace referencia al estado de cuenta de los clientes
 } from '@phosphor-icons/react/dist/ssr';
 
 export const navIcons = {
@@ -70,6 +71,7 @@ export const navIcons = {
   'icono-bodegas': Lockers,
   'icono-ordenes-de-servicio': ClipboardText,
   'icono-configuraciones-alto-nivel': Crown,
+  'icono-estado-de-cuenta-cliente': Receipt,
   user: UserIcon,
   users: UsersIcon,
 } as Record<string, Icon>;

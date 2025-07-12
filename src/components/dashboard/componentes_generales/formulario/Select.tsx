@@ -1,6 +1,6 @@
 // components/InputSelect.tsx
 import React from 'react';
-import { FormControl, InputLabel, Select, MenuItem, Grid, SelectChangeEvent } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem, Grid, SelectChangeEvent, FormHelperText } from '@mui/material';
 
 interface InputSelectProps {
   label: string;
@@ -11,10 +11,12 @@ interface InputSelectProps {
   size?: 'small' | 'medium'; // Tamaño del select
   valorname?: string;
   bloqueado?: boolean;
-  defaultValue?: string; 
+  defaultValue?: string;
+  error?: boolean;
+  helperText?: string;
 }
 
-const InputSelect: React.FC<InputSelectProps> = ({ label, value, onChange, options, required = false, size = 'small', valorname, bloqueado, defaultValue }) => {
+const InputSelect: React.FC<InputSelectProps> = ({ label, value, onChange, options, required = false, size = 'small', valorname, bloqueado, defaultValue, error = false, helperText = '' }) => {
   const [focused, setFocused] = React.useState(false);
   // return (
   //   <Grid item md={3} xs={12}>
@@ -80,6 +82,7 @@ const InputSelect: React.FC<InputSelectProps> = ({ label, value, onChange, optio
           notched
           disabled={bloqueado}
           defaultValue={defaultValue}
+          error={error}
         >
           {options.map((option) => (
             <MenuItem key={option.value} value={option.value}>
@@ -87,6 +90,7 @@ const InputSelect: React.FC<InputSelectProps> = ({ label, value, onChange, optio
             </MenuItem>
           ))}
         </Select>
+        {helperText && <FormHelperText>{helperText}</FormHelperText>}
       </FormControl>
     </Grid>
   );

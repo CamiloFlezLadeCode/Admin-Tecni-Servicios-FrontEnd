@@ -259,7 +259,7 @@ export function TablaVisualizarVehiculos(): React.JSX.Element {
     React.useEffect(() => {
         if (messages.length > 0) {
             const ultimomensajes = messages[messages.length - 1];
-            if (ultimomensajes.tipo === 'vehiculo-creado' || ultimomensajes.tipo === 'vehiculo-actualizado') {
+            if (ultimomensajes.tipo === 'vehiculo-creado' || ultimomensajes.tipo === 'vehiculo-actualizado' || ultimomensajes.tipo === 'vehiculo-eliminado') {
                 CargarVehiculos();
             }
         }

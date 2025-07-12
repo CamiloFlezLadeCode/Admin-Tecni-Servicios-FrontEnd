@@ -66,7 +66,8 @@ export const apiRoutes = {
             consultarcantidaddisponiblequipo: (IdEquipo: number) => `${API_BASE_URL}/ver-cantidad-disponible-equipo/${IdEquipo}`,
             consultarsiguientenoremision: `${API_BASE_URL}/siguiente-no-remision`,
             ver_remisiones: `${API_BASE_URL}/ver-remisiones`,
-            ver_pdf_remision: (IdRemision: number) => `${API_BASE_URL}/obtener-pdf-remision/${IdRemision}`
+            ver_pdf_remision: (IdRemision: number) => `${API_BASE_URL}/obtener-pdf-remision/${IdRemision}`,
+            eliminar_remision: `${API_BASE_URL}/eliminar-remision`
         },
         devoluciones: {
             creardevolucion: `${API_BASE_URL}/crear-devolucion`,
@@ -74,7 +75,8 @@ export const apiRoutes = {
             mostrar_items_remision: `${API_BASE_URL}/ver-items-remision`,
             consultar_siguiente_no_devolucion: `${API_BASE_URL}/siguiente-no-devolucion`,
             ver_todas_las_devoluciones: `${API_BASE_URL}/ver-todas-las-devoluciones`,
-            ver_pdf_devolucion: `${API_BASE_URL}/obtener-pdf-devolucion`
+            ver_pdf_devolucion: `${API_BASE_URL}/obtener-pdf-devolucion`,
+            eliminar_devolucion: `${API_BASE_URL}/eliminar-devolucion`
         },
         ordenes_de_servicio: {
             consultar_siguiente_no_orden_de_servicio: `${API_BASE_URL}/siguiente-no-orden-de-servicio`,

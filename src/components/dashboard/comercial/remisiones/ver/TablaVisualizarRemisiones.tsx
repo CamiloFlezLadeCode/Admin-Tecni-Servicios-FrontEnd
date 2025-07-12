@@ -176,7 +176,8 @@
 
 'use client';
 
-import { EliminarRemision } from '@/components/dashboard/comercial/remisiones/acciones-remision/EliminarRemision';
+import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
+import { BotonEliminarRemision } from '@/components/dashboard/comercial/remisiones/acciones-remision/EliminarRemision';
 import { GenerarPDFRemision } from '@/components/dashboard/comercial/remisiones/acciones-remision/GenerarPDFRemision';
 import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useSocketIO } from '@/hooks/use-WebSocket';
@@ -203,6 +204,10 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
     const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState<string | null>(null);
     const [searchTerm, setSearchTerm] = React.useState('');
+    // Estados para alertas
+    const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
+    const [mensajeAlerta, setMensajeAlerta] = React.useState('');
+    const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
 
     React.useEffect(() => {
         const fetchData = async () => {
@@ -224,7 +229,7 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
     React.useEffect(() => {
         if (messages.length > 0) {
             const ultimomensajes = messages[messages.length - 1];
-            if (ultimomensajes.tipo === 'remision-creada') {
+            if (ultimomensajes.tipo === 'remision-creada' || ultimomensajes.tipo === 'remision-eliminada') {
                 handleRefresh();
             }
         }
@@ -288,12 +293,12 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
     ];
 
     const actions: ActionDefinition<Remision>[] = [
-        {
-            icon: <PencilSimple size={20} />,
-            tooltip: 'Editar remisión',
-            onClick: (row: Remision) => console.log('Editar:', row.IdRemision),
-            color: 'primary'
-        },
+        // {
+        //     icon: <PencilSimple size={20} />,
+        //     tooltip: 'Editar remisión',
+        //     onClick: (row: Remision) => console.log('Editar:', row.IdRemision),
+        //     color: 'primary'
+        // },
         {
             render: (row: Remision) => (
                 <GenerarPDFRemision IdRemision={row.IdRemision} />
@@ -302,7 +307,12 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
         },
         {
             render: (row: Remision) => (
-                <EliminarRemision />
+                <BotonEliminarRemision
+                    IdRemision={row.IdRemision}
+                    NoRemision={row.NoRemision}
+                    sendMessage={sendMessage}
+                    mostrarMensaje={mostrarMensaje}
+                />
             ),
             tooltip: 'Eliminar remisión',
             color: 'error'
@@ -323,19 +333,34 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
         }
     };
 
+    // Función para mostrar mensajes de alerta
+    const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error') => {
+        setMensajeAlerta(mensaje);
+        setTipoAlerta(tipo);
+        setMostrarAlertas(true);
+    };
+
     return (
-        <DataTable<Remision>
-            data={data}
-            columns={columns}
-            actions={actions}
-            loading={loading}
-            error={error}
-            searchTerm={searchTerm}
-            onSearchChange={setSearchTerm}
-            onRefresh={handleRefresh}
-            emptyMessage="No se encontraron remisiones"
-            rowKey={(row) => row.IdRemision}
-            placeHolderBuscador='Buscar remisiones...'
-        />
+        <>
+            <DataTable<Remision>
+                data={data}
+                columns={columns}
+                actions={actions}
+                loading={loading}
+                error={error}
+                searchTerm={searchTerm}
+                onSearchChange={setSearchTerm}
+                onRefresh={handleRefresh}
+                emptyMessage="No se encontraron remisiones"
+                rowKey={(row) => row.IdRemision}
+                placeHolderBuscador='Buscar remisiones...'
+            />
+            <MensajeAlerta
+                open={mostrarAlertas}
+                tipo={tipoAlerta}
+                mensaje={mensajeAlerta}
+                onClose={() => setMostrarAlertas(false)}
+            />
+        </>
     );
 }

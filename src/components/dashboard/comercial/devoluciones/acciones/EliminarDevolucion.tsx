@@ -1,43 +1,37 @@
 'use client';
-
 import { useState } from 'react';
 import { Trash } from '@phosphor-icons/react/dist/ssr';
 import { ModalEliminarRegistro } from '@/components/dashboard/componentes_generales/acciones/eliminar_registro/EliminarRegistro';
-import { EliminarRemision } from '@/services/comercial/remisiones/EliminarRemisionService';
 import { IconButton } from '@mui/material';
+import { EliminarDevolucion } from '@/services/comercial/devoluciones/EliminarDevolucionService';
 
-interface BotonEliminarRemisionProps {
-    IdRemision: number;
-    NoRemision: string;
+interface BotonEliminarDevolucionProps {
+    IdDevolucion: number;
+    NoDevolucion: string;
     sendMessage: (event: string, payload: any) => void;
     mostrarMensaje: (mensaje: string, tipo: 'success' | 'error') => void;
 }
 
-export function BotonEliminarRemision({
-    IdRemision,
-    NoRemision,
-    sendMessage,
-    mostrarMensaje
-}: BotonEliminarRemisionProps): JSX.Element {
+export function BotonEliminarDevolucion({ IdDevolucion, NoDevolucion, sendMessage, mostrarMensaje }: BotonEliminarDevolucionProps): JSX.Element {
     const [modalAbierto, setModalAbierto] = useState(false);
 
     const handleEliminar = async () => {
         try {
-            const respuesta = await EliminarRemision(IdRemision);
+            const respuesta = await EliminarDevolucion(IdDevolucion);
 
             // Emitir evento de WebSocket
             sendMessage('remision-eliminada', {
-                id: IdRemision,
-                numero: NoRemision,
+                id: IdDevolucion,
+                numero: NoDevolucion,
                 timestamp: new Date().toISOString()
             });
 
             if (respuesta.message.includes('eliminada')) {
-                mostrarMensaje('Remisión eliminada correctamente', 'success');
+                mostrarMensaje('Devolución eliminada correctamente', 'success');
             }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            mostrarMensaje(`Error al eliminar remisión: ${errorMessage}`, 'error');
+            mostrarMensaje(`Error al eliminar devolución: ${errorMessage}`, 'error');
         } finally {
             setModalAbierto(false);
         }
@@ -49,7 +43,7 @@ export function BotonEliminarRemision({
                 size="small"
                 color="error"
                 onClick={() => setModalAbierto(true)}
-                aria-label={`Eliminar remisión ${NoRemision}`}
+                aria-label={`Eliminar remisión ${NoDevolucion}`}
             >
                 <Trash size={20} weight="bold" />
             </IconButton>
@@ -57,11 +51,11 @@ export function BotonEliminarRemision({
             <ModalEliminarRegistro
                 abrir={modalAbierto}
                 onCerrar={() => setModalAbierto(false)}
-                titulo={`¿Realmente quieres eliminar la remisión ${NoRemision}?`}
+                titulo={`¿Realmente quieres eliminar la devolución ${NoDevolucion}?`}
                 onConfirmar={handleEliminar}
                 colorBotonConfirmar="error"
                 icono={<Trash size={24} />}
             />
         </>
-    );
+    )
 }

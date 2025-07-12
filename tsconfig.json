@@ -1,7 +1,43 @@
+// {
+//   "compilerOptions": {
+//     "target": "es5",
+//     "lib": ["dom", "dom.iterable", "esnext"],
+//     "allowJs": true,
+//     "skipLibCheck": true,
+//     "strict": true,
+//     "forceConsistentCasingInFileNames": true,
+//     "noEmit": true,
+//     "esModuleInterop": true,
+//     "module": "esnext",
+//     "moduleResolution": "node",
+//     "resolveJsonModule": true,
+//     "isolatedModules": true,
+//     "jsx": "preserve",
+//     "incremental": true,
+//     // "noUnusedLocals": true, //Recomentable, usar solo en desarrollo //nuevo para checkear errores, estas lineas impiden la construcción pnpm run build, con dependencias sin usar, es estremandamente estricto
+//     // "noUnusedParameters": true, //Recomentable, usar solo en desarrollo //nuevo para checkear errores, estas lineas impiden la construcción pnpm run build, con dependencias sin usar, es estremandamente estricto
+//     "plugins": [
+//       {
+//         "name": "next"
+//       }
+//     ],
+//     "paths": {
+//       "@/*": ["./src/*"]
+//     }
+//   },
+//   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+//   "exclude": ["node_modules"]
+// }
+
+
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "target": "es2020",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -12,8 +48,11 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    // "jsx": "preserve",
     "jsx": "preserve",
     "incremental": true,
+    "allowSyntheticDefaultImports": true,
+    "importsNotUsedAsValues": "remove",
     // "noUnusedLocals": true, //Recomentable, usar solo en desarrollo //nuevo para checkear errores, estas lineas impiden la construcción pnpm run build, con dependencias sin usar, es estremandamente estricto
     // "noUnusedParameters": true, //Recomentable, usar solo en desarrollo //nuevo para checkear errores, estas lineas impiden la construcción pnpm run build, con dependencias sin usar, es estremandamente estricto
     "plugins": [
@@ -22,9 +61,18 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

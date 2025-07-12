@@ -1,6 +1,7 @@
 'use client';
 
-import * as React from 'react';
+// import * as React from 'react';
+import { useState, useMemo } from 'react';
 import {
     Box,
     Paper,
@@ -22,7 +23,7 @@ import {
     CardContent
 } from '@mui/material';
 import { TABLE_PADDING } from '@/styles/theme/padding-table';
-import { ArrowsClockwise, Eye, PencilSimple, MagnifyingGlass } from '@phosphor-icons/react';
+import { ArrowsClockwise, Eye, PencilSimple, MagnifyingGlass, X } from '@phosphor-icons/react';
 
 export type ColumnDefinition<T> = {
     key: string;
@@ -84,10 +85,10 @@ export function DataTable<T>({
     customFilters,
     placeHolderBuscador
 }: DataTableProps<T>) {
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(defaultRowsPerPage);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(defaultRowsPerPage);
 
-    const filteredData = React.useMemo(() => {
+    const filteredData = useMemo(() => {
         if (!searchTerm) return data;
         return data.filter(item =>
             columns.some(column => {
@@ -99,7 +100,7 @@ export function DataTable<T>({
         );
     }, [data, searchTerm, columns]);
 
-    const visibleColumns = React.useMemo(() =>
+    const visibleColumns = useMemo(() =>
         columns.filter(column => !column.hidden),
         [columns]
     );
@@ -143,6 +144,11 @@ export function DataTable<T>({
                                             <MagnifyingGlass size={20} />
                                         </InputAdornment>
                                     ),
+                                    endAdornment: searchTerm && (
+                                        <IconButton>
+                                            <X onClick={() => onSearchChange('')} />
+                                        </IconButton>
+                                    )
                                 }}
                                 sx={{ width: 300, minWidth: 200 }}
                             />

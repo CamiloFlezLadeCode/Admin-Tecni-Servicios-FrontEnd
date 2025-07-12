@@ -83,6 +83,16 @@ export const navItems = [
           type: 'startsWith',
           href: paths.dashboard.comercialordenesdeservicio
         }
+      },
+      {
+        key: 'comercial_estado_de_cuenta',
+        title: 'Estado de cuenta',
+        href: paths.dashboard.comercialestadodecuenta,
+        icon: 'icono-estado-de-cuenta-cliente',
+        matcher: {
+          type: 'startsWith',
+          href: paths.dashboard.comercialestadodecuenta
+        }
       }
     ]
   },
