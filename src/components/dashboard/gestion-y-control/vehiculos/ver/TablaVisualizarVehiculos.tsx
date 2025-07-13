@@ -308,17 +308,17 @@ export function TablaVisualizarVehiculos(): React.JSX.Element {
             ),
             tooltip: 'Editar vehiculo'
         },
-        {
-            render: (row: Vehiculo) => (
-                < AlertaEliminarVehiculo
-                    IdVehiculo={row.IdVehiculo}
-                    NombrePlacaVehiculo={row.Placa}
-                    sendMessage={sendMessage} // 👈 pásalo como prop
-                    mostrarMensaje={mostrarMensaje}
-                />
-            ),
-            tooltip: 'Eliminar vehiculo'
-        }
+        // {
+        //     render: (row: Vehiculo) => (
+        //         < AlertaEliminarVehiculo
+        //             IdVehiculo={row.IdVehiculo}
+        //             NombrePlacaVehiculo={row.Placa}
+        //             sendMessage={sendMessage} // 👈 pásalo como prop
+        //             mostrarMensaje={mostrarMensaje}
+        //         />
+        //     ),
+        //     tooltip: 'Eliminar vehiculo'
+        // }
     ];
 
     // Funcionalidad para abrir/mostrar la alerta para la eliminación del vehículo

@@ -141,7 +141,7 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
                     IdDevolucion={row.IdDevolucion}
                 />
             ),
-            tooltip: 'Imprimir'
+            tooltip: 'Imprimir devolución'
         },
         {
             render: (row: Devolucion) => (
@@ -152,7 +152,7 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
                     mostrarMensaje={mostrarMensaje}
                 />
             ),
-            tooltip: 'Eliminar'
+            tooltip: 'Eliminar devolución'
         }
     ];
 

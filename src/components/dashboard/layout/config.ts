@@ -76,7 +76,7 @@ export const navItems = [
       },
       {
         key: 'comercial_ordenes_de_servicio',
-        title: 'Órdenes de servicio',
+        title: 'Ordenes de servicio',
         href: paths.dashboard.comercialordenesdeservicio,
         icon: 'icono-ordenes-de-servicio',
         matcher: {

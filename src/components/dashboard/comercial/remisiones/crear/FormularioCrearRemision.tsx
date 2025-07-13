@@ -13,7 +13,8 @@ import { ListarBodegueros } from '@/services/generales/ListarBodeguerosService';
 import { ListarCategorias } from '@/services/generales/ListarCategoriasServices';
 import { ListarClientes } from '@/services/generales/ListarClientesService';
 import { ListarDespachadores } from '@/services/generales/ListarDespachadores';
-import ListarEquipos from '@/services/generales/ListarEquiposService';
+// import ListarEquipos from '@/services/generales/ListarEquiposService';
+import { VerDisponibilidadDeEquipos } from '@/services/comercial/remisiones/VerDisponibilidadDeEquiposService';
 import { ListarProyectos } from '@/services/generales/ListarProyectos';
 import { ListarSubarrendatarios } from '@/services/generales/ListarSubarrendatariosService';
 import { ListarTransportadores } from '@/services/generales/ListarTranspotadoresService';
@@ -42,9 +43,11 @@ interface ItemRemision {
     value: string | number;
     label: string;
     IdCategoria: number; // Cambiado a obligatorio
+    Categoria: string;
     Cantidad: number; // Cambiado a obligatorio
     ObservacionesCliente?: string;
     Subarrendatario: string; // Cambiado a obligatorio
+    NombreSubarrendatario: string;
     PrecioUnidad: number; // Cambiado a obligatorio
     PrecioTotal: number; // Cambiado a obligatorio
     IVA: number; // Cambiado a obligatorio
@@ -54,7 +57,7 @@ interface ItemRemision {
 interface DatosFormulario {
     Cliente: string;
     Proyecto: string;
-    IdCategoria: string;
+    IdCategoria: number;
     Equipo: string;
     Cantidad: number;
     PrecioUnidad: number;
@@ -103,7 +106,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
     const [datos, setDatos] = React.useState<DatosFormulario>({
         Cliente: '',
         Proyecto: '',
-        IdCategoria: '',
+        IdCategoria: Number(null),
         Equipo: '',
         Cantidad: 0,
         PrecioUnidad: 0,
@@ -210,7 +213,8 @@ export function FormularioCrearRemision(): React.JSX.Element {
             if (!datos.IdCategoria) return;
 
             try {
-                const equiposRes = await ListarEquipos({ IdCategoria: datos.IdCategoria });
+                // const equiposRes = await ListarEquipos({ IdCategoria: datos.IdCategoria });
+                const equiposRes = await VerDisponibilidadDeEquipos({ IdCategoria: datos.IdCategoria, DocumentoSubarrendatario: datos.Subarrendatario });
                 setEquipos(equiposRes);
                 setDatos(prev => ({ ...prev, Equipo: '', PrecioUnidad: 0 })); // Resetear equipo al cambiar categoría
                 setCantidadDisponible(0);
@@ -222,7 +226,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
         };
 
         cargarEquipos();
-    }, [datos.IdCategoria]);
+    }, [datos.IdCategoria, datos.Subarrendatario]);
 
     // Cargar cantidad disponible cuando cambia el equipo
     React.useEffect(() => {
@@ -356,9 +360,11 @@ export function FormularioCrearRemision(): React.JSX.Element {
         // Crear nuevo item
         const nuevoItem: ItemRemision = {
             Subarrendatario: subarrendatarioSeleccionado.value.toString(), // Asegurar string
+            NombreSubarrendatario: subarrendatarioSeleccionado.label,
             value: equipoSeleccionado.value,
             label: equipoSeleccionado.label,
             IdCategoria: Number(categoriaSeleccionada.value), // Asegurar número
+            Categoria: categoriaSeleccionada.label,
             Cantidad: Number(datos.Cantidad),
             PrecioUnidad: Number(datos.PrecioUnidad),
             PrecioTotal: Number(datos.PrecioTotal),
@@ -437,7 +443,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
             setDatos({
                 Cliente: '',
                 Proyecto: '',
-                IdCategoria: '',
+                IdCategoria: Number(null),
                 Equipo: '',
                 Cantidad: 1,
                 PrecioUnidad: 0,

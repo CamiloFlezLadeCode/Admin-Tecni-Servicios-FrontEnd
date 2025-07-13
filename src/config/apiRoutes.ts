@@ -67,7 +67,8 @@ export const apiRoutes = {
             consultarsiguientenoremision: `${API_BASE_URL}/siguiente-no-remision`,
             ver_remisiones: `${API_BASE_URL}/ver-remisiones`,
             ver_pdf_remision: (IdRemision: number) => `${API_BASE_URL}/obtener-pdf-remision/${IdRemision}`,
-            eliminar_remision: `${API_BASE_URL}/eliminar-remision`
+            eliminar_remision: `${API_BASE_URL}/eliminar-remision`,
+            ver_disponibilidad_de_equipos: `${API_BASE_URL}/ver-disponibilidad-equipos`
         },
         devoluciones: {
             creardevolucion: `${API_BASE_URL}/crear-devolucion`,
@@ -82,7 +83,11 @@ export const apiRoutes = {
             consultar_siguiente_no_orden_de_servicio: `${API_BASE_URL}/siguiente-no-orden-de-servicio`,
             crear_orden_de_servicio: `${API_BASE_URL}/crear-orden-de-servicio`,
             ver_todas_las_ordenes_de_servicio: `${API_BASE_URL}/ver-todas-las-ordenes-de-servicio`,
-            ver_pdf_orden_de_servicio: `${API_BASE_URL}/obtener-pdf-orden-de-servicio`
+            ver_pdf_orden_de_servicio: `${API_BASE_URL}/obtener-pdf-orden-de-servicio`,
+            eliminar_orden_de_servicio: `${API_BASE_URL}/eliminar-orden-de-servicio`
+        },
+        estado_de_cuenta: {
+            ver_estado_de_cuenta_cliente: `${API_BASE_URL}/ver-estado-de-cuenta-cliente`
         }
     },
     gestionycontrol: {

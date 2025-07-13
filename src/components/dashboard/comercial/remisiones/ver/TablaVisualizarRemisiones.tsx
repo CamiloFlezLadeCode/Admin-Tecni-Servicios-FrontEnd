@@ -303,7 +303,7 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
             render: (row: Remision) => (
                 <GenerarPDFRemision IdRemision={row.IdRemision} />
             ),
-            tooltip: 'Generar PDF'
+            tooltip: 'Imprimir remisión'
         },
         {
             render: (row: Remision) => (

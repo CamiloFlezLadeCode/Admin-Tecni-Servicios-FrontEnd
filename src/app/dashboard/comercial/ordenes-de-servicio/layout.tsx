@@ -11,7 +11,7 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps): React.JSX.Element {
   return (
     <div>
-      <Typography variant="h6" style={{ fontWeight: 'bold' }}>Órdenes de servicio</Typography>
+      <Typography variant="h6" style={{ fontWeight: 'bold' }}>Ordenes de servicio</Typography>
       <NavOrdenesDeServicio />
       {/* <main style={{ padding: '1rem' }}>{children}</main> */}
       <main style={{ marginTop: '0.5rem' }}>{children}</main>

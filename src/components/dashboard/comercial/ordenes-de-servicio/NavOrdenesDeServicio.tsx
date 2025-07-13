@@ -15,12 +15,12 @@ import { paths } from '@/paths';
 
 const ItemsNavDevoluciones = [
     {
-        label: 'Ver órdenes de servicio',
+        label: 'Ver ordenes de servicio',
         path: paths.dashboard.comercialordenesdeserviciover,
         icon: Eye
     },
     {
-        label: 'Crear órden de servicio',
+        label: 'Crear orden de servicio',
         path: paths.dashboard.comercialordenesdeserviciocrear,
         icon: Plus
     }

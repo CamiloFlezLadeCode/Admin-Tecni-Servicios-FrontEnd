@@ -123,8 +123,13 @@ export function useSocketIO() {
         // ...
 
         // SOCKET PARA ORDENES DE SERVICIO
+        // Para orden de servicio creada
         socket.on('orden-de-servicio-creada', (data) => {
             setMessages((prev) => [...prev, { tipo: 'orden-de-servicio-creada', data }]);
+        });
+        // Para orden de servicio eliminada
+        socket.on('orden-de-servicio-eliminada', (data) => {
+            setMessages((prev) => [...prev, { tipo: 'orden-de-servicio-eliminada', data }]);
         });
         // ...
 
