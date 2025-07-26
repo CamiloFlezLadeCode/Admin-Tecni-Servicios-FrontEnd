@@ -42,7 +42,7 @@ export default function Layout({ children }: LayoutProps): React.JSX.Element {
             {/* <Container maxWidth="xl" sx={{ py: '64px' }}>
               {children}
             </Container> */}
-                        <Container maxWidth="xl" sx={{ py: '14px' }}>
+            <Container maxWidth="xl" sx={{ py: '14px' }}>
               {children}
             </Container>
           </main>

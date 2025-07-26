@@ -70,9 +70,11 @@ export function MainNav(): React.JSX.Element {
       // await Promise.reject('Error simulado de promesa rechazada');
       const data = await GuardarBackUp();
       if (data) {
-        setMostrarMensajeDeCarga(false);
-        setMensajeDeCarga('');
-        mostrarMensaje('BackUp guardado correctamente', 'success');
+        setTimeout(() => {
+          setMostrarMensajeDeCarga(false);
+          setMensajeDeCarga('');
+          mostrarMensaje('BackUp guardado correctamente', 'success');
+        }, 3000);
       }
     } catch (error) {
       setMostrarMensajeDeCarga(false);

@@ -102,16 +102,16 @@ export const navItems = [
     key: 'gestionycontrol',
     title: 'Gestión y control',
     items: [
-      // {
-      //   key: 'bodegas',
-      //   title: 'Bodegas',
-      //   icon: 'icono-bodegas',
-      //   href: paths.dashboard.gestionycontrolbodegas,
-      //   matcher: {
-      //     type: 'startsWith',
-      //     href: paths.dashboard.gestionycontrolbodegas,
-      //   }
-      // },
+      {
+        key: 'bodegas',
+        title: 'Bodegas',
+        icon: 'icono-bodegas',
+        href: paths.dashboard.gestionycontrolbodegas,
+        matcher: {
+          type: 'startsWith',
+          href: paths.dashboard.gestionycontrolbodegas,
+        }
+      },
       // {
       //   key: 'clientes',
       //   title: 'Clientes',

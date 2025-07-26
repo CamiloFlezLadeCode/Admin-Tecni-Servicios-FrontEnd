@@ -6,7 +6,8 @@ import {
     SelectChangeEvent,
     Paper,
     Card,
-    CardContent
+    CardContent,
+    Box
 } from '@mui/material';
 import { VerEstadoDeCuentaCliente } from '@/services/comercial/estado_de_cuenta/VerEstadoDeCuentaClienteService';
 import { ListarClientes } from '@/services/generales/ListarClientesService';
@@ -60,10 +61,7 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
 
     const handleChange = (e: SelectChangeEvent<string | number> | React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setDatos(prev => ({
-            ...prev,
-            [name ?? '']: value,
-        }));
+        setDatos(prev => ({ ...prev, [name]: value }));
     };
 
     const getEstadoColor = (estado: string) => {
@@ -156,33 +154,39 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
 
     return (
         <>
-            <Card>
-                <CardContent>
-                    <InputSelect
-                        label="Empresa/Cliente"
-                        value={datos.Cliente}
-                        options={clientes}
-                        size="small"
-                        onChange={handleChange}
-                        valorname="Cliente"
-                        required
-                    />
-                </CardContent>
-            </Card>
+            <Box mb={2}>
+                <Card>
+                    <CardContent>
+                        <InputSelect
+                            label="Empresa/Cliente"
+                            value={datos.Cliente}
+                            options={clientes}
+                            size="small"
+                            onChange={handleChange}
+                            valorname="Cliente"
+                            required
+                        />
+                    </CardContent>
+                </Card>
+            </Box>
 
-            <DataTable<EstadoDeCuenta>
-                data={data}
-                columns={columns}
-                actions={actions}
-                loading={loading}
-                error={error}
-                searchTerm={searchTerm}
-                onSearchChange={setSearchTerm}
-                onRefresh={handleRefresh}
-                emptyMessage="No se encontraron registros"
-                rowKey={(row) => row.IdDetalleRemison}
-                placeHolderBuscador='Buscar registro...'
-            />
+
+
+            {datos.Cliente && (
+                <DataTable<EstadoDeCuenta>
+                    data={data}
+                    columns={columns}
+                    actions={actions}
+                    loading={loading}
+                    error={error}
+                    searchTerm={searchTerm}
+                    onSearchChange={setSearchTerm}
+                    onRefresh={handleRefresh}
+                    emptyMessage="No se encontraron registros"
+                    rowKey={(row) => row.IdDetalleRemison}
+                    placeHolderBuscador='Buscar registro...'
+                />
+            )}
         </>
     );
 };
