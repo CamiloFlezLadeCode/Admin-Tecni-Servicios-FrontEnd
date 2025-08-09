@@ -141,7 +141,18 @@ export function useSocketIO() {
         // Para devolución eliminada
         socket.on('devolucion-eliminada', (data) => {
             setMessages((prev) => [...prev, { tipo: 'devolucion-eliminada', data }]);
-        })
+        });
+        // ...
+
+        // SOCKET PARA BODEGAS
+        // Para bodega creada
+        socket.on('bodega-creada', (data) => {
+            setMessages((prev) => [...prev, { tipo: 'bodega-creada', data }]);
+        });
+        // Para bodega actualizada
+        socket.on('bodega-actualizada', (data) => {
+            setMessages((prev) => [...prev, { tipo: 'bodega-actualizada', data }]);
+        });
         // ...
 
         // SOCKET DESCONECTADO

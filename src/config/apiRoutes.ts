@@ -58,7 +58,8 @@ export const apiRoutes = {
         listarproyectos: `${API_BASE_URL}/listar-proyectos`,
         listarroles: `${API_BASE_URL}/listar-roles`,
         listartiposdedocumentos: `${API_BASE_URL}/listar-tipo-de-documentos`,
-        listarmecanicos: `${API_BASE_URL}/listar-mecanicos`
+        listarmecanicos: `${API_BASE_URL}/listar-mecanicos`,
+        listartiposdebodegas: `${API_BASE_URL}/listar-tipo-de-bodegas`
     },
     comercial: {
         remisiones: {
@@ -132,6 +133,12 @@ export const apiRoutes = {
         },
         usuarios_generales: {
             crear_usuario_general: `${API_BASE_URL}/crear-usuario-general`
+        },
+        bodegas: {
+            crear_bodega: `${API_BASE_URL}/crear-bodega`,
+            ver_bodegas: `${API_BASE_URL}/ver-bodegas`,
+            ver_info_bodega: `${API_BASE_URL}/ver-bodega`,
+            actualizar_bodega: `${API_BASE_URL}/actualizar-bodega`
         }
     },
     configuraciones: {

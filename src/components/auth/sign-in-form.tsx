@@ -167,6 +167,7 @@ import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import InputLabel from '@mui/material/InputLabel';
@@ -303,87 +304,107 @@ export function SignInForm(): React.JSX.Element {
   );
 
   return (
-    <Stack spacing={4}>
-      <Stack spacing={1}>
-        <Typography variant="h4">Iniciar sesión</Typography>
-      </Stack>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Stack spacing={2}>
-          <Controller
-            control={control}
-            name="email"
-            render={({ field }) => (
-              <FormControl error={Boolean(errors.email)}>
-                <InputLabel>Usuario</InputLabel>
-                <OutlinedInput {...field} label="Usuario" type="text" autoComplete="current-username" />
-                {errors.email ? <FormHelperText>{errors.email.message}</FormHelperText> : null}
-              </FormControl>
-            )}
-          />
-          <Controller
-            control={control}
-            name="password"
-            render={({ field }) => (
-              <FormControl error={Boolean(errors.password)}>
-                <InputLabel>Contraseña</InputLabel>
-                <OutlinedInput
-                  {...field}
-                  endAdornment={
-                    showPassword ? (
-                      <EyeIcon
-                        cursor="pointer"
-                        fontSize="var(--icon-fontSize-md)"
-                        onClick={(): void => setShowPassword(false)}
-                      />
-                    ) : (
-                      <EyeSlashIcon
-                        cursor="pointer"
-                        fontSize="var(--icon-fontSize-md)"
-                        onClick={(): void => setShowPassword(true)}
-                      />
-                    )
-                  }
-                  label="Contraseña"
-                  type={showPassword ? 'text' : 'password'}
-                  autoComplete="current-password"
-                />
-                {errors.password ? <FormHelperText>{errors.password.message}</FormHelperText> : null}
-              </FormControl>
-            )}
-          />
-          {errors.root ? <Alert color="error" severity="error">{errors.root.message}</Alert> : null}
-          {/* <Button disabled={isPending} type="submit" variant="contained" style={{fontWeight: 'bold'}}>
+    <>
+      <Stack spacing={4}>
+        <Stack spacing={1}>
+          <Typography variant="h4">Iniciar sesión</Typography>
+        </Stack>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Stack spacing={2}>
+            <Controller
+              control={control}
+              name="email"
+              render={({ field }) => (
+                <FormControl error={Boolean(errors.email)}>
+                  <InputLabel>Usuario</InputLabel>
+                  <OutlinedInput {...field} label="Usuario" type="text" autoComplete="current-username" />
+                  {errors.email ? <FormHelperText>{errors.email.message}</FormHelperText> : null}
+                </FormControl>
+              )}
+            />
+            <Controller
+              control={control}
+              name="password"
+              render={({ field }) => (
+                <FormControl error={Boolean(errors.password)}>
+                  <InputLabel>Contraseña</InputLabel>
+                  <OutlinedInput
+                    {...field}
+                    endAdornment={
+                      showPassword ? (
+                        <EyeIcon
+                          cursor="pointer"
+                          fontSize="var(--icon-fontSize-md)"
+                          onClick={(): void => setShowPassword(false)}
+                        />
+                      ) : (
+                        <EyeSlashIcon
+                          cursor="pointer"
+                          fontSize="var(--icon-fontSize-md)"
+                          onClick={(): void => setShowPassword(true)}
+                        />
+                      )
+                    }
+                    label="Contraseña"
+                    type={showPassword ? 'text' : 'password'}
+                    autoComplete="current-password"
+                  />
+                  {errors.password ? <FormHelperText>{errors.password.message}</FormHelperText> : null}
+                </FormControl>
+              )}
+            />
+            {errors.root ? <Alert color="error" severity="error">{errors.root.message}</Alert> : null}
+            {/* <Button disabled={isPending} type="submit" variant="contained" style={{fontWeight: 'bold'}}>
             Ingresar
           </Button> */}
-          <Button
-            startIcon={!isPending && <SignIn />}
-            disabled={isPending}
-            type="submit"
-            variant="contained"
-            sx={{
-              fontWeight: '500', // Más sutil que 'bold'
-              textTransform: 'none', // Evita mayúsculas forzadas
-              borderRadius: '8px', // Esquinas ligeramente redondeadas
-              padding: '8px 24px', // Espaciado interno equilibrado
-              backgroundColor: '#1976d2', // Color primario discreto
-              color: 'white',
-              boxShadow: 'none', // Sin sombra para minimalismo
-              transition: 'all 0.2s ease-in-out', // Transición suave
-              '&:hover': {
-                backgroundColor: '#1565c0', // Color hover sutil
-                transform: 'translateY(-1px)', // Efecto de elevación sutil
-              },
-              '&:disabled': {
-                backgroundColor: 'rgba(0, 0, 0, 0.12)', // Estilo para disabled
-                color: 'rgba(0, 0, 0, 0.26)',
-              },
-            }}
-          >
-            {/* {isPending ? 'Cargando...' : 'Ingresar'} */}
-            Ingresar
-          </Button>
-        </Stack>
-      </form>
-    </Stack>
+            <Button
+              startIcon={!isPending && <SignIn />}
+              disabled={isPending}
+              type="submit"
+              variant="contained"
+              sx={{
+                fontWeight: '500', // Más sutil que 'bold'
+                textTransform: 'none', // Evita mayúsculas forzadas
+                borderRadius: '8px', // Esquinas ligeramente redondeadas
+                padding: '8px 24px', // Espaciado interno equilibrado
+                backgroundColor: '#1976d2', // Color primario discreto
+                color: 'white',
+                boxShadow: 'none', // Sin sombra para minimalismo
+                transition: 'all 0.2s ease-in-out', // Transición suave
+                '&:hover': {
+                  backgroundColor: '#1565c0', // Color hover sutil
+                  transform: 'translateY(-1px)', // Efecto de elevación sutil
+                },
+                '&:disabled': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.12)', // Estilo para disabled
+                  color: 'rgba(0, 0, 0, 0.26)',
+                },
+              }}
+            >
+              {/* {isPending ? 'Cargando...' : 'Ingresar'} */}
+              Ingresar
+            </Button>
+          </Stack>
+        </form>
+      </Stack>
+      {/* <Box sx={{ padding: 0, margin: 0, border: 'green solid', width: '100%', textAlign: 'center', zIndex: 999 }}> */}
+      <Box
+        sx={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          width: '100%',
+          textAlign: 'center',
+          zIndex: 999,
+          backgroundColor: 'white', // o el fondo que necesites
+          borderTop: '1px solid #ccc',
+          py: 1,
+        }}
+      >
+        <Typography variant='subtitle2'>
+          © {new Date().getFullYear()} <strong>FlezLade Softworks</strong>. Todos los derechos reservados.
+        </Typography>
+      </Box>
+    </>
   );
 }
