@@ -115,7 +115,7 @@ const FormularioCrearBodega = () => {
         const CargarSubarrendatarios = async () => {
             try {
                 const [Subarrendatarios] = await Promise.all([ListarSubarrendatarios()]);
-                Subarrendatarios.unshift({ value: '', label: 'Sin seleccionar' });
+                Subarrendatarios.unshift({ value: '0', label: 'Sin seleccionar' });
                 setSubarrendatarios(Subarrendatarios);
 
                 // Reseteamos el campo para que se seleccione correctamente la opción vacía
@@ -127,10 +127,11 @@ const FormularioCrearBodega = () => {
 
         if (tipoBodegaSeleccionado === 2) {
             CargarSubarrendatarios();
+            resetField("DocumentoSubarrendatario", { defaultValue: '0' });
         } else {
             // Limpiamos errores y valor del campo cuando no se necesita
             clearErrors("DocumentoSubarrendatario");
-            resetField("DocumentoSubarrendatario", { defaultValue: '' });
+            resetField("DocumentoSubarrendatario", { defaultValue: '0' });
         }
     }, [tipoBodegaSeleccionado, clearErrors, resetField]);
 
@@ -181,7 +182,7 @@ const FormularioCrearBodega = () => {
                                                 field.onChange(Number(e.target.value));
                                                 // Limpiar el valor de subarrendatario cuando no es necesario
                                                 if (Number(e.target.value) !== 2) {
-                                                    control._formValues.DocumentoSubarrendatario = '';
+                                                    control._formValues.DocumentoSubarrendatario = '0';
                                                 }
                                             }}
                                         />
@@ -204,7 +205,7 @@ const FormularioCrearBodega = () => {
                                         <FormControl fullWidth>
                                             <InputSelect
                                                 label='Subarrendatario'
-                                                value={field.value ?? ''}
+                                                value={field.value ?? '0'}
                                                 options={subarrendatarios}
                                                 size='small'
                                                 onChange={(e) => field.onChange(e.target.value)}

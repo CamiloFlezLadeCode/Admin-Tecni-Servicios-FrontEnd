@@ -59,7 +59,10 @@ export const apiRoutes = {
         listarroles: `${API_BASE_URL}/listar-roles`,
         listartiposdedocumentos: `${API_BASE_URL}/listar-tipo-de-documentos`,
         listarmecanicos: `${API_BASE_URL}/listar-mecanicos`,
-        listartiposdebodegas: `${API_BASE_URL}/listar-tipo-de-bodegas`
+        listartiposdebodegas: `${API_BASE_URL}/listar-tipo-de-bodegas`,
+        listartipodeequipos: `${API_BASE_URL}/listar-tipo-de-equipos`,
+        listarunidades: `${API_BASE_URL}/listar-unidades-de-medida`,
+        listarbodegasporsubarrendatario: `${API_BASE_URL}/listar-bodegas-subarrendatario`
     },
     comercial: {
         remisiones: {

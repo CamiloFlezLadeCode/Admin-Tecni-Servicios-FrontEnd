@@ -143,17 +143,17 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
             ),
             tooltip: 'Imprimir devolución'
         },
-        {
-            render: (row: Devolucion) => (
-                <BotonEliminarDevolucion
-                    IdDevolucion={row.IdDevolucion}
-                    NoDevolucion={row.NoDevolucion}
-                    sendMessage={sendMessage}
-                    mostrarMensaje={mostrarMensaje}
-                />
-            ),
-            tooltip: 'Eliminar devolución'
-        }
+        // {
+        //     render: (row: Devolucion) => (
+        //         <BotonEliminarDevolucion
+        //             IdDevolucion={row.IdDevolucion}
+        //             NoDevolucion={row.NoDevolucion}
+        //             sendMessage={sendMessage}
+        //             mostrarMensaje={mostrarMensaje}
+        //         />
+        //     ),
+        //     tooltip: 'Eliminar devolución'
+        // }
     ];
 
     return (

@@ -612,17 +612,17 @@ export function TablaVisualizarOrdenesDeServicio() {
             ),
             tooltip: 'Imprimir orden de servicio'
         },
-        {
-            render: (row: OrdenDeServicio) => (
-                <BotonEliminarOrdenDeServicio
-                    IdOrdenDeServicio={row.IdOrdenDeServicio}
-                    NoOrdenDeServicio={row.NoOrdenDeServicio}
-                    sendMessage={sendMessage}
-                    mostrarMensaje={mostrarMensaje}
-                />
-            ),
-            tooltip: 'Eliminar orden de servicio'
-        }
+        // {
+        //     render: (row: OrdenDeServicio) => (
+        //         <BotonEliminarOrdenDeServicio
+        //             IdOrdenDeServicio={row.IdOrdenDeServicio}
+        //             NoOrdenDeServicio={row.NoOrdenDeServicio}
+        //             sendMessage={sendMessage}
+        //             mostrarMensaje={mostrarMensaje}
+        //         />
+        //     ),
+        //     tooltip: 'Eliminar orden de servicio'
+        // }
     ];
 
 

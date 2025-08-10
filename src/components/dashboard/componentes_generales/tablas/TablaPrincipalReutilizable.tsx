@@ -1,7 +1,8 @@
 'use client';
 
 // import * as React from 'react';
-import { useState, useMemo } from 'react';
+import { UserContext } from '@/contexts/user-context';
+import { useState, useMemo, useContext } from 'react';
 import {
     Box,
     Paper,
@@ -87,6 +88,9 @@ export function DataTable<T>({
 }: DataTableProps<T>) {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(defaultRowsPerPage);
+
+    const { user } = useContext(UserContext) || { user: null };
+    const RolUsuario = user ? `${user.rol}` : null;
 
     const filteredData = useMemo(() => {
         if (!searchTerm) return data;
@@ -186,7 +190,7 @@ export function DataTable<T>({
                                                 {column.header}
                                             </TableCell>
                                         ))}
-                                        {actions.length > 0 && (
+                                        {(actions.length > 0 && RolUsuario === 'Administrador') && (
                                             <TableCell
                                                 sx={{
                                                     fontWeight: 'bold',
@@ -209,7 +213,7 @@ export function DataTable<T>({
                                                         <Skeleton animation="wave" height={40} />
                                                     </TableCell>
                                                 ))}
-                                                {actions.length > 0 && (
+                                                {(actions.length > 0 && RolUsuario === 'Administrador') && (
                                                     <TableCell>
                                                         <Skeleton animation="wave" height={40} />
                                                     </TableCell>
@@ -249,7 +253,7 @@ export function DataTable<T>({
                                                             : (row as any)[column.key]}
                                                     </TableCell>
                                                 ))}
-                                                {actions.length > 0 && (
+                                                {(actions.length > 0 && RolUsuario === 'Administrador') && (
                                                     <TableCell
                                                         align="center"
                                                         sx={TABLE_PADDING}
