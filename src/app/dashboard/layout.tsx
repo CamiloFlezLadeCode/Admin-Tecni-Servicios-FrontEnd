@@ -72,7 +72,7 @@
 
 
 
-
+'use client';
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -88,6 +88,9 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps): React.JSX.Element {
+  const VisitarPaginaCasaDesarrolladora = () => {
+    window.open('https://camiloflezlade.vercel.app/', '_blank', 'noopener,noreferrer');
+  }
   return (
     <AuthGuard>
       <GlobalStyles
@@ -113,11 +116,11 @@ export default function Layout({ children }: LayoutProps): React.JSX.Element {
         }}
       >
         <SideNav />
-        <Box 
-          sx={{ 
-            display: 'flex', 
-            flex: '1 1 auto', 
-            flexDirection: 'column', 
+        <Box
+          sx={{
+            display: 'flex',
+            flex: '1 1 auto',
+            flexDirection: 'column',
             pl: { lg: 'var(--SideNav-width)' },
             minHeight: 'calc(100vh - var(--Footer-height))',
           }}
@@ -145,7 +148,7 @@ export default function Layout({ children }: LayoutProps): React.JSX.Element {
         }}
       >
         <Typography variant='subtitle2'>
-          © {new Date().getFullYear()} <strong>FlezLade Softworks</strong>. Todos los derechos reservados.
+          © {new Date().getFullYear()} <strong style={{cursor: 'pointer'}} onClick={VisitarPaginaCasaDesarrolladora}>FlezLade Softworks</strong>. Todos los derechos reservados.
         </Typography>
       </Box>
     </AuthGuard>

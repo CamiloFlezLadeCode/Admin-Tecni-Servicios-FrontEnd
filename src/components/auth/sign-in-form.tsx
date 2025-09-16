@@ -303,6 +303,10 @@ export function SignInForm(): React.JSX.Element {
     [checkSession, router, setError]
   );
 
+  const VisitarPaginaCasaDesarrolladora = () => {
+    window.open('https://camiloflezlade.vercel.app/', '_blank', 'noopener,noreferrer');
+  }
+
   return (
     <>
       <Stack spacing={4}>
@@ -402,7 +406,7 @@ export function SignInForm(): React.JSX.Element {
         }}
       >
         <Typography variant='subtitle2'>
-          © {new Date().getFullYear()} <strong>FlezLade Softworks</strong>. Todos los derechos reservados.
+          © {new Date().getFullYear()} <strong style={{ cursor: 'pointer' }} onClick={VisitarPaginaCasaDesarrolladora}>FlezLade Softworks</strong>. Todos los derechos reservados.
         </Typography>
       </Box>
     </>
