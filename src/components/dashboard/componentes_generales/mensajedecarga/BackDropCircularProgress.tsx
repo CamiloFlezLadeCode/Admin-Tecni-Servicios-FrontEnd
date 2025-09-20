@@ -17,6 +17,8 @@ export default function MensajeDeCarga({ Mensaje, MostrarMensaje }: { Mensaje: s
             sx={{
                 backgroundColor: 'rgba(255, 255, 255, .8)',
                 zIndex: (theme) => theme.zIndex.drawer + 1,
+                alignItems: 'flex-start',
+                mt: 10
             }}
             open={MostrarMensaje}
         >
