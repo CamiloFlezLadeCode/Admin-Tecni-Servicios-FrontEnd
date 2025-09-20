@@ -87,26 +87,31 @@ export default function MensajeDeCarga({ Mensaje, MostrarMensaje }: { Mensaje: s
     return (
         <Backdrop
             sx={{
-                backgroundColor: 'rgba(255, 255, 255, .8)',
-                zIndex: (theme) => theme.zIndex.drawer + 1,
+                backgroundColor: 'rgba(255, 255, 255, 0.95)', // Más opaco para mejor contraste
+                zIndex: 999999, // Z-INDEX EXTREMADAMENTE ALTO
                 display: 'flex',
                 justifyContent: 'center',
-                alignItems: 'flex-start', // Alinear items al inicio (parte superior)
+                alignItems: 'flex-start',
                 position: 'fixed',
                 top: 0,
                 left: 0,
                 right: 0,
                 bottom: 0,
+                mt: 10,
+                // Forzar sobreposición absoluta
+                isolation: 'isolate', // Crea nuevo contexto de apilamiento
                 // Estilos específicos para iOS
                 ...(isIOS && {
                     height: '100vh',
-                    WebkitOverflowScrolling: 'touch'
+                    WebkitOverflowScrolling: 'touch',
+                    position: 'fixed',
+                    zIndex: 999999,
                 })
             }}
             open={MostrarMensaje}
         >
             <Paper
-                elevation={3}
+                elevation={24} // Elevación máxima
                 sx={{
                     width: 320,
                     minHeight: 160,
@@ -114,16 +119,29 @@ export default function MensajeDeCarga({ Mensaje, MostrarMensaje }: { Mensaje: s
                     py: 3,
                     backgroundColor: '#fff',
                     borderRadius: 2,
-                    boxShadow: 3,
+                    boxShadow: '0px 24px 48px rgba(0, 0, 0, 0.4) !important', // Sombra más intensa
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: 2,
-                    mt: 10, // Margen top de 40px usando el sistema de spacing de MUI
+                    mt: 5,
+                    // Asegurar que esté por encima de TODO
+                    position: 'relative',
+                    zIndex: 1000000, // Aún más alto que el backdrop
                     // Prevenir transformaciones no deseadas en iOS
                     transform: 'translateZ(0)',
-                    WebkitTransform: 'translateZ(0)'
+                    WebkitTransform: 'translateZ(0)',
+                    // Forzar sobre cualquier elemento
+                    '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        zIndex: -1, // Para que el contenido esté arriba
+                    }
                 }}
             >
                 <Typography
@@ -134,12 +152,20 @@ export default function MensajeDeCarga({ Mensaje, MostrarMensaje }: { Mensaje: s
                     sx={{
                         // Prevenir selección de texto en iOS
                         WebkitUserSelect: 'none',
-                        userSelect: 'none'
+                        userSelect: 'none',
+                        zIndex: 1000001, // Texto por encima de todo
+                        position: 'relative'
                     }}
                 >
                     {Mensaje}...
                 </Typography>
-                <CircularProgress color="primary" />
+                <CircularProgress 
+                    color="primary" 
+                    sx={{
+                        zIndex: 1000001, // Spinner por encima de todo
+                        position: 'relative'
+                    }}
+                />
             </Paper>
         </Backdrop>
     )
