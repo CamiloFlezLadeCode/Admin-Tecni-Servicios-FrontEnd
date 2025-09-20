@@ -80,6 +80,9 @@ import {
 // };
 
 export default function MensajeDeCarga({ Mensaje, MostrarMensaje }: { Mensaje: string; MostrarMensaje: boolean; }): React.JSX.Element {
+    // Detectar si es iOS
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+
     return (
         <Backdrop
             sx={{
@@ -87,12 +90,17 @@ export default function MensajeDeCarga({ Mensaje, MostrarMensaje }: { Mensaje: s
                 zIndex: (theme) => theme.zIndex.drawer + 1,
                 display: 'flex',
                 justifyContent: 'center',
-                alignItems: 'center', // Centrado vertical y horizontal
-                position: 'fixed', // Fijo en lugar de relativo
+                alignItems: 'center',
+                position: 'fixed',
                 top: 0,
                 left: 0,
                 right: 0,
-                bottom: 0
+                bottom: 0,
+                // Estilos específicos para iOS
+                ...(isIOS && {
+                    height: '100vh',
+                    WebkitOverflowScrolling: 'touch'
+                })
             }}
             open={MostrarMensaje}
         >
@@ -111,6 +119,9 @@ export default function MensajeDeCarga({ Mensaje, MostrarMensaje }: { Mensaje: s
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: 2,
+                    // Prevenir transformaciones no deseadas en iOS
+                    transform: 'translateZ(0)',
+                    WebkitTransform: 'translateZ(0)'
                 }}
             >
                 <Typography
@@ -118,6 +129,11 @@ export default function MensajeDeCarga({ Mensaje, MostrarMensaje }: { Mensaje: s
                     fontWeight="bold"
                     textAlign="center"
                     variant="body1"
+                    sx={{
+                        // Prevenir selección de texto en iOS
+                        WebkitUserSelect: 'none',
+                        userSelect: 'none'
+                    }}
                 >
                     {Mensaje}...
                 </Typography>
