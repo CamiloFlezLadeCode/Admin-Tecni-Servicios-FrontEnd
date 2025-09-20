@@ -401,8 +401,7 @@ export function SignInForm(): React.JSX.Element {
           textAlign: 'center',
           zIndex: 999,
           backgroundColor: 'white', // o el fondo que necesites
-          borderTop: '1px solid #ccc',
-          py: 1,
+          borderTop: '1px solid #ccc'
         }}
       >
         <Typography variant='subtitle2'>

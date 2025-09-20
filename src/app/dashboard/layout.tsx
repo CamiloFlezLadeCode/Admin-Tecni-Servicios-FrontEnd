@@ -126,7 +126,7 @@ export default function Layout({ children }: LayoutProps): React.JSX.Element {
           }}
         >
           <MainNav />
-          <main style={{ flex: 1 }}>
+          <main style={{ flex: 1, marginBottom: 20 }}>
             <Container maxWidth="xl" sx={{ py: '14px', minHeight: 'calc(100vh - var(--MainNav-height) - var(--Footer-height) - 28px)' }}>
               {children}
             </Container>
@@ -142,8 +142,7 @@ export default function Layout({ children }: LayoutProps): React.JSX.Element {
           textAlign: 'center',
           zIndex: 999,
           backgroundColor: 'white',
-          borderTop: '1px solid #ccc',
-          py: 1,
+          borderTop: '1px solid #ccc',          
           // height: 'var(--Footer-height)',
         }}
       >
