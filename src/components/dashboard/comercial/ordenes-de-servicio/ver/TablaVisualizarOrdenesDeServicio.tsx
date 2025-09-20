@@ -469,6 +469,237 @@
 //     );
 // }
 
+
+
+
+// // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// 'use client';
+// import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
+// import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
+// import { useSocketIO } from '@/hooks/use-WebSocket';
+// import { VerTodasLasOrdenesDeServicio } from '@/services/comercial/ordenes_de_servicio/VerTodasLasOrdenesDeServicioService';
+// import { Chip } from '@mui/material';
+// import * as React from 'react';
+// import { BotonEliminarOrdenDeServicio } from '../acciones/EliminarOrdenDeServicio';
+// import { VerGenerarPDFOrdenDeServicio } from '../acciones/VerGenerarPDFOrdenDeServicio';
+// import MensajeDeCarga from '@/components/dashboard/componentes_generales/mensajedecarga/BackDropCircularProgress';
+
+// interface OrdenDeServicio {
+//     IdOrdenDeServicio: number;
+//     NoOrdenDeServicio: string;
+//     Cliente: string;
+//     Proyecto: string;
+//     Mecanico: string;
+//     CreadoPor: string;
+//     FechaCreacion: string;
+//     EstadoOrdenDeServicio: string;
+// }
+
+// export function TablaVisualizarOrdenesDeServicio() {
+//     const [data, setData] = React.useState<OrdenDeServicio[]>([]);
+//     const [loading, setLoading] = React.useState(true);
+//     const [error, setError] = React.useState<string | null>(null);
+//     const [searchTerm, setSearchTerm] = React.useState('');
+//     // Estados para alertas
+//     const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
+//     const [mensajeAlerta, setMensajeAlerta] = React.useState('');
+//     const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
+
+
+
+//     const { sendMessage, messages } = useSocketIO();
+
+//     React.useEffect(() => {
+//         const cargarDatos = async () => {
+//             try {
+//                 setLoading(true);
+//                 const response = await VerTodasLasOrdenesDeServicio();
+//                 setData(response);
+//             } catch (err) {
+//                 setError('Error al cargar las órdenes de servicio');
+//                 console.error(err);
+//             } finally {
+//                 setLoading(false);
+//             }
+//         };
+
+//         cargarDatos();
+//     }, []);
+
+//     React.useEffect(() => {
+//         if (messages.length > 0) {
+//             const ultimomensajes = messages[messages.length - 1];
+//             if (ultimomensajes.tipo === 'orden-de-servicio-creada' || ultimomensajes.tipo === 'orden-de-servicio-eliminada') {
+//                 handleRefresh();
+//             }
+//         }
+//     }, [messages]);
+
+//     const columns = [
+//         {
+//             key: 'NoOrdenDeServicio',
+//             header: 'N° Orden',
+//             width: '120px'
+//         },
+//         {
+//             key: 'Cliente',
+//             header: 'Cliente'
+//         },
+//         {
+//             key: 'Proyecto',
+//             header: 'Proyecto'
+//         },
+//         {
+//             key: 'Mecanico',
+//             header: 'Mecánico'
+//         },
+//         {
+//             key: 'FechaCreacion',
+//             header: 'Fecha Creación',
+//             // render: (row: OrdenDeServicio) => new Date(row.FechaCreacion).toLocaleDateString()
+
+//         },
+//         {
+//             key: 'CreadoPor',
+//             header: 'Creado Por'
+//         },
+//         {
+//             key: 'EstadoOrdenDeServicio',
+//             header: 'Estado',
+//             render: (row: OrdenDeServicio) => (
+//                 <Chip
+//                     label={row.EstadoOrdenDeServicio}
+//                     color={getEstadoColor(row.EstadoOrdenDeServicio)}
+//                     size="small"
+//                     sx={{ color: 'white', minWidth: 100 }}
+//                 />
+//             )
+//         }
+//     ];
+
+//     // const actions = [
+//     //     {
+//     //         icon: <Eye size={20} />,
+//     //         tooltip: 'Ver detalle',
+//     //         onClick: (row: OrdenDeServicio) => console.log('Ver orden:', row.IdOrdenDeServicio),
+//     //         color: 'error'
+//     //     },
+//     //     {
+//     //         icon: <PencilSimple size={20} />,
+//     //         tooltip: 'Editar',
+//     //         onClick: (row: OrdenDeServicio) => console.log('Editar orden:', row.IdOrdenDeServicio),
+//     //         color: 'info',
+//     //         hidden: (row: OrdenDeServicio) => row.EstadoOrdenDeServicio === 'Completado'
+//     //     }
+//     // ];
+
+//     const actions: ActionDefinition<OrdenDeServicio>[] = [
+//         // {
+//         //     icon: <Eye size={20} />,
+//         //     tooltip: 'Ver detalle',
+//         //     onClick: (row) => console.log('Ver orden:', row.IdOrdenDeServicio),
+//         //     color: 'error'
+//         // },
+//         // {
+//         //     icon: <PencilSimple size={20} />,
+//         //     tooltip: 'Editar',
+//         //     onClick: (row) => console.log('Editar orden:', row.IdOrdenDeServicio),
+//         //     color: 'primary',
+//         //     hidden: (row) => row.EstadoOrdenDeServicio === 'Completado'
+//         // },
+//         {
+//             render: (row) => (
+//                 <VerGenerarPDFOrdenDeServicio
+//                     // data={row}
+//                     IdOrdenDeServicio={row.IdOrdenDeServicio}
+//                 // onComplete={() => console.log('PDF generado para', row.IdOrdenDeServicio)}
+//                 />
+//             ),
+//             tooltip: 'Imprimir orden de servicio'
+//         },
+//         // {
+//         //     render: (row: OrdenDeServicio) => (
+//         //         <BotonEliminarOrdenDeServicio
+//         //             IdOrdenDeServicio={row.IdOrdenDeServicio}
+//         //             NoOrdenDeServicio={row.NoOrdenDeServicio}
+//         //             sendMessage={sendMessage}
+//         //             mostrarMensaje={mostrarMensaje}
+//         //         />
+//         //     ),
+//         //     tooltip: 'Eliminar orden de servicio'
+//         // }
+//     ];
+
+
+
+//     const getEstadoColor = (estado: string) => {
+//         switch (estado) {
+//             case 'Completado': return 'success';
+//             case 'Pendiente': return 'warning';
+//             case 'Cancelado': return 'error';
+//             case 'En Proceso': return 'info';
+//             case 'Creado': return 'info';
+//             default: return 'default';
+//         }
+//     };
+
+//     const handleRefresh = async () => {
+//         try {
+//             setLoading(true);
+//             setError(null);
+//             setSearchTerm('');
+//             const response = await VerTodasLasOrdenesDeServicio();
+//             setData(response);
+//         } catch (err) {
+//             setError('Error al actualizar las órdenes');
+//             console.error(err);
+//         } finally {
+//             setLoading(false);
+//         }
+//     };
+
+//     // Función para mostrar mensajes de alerta
+//     const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error') => {
+//         setMensajeAlerta(mensaje);
+//         setTipoAlerta(tipo);
+//         setMostrarAlertas(true);
+//     };
+
+//     return (
+//         <>
+//             <DataTable<OrdenDeServicio>
+//                 data={data}
+//                 columns={columns}
+//                 actions={actions}
+//                 loading={loading}
+//                 error={error}
+//                 searchTerm={searchTerm}
+//                 onSearchChange={setSearchTerm}
+//                 onRefresh={handleRefresh}
+//                 emptyMessage="No se encontraron órdenes de servicio"
+//                 rowKey={(row) => row.IdOrdenDeServicio}
+//                 placeHolderBuscador="Buscar órdenes..."
+//             />
+
+//             <MensajeAlerta
+//                 open={mostrarAlertas}
+//                 tipo={tipoAlerta}
+//                 mensaje={mensajeAlerta}
+//                 onClose={() => setMostrarAlertas(false)}
+//             />
+
+//             <MensajeDeCarga
+//                 Mensaje={mensajeDeCarga}
+//                 MostrarMensaje={mostrarMensajeDeCarga}
+//             />
+//         </>
+//     );
+// }
+
+
+
+
+
 'use client';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
@@ -478,6 +709,7 @@ import { Chip } from '@mui/material';
 import * as React from 'react';
 import { BotonEliminarOrdenDeServicio } from '../acciones/EliminarOrdenDeServicio';
 import { VerGenerarPDFOrdenDeServicio } from '../acciones/VerGenerarPDFOrdenDeServicio';
+import MensajeDeCarga from '@/components/dashboard/componentes_generales/mensajedecarga/BackDropCircularProgress';
 
 interface OrdenDeServicio {
     IdOrdenDeServicio: number;
@@ -495,12 +727,15 @@ export function TablaVisualizarOrdenesDeServicio() {
     const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState<string | null>(null);
     const [searchTerm, setSearchTerm] = React.useState('');
-    // Estados para alertas
+    
+    // Estados para alertas - MOVIDOS AL PRINCIPAL
     const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
     const [mensajeAlerta, setMensajeAlerta] = React.useState('');
     const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
-
-
+    
+    // Estados para mensaje de carga - MOVIDOS AL PRINCIPAL
+    const [mostrarMensajeDeCarga, setMostrarMensajeDeCarga] = React.useState(false);
+    const [mensajeDeCarga, setMensajeDeCarga] = React.useState('');
 
     const { sendMessage, messages } = useSocketIO();
 
@@ -551,8 +786,6 @@ export function TablaVisualizarOrdenesDeServicio() {
         {
             key: 'FechaCreacion',
             header: 'Fecha Creación',
-            // render: (row: OrdenDeServicio) => new Date(row.FechaCreacion).toLocaleDateString()
-
         },
         {
             key: 'CreadoPor',
@@ -572,60 +805,32 @@ export function TablaVisualizarOrdenesDeServicio() {
         }
     ];
 
-    // const actions = [
-    //     {
-    //         icon: <Eye size={20} />,
-    //         tooltip: 'Ver detalle',
-    //         onClick: (row: OrdenDeServicio) => console.log('Ver orden:', row.IdOrdenDeServicio),
-    //         color: 'error'
-    //     },
-    //     {
-    //         icon: <PencilSimple size={20} />,
-    //         tooltip: 'Editar',
-    //         onClick: (row: OrdenDeServicio) => console.log('Editar orden:', row.IdOrdenDeServicio),
-    //         color: 'info',
-    //         hidden: (row: OrdenDeServicio) => row.EstadoOrdenDeServicio === 'Completado'
-    //     }
-    // ];
+    // Función para mostrar mensajes de alerta
+    const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error') => {
+        setMensajeAlerta(mensaje);
+        setTipoAlerta(tipo);
+        setMostrarAlertas(true);
+    };
+
+    // Función para mostrar/ocultar carga
+    const manejarCarga = (mostrar: boolean, mensaje: string = '') => {
+        setMostrarMensajeDeCarga(mostrar);
+        setMensajeDeCarga(mensaje);
+    };
 
     const actions: ActionDefinition<OrdenDeServicio>[] = [
-        // {
-        //     icon: <Eye size={20} />,
-        //     tooltip: 'Ver detalle',
-        //     onClick: (row) => console.log('Ver orden:', row.IdOrdenDeServicio),
-        //     color: 'error'
-        // },
-        // {
-        //     icon: <PencilSimple size={20} />,
-        //     tooltip: 'Editar',
-        //     onClick: (row) => console.log('Editar orden:', row.IdOrdenDeServicio),
-        //     color: 'primary',
-        //     hidden: (row) => row.EstadoOrdenDeServicio === 'Completado'
-        // },
         {
             render: (row) => (
                 <VerGenerarPDFOrdenDeServicio
-                    // data={row}
                     IdOrdenDeServicio={row.IdOrdenDeServicio}
-                // onComplete={() => console.log('PDF generado para', row.IdOrdenDeServicio)}
+                    onMostrarCarga={manejarCarga} // Pasar función callback
+                    onMostrarMensaje={mostrarMensaje} // Pasar función callback
                 />
             ),
             tooltip: 'Imprimir orden de servicio'
         },
-        // {
-        //     render: (row: OrdenDeServicio) => (
-        //         <BotonEliminarOrdenDeServicio
-        //             IdOrdenDeServicio={row.IdOrdenDeServicio}
-        //             NoOrdenDeServicio={row.NoOrdenDeServicio}
-        //             sendMessage={sendMessage}
-        //             mostrarMensaje={mostrarMensaje}
-        //         />
-        //     ),
-        //     tooltip: 'Eliminar orden de servicio'
-        // }
+        // ... otras acciones
     ];
-
-
 
     const getEstadoColor = (estado: string) => {
         switch (estado) {
@@ -653,13 +858,6 @@ export function TablaVisualizarOrdenesDeServicio() {
         }
     };
 
-    // Función para mostrar mensajes de alerta
-    const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error') => {
-        setMensajeAlerta(mensaje);
-        setTipoAlerta(tipo);
-        setMostrarAlertas(true);
-    };
-
     return (
         <>
             <DataTable<OrdenDeServicio>
@@ -681,6 +879,11 @@ export function TablaVisualizarOrdenesDeServicio() {
                 tipo={tipoAlerta}
                 mensaje={mensajeAlerta}
                 onClose={() => setMostrarAlertas(false)}
+            />
+
+            <MensajeDeCarga
+                Mensaje={mensajeDeCarga}
+                MostrarMensaje={mostrarMensajeDeCarga}
             />
         </>
     );
