@@ -1123,18 +1123,62 @@ export function FormularioCrearRemision(): React.JSX.Element {
     //     cargarDisponibilidad();
     // }, [datos.Equipo, datos.IdCategoria, datos.Subarrendatario]);
     // Cargar cantidad disponible cuando cambia el equipo
+    // React.useEffect(() => {
+    //     const cargarDisponibilidad = async () => {
+    //         if (!datos.Equipo || prevEquipoRef.current === datos.Equipo) return;
+
+    //         try {
+    //             // Solo consultar disponibilidad si es TECNISERVICIOS
+    //             if (esTecniservicios()) {
+    //                 const [disponibilidad] = await ConsultarCantidadDisponibleEquipo(Number(datos.Equipo));
+    //                 setCantidadDisponible(disponibilidad.CantidadDisponible);
+    //                 setPrecioAlquiler(disponibilidad.PrecioAlquiler);
+    //                 setPrecioVenta(disponibilidad.PrecioVenta);
+    //                 setPrecioReparacion(disponibilidad.PrecioReparacion);
+
+    //                 setDatos(prev => ({
+    //                     ...prev,
+    //                     PrecioUnidad: Number(disponibilidad.PrecioAlquiler) || 0,
+    //                     Cantidad: 1
+    //                 }));
+    //             } else {
+    //                 // Para subarrendatarios externos, no hay control de inventario
+    //                 setCantidadDisponible(0);
+    //                 setDatos(prev => ({
+    //                     ...prev,
+    //                     PrecioUnidad: 0,
+    //                     Cantidad: 1
+    //                 }));
+    //             }
+    //             prevEquipoRef.current = datos.Equipo;
+    //         } catch (error) {
+    //             console.error('Error al cargar disponibilidad: ', error);
+    //             mostrarMensaje('Error al consultar disponibilidad del equipo', 'error');
+    //         }
+    //     };
+
+    //     cargarDisponibilidad();
+    // }, [datos.Equipo, datos.IdCategoria, datos.Subarrendatario]);
+
+
+    // Cargar cantidad disponible cuando cambia el equipo
     React.useEffect(() => {
         const cargarDisponibilidad = async () => {
-            if (!datos.Equipo || prevEquipoRef.current === datos.Equipo) return;
+            // Si no hay equipo seleccionado o es el mismo que antes, no hacer nada
+            // if (!datos.Equipo || prevEquipoRef.current === datos.Equipo) {
+            if (!datos.Equipo) {
+                return;
+            }
 
             try {
+                const [disponibilidad] = await ConsultarCantidadDisponibleEquipo(Number(datos.Equipo));
+                setCantidadDisponible(disponibilidad.CantidadDisponible);
+                setPrecioAlquiler(disponibilidad.PrecioAlquiler);
+                setPrecioVenta(disponibilidad.PrecioVenta);
+                setPrecioReparacion(disponibilidad.PrecioReparacion);
+
                 // Solo consultar disponibilidad si es TECNISERVICIOS
                 if (esTecniservicios()) {
-                    const [disponibilidad] = await ConsultarCantidadDisponibleEquipo(Number(datos.Equipo));
-                    setCantidadDisponible(disponibilidad.CantidadDisponible);
-                    setPrecioAlquiler(disponibilidad.PrecioAlquiler);
-                    setPrecioVenta(disponibilidad.PrecioVenta);
-                    setPrecioReparacion(disponibilidad.PrecioReparacion);
 
                     setDatos(prev => ({
                         ...prev,
@@ -1144,13 +1188,17 @@ export function FormularioCrearRemision(): React.JSX.Element {
                 } else {
                     // Para subarrendatarios externos, no hay control de inventario
                     setCantidadDisponible(0);
+                    // Mantener el precio actual si ya fue ingresado manualmente
                     setDatos(prev => ({
                         ...prev,
-                        PrecioUnidad: 0,
-                        Cantidad: 1
+                        Cantidad: prev.Cantidad || 1,
+                        PrecioUnidad: Number(disponibilidad.PrecioAlquiler) || 0,
                     }));
                 }
+
+                // 🔥 ACTUALIZAR LA REFERENCIA DESPUÉS de procesar los datos
                 prevEquipoRef.current = datos.Equipo;
+
             } catch (error) {
                 console.error('Error al cargar disponibilidad: ', error);
                 mostrarMensaje('Error al consultar disponibilidad del equipo', 'error');
@@ -1158,7 +1206,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
         };
 
         cargarDisponibilidad();
-    }, [datos.Equipo, datos.IdCategoria, datos.Subarrendatario]);
+    }, [datos.Equipo, datos.Subarrendatario]); // 🔥 Remover datos.IdCategoria de las dependencias
 
     // Efecto separado para controlar el modal basado en la cantidad disponible
     // React.useEffect(() => {

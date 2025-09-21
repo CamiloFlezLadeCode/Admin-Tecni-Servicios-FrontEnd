@@ -226,16 +226,316 @@
 // };
 
 
+
+// CASIIIIIIIIIIIII
+// 'use client';
+
+// import * as React from 'react';
+// import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
+// import { DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
+// import { TraerEquipos } from '@/services/gestionycontrol/equipos/TraerEquiposRegistradosService';
+// import { FormularioEditarEquipo } from '../editar/FormularioEditarEquipo';
+// import { useSocketIO } from '@/hooks/use-WebSocket';
+// import { Card, CardContent, Typography, Divider, Chip } from '@mui/material';
+// import { TABLE_PADDING } from '@/styles/theme/padding-table';
+
+// interface Equipo {
+//     IdEquipo: number;
+//     NombreEquipo: string;
+//     CategoriaEquipo: string;
+//     Cantidad: number;
+//     Subarrendatario: string;
+//     PrecioVenta: number;
+//     PrecioAlquiler: number;
+//     PrecioReparacion: number;
+//     UsuarioCreacion: string;
+//     FechaCreacion: string;
+//     Estado: string;
+// }
+
+// type EstadoDb = 'Disponible' | 'No disponible' | 'Reparación';
+// type EstadoKey = 'active' | 'inactive' | 'pending';
+
+// const estadoMap: Record<EstadoDb, EstadoKey> = {
+//     'Disponible': 'active',
+//     'No disponible': 'inactive',
+//     'Reparación': 'pending',
+// };
+
+// const Estado: Record<EstadoKey, { label: string; color: 'success' | 'error' | 'warning' }> = {
+//     active: { label: 'Disponible', color: 'success' },
+//     inactive: { label: 'No disponible', color: 'error' },
+//     pending: { label: 'En reparación', color: 'warning' },
+// };
+
+// const normalizarEstado = (estado: string): EstadoDb | null => {
+//     const limpio = estado.trim().toLowerCase();
+//     if (limpio === 'disponible') return 'Disponible';
+//     if (limpio === 'no disponible') return 'No disponible';
+//     if (limpio === 'reparación') return 'Reparación';
+//     return null;
+// };
+
+// // 1. Definir tipos para los mensajes
+// type TipoMensaje =
+//     | 'equipo-actualizado'
+//     | 'equipo-creado'
+//     | 'remision-creada'
+//     | 'devolucion-creada'
+//     | 'remision-anulada';
+
+// interface Mensaje {
+//     tipo: TipoMensaje;
+//     // otras propiedades que puedan tener tus mensajes
+//     [key: string]: any;
+// }
+
+// // 2. Definir el tipo para las acciones
+// type Acciones = {
+//     [key in TipoMensaje]: () => Promise<void>;
+// };
+
+// export function TablaVisualizarEquipos(): React.JSX.Element {
+//     const [data, setData] = React.useState<Equipo[]>([]);
+//     const [loading, setLoading] = React.useState(true);
+//     const [error, setError] = React.useState<string | null>(null);
+//     const [searchTerm, setSearchTerm] = React.useState('');
+//     const { sendMessage, messages } = useSocketIO();
+//     //Estados para el manejo de las notificaciones/alertas
+//     const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
+//     const [mensajeAlerta, setMensajeAlerta] = React.useState('');
+//     const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
+//     //...
+
+
+//     //Función para abrir la alerta
+//     const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error') => {
+//         setMensajeAlerta(mensaje);
+//         setTipoAlerta(tipo);
+//         setMostrarAlertas(true);
+//     };
+//     //....
+
+//     const cargarEquipos = async () => {
+//         try {
+//             setError(null);
+//             const data = await TraerEquipos();
+//             setData(data);
+//         } catch (error) {
+//             setError(`Error al cargar los equipos: ${error}`);
+//         } finally {
+//             setLoading(false);
+//         }
+//     };
+
+//     React.useEffect(() => {
+//         cargarEquipos();
+//     }, []);
+
+//     // React.useEffect(() => {
+//     //     if (messages.length > 0) {
+//     //         const ultimoMensaje = messages[messages.length - 1];
+//     //         if (ultimoMensaje.tipo === 'equipo-actualizado' || ultimoMensaje.tipo === 'equipo-creado') {
+//     //             cargarEquipos();
+//     //         }
+//     //     }
+//     // }, [messages]);
+
+//     React.useEffect(() => {
+//         const manejarEventosDeActualizacion = async () => {
+//             if (messages.length === 0) return;
+
+//             const ultimoMensaje = messages[messages.length - 1] as Mensaje;
+
+//             // 3. Verificación de tipo segura
+//             if (!ultimoMensaje || !ultimoMensaje.tipo) return;
+
+//             try {
+//                 const acciones: Acciones = {
+//                     'equipo-actualizado': cargarEquipos,
+//                     'equipo-creado': cargarEquipos,
+//                     // 'remision-creada': async () => {
+//                     //   await cargarEquipos();
+//                     //   const [siguienteNoRemision] = await ConsultarSiguienteNoRemision();
+//                     //   setDatos(prev => ({ ...prev, NoRemision: siguienteNoRemision.SiguienteNoRemision }));
+//                     // },
+//                     'remision-creada': cargarEquipos,
+//                     'devolucion-creada': cargarEquipos,
+//                     'remision-anulada': cargarEquipos
+//                 };
+
+//                 // Verificar que el tipo es una clave válida
+//                 if (ultimoMensaje.tipo in acciones) {
+//                     await acciones[ultimoMensaje.tipo]();
+
+//                     const notificaciones: Record<TipoMensaje, string> = {
+//                         'equipo-actualizado': 'Equipo actualizado correctamente',
+//                         'equipo-creado': 'Nuevo equipo creado exitosamente',
+//                         'remision-creada': 'Remisión generada con éxito',
+//                         'devolucion-creada': 'Devolución registrada correctamente',
+//                         'remision-anulada': 'Remisión anulada exitosamente'
+//                     };
+
+//                     mostrarMensaje(notificaciones[ultimoMensaje.tipo], 'success');
+//                     setMostrarAlertas(false);
+//                 }
+//             } catch (error) {
+//                 console.error(`Error al procesar ${ultimoMensaje.tipo}:`, error);
+//                 mostrarMensaje(`Error al procesar ${ultimoMensaje.tipo}`, 'error');
+//             }
+//         };
+
+//         manejarEventosDeActualizacion();
+//     }, [messages, mostrarMensaje]);
+
+//     const columns = [
+//         // {
+//         //     key: 'IdEquipo',
+//         //     header: 'ID',
+//         //     width: '80px'
+//         // },
+//         // {
+//         //     key: 'TipoDeEquipo',
+//         //     header: 'Pertenencia'
+//         // },
+//         // {
+//         //     key: 'Subarrendatario',
+//         //     header: 'Subarrendatario'
+//         // },
+//         {
+//             key: 'NombreEquipo',
+//             header: 'Nombre'
+//         },
+//         {
+//             key: 'CategoriaEquipo',
+//             header: 'Categoría'
+//         },
+//         {
+//             key: 'BodegaUbicacion',
+//             header: 'Bodega'
+//         },
+//         {
+//             key: 'Cantidad',
+//             header: 'Cantidad Total',
+//             align: 'right' as const
+//         },
+//         {
+//             key: 'CantidadDisponible',
+//             header: 'Cantidad Disponible',
+//             align: 'right' as const
+//         },
+//         {
+//             key: 'PrecioVenta',
+//             header: 'Precio Venta',
+//             // render: (row: Equipo) => row.PrecioVenta.toLocaleString(),
+//             align: 'right' as const
+//         },
+//         {
+//             key: 'PrecioAlquiler',
+//             header: 'Precio Alquiler',
+//             // render: (row: Equipo) => row.PrecioAlquiler.toLocaleString(),
+//             align: 'right' as const
+//         },
+//         {
+//             key: 'PrecioReparacion',
+//             header: 'Precio Reparación',
+//             // render: (row: Equipo) => row.PrecioReparacion.toLocaleString(),
+//             align: 'right' as const
+//         },
+//         {
+//             key: 'UsuarioCreacion',
+//             header: 'Creado Por'
+//         },
+//         {
+//             key: 'FechaCreacion',
+//             header: 'Fecha Creación'
+//         },
+//         {
+//             key: 'Estado',
+//             header: 'Estado',
+//             render: (row: Equipo) => {
+//                 const estadoDb = normalizarEstado(row.Estado);
+//                 const estadoKey = estadoDb ? estadoMap[estadoDb] : null;
+
+//                 return (
+//                     <Chip
+//                         label={estadoKey ? Estado[estadoKey].label : row.Estado}
+//                         color={estadoKey ? Estado[estadoKey].color : 'default'}
+//                         size="small"
+//                         sx={{ width: 120, justifyContent: 'center' }}
+//                     />
+//                 );
+//             }
+//         }
+//     ];
+
+//     const actions = [
+//         {
+//             render: (row: Equipo) => (
+//                 <FormularioEditarEquipo
+//                     IdEquipo={row.IdEquipo}
+//                     sendMessage={sendMessage}
+//                 />
+//             ),
+//             tooltip: 'Editar equipo'
+//         }
+//     ];
+
+//     const handleRefresh = async () => {
+//         try {
+//             setLoading(true);
+//             setError(null);
+//             setSearchTerm('');
+//             await cargarEquipos();
+//         } catch (err) {
+//             setError(`Error al actualizar: ${err}`);
+//         } finally {
+//             setLoading(false);
+//         }
+//     };
+
+//     return (
+//         <>
+//             <DataTable<Equipo>
+//                 data={data}
+//                 columns={columns}
+//                 actions={actions}
+//                 loading={loading}
+//                 error={error}
+//                 searchTerm={searchTerm}
+//                 onSearchChange={setSearchTerm}
+//                 onRefresh={handleRefresh}
+//                 emptyMessage="No se encontraron equipos"
+//                 rowKey={(row) => row.IdEquipo}
+//                 placeHolderBuscador='Buscar equipos...'
+//             />
+
+//             <MensajeAlerta
+//                 open={mostrarAlertas}
+//                 tipo={tipoAlerta}
+//                 mensaje={mensajeAlerta}
+//                 onClose={() => setMostrarAlertas(false)}
+//             />
+//         </>
+//     );
+// }
+
+
+
+
+
+
+
 'use client';
 
 import * as React from 'react';
+import { useCallback } from 'react'; // 🔥 Importar useCallback
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import { DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { TraerEquipos } from '@/services/gestionycontrol/equipos/TraerEquiposRegistradosService';
 import { FormularioEditarEquipo } from '../editar/FormularioEditarEquipo';
 import { useSocketIO } from '@/hooks/use-WebSocket';
-import { Card, CardContent, Typography, Divider, Chip } from '@mui/material';
-import { TABLE_PADDING } from '@/styles/theme/padding-table';
+import { Chip } from '@mui/material';
 
 interface Equipo {
     IdEquipo: number;
@@ -274,7 +574,6 @@ const normalizarEstado = (estado: string): EstadoDb | null => {
     return null;
 };
 
-// 1. Definir tipos para los mensajes
 type TipoMensaje =
     | 'equipo-actualizado'
     | 'equipo-creado'
@@ -284,11 +583,9 @@ type TipoMensaje =
 
 interface Mensaje {
     tipo: TipoMensaje;
-    // otras propiedades que puedan tener tus mensajes
     [key: string]: any;
 }
 
-// 2. Definir el tipo para las acciones
 type Acciones = {
     [key in TipoMensaje]: () => Promise<void>;
 };
@@ -299,24 +596,15 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
     const [error, setError] = React.useState<string | null>(null);
     const [searchTerm, setSearchTerm] = React.useState('');
     const { sendMessage, messages } = useSocketIO();
-    //Estados para el manejo de las notificaciones/alertas
     const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
     const [mensajeAlerta, setMensajeAlerta] = React.useState('');
     const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
-    //...
 
-
-    //Función para abrir la alerta
-    const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error') => {
-        setMensajeAlerta(mensaje);
-        setTipoAlerta(tipo);
-        setMostrarAlertas(true);
-    };
-    //....
-
-    const cargarEquipos = async () => {
+    // 🔥 Memoizar cargarEquipos con useCallback
+    const cargarEquipos = useCallback(async () => {
         try {
             setError(null);
+            setLoading(true);
             const data = await TraerEquipos();
             setData(data);
         } catch (error) {
@@ -324,20 +612,18 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
         } finally {
             setLoading(false);
         }
-    };
+    }, []); // 🔥 Dependencias vacías
+
+    // 🔥 Memoizar mostrarMensaje con useCallback
+    const mostrarMensaje = useCallback((mensaje: string, tipo: 'success' | 'error') => {
+        setMensajeAlerta(mensaje);
+        setTipoAlerta(tipo);
+        setMostrarAlertas(true);
+    }, []);
 
     React.useEffect(() => {
         cargarEquipos();
-    }, []);
-
-    // React.useEffect(() => {
-    //     if (messages.length > 0) {
-    //         const ultimoMensaje = messages[messages.length - 1];
-    //         if (ultimoMensaje.tipo === 'equipo-actualizado' || ultimoMensaje.tipo === 'equipo-creado') {
-    //             cargarEquipos();
-    //         }
-    //     }
-    // }, [messages]);
+    }, [cargarEquipos]); // 🔥 cargarEquipos es estable ahora
 
     React.useEffect(() => {
         const manejarEventosDeActualizacion = async () => {
@@ -345,24 +631,17 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
 
             const ultimoMensaje = messages[messages.length - 1] as Mensaje;
 
-            // 3. Verificación de tipo segura
             if (!ultimoMensaje || !ultimoMensaje.tipo) return;
 
             try {
                 const acciones: Acciones = {
                     'equipo-actualizado': cargarEquipos,
                     'equipo-creado': cargarEquipos,
-                    // 'remision-creada': async () => {
-                    //   await cargarEquipos();
-                    //   const [siguienteNoRemision] = await ConsultarSiguienteNoRemision();
-                    //   setDatos(prev => ({ ...prev, NoRemision: siguienteNoRemision.SiguienteNoRemision }));
-                    // },
                     'remision-creada': cargarEquipos,
                     'devolucion-creada': cargarEquipos,
                     'remision-anulada': cargarEquipos
                 };
 
-                // Verificar que el tipo es una clave válida
                 if (ultimoMensaje.tipo in acciones) {
                     await acciones[ultimoMensaje.tipo]();
 
@@ -384,22 +663,9 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
         };
 
         manejarEventosDeActualizacion();
-    }, [messages, cargarEquipos, mostrarMensaje]);
+    }, [messages, cargarEquipos, mostrarMensaje]); // 🔥 Ambas funciones son estables ahora
 
     const columns = [
-        // {
-        //     key: 'IdEquipo',
-        //     header: 'ID',
-        //     width: '80px'
-        // },
-        // {
-        //     key: 'TipoDeEquipo',
-        //     header: 'Pertenencia'
-        // },
-        // {
-        //     key: 'Subarrendatario',
-        //     header: 'Subarrendatario'
-        // },
         {
             key: 'NombreEquipo',
             header: 'Nombre'
@@ -425,19 +691,16 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
         {
             key: 'PrecioVenta',
             header: 'Precio Venta',
-            // render: (row: Equipo) => row.PrecioVenta.toLocaleString(),
             align: 'right' as const
         },
         {
             key: 'PrecioAlquiler',
             header: 'Precio Alquiler',
-            // render: (row: Equipo) => row.PrecioAlquiler.toLocaleString(),
             align: 'right' as const
         },
         {
             key: 'PrecioReparacion',
             header: 'Precio Reparación',
-            // render: (row: Equipo) => row.PrecioReparacion.toLocaleString(),
             align: 'right' as const
         },
         {
@@ -479,7 +742,8 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
         }
     ];
 
-    const handleRefresh = async () => {
+    // 🔥 Memoizar handleRefresh también
+    const handleRefresh = useCallback(async () => {
         try {
             setLoading(true);
             setError(null);
@@ -490,7 +754,7 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
         } finally {
             setLoading(false);
         }
-    };
+    }, [cargarEquipos]);
 
     return (
         <>
