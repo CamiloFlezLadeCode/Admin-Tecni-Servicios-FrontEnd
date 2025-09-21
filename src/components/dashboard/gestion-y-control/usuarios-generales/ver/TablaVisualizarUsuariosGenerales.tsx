@@ -244,6 +244,7 @@ import {
     Chip
 } from '@mui/material';
 import * as React from 'react';
+import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 
 interface UsuarioGeneral {
     IdUsuario: number;
@@ -279,6 +280,11 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
     const [error, setError] = React.useState<string | null>(null);
     const [searchTerm, setSearchTerm] = React.useState('');
     const { sendMessage, messages } = useSocketIO();
+
+    // Estados para alertas - MOVIDOS AL PRINCIPAL
+    const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
+    const [mensajeAlerta, setMensajeAlerta] = React.useState('');
+    const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
 
     const CargarUsuariosGenerales = async () => {
         try {
@@ -328,6 +334,13 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
             case 'Creado': return 'info'
             default: return 'default';
         }
+    };
+
+    // Función para mostrar mensajes de alerta
+    const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error') => {
+        setMensajeAlerta(mensaje);
+        setTipoAlerta(tipo);
+        setMostrarAlertas(true);
     };
 
     const columns = [
@@ -391,24 +404,34 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
                 <FormularioEditarUsuarioGeneral
                     DatosUsuarioAActualizar={row.Documento}
                     sendMessage={sendMessage}
+                    onMostrarMensaje={mostrarMensaje}
                 />
             ),
             tooltip: 'Editar usuario'
         }
     ]
     return (
-        <DataTable<UsuarioGeneral>
-            data={data}
-            columns={columns}
-            actions={actions}
-            loading={loading}
-            error={error}
-            searchTerm={searchTerm}
-            onSearchChange={setSearchTerm}
-            onRefresh={handleRefresh}
-            emptyMessage="No se encontraron usuarios"
-            rowKey={(row) => row.Documento}
-            placeHolderBuscador='Buscar usuarios...'
-        />
+        <>
+            <DataTable<UsuarioGeneral>
+                data={data}
+                columns={columns}
+                actions={actions}
+                loading={loading}
+                error={error}
+                searchTerm={searchTerm}
+                onSearchChange={setSearchTerm}
+                onRefresh={handleRefresh}
+                emptyMessage="No se encontraron usuarios"
+                rowKey={(row) => row.Documento}
+                placeHolderBuscador='Buscar usuarios...'
+            />
+
+            <MensajeAlerta
+                open={mostrarAlertas}
+                tipo={tipoAlerta}
+                mensaje={mensajeAlerta}
+                onClose={() => setMostrarAlertas(false)}
+            />
+        </>
     )
 }

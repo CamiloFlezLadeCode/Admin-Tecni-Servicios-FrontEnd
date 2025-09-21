@@ -50,7 +50,7 @@ interface Datos {
     Contacto: string;
 }
 
-export function FormularioEditarUsuarioGeneral({ DatosUsuarioAActualizar, sendMessage }: { DatosUsuarioAActualizar: string; sendMessage: (event: string, payload: any) => void; }): React.JSX.Element {
+export function FormularioEditarUsuarioGeneral({ onMostrarMensaje, DatosUsuarioAActualizar, sendMessage }: { onMostrarMensaje: (mensaje: string, tipo: 'success' | 'error') => void; DatosUsuarioAActualizar: string; sendMessage: (event: string, payload: any) => void; }): React.JSX.Element {
     const [modalAbierto, setModalAbierto] = React.useState(false);
     const EditarUsuarioGeneral = async () => {
         try {
@@ -210,9 +210,11 @@ export function FormularioEditarUsuarioGeneral({ DatosUsuarioAActualizar, sendMe
         try {
             await ActualizarUsuarioGeneral(datos);
             sendMessage('usuario-actualizado', {});
-            mostrarMensaje('Usuario general actualizado exitosamente', 'success');
+            // mostrarMensaje('Usuario general actualizado exitosamente', 'success');
+            onMostrarMensaje('Usuario general actualizado exitosamente', 'success');
         } catch (error) {
-            mostrarMensaje(`Error al actualizar el usuario general: ${error}`, 'error');
+            // mostrarMensaje(`Error al actualizar el usuario general: ${error}`, 'error');
+            onMostrarMensaje(`Error al actualizar el usuario general: ${error}`, 'error');
         }
     }
     // Dentro del estado:
@@ -267,6 +269,12 @@ export function FormularioEditarUsuarioGeneral({ DatosUsuarioAActualizar, sendMe
     }, [datos.Roles])
     return (
         <>
+            <MensajeAlerta
+                open={mostrarAlertas}
+                tipo={tipoAlerta}
+                mensaje={mensajeAlerta}
+                onClose={() => setMostrarAlertas(false)}
+            />
             <IconButton
                 size="small"
                 color="primary"
@@ -274,12 +282,6 @@ export function FormularioEditarUsuarioGeneral({ DatosUsuarioAActualizar, sendMe
             >
                 <PencilSimple size={20} weight="bold" />
             </IconButton>
-            <MensajeAlerta
-                open={mostrarAlertas}
-                tipo={tipoAlerta}
-                mensaje={mensajeAlerta}
-                onClose={() => setMostrarAlertas(false)}
-            />
             <Modal
                 open={modalAbierto}
                 onClose={(_, reason) => {
