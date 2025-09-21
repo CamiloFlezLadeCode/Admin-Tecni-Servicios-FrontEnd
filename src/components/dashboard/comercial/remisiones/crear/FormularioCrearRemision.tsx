@@ -1475,8 +1475,8 @@ export function FormularioCrearRemision(): React.JSX.Element {
         { campo: 'Subarrendatario', mensaje: 'El subarrendatario es obligatorio' },
         { campo: 'Bodeguero', mensaje: 'El bodeguero es obligatorio' },
         { campo: 'Despachador', mensaje: 'El despachador es obligatorio' },
-        { campo: 'Transportador', mensaje: 'El conductor es obligatorio' },
-        { campo: 'Vehiculo', mensaje: 'El vehículo es obligatorio' },
+        // { campo: 'Transportador', mensaje: 'El conductor es obligatorio' },
+        // { campo: 'Vehiculo', mensaje: 'El vehículo es obligatorio' },
     ];
 
     // Precio total general
@@ -1660,7 +1660,6 @@ export function FormularioCrearRemision(): React.JSX.Element {
                             size="small"
                             onChange={handleChange}
                             valorname="Transportador"
-                            required
                         />
                     </Grid>
 
@@ -1672,7 +1671,6 @@ export function FormularioCrearRemision(): React.JSX.Element {
                             size="small"
                             onChange={handleChange}
                             valorname="Vehiculo"
-                            required
                         />
                     </Grid>
 
