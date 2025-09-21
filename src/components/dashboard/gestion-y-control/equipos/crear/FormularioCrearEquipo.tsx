@@ -143,7 +143,7 @@ export function FormularioCrearEquipo(): React.JSX.Element {
         // TipoDeEquipo: 'ABC',
         TipoDeEquipo: '1',
         UnidadDeMedida: '0',
-        Bodega: '0'
+        Bodega: '123'
     });
 
     const [tipoDeEquipoSeleccionado, setTipoDeEquipoSeleccionado] = useState('');
@@ -351,7 +351,7 @@ export function FormularioCrearEquipo(): React.JSX.Element {
         try {
             const data = await ListarBodegasPorSubarrendatario(Documento);
             data.unshift(
-                { value: 0, label: 'Sin seleccionar' }
+                { value: '123', label: 'Sin seleccionar' }
             );
             setBodegas(data);
         } catch (error) {
@@ -385,7 +385,7 @@ export function FormularioCrearEquipo(): React.JSX.Element {
                 DocumentoSubarrendatario: 'ABC',
                 TipoDeEquipo: 'ABC',
                 UnidadDeMedida: '0',
-                Bodega: '0'
+                Bodega: '123'
             });
         } catch (error) {
             mostrarMensaje(`Error al crear equipo: ${error instanceof Error ? error.message : String(error)}`, 'error');
