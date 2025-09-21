@@ -72,7 +72,8 @@ export const apiRoutes = {
             ver_remisiones: `${API_BASE_URL}/ver-remisiones`,
             ver_pdf_remision: (IdRemision: number) => `${API_BASE_URL}/obtener-pdf-remision/${IdRemision}`,
             eliminar_remision: `${API_BASE_URL}/eliminar-remision`,
-            ver_disponibilidad_de_equipos: `${API_BASE_URL}/ver-disponibilidad-equipos`
+            ver_disponibilidad_de_equipos: `${API_BASE_URL}/ver-disponibilidad-equipos`,
+            listar_equipos_generales: `${API_BASE_URL}/ver-disponibilidad-equipos-generales`
         },
         devoluciones: {
             creardevolucion: `${API_BASE_URL}/crear-devolucion`,

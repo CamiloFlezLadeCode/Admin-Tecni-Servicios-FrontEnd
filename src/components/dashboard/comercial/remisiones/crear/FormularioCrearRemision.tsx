@@ -786,7 +786,9 @@
 // }
 
 
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 
+
+// CASI COMPLETOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 'use client';
 
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
@@ -822,6 +824,8 @@ import ModalVerItemsRemision from './ModalVerItemsRemision';
 // Importar componentes de Modal de Material-UI
 import Modal from '@mui/material/Modal';
 import { styled } from '@mui/material/styles';
+import { ListarEquipos } from '@/services/comercial/remisiones/ListarEquiposService';
+import { number } from 'zod';
 
 // Interfaces y tipos
 interface Equipo {
@@ -1021,13 +1025,20 @@ export function FormularioCrearRemision(): React.JSX.Element {
             if (!datos.IdCategoria) return;
 
             try {
-                const equiposRes = await VerDisponibilidadDeEquipos({
-                    IdCategoria: datos.IdCategoria,
-                    DocumentoSubarrendatario: datos.Subarrendatario
-                });
-                setEquipos(equiposRes);
+                let equipos = [];
+
+                if (datos.Subarrendatario == 'ABC') {
+                    equipos = await VerDisponibilidadDeEquipos({
+                        IdCategoria: datos.IdCategoria,
+                        DocumentoSubarrendatario: datos.Subarrendatario
+                    });
+                } else {
+                    equipos = await ListarEquipos({ IdCategoria: datos.IdCategoria });
+                }
+
+                setEquipos(equipos);
                 setDatos(prev => ({ ...prev, Equipo: '', PrecioUnidad: 0 }));
-                setCantidadDisponible(0);
+                setCantidadDisponible(equipos.length > 0 ? equipos[0].CantidadDisponible : 0);
             } catch (error) {
                 console.error('Error al cargar equipos: ', error);
                 mostrarMensaje('Error al cargar equipos por categoría', 'error');
@@ -1036,6 +1047,38 @@ export function FormularioCrearRemision(): React.JSX.Element {
 
         cargarEquipos();
     }, [datos.IdCategoria, datos.Subarrendatario]);
+
+
+    // React.useEffect(() => {
+    //     const cargarEquipos = async () => {
+    //         if (!datos.IdCategoria) return;
+
+    //         try {
+    //             let equipos = [];
+
+    //             if (datos.Subarrendatario === 'ABC') {
+    //                 equipos = await VerDisponibilidadDeEquipos({
+    //                     IdCategoria: datos.IdCategoria,
+    //                     DocumentoSubarrendatario: datos.Subarrendatario
+    //                 });
+    //             } else {
+    //                 equipos = await ListarEquipos({
+    //                     IdCategoria: datos.IdCategoria
+    //                 });
+    //             }
+
+    //             setEquipos(equipos);
+    //             setDatos(prev => ({ ...prev, Equipo: '', PrecioUnidad: 0 }));
+    //             setCantidadDisponible(0); // 🔥 Resetear siempre
+    //         } catch (error) {
+    //             console.error('Error al cargar equipos: ', error);
+    //             mostrarMensaje('Error al cargar equipos por categoría', 'error');
+    //         }
+    //     };
+
+    //     cargarEquipos();
+    // }, [datos.IdCategoria, datos.Subarrendatario]);
+
 
     // Cargar cantidad disponible cuando cambia el equipo
     // React.useEffect(() => {
@@ -1118,13 +1161,26 @@ export function FormularioCrearRemision(): React.JSX.Element {
     }, [datos.Equipo, datos.IdCategoria, datos.Subarrendatario]);
 
     // Efecto separado para controlar el modal basado en la cantidad disponible
+    // React.useEffect(() => {
+    //     // Mostrar modal solo si es TECNISERVICIOS, hay un equipo seleccionado y la cantidad es 0
+    //     setTimeout(() => {
+    //         if (esTecniservicios() && datos.Equipo && cantidadDisponible === 0) {
+    //             setModalCantidadCeroAbierto(true);
+    //         } else {
+    //             setModalCantidadCeroAbierto(false);
+    //         }
+    //     }, 2000)
+    // }, [cantidadDisponible, datos.Equipo, datos.Subarrendatario]);
     React.useEffect(() => {
-        // Mostrar modal solo si es TECNISERVICIOS, hay un equipo seleccionado y la cantidad es 0
-        if (esTecniservicios() && datos.Equipo && cantidadDisponible === 0) {
-            setModalCantidadCeroAbierto(true);
-        } else {
-            setModalCantidadCeroAbierto(false);
-        }
+        const timer = setTimeout(() => {
+            if (esTecniservicios() && datos.Equipo && cantidadDisponible === 0) {
+                setModalCantidadCeroAbierto(true);
+            } else {
+                setModalCantidadCeroAbierto(false);
+            }
+        }, 1000);
+
+        return () => clearTimeout(timer); // 🔥 Limpia el timeout previo
     }, [cantidadDisponible, datos.Equipo, datos.Subarrendatario]);
 
     // Validar cantidad no exceda disponibilidad (solo para TECNISERVICIOS)
@@ -1679,16 +1735,16 @@ export function FormularioCrearRemision(): React.JSX.Element {
                     <Typography id="modal-cantidad-cero" variant="h6" component="h2" gutterBottom>
                         Equipo No Disponible
                     </Typography>
-                    <Typography id="modal-cantidad-cero-descripcion" sx={{ mt: 2, mb: 3 }}>
+                    <Typography id="modal-cantidad-cero-descripcion" sx={{ mt: 2, mb: 3 }} style={{ textAlign: 'justify' }}>
                         El equipo seleccionado no tiene disponibilidad en este momento.
-                        Por favor, seleccione otro equipo o contacte al administrador.
+                        Por favor, seleccione otro equipo o contacte a un subarrendatario.
                     </Typography>
                     <Button
                         variant="contained"
                         onClick={() => setModalCantidadCeroAbierto(false)}
                         fullWidth
                     >
-                        Entendido
+                        Cerrar
                     </Button>
                 </ModalContent>
             </Modal>

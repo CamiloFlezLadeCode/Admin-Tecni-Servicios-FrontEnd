@@ -186,6 +186,7 @@ import { Chip } from '@mui/material';
 import { PencilSimple } from '@phosphor-icons/react/dist/ssr';
 import * as React from 'react';
 // import { EditarRemision } from '@/components/dashboard/comercial/remisiones/acciones-remision/EditarRemision';
+import MensajeDeCarga from '@/components/dashboard/componentes_generales/mensajedecarga/BackDropCircularProgress';
 
 interface Remision {
     IdRemision: number;
@@ -208,6 +209,8 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
     const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
     const [mensajeAlerta, setMensajeAlerta] = React.useState('');
     const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
+    const [mensajeDeCarga, setMensajeDeCarga] = React.useState('');
+    const [mostrarMensajeDeCarga, setMostrarMensajeDeCarga] = React.useState(false);
 
     React.useEffect(() => {
         const fetchData = async () => {
@@ -292,6 +295,12 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
         }
     ];
 
+    // Función para mostrar/ocultar carga
+    const manejarCarga = (mostrar: boolean, mensaje: string = '') => {
+        setMostrarMensajeDeCarga(mostrar);
+        setMensajeDeCarga(mensaje);
+    };
+
     const actions: ActionDefinition<Remision>[] = [
         // {
         //     icon: <PencilSimple size={20} />,
@@ -301,7 +310,10 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
         // },
         {
             render: (row: Remision) => (
-                <GenerarPDFRemision IdRemision={row.IdRemision} />
+                <GenerarPDFRemision
+                    IdRemision={row.IdRemision}
+                    onMostrarCarga={manejarCarga}
+                />
             ),
             tooltip: 'Imprimir remisión'
         },
@@ -360,6 +372,10 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
                 tipo={tipoAlerta}
                 mensaje={mensajeAlerta}
                 onClose={() => setMostrarAlertas(false)}
+            />
+            <MensajeDeCarga
+                Mensaje={mensajeDeCarga}
+                MostrarMensaje={mostrarMensajeDeCarga}
             />
         </>
     );

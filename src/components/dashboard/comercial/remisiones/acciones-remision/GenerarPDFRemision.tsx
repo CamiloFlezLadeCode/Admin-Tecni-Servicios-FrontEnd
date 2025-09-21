@@ -44,6 +44,8 @@ import { VisualizarPDFRemision } from '@/services/comercial/remisiones/ObtenerPD
 
 interface Props {
     IdRemision: number;
+    onMostrarCarga: (mostrar: boolean, mensaje?: string) => void;
+    // onMostrarMensaje: (mensaje: string, tipo: 'success' | 'error') => void;
 }
 
 // export function GenerarPDFRemision({ IdRemision }: Props): React.JSX.Element {
@@ -259,38 +261,72 @@ interface Props {
 
 
 
-export function GenerarPDFRemision({ IdRemision }: Props): React.JSX.Element {
+export function GenerarPDFRemision({ IdRemision, onMostrarCarga }: Props): React.JSX.Element {
     // Con vista directa de impresión en la misma pestaña
     const manejarImpresion = async () => {
+        onMostrarCarga(true, `Generando pdf de remisión. Por favor espere`);
         try {
             const blob = await VisualizarPDFRemision(IdRemision);
-            const blobURL = URL.createObjectURL(blob);
+            // if (blob) {
 
-            const esMovil = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-            if (esMovil) {
-                const link = document.createElement('a');
-                link.href = blobURL;
-                link.download = `remision-No${IdRemision}.pdf`;
-                link.click();
-                return;
+            // }
+            // setTimeout(() => {
+
+            //     const blobURL = URL.createObjectURL(blob);
+
+            //     const esMovil = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            //     if (esMovil) {
+            //         const link = document.createElement('a');
+            //         link.href = blobURL;
+            //         link.download = `remision-No${IdRemision}.pdf`;
+            //         link.click();
+            //         return;
+            //     }
+
+            //     // Desktop: imprimir
+            //     const iframe = document.createElement('iframe');
+            //     iframe.style.display = 'none';
+            //     iframe.src = blobURL;
+            //     document.body.appendChild(iframe);
+
+            //     iframe.onload = () => {
+            //         iframe.contentWindow?.focus();
+            //         iframe.contentWindow?.print();
+
+            //         // setTimeout(() => {
+            //         //   URL.revokeObjectURL(blobURL);
+            //         //   document.body.removeChild(iframe);
+            //         // }, 1000);
+            //     };
+            // }, 1000);
+
+            if (blob) {
+                setTimeout(() => {
+                    onMostrarCarga(false); // Ocultar carga
+
+                    const blobURL = URL.createObjectURL(blob);
+                    const esMovil = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+                    if (esMovil) {
+                        const link = document.createElement('a');
+                        link.href = blobURL;
+                        link.download = `remision-No${IdRemision}.pdf`;
+                        link.click();
+                    } else {
+                        const iframe = document.createElement('iframe');
+                        iframe.style.display = 'none';
+                        iframe.src = blobURL;
+                        document.body.appendChild(iframe);
+
+                        iframe.onload = () => {
+                            iframe.contentWindow?.focus();
+                            iframe.contentWindow?.print();
+                        };
+                    }
+
+                    // onMostrarMensaje('PDF generado correctamente', 'success');
+                }, 1000);
             }
-
-            // Desktop: imprimir
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = blobURL;
-            document.body.appendChild(iframe);
-
-            iframe.onload = () => {
-                iframe.contentWindow?.focus();
-                iframe.contentWindow?.print();
-
-                // setTimeout(() => {
-                //   URL.revokeObjectURL(blobURL);
-                //   document.body.removeChild(iframe);
-                // }, 1000);
-            };
-
         } catch (error) {
             console.error("Error al imprimir PDF:", error);
         }

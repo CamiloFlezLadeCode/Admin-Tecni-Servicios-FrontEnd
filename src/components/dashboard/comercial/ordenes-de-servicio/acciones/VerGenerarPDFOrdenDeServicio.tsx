@@ -113,7 +113,7 @@ import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/
 //                             // }, 1000);
 //                         };
 //                     }
-//                 }, 2000);
+//                 }, 1000);
 //             }
 //         } catch (error) {
 //             console.error(`Error al describir la acción: ${error}`);
@@ -189,7 +189,7 @@ export function VerGenerarPDFOrdenDeServicio({
                     }
                     
                     onMostrarMensaje('PDF generado correctamente', 'success');
-                }, 2000);
+                }, 1000);
             }
         } catch (error) {
             console.error(`Error al generar PDF: ${error}`);
