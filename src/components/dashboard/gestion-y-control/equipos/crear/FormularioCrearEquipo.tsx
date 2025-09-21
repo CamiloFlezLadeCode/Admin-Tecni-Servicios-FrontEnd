@@ -140,7 +140,8 @@ export function FormularioCrearEquipo(): React.JSX.Element {
         EstadoEquipo: '0',
         Cantidad: null,
         DocumentoSubarrendatario: 'ABC',
-        TipoDeEquipo: 'ABC',
+        // TipoDeEquipo: 'ABC',
+        TipoDeEquipo: '1',
         UnidadDeMedida: '0',
         Bodega: '0'
     });
@@ -463,7 +464,7 @@ export function FormularioCrearEquipo(): React.JSX.Element {
 
             <CardContent sx={{ paddingTop: '10px', paddingBottom: '10px' }}>
                 <Grid container spacing={1}>
-                    <Grid md={4} xs={12} mt={0.5}>
+                    <Grid md={4} xs={12} mt={0.5} display="none">
                         <InputSelect
                             required
                             label="Tipo Equipo"

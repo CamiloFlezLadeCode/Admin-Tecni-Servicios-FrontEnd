@@ -392,18 +392,14 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
         //     header: 'ID',
         //     width: '80px'
         // },
-        {
-            key: 'TipoDeEquipo',
-            header: 'Pertenencia'
-        },
-        {
-            key: 'Subarrendatario',
-            header: 'Subarrendatario'
-        },
-        {
-            key: 'BodegaUbicacion',
-            header: 'Bodega'
-        },
+        // {
+        //     key: 'TipoDeEquipo',
+        //     header: 'Pertenencia'
+        // },
+        // {
+        //     key: 'Subarrendatario',
+        //     header: 'Subarrendatario'
+        // },
         {
             key: 'NombreEquipo',
             header: 'Nombre'
@@ -411,6 +407,10 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
         {
             key: 'CategoriaEquipo',
             header: 'Categoría'
+        },
+        {
+            key: 'BodegaUbicacion',
+            header: 'Bodega'
         },
         {
             key: 'Cantidad',

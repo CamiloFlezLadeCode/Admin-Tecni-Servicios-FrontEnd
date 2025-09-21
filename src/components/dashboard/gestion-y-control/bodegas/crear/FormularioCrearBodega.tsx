@@ -65,8 +65,8 @@ const FormularioCrearBodega = () => {
         clearErrors // Añadido para limpiar errores
     } = useForm<FormValues>({
         defaultValues: {
-            TipoDeBodega: 0,
-            DocumentoSubarrendatario: '',
+            TipoDeBodega: 1,
+            DocumentoSubarrendatario: '0',
             NombreDeBodega: '',
             Descripcion: '',
             Estado: 1
@@ -167,7 +167,7 @@ const FormularioCrearBodega = () => {
                 <Divider />
                 <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                     <Grid container spacing={1}>
-                        <Grid md={3} xs={12} mt={0.5}>
+                        <Grid md={3} xs={12} mt={0.5} display='none'>
                             <Controller
                                 name="TipoDeBodega"
                                 control={control}

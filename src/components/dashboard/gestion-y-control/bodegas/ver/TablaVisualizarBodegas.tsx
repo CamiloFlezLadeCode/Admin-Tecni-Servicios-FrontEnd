@@ -101,10 +101,10 @@ export function TablaVisualizarBodegas(): React.JSX.Element {
             key: 'IdBodega',
             header: 'Id',
         },
-        {
-            key: 'TipoBodega',
-            header: 'Tipo'
-        },
+        // {
+        //     key: 'TipoBodega',
+        //     header: 'Tipo'
+        // },
         {
             key: 'Subarrendatario',
             header: 'Propietario'
