@@ -401,7 +401,8 @@ export function FormularioCrearEquipo(): React.JSX.Element {
         cargarEstados();
         cargarTiposDeEquipos();
         cargarUnidadesDeMedida();
-    }, [cargarSubarrendatarios, cargarCategorias, cargarEstados, cargarTiposDeEquipos, cargarUnidadesDeMedida]);
+        cargarBodegas('0');
+    }, [cargarSubarrendatarios, cargarCategorias, cargarEstados, cargarTiposDeEquipos, cargarUnidadesDeMedida, cargarBodegas]);
 
     // Efectos para mostrar u ocultar el select de subarrendatarios, dependiendo del tipo de equipo
     const tipoDeEquipoSeleccionadoRef = useRef(formData.TipoDeEquipo);
@@ -424,34 +425,34 @@ export function FormularioCrearEquipo(): React.JSX.Element {
 
     const isFirstRender = useRef(true);
 
-    useEffect(() => {
-        if (isFirstRender.current) {
-            isFirstRender.current = false;
-            return; // Evita ejecución en el montaje inicial
-        }
+    // useEffect(() => {
+    //     if (isFirstRender.current) {
+    //         isFirstRender.current = false;
+    //         return; // Evita ejecución en el montaje inicial
+    //     }
 
-        tipoDeEquipoSeleccionadoRef.current = formData.TipoDeEquipo;
-        const NuevoValor = tipoDeEquipoSeleccionadoRef.current;
-        console.log(NuevoValor);
-        setTipoDeEquipoSeleccionado(String(NuevoValor));
+    //     tipoDeEquipoSeleccionadoRef.current = formData.TipoDeEquipo;
+    //     const NuevoValor = tipoDeEquipoSeleccionadoRef.current;
+    //     console.log(NuevoValor);
+    //     setTipoDeEquipoSeleccionado(String(NuevoValor));
 
-        // if (NuevoValor == '1') {
-        //     // const nuevoFormData = {
-        //     //     ...formData,
-        //     //     DocumentoSubarrendatario: '0'
-        //     // };
-        //     // setFormData(nuevoFormData);
-        //     cargarBodegas('0');
-        // } else if (NuevoValor == '2') {
-        //     cargarBodegas(formData.DocumentoSubarrendatario);
-        //     setBodegas([{ value: '0', label: 'Sin seleccionar' }]);
-        // } else {
-        //     setBodegas([{ value: '0', label: 'Sin seleccionar' }]);
-        // }
+    //     // if (NuevoValor == '1') {
+    //     //     // const nuevoFormData = {
+    //     //     //     ...formData,
+    //     //     //     DocumentoSubarrendatario: '0'
+    //     //     // };
+    //     //     // setFormData(nuevoFormData);
+    //     //     cargarBodegas('0');
+    //     // } else if (NuevoValor == '2') {
+    //     //     cargarBodegas(formData.DocumentoSubarrendatario);
+    //     //     setBodegas([{ value: '0', label: 'Sin seleccionar' }]);
+    //     // } else {
+    //     //     setBodegas([{ value: '0', label: 'Sin seleccionar' }]);
+    //     // }
 
-        cargarBodegas('0');
-        setBodegas([{ value: '123', label: 'Sin seleccionar' }]);
-    }, [formData.TipoDeEquipo, formData.DocumentoSubarrendatario]);
+    //     cargarBodegas('0');
+    //     setBodegas([{ value: '123', label: 'Sin seleccionar' }]);
+    // }, [formData.TipoDeEquipo, formData.DocumentoSubarrendatario]);
 
     return (
         <Card>
