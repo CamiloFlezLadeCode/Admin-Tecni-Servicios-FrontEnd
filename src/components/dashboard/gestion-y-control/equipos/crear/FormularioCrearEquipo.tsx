@@ -435,19 +435,22 @@ export function FormularioCrearEquipo(): React.JSX.Element {
         console.log(NuevoValor);
         setTipoDeEquipoSeleccionado(String(NuevoValor));
 
-        if (NuevoValor == '1') {
-            // const nuevoFormData = {
-            //     ...formData,
-            //     DocumentoSubarrendatario: '0'
-            // };
-            // setFormData(nuevoFormData);
-            cargarBodegas('0');
-        } else if (NuevoValor == '2') {
-            cargarBodegas(formData.DocumentoSubarrendatario);
-            setBodegas([{ value: '0', label: 'Sin seleccionar' }]);
-        } else {
-            setBodegas([{ value: '0', label: 'Sin seleccionar' }]);
-        }
+        // if (NuevoValor == '1') {
+        //     // const nuevoFormData = {
+        //     //     ...formData,
+        //     //     DocumentoSubarrendatario: '0'
+        //     // };
+        //     // setFormData(nuevoFormData);
+        //     cargarBodegas('0');
+        // } else if (NuevoValor == '2') {
+        //     cargarBodegas(formData.DocumentoSubarrendatario);
+        //     setBodegas([{ value: '0', label: 'Sin seleccionar' }]);
+        // } else {
+        //     setBodegas([{ value: '0', label: 'Sin seleccionar' }]);
+        // }
+
+        cargarBodegas('0');
+        setBodegas([{ value: '123', label: 'Sin seleccionar' }]);
     }, [formData.TipoDeEquipo, formData.DocumentoSubarrendatario]);
 
     return (
