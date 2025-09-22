@@ -825,7 +825,9 @@ import ModalVerItemsRemision from './ModalVerItemsRemision';
 import Modal from '@mui/material/Modal';
 import { styled } from '@mui/material/styles';
 import { ListarEquipos } from '@/services/comercial/remisiones/ListarEquiposService';
-import { number } from 'zod';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+
+
 
 // Interfaces y tipos
 interface Equipo {
@@ -904,6 +906,8 @@ export function FormularioCrearRemision(): React.JSX.Element {
     const [proyectos, setProyectos] = React.useState<{ value: string | number; label: string }[]>([]);
     const [equipos, setEquipos] = React.useState<Equipo[]>([]);
 
+    const OpcionPorDefecto = { value: 'SinSeleccionar', label: 'Sin seleccionar' };
+
     // Estados para datos del formulario
     const [datos, setDatos] = React.useState<DatosFormulario>({
         Cliente: '',
@@ -915,13 +919,13 @@ export function FormularioCrearRemision(): React.JSX.Element {
         PrecioTotal: 0,
         IVA: 19,
         PrecioTotalGeneral: 0,
-        Subarrendatario: '',
-        Bodega: '',
+        Subarrendatario: '0',
+        Bodega: '0',
         EquipoDisponible: '',
-        Bodeguero: '',
-        Despachador: '',
-        Transportador: '',
-        Vehiculo: '',
+        Bodeguero: 'SinSeleccionar',
+        Despachador: 'SinSeleccionar',
+        Transportador: 'SinSeleccionar',
+        Vehiculo: 'SinSeleccionar',
         Placa: '',
         Recibe: '',
         ObservacionesEmpresa: '',
@@ -959,7 +963,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
     React.useEffect(() => {
         const cargarDatosIniciales = async () => {
             try {
-                const [
+                let [
                     clientesRes,
                     categoriasRes,
                     subarrRes,
@@ -979,14 +983,25 @@ export function FormularioCrearRemision(): React.JSX.Element {
                     ConsultarSiguienteNoRemision()
                 ]);
 
+                //Clientes
                 setClientes(clientesRes);
+                //Categorias
                 setCategoria(categoriasRes);
+                //Subarrendatarios
                 let Subarrendatarios = subarrRes;
                 Subarrendatarios.unshift({ value: 'ABC', label: 'TECNISERVICIOS J.F S.A.S' })
                 setSubarrendatarios(Subarrendatarios);
+                //Bodegueros
+                bodeguerosRes.unshift(OpcionPorDefecto);
                 setBodegueros(bodeguerosRes);
+                //Despachadores
+                despachadoresRes.unshift(OpcionPorDefecto);
                 setDespachadores(despachadoresRes);
+                //Trasportadores/Conductores
+                transportadoresRes.unshift(OpcionPorDefecto);
                 setTransportadores(transportadoresRes);
+                //Vehiculos
+                vehiculosRes.unshift(OpcionPorDefecto);
                 setVehiculos(vehiculosRes);
                 setDatos(prev => ({
                     ...prev,
@@ -1505,6 +1520,9 @@ export function FormularioCrearRemision(): React.JSX.Element {
 
             <CardContent sx={{ paddingTop: '10px', paddingBottom: '10px' }}>
                 <Grid container spacing={1}>
+                    <Grid md={3} xs={12} mt={0.5}>
+                        <DateTimePicker label="Fecha remisión" />
+                    </Grid>
                     <Grid md={3} xs={12} mt={0.5}>
                         <InputSelect
                             label="Empresa/Cliente"

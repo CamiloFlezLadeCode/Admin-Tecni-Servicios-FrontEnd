@@ -18,7 +18,7 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    Typography
+    Typography,
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import * as React from 'react';
@@ -32,6 +32,15 @@ import { ListarClientes } from '@/services/generales/ListarClientesService';
 import { ListarEstados } from '@/services/generales/ListarEstadosService';
 import { ListarProyectos } from '@/services/generales/ListarProyectos';
 import { ListarProfesionalesPertenecientes } from '@/services/configuraciones/ListarProfesionalesPertenecientesService';
+import dayjs, { Dayjs } from 'dayjs';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { padding } from '@mui/system';
+
+
 
 // 1. Interfaces
 // interface Devolucion {
@@ -113,6 +122,8 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
     const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
     const [mensajeAlerta, setMensajeAlerta] = React.useState('');
     const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
+
+    const [value, setValue] = React.useState<Dayjs | null>(dayjs('2022-04-17'));
 
     // 5. USEEFFECT PARA LA CARGA INICIAL Y SOCKETS
     // Cargar remisiones pendientes cuando se selecciona cliente y proyecto
@@ -499,6 +510,107 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                 valorname="IdRemision"
                             />
                         </Grid>
+
+                        <Grid md={4} xs={12}>
+                            <InputSelect
+                                label="Subarrendatario"
+                                value={Number(datos.IdRemision)}
+                                options={remisiones}
+                                onChange={handleChange}
+                                valorname="IdRemision"
+                            />
+                        </Grid>
+
+                        {/* <Grid md={4} xs={12}>
+                            <DateTimePicker
+                                label="Fecha y hora"
+                                notched
+                                slotProps={{
+                                    textField: {
+                                        variant: 'outlined',
+                                        sx: {
+                                            // width: '200px', // Ancho del TextField
+                                            width: '100%',
+                                            '& .MuiInputBase-root': {
+                                                height: '40px',
+                                                backgroundColor: '#f5f5f5',
+                                            },
+                                            '& .MuiInputBase-input': {
+                                                padding: '8px 12px',
+                                            },
+                                        },
+                                    },
+                                }}
+                            />
+                        </Grid> */}
+
+
+                        <Grid md={4} xs={12}>
+                            <DateTimePicker
+                                label="Fecha y hora"
+                                slotProps={{
+                                    textField: {
+                                        variant: 'outlined',
+                                        InputLabelProps: {
+                                            shrink: true, // ← Esto fuerza el label arriba
+                                        },
+                                        sx: {
+                                            width: '100%',
+                                            '& .MuiInputBase-root': {
+                                                height: '40px',
+                                                // backgroundColor: '#f5f5f5',
+                                            },
+                                            '& .MuiInputBase-input': {
+                                                padding: '8px 12px',
+                                            },
+                                            // Estilos para el label en posición "notched"
+                                            '& .MuiInputLabel-outlined': {
+                                                transform: 'translate(14px, -6px) scale(0.75)',
+                                                backgroundColor: 'white', // Fondo blanco para el efecto notched
+                                                padding: '0 4px',
+                                                fontWeight: 'bold',
+                                                '&.Mui-focused': {
+                                                    color: '#000000', // ← Negro puro cuando está enfocado
+                                                },
+                                            },
+                                            '& .MuiOutlinedInput-root': {
+                                                '& fieldset': {
+                                                    // borderRadius: '4px',
+                                                },
+                                            },
+                                        },
+                                    },
+                                }}
+                            />
+                        </Grid>
+
+                        {/* <Grid md={4} xs={12} style={{ border: 'solid green 2px', padding: '0px' }}>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DemoContainer components={['DatePicker', 'DatePicker', 'DateTimePicker']}>
+                                    <DatePicker label="Fecha Remisión" defaultValue={dayjs('2022-04-17')} />
+                                    <DatePicker
+                                        label="Controlled picker"
+                                        value={value}
+                                        onChange={(newValue) => setValue(newValue)}
+                                    />
+                                    <DateTimePicker
+                                        // sx={{
+                                        //     width: '200px', // Ancho del contenedor
+                                        // }}
+                                        slotProps={{
+                                            textField: {
+                                                sx: {
+                                                    '& .MuiInputBase-root': { // Estilos específicos para el input
+                                                        height: '40px',
+                                                        fontSize: '14px',
+                                                    },
+                                                },
+                                            },
+                                        }}
+                                    />
+                                </DemoContainer>
+                            </LocalizationProvider>
+                        </Grid> */}
                     </Grid>
 
                     {/* Lista de Items (solo si hay remisión seleccionada) */}
