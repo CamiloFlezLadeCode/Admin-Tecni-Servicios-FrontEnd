@@ -826,6 +826,7 @@ import Modal from '@mui/material/Modal';
 import { styled } from '@mui/material/styles';
 import { ListarEquipos } from '@/services/comercial/remisiones/ListarEquiposService';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import FechayHora from '@/components/dashboard/componentes_generales/formulario/DateTimePicker';
 
 
 
@@ -1521,7 +1522,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
             <CardContent sx={{ paddingTop: '10px', paddingBottom: '10px' }}>
                 <Grid container spacing={1}>
                     <Grid md={3} xs={12} mt={0.5}>
-                        <DateTimePicker label="Fecha remisión" />
+                        <FechayHora />
                     </Grid>
                     <Grid md={3} xs={12} mt={0.5}>
                         <InputSelect

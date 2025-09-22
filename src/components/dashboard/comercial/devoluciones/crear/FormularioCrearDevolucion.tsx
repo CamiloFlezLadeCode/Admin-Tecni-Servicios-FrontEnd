@@ -39,7 +39,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { padding } from '@mui/system';
-
+import FechayHora from '@/components/dashboard/componentes_generales/formulario/DateTimePicker';
 
 
 // 1. Interfaces
@@ -456,6 +456,46 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                 <Divider />
                 <CardContent>
                     <Grid container spacing={2}>
+                        <Grid md={4} xs={12}>
+                            {/* <DateTimePicker
+                                label="Fecha y hora"
+                                slotProps={{
+                                    textField: {
+                                        variant: 'outlined',
+                                        InputLabelProps: {
+                                            shrink: true, // ← Esto fuerza el label arriba
+                                        },
+                                        sx: {
+                                            width: '100%',
+                                            '& .MuiInputBase-root': {
+                                                height: '40px',
+                                                // backgroundColor: '#f5f5f5',
+                                            },
+                                            '& .MuiInputBase-input': {
+                                                padding: '8px 12px',
+                                            },
+                                            // Estilos para el label en posición "notched"
+                                            '& .MuiInputLabel-outlined': {
+                                                transform: 'translate(14px, -6px) scale(0.75)',
+                                                backgroundColor: 'white', // Fondo blanco para el efecto notched
+                                                padding: '0 4px',
+                                                fontWeight: 'bold',
+                                                '&.Mui-focused': {
+                                                    color: '#000000', // ← Negro puro cuando está enfocado
+                                                },
+                                            },
+                                            '& .MuiOutlinedInput-root': {
+                                                '& fieldset': {
+                                                    // borderRadius: '4px',
+                                                },
+                                            },
+                                        },
+                                    },
+                                }}
+                            /> */}
+                            <FechayHora />
+                        </Grid>
+
                         {/* Selector de Cliente */}
                         <Grid md={4} xs={12}>
                             <InputSelect
@@ -543,46 +583,6 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                 }}
                             />
                         </Grid> */}
-
-
-                        <Grid md={4} xs={12}>
-                            <DateTimePicker
-                                label="Fecha y hora"
-                                slotProps={{
-                                    textField: {
-                                        variant: 'outlined',
-                                        InputLabelProps: {
-                                            shrink: true, // ← Esto fuerza el label arriba
-                                        },
-                                        sx: {
-                                            width: '100%',
-                                            '& .MuiInputBase-root': {
-                                                height: '40px',
-                                                // backgroundColor: '#f5f5f5',
-                                            },
-                                            '& .MuiInputBase-input': {
-                                                padding: '8px 12px',
-                                            },
-                                            // Estilos para el label en posición "notched"
-                                            '& .MuiInputLabel-outlined': {
-                                                transform: 'translate(14px, -6px) scale(0.75)',
-                                                backgroundColor: 'white', // Fondo blanco para el efecto notched
-                                                padding: '0 4px',
-                                                fontWeight: 'bold',
-                                                '&.Mui-focused': {
-                                                    color: '#000000', // ← Negro puro cuando está enfocado
-                                                },
-                                            },
-                                            '& .MuiOutlinedInput-root': {
-                                                '& fieldset': {
-                                                    // borderRadius: '4px',
-                                                },
-                                            },
-                                        },
-                                    },
-                                }}
-                            />
-                        </Grid>
 
                         {/* <Grid md={4} xs={12} style={{ border: 'solid green 2px', padding: '0px' }}>
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
