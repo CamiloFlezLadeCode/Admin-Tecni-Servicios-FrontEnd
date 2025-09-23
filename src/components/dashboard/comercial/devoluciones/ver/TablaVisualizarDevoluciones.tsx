@@ -12,6 +12,9 @@ import {
 import MensajeDeCarga from '@/components/dashboard/componentes_generales/mensajedecarga/BackDropCircularProgress';
 import { GenerarPDF } from '@/components/dashboard/componentes_generales/acciones/GenerarPDF';
 import { ObtenerPDFDevolucion } from '@/services/comercial/devoluciones/ObtenerPDFDevolucionService';
+import { EliminarRegistro } from '@/components/dashboard/componentes_generales/acciones/EliminarRegistro';
+import { EliminarDevolucion } from '@/services/comercial/devoluciones/EliminarDevolucionService';
+
 
 interface Devolucion {
     IdDevolucion: number;
@@ -145,16 +148,16 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
     };
 
     const actions: ActionDefinition<Devolucion>[] = [
-        {
-            render: (row: Devolucion) => (
-                <GenerarPDFDevolucion
-                    IdDevolucion={row.IdDevolucion}
-                    onMostrarCarga={manejarCarga}
-                    onMostrarMensaje={mostrarMensaje}
-                />
-            ),
-            tooltip: 'Imprimir devolución'
-        },
+        // {
+        //     render: (row: Devolucion) => (
+        //         <GenerarPDFDevolucion
+        //             IdDevolucion={row.IdDevolucion}
+        //             onMostrarCarga={manejarCarga}
+        //             onMostrarMensaje={mostrarMensaje}
+        //         />
+        //     ),
+        //     tooltip: 'Imprimir devolución'
+        // },
         {
             render: (row: Devolucion) => (
                 <GenerarPDF
@@ -162,17 +165,35 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
                     idRecurso={row.IdDevolucion}
                     nombreArchivo={`devolución-No${row.IdDevolucion}.pdf`}
                     mensajes={{
-                        generando: 'Generando PDF de devolución...',
+                        generando: 'Generando PDF de devolución. Por favor espere',
                         exito: 'PDF generado correctamente',
                         error: 'Error al generar el PDF de la devolución'
                     }}
-                onMostrarCarga={manejarCarga}
-                onMostrarMensaje={mostrarMensaje}
-                comportamiento="impresion"
+                    onMostrarCarga={manejarCarga}
+                    onMostrarMensaje={mostrarMensaje}
+                    comportamiento="impresion"
                 // icono={<Printer size={20} weight="bold" />}
                 />
             ),
-            tooltip: 'Imprimir'
+            tooltip: 'Imprimir devolución'
+        },
+        {
+            render: (row: Devolucion) => (
+                <EliminarRegistro
+                    servicioEliminarRegistro={(id) => EliminarDevolucion(row.IdDevolucion)}
+                    idRecurso={row.IdDevolucion}
+                    sendMessage={sendMessage}
+                    mostrarMensaje={mostrarMensaje}
+                    mensajes={{
+                        ariaLabel: `eliminar-devolucion-${row.IdDevolucion}`,
+                        socket: 'devolucion-eliminada',
+                        info: `¿Realmente quieres eliminar la devolución ${row.NoDevolucion}?`,
+                        exito: 'Devolución eliminada correctamente',
+                        error: 'Error al eliminar devolución'
+                    }}
+                />
+            ),
+            tooltip: 'Eliminar devolución'
         }
         // {
         //     render: (row: Devolucion) => (

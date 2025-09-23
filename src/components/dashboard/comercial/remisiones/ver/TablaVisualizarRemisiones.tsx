@@ -162,20 +162,20 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
                 // icono={<Printer size={20} weight="bold" />}
                 />
             ),
-            tooltip: 'Imprimir'
+            tooltip: 'Imprimir remisión'
+        },
+        {
+            render: (row: Remision) => (
+                <BotonEliminarRemision
+                    IdRemision={row.IdRemision}
+                    NoRemision={row.NoRemision}
+                    sendMessage={sendMessage}
+                    mostrarMensaje={mostrarMensaje}
+                />
+            ),
+            tooltip: 'Eliminar remisión',
+            color: 'error'
         }
-        // {
-        //     render: (row: Remision) => (
-        //         <BotonEliminarRemision
-        //             IdRemision={row.IdRemision}
-        //             NoRemision={row.NoRemision}
-        //             sendMessage={sendMessage}
-        //             mostrarMensaje={mostrarMensaje}
-        //         />
-        //     ),
-        //     tooltip: 'Eliminar remisión',
-        //     color: 'error'
-        // }
     ];
 
     const handleRefresh = async () => {
