@@ -88,6 +88,7 @@ interface DevolucionEnvio {
     PersonaQueRecibe: string;
     PersonaQueEntrega: string;
     Detalles: ItemDevolucion[];
+    FechaDevolucion: string;
 }
 
 interface Option {
@@ -360,7 +361,8 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                 //   Motivo: item.Motivo ?? '',
                 Observaciones: item.Observaciones ?? '',
                 // IdRemision: datos.Remision ?? ''
-            }))
+            })),
+            FechaDevolucion: datos.FechaDevolucion.format('YYYY-MM-DD HH:mm:ss')
         };
     };
 
@@ -435,7 +437,14 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
 
     // Función para mostrar la fecha y la hora seleccionada
     const MostrarFechaHora = async () => {
-                console.log(datos.FechaDevolucion.toString())
+        // console.log(datos.FechaDevolucion)
+        if (datos.FechaDevolucion) {
+            // Formatear usando métodos de Dayjs
+            console.log(datos.FechaDevolucion.format('YYYY-MM-DD')); // 2025-01-01
+            console.log(datos.FechaDevolucion.format('DD/MM/YYYY HH:mm:ss')); // 01/01/2025 21:00:23
+            console.log(datos.FechaDevolucion.format('MMMM D, YYYY')); // January 1, 2025
+            console.log(datos.FechaDevolucion.format('YYYY-MM-DD HH:mm:ss'))
+        }
     }
     // ...
 
@@ -645,9 +654,6 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                             </Grid>
                         </Box>
                     )}
-                    <Button variant='contained' onClick={MostrarFechaHora}>
-                        Mostrar Fecha con hora
-                    </Button>
                 </CardContent>
                 <Divider />
                 <CardActions sx={{ justifyContent: 'flex-end' }}>

@@ -9,6 +9,9 @@ import { BotonEliminarDevolucion } from '../acciones/EliminarDevolucion';
 import {
     Chip
 } from '@mui/material';
+import MensajeDeCarga from '@/components/dashboard/componentes_generales/mensajedecarga/BackDropCircularProgress';
+import { GenerarPDF } from '@/components/dashboard/componentes_generales/acciones/GenerarPDF';
+import { ObtenerPDFDevolucion } from '@/services/comercial/devoluciones/ObtenerPDFDevolucionService';
 
 interface Devolucion {
     IdDevolucion: number;
@@ -31,7 +34,8 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
     const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
     const [mensajeAlerta, setMensajeAlerta] = React.useState('');
     const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
-
+    const [mensajeDeCarga, setMensajeDeCarga] = React.useState('');
+    const [mostrarMensajeDeCarga, setMostrarMensajeDeCarga] = React.useState(false);
 
 
     React.useEffect(() => {
@@ -134,15 +138,42 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
         },
     ];
 
+    // Función para mostrar/ocultar carga
+    const manejarCarga = (mostrar: boolean, mensaje: string = '') => {
+        setMostrarMensajeDeCarga(mostrar);
+        setMensajeDeCarga(mensaje);
+    };
+
     const actions: ActionDefinition<Devolucion>[] = [
         {
             render: (row: Devolucion) => (
                 <GenerarPDFDevolucion
                     IdDevolucion={row.IdDevolucion}
+                    onMostrarCarga={manejarCarga}
+                    onMostrarMensaje={mostrarMensaje}
                 />
             ),
             tooltip: 'Imprimir devolución'
         },
+        {
+            render: (row: Devolucion) => (
+                <GenerarPDF
+                    servicioPDF={(id) => ObtenerPDFDevolucion(row.IdDevolucion)}
+                    idRecurso={row.IdDevolucion}
+                    nombreArchivo={`devolución-No${row.IdDevolucion}.pdf`}
+                    mensajes={{
+                        generando: 'Generando PDF de devolución...',
+                        exito: 'PDF generado correctamente',
+                        error: 'Error al generar el PDF de la devolución'
+                    }}
+                onMostrarCarga={manejarCarga}
+                onMostrarMensaje={mostrarMensaje}
+                comportamiento="impresion"
+                // icono={<Printer size={20} weight="bold" />}
+                />
+            ),
+            tooltip: 'Imprimir'
+        }
         // {
         //     render: (row: Devolucion) => (
         //         <BotonEliminarDevolucion
@@ -171,12 +202,15 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
                 rowKey={(row) => row.IdDevolucion}
                 placeHolderBuscador='Buscar devoluciones...'
             />
-
             <MensajeAlerta
                 open={mostrarAlertas}
                 tipo={tipoAlerta}
                 mensaje={mensajeAlerta}
                 onClose={() => setMostrarAlertas(false)}
+            />
+            <MensajeDeCarga
+                Mensaje={mensajeDeCarga}
+                MostrarMensaje={mostrarMensajeDeCarga}
             />
         </>
     )
