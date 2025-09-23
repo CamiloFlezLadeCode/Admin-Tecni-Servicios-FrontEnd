@@ -62,6 +62,7 @@ interface Devolucion {
     IdEstado: number;
     PersonaQueRecibe: string;
     PersonaQueEntrega: string;
+    FechaDevolucion: Dayjs;
 }
 
 interface ItemDevolucion {
@@ -110,7 +111,8 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
         EstadoEquipo: -1,
         IdEstado: 8,
         PersonaQueRecibe: '',
-        PersonaQueEntrega: ''
+        PersonaQueEntrega: '',
+        FechaDevolucion: dayjs()
     });
 
     const [clientes, setClientes] = React.useState<Option[]>([]);
@@ -277,6 +279,11 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
         }
     };
 
+    // ✅ Manejador específico para el DateTimePicker
+    const handleFechaChange = (fecha: Dayjs | null) => {
+        setDatos(prev => ({ ...prev, FechaDevolucion: fecha || dayjs() }));
+    };
+
     // Función para mostrar mensaje
     const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error') => {
         setMensajeAlerta(mensaje);
@@ -426,6 +433,13 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
         );
     // ...
 
+    // Función para mostrar la fecha y la hora seleccionada
+    const MostrarFechaHora = async () => {
+                console.log(datos.FechaDevolucion.toString())
+    }
+    // ...
+
+
     // 7. RENDERIZADO JSX DEL COMPONENTE
     return (
         <>
@@ -457,43 +471,11 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                 <CardContent>
                     <Grid container spacing={2}>
                         <Grid md={4} xs={12}>
-                            {/* <DateTimePicker
+                            <FechayHora
                                 label="Fecha y hora"
-                                slotProps={{
-                                    textField: {
-                                        variant: 'outlined',
-                                        InputLabelProps: {
-                                            shrink: true, // ← Esto fuerza el label arriba
-                                        },
-                                        sx: {
-                                            width: '100%',
-                                            '& .MuiInputBase-root': {
-                                                height: '40px',
-                                                // backgroundColor: '#f5f5f5',
-                                            },
-                                            '& .MuiInputBase-input': {
-                                                padding: '8px 12px',
-                                            },
-                                            // Estilos para el label en posición "notched"
-                                            '& .MuiInputLabel-outlined': {
-                                                transform: 'translate(14px, -6px) scale(0.75)',
-                                                backgroundColor: 'white', // Fondo blanco para el efecto notched
-                                                padding: '0 4px',
-                                                fontWeight: 'bold',
-                                                '&.Mui-focused': {
-                                                    color: '#000000', // ← Negro puro cuando está enfocado
-                                                },
-                                            },
-                                            '& .MuiOutlinedInput-root': {
-                                                '& fieldset': {
-                                                    // borderRadius: '4px',
-                                                },
-                                            },
-                                        },
-                                    },
-                                }}
-                            /> */}
-                            <FechayHora />
+                                value={datos.FechaDevolucion}
+                                onChange={handleFechaChange}
+                            />
                         </Grid>
 
                         {/* Selector de Cliente */}
@@ -560,57 +542,6 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                 valorname="IdRemision"
                             />
                         </Grid>
-
-                        {/* <Grid md={4} xs={12}>
-                            <DateTimePicker
-                                label="Fecha y hora"
-                                notched
-                                slotProps={{
-                                    textField: {
-                                        variant: 'outlined',
-                                        sx: {
-                                            // width: '200px', // Ancho del TextField
-                                            width: '100%',
-                                            '& .MuiInputBase-root': {
-                                                height: '40px',
-                                                backgroundColor: '#f5f5f5',
-                                            },
-                                            '& .MuiInputBase-input': {
-                                                padding: '8px 12px',
-                                            },
-                                        },
-                                    },
-                                }}
-                            />
-                        </Grid> */}
-
-                        {/* <Grid md={4} xs={12} style={{ border: 'solid green 2px', padding: '0px' }}>
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DemoContainer components={['DatePicker', 'DatePicker', 'DateTimePicker']}>
-                                    <DatePicker label="Fecha Remisión" defaultValue={dayjs('2022-04-17')} />
-                                    <DatePicker
-                                        label="Controlled picker"
-                                        value={value}
-                                        onChange={(newValue) => setValue(newValue)}
-                                    />
-                                    <DateTimePicker
-                                        // sx={{
-                                        //     width: '200px', // Ancho del contenedor
-                                        // }}
-                                        slotProps={{
-                                            textField: {
-                                                sx: {
-                                                    '& .MuiInputBase-root': { // Estilos específicos para el input
-                                                        height: '40px',
-                                                        fontSize: '14px',
-                                                    },
-                                                },
-                                            },
-                                        }}
-                                    />
-                                </DemoContainer>
-                            </LocalizationProvider>
-                        </Grid> */}
                     </Grid>
 
                     {/* Lista de Items (solo si hay remisión seleccionada) */}
@@ -714,6 +645,9 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                             </Grid>
                         </Box>
                     )}
+                    <Button variant='contained' onClick={MostrarFechaHora}>
+                        Mostrar Fecha con hora
+                    </Button>
                 </CardContent>
                 <Divider />
                 <CardActions sx={{ justifyContent: 'flex-end' }}>
