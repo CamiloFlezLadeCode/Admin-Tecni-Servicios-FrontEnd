@@ -99,10 +99,10 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
     };
 
     const columns = [
-        {
-            key: 'IdDevolucion',
-            header: 'Id'
-        },
+        // {
+        //     key: 'IdDevolucion',
+        //     header: 'Id'
+        // },
         {
             key: 'NoDevolucion',
             header: 'No Devolución'

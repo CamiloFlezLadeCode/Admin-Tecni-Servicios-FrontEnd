@@ -3,6 +3,7 @@ export const paths = {
   auth: { signIn: '/auth/sign-in', signUp: '/auth/sign-up', resetPassword: '/auth/reset-password' },
   dashboard: {
     overview: '/dashboard',
+    home: '/dashboard',
     account: '/dashboard/account',
     customers: '/dashboard/customers',
     integrations: '/dashboard/integrations',
@@ -99,6 +100,10 @@ export const paths = {
 
     // Configuraciones
     configuraciones: '/dashboard/configuraciones',
+    // ...
+
+    // Acerca
+    acerca: '/dashboard/acerca',
     // ...
   },
   errors: { notFound: '/errors/not-found' },

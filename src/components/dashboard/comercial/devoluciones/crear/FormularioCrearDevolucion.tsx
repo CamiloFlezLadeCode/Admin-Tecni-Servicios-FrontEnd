@@ -435,19 +435,6 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
         );
     // ...
 
-    // Función para mostrar la fecha y la hora seleccionada
-    const MostrarFechaHora = async () => {
-        // console.log(datos.FechaDevolucion)
-        if (datos.FechaDevolucion) {
-            // Formatear usando métodos de Dayjs
-            console.log(datos.FechaDevolucion.format('YYYY-MM-DD')); // 2025-01-01
-            console.log(datos.FechaDevolucion.format('DD/MM/YYYY HH:mm:ss')); // 01/01/2025 21:00:23
-            console.log(datos.FechaDevolucion.format('MMMM D, YYYY')); // January 1, 2025
-            console.log(datos.FechaDevolucion.format('YYYY-MM-DD HH:mm:ss'))
-        }
-    }
-    // ...
-
 
     // 7. RENDERIZADO JSX DEL COMPONENTE
     return (
@@ -479,7 +466,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                 <Divider />
                 <CardContent>
                     <Grid container spacing={2}>
-                        <Grid md={4} xs={12}>
+                        <Grid md={3} xs={12}>
                             <FechayHora
                                 label="Fecha y hora"
                                 value={datos.FechaDevolucion}
@@ -488,7 +475,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                         </Grid>
 
                         {/* Selector de Cliente */}
-                        <Grid md={4} xs={12}>
+                        <Grid md={3} xs={12}>
                             <InputSelect
                                 label="Cliente"
                                 value={datos.Cliente}
@@ -500,7 +487,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
 
                         {/* Selector de Proyecto (solo si hay cliente seleccionado) */}
                         {/* {datos.Cliente && (
-                            <Grid md={4} xs={12}>
+                            <Grid md={3} xs={12}>
                                 <InputSelect
                                     label="Proyecto"
                                     value={Number(datos.IdProyecto)}
@@ -510,7 +497,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                 />
                             </Grid>
                         )} */}
-                        <Grid md={4} xs={12}>
+                        <Grid md={3} xs={12}>
                             <InputSelect
                                 label="Proyecto"
                                 value={Number(datos.IdProyecto)}
@@ -522,7 +509,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
 
                         {/* Selector de Remisión (solo si hay proyecto seleccionado) */}
                         {/* {datos.IdProyecto && (
-                            <Grid md={4} xs={12}>
+                            <Grid md={3} xs={12}>
                                 <InputSelect
                                     label="Remisión No"
                                     value={Number(datos.IdRemision)}
@@ -532,7 +519,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                 />
                             </Grid>
                         )} */}
-                        <Grid md={4} xs={12}>
+                        <Grid md={3} xs={12}>
                             <InputSelect
                                 label="Remisión No"
                                 value={Number(datos.IdRemision)}
@@ -542,7 +529,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                             />
                         </Grid>
 
-                        <Grid md={4} xs={12}>
+                        <Grid md={3} xs={12}>
                             <InputSelect
                                 label="Subarrendatario"
                                 value={Number(datos.IdRemision)}
@@ -629,7 +616,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                 />
                             </Grid>
                             <Grid container spacing={2} mt={.5}>
-                                <Grid md={4} xs={12} >
+                                <Grid md={3} xs={12} >
                                     <InputSelect
                                         label="Recibe"
                                         value={datos.PersonaQueRecibe} // <-- Usar el estado del ítem individua)l
@@ -639,7 +626,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                         bloqueado={todosItemsSinPendiente}
                                     />
                                 </Grid>
-                                <Grid md={4} xs={12} >
+                                <Grid md={3} xs={12} >
                                     <Input
                                         label='Entrega'
                                         value={datos.PersonaQueEntrega}

@@ -12,7 +12,10 @@ import * as React from 'react';
 // import { EditarRemision } from '@/components/dashboard/comercial/remisiones/acciones-remision/EditarRemision';
 import MensajeDeCarga from '@/components/dashboard/componentes_generales/mensajedecarga/BackDropCircularProgress';
 import { GenerarPDF } from '@/components/dashboard/componentes_generales/acciones/GenerarPDF';
+import { EliminarRegistro } from '@/components/dashboard/componentes_generales/acciones/EliminarRegistro';
+// Servicios
 import { VisualizarPDFRemision } from '@/services/comercial/remisiones/ObtenerPDFRemisionService';
+import { EliminarRemision } from '@/services/comercial/remisiones/EliminarRemisionService';
 
 
 interface Remision {
@@ -84,7 +87,7 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
         // },
         {
             key: 'NoRemision',
-            header: 'No. Remisión'
+            header: 'No Remisión'
         },
         {
             key: 'Cliente',
@@ -129,21 +132,11 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
     };
 
     const actions: ActionDefinition<Remision>[] = [
-        // {
-        //     icon: <PencilSimple size={20} />,
-        //     tooltip: 'Editar remisión',
-        //     onClick: (row: Remision) => console.log('Editar:', row.IdRemision),
-        //     color: 'primary'
-        // },
         {
-            render: (row: Remision) => (
-                <GenerarPDFRemision
-                    IdRemision={row.IdRemision}
-                    onMostrarCarga={manejarCarga}
-                    onMostrarMensaje={mostrarMensaje}
-                />
-            ),
-            tooltip: 'Imprimir remisión'
+            icon: <PencilSimple size={20} />,
+            tooltip: 'Editar remisión',
+            onClick: (row: Remision) => console.log('Editar:', row.IdRemision),
+            color: 'primary'
         },
         {
             render: (row: Remision) => (
@@ -166,16 +159,35 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
         },
         {
             render: (row: Remision) => (
-                <BotonEliminarRemision
-                    IdRemision={row.IdRemision}
-                    NoRemision={row.NoRemision}
+                <EliminarRegistro
+                    servicioEliminarRegistro={(id) => EliminarRemision(row.IdRemision)}
+                    idRecurso={row.IdRemision}
                     sendMessage={sendMessage}
                     mostrarMensaje={mostrarMensaje}
+                    mensajes={{
+                        ariaLabel: `eliminar-remision-${row.IdRemision}`,
+                        socket: 'remision-eliminada',
+                        info: `¿Realmente quieres eliminar la remisión ${row.IdRemision}?`,
+                        exito: 'Remisión eliminada correctamente',
+                        error: 'Error al eliminar remisión'
+                    }}
                 />
             ),
-            tooltip: 'Eliminar remisión',
-            color: 'error'
+            tooltip: 'Eliminar remisión'
         }
+        // {
+        //     render: (row: Remision) => (
+        //         <BotonEliminarRemision
+        //             IdRemision={row.IdRemision}
+        //             NoRemision={row.NoRemision}
+        //             sendMessage={sendMessage}
+        //             mostrarMensaje={mostrarMensaje}
+        //         />
+        //     ),
+        //     tooltip: 'Eliminar remisión',
+        //     color: 'error'
+        // }
+
     ];
 
     const handleRefresh = async () => {

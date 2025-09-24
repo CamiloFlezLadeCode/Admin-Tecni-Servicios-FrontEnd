@@ -2,6 +2,7 @@ import type { NavItemConfig } from '@/types/nav';
 import { paths } from '@/paths';
 
 export const navItems = [
+  { key: 'home', title: 'Inicio', href: paths.dashboard.home, icon: 'home' },
   // { key: 'overview', title: 'Panel', href: paths.dashboard.overview, icon: 'chart-pie' },
   // { key: 'customers', title: 'Clientes', href: paths.dashboard.customers, icon: 'users' },
 
@@ -220,5 +221,6 @@ export const navItems = [
   // },
   { key: 'account', title: 'Cuenta', href: paths.dashboard.account, icon: 'user' },
   { key: 'settings', title: 'Ajustes', href: paths.dashboard.settings, icon: 'gear-six' },
-  { key: 'configuraciones', title: 'Configuraciones', href: paths.dashboard.configuraciones, icon: 'icono-configuraciones-alto-nivel', roles: ['Administrador'] }
+  { key: 'configuraciones', title: 'Configuraciones', href: paths.dashboard.configuraciones, icon: 'icono-configuraciones-alto-nivel', roles: ['Administrador'] },
+  { key: 'about', title: 'Acerca', href: paths.dashboard.acerca, icon: 'about' }
 ] satisfies NavItemConfig[];

@@ -43,6 +43,8 @@ import {
   ClipboardText, //Hace referencia a ordenes de servicio
   Crown, //Hace referencia a alto rango, máximo nivel
   Receipt, //Hace referencia al estado de cuenta de los clientes
+  HouseLine, //Hace referencia al menú inicial
+  Info, //Hace referencia a acerca de ó aobut
 } from '@phosphor-icons/react/dist/ssr';
 
 export const navIcons = {
@@ -72,6 +74,8 @@ export const navIcons = {
   'icono-ordenes-de-servicio': ClipboardText,
   'icono-configuraciones-alto-nivel': Crown,
   'icono-estado-de-cuenta-cliente': Receipt,
+  home: HouseLine,
   user: UserIcon,
   users: UsersIcon,
+  about: Info
 } as Record<string, Icon>;
