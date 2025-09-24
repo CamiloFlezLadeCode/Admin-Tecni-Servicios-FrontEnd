@@ -34,7 +34,6 @@ import ModalVerItemsRemision from './ModalVerItemsRemision';
 import Modal from '@mui/material/Modal';
 import { styled } from '@mui/material/styles';
 import { ListarEquipos } from '@/services/comercial/remisiones/ListarEquiposService';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import FechayHora from '@/components/dashboard/componentes_generales/formulario/DateTimePicker';
 import dayjs, { Dayjs } from 'dayjs';
 
@@ -636,8 +635,8 @@ export function FormularioCrearRemision(): React.JSX.Element {
             IdBodega: null,
             DocumentoBodeguero: datos.Bodeguero,
             DocumentoDespachador: datos.Despachador,
-            DocumentoTransportador: datos.Transportador,
-            IdVehiculo: datos.Vehiculo === 'SinSeleccionar' ? null : datos.Vehiculo,
+            DocumentoTransportador: datos.Transportador === 'SinSeleccionar' ? null : datos.Transportador,
+            IdVehiculo: datos.Vehiculo === 'SinSeleccionar' ? '' : datos.Vehiculo,
             PlacaVehiculoRecibe: datos.Placa,
             NombrePersonaRecibe: datos.Recibe,
             ObservacionesEmpresa: datos.ObservacionesEmpresa,

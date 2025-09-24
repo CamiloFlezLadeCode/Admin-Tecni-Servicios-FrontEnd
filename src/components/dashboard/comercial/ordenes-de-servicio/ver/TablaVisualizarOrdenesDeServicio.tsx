@@ -124,16 +124,6 @@ export function TablaVisualizarOrdenesDeServicio() {
 
     const actions: ActionDefinition<OrdenDeServicio>[] = [
         {
-            render: (row) => (
-                <VerGenerarPDFOrdenDeServicio
-                    IdOrdenDeServicio={row.IdOrdenDeServicio}
-                    onMostrarCarga={manejarCarga} // Pasar función callback
-                    onMostrarMensaje={mostrarMensaje} // Pasar función callback
-                />
-            ),
-            tooltip: 'Imprimir orden de servicio'
-        },
-        {
             render: (row: OrdenDeServicio) => (
                 <GenerarPDF
                     servicioPDF={(id) => ObtenerPDFOrdenDeServicio(row.IdOrdenDeServicio)}

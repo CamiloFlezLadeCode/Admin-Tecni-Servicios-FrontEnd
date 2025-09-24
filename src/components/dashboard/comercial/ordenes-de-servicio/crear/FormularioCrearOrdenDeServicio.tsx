@@ -26,6 +26,8 @@ import { ListarProyectos } from '@/services/generales/ListarProyectos';
 import { ListarProfesionalesPertenecientes } from '@/services/configuraciones/ListarProfesionalesPertenecientesService';
 import { listarmecanicos } from '@/services/generales/ListarMecanicosService';
 import { CrearOrdenDeServicio } from '@/services/comercial/ordenes_de_servicio/CrearOrdenDeServicioService';
+import FechayHora from '@/components/dashboard/componentes_generales/formulario/DateTimePicker';
+import dayjs, { Dayjs } from 'dayjs';
 
 // 1. Interfaces ó Types
 interface DatosOrdenDeServicio {
@@ -40,6 +42,7 @@ interface DatosOrdenDeServicio {
     PersonaQueRecibe: string;
     UsuarioCreacion: string | null;
     IdEstado: number | null;
+    FechaOrdenDeServicio: Dayjs;
 }
 
 type GarantiaValue = 0 | 1 | null;
@@ -69,6 +72,7 @@ export function FormularioCrearOrdenDeServicio(): React.JSX.Element {
         PersonaQueRecibe: '',
         UsuarioCreacion: documentoUsuarioActivo,
         IdEstado: 8,
+        FechaOrdenDeServicio: dayjs(),
     });
     const [siguienteNoOrdenDeServicio, setSiguienteNoOrdenDeServicio] = React.useState('');
     const [clientes, setClientes] = React.useState<{ value: number | string; label: string }[]>([]);
@@ -241,7 +245,8 @@ export function FormularioCrearOrdenDeServicio(): React.JSX.Element {
                     Detalles: detallesValidos.map(equipo => ({
                         Cantidad: Number(equipo.cantidad),
                         DescripcionEquipo: equipo.descripcion
-                    }))
+                    })),
+                    FechaOrdenDeServicio: datos.FechaOrdenDeServicio
                 };
 
                 // 4. Enviar a la API
@@ -264,6 +269,7 @@ export function FormularioCrearOrdenDeServicio(): React.JSX.Element {
                     PersonaQueRecibe: '',
                     UsuarioCreacion: documentoUsuarioActivo,
                     IdEstado: 8,
+                    FechaOrdenDeServicio: dayjs()
                 });
 
             } catch (error) {
@@ -272,6 +278,12 @@ export function FormularioCrearOrdenDeServicio(): React.JSX.Element {
             }
         }
     }
+    // ...
+
+    // ✅ Manejador específico para el DateTimePicker
+    const handleFechaChange = (fecha: Dayjs | null) => {
+        setDatos(prev => ({ ...prev, FechaRemision: fecha || dayjs() }));
+    };
     // ...
 
     // 7. Renderizado JSX
@@ -296,6 +308,13 @@ export function FormularioCrearOrdenDeServicio(): React.JSX.Element {
             <Divider />
             <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                 <Grid container spacing={1}>
+                    <Grid md={3} xs={12} mt={0.5}>
+                        <FechayHora
+                            label="Fecha y hora"
+                            value={datos.FechaOrdenDeServicio}
+                            onChange={handleFechaChange}
+                        />
+                    </Grid>
                     <Grid md={3} xs={12} mt={0.5}>
                         <InputSelect
                             label='Empresa/Cliente'

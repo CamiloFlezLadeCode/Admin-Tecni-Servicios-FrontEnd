@@ -23,7 +23,7 @@ import {
 import Grid from '@mui/material/Unstable_Grid2';
 import * as React from 'react';
 import InputSelect from '../../../componentes_generales/formulario/Select';
-// Imports para mostrar info de la bd
+// Servicios
 import { ConsultarSiguienteNoDevolucion } from '@/services/comercial/devoluciones/ConsultarSiguienteNoDevolucionService';
 import { CrearDevolucion } from '@/services/comercial/devoluciones/CrearDevolucionService';
 import { MostrarItemsRemision } from '@/services/comercial/devoluciones/MostrarItemsRemisionService';
@@ -32,6 +32,7 @@ import { ListarClientes } from '@/services/generales/ListarClientesService';
 import { ListarEstados } from '@/services/generales/ListarEstadosService';
 import { ListarProyectos } from '@/services/generales/ListarProyectos';
 import { ListarProfesionalesPertenecientes } from '@/services/configuraciones/ListarProfesionalesPertenecientesService';
+import { ConsultarSubarrendatariosConRemisionesAsignadasClienteProyecto } from '@/services/comercial/devoluciones/VerSubarrendatariosConRemisionesAsignadasClienteProyectoService';
 import dayjs, { Dayjs } from 'dayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -63,6 +64,7 @@ interface Devolucion {
     PersonaQueRecibe: string;
     PersonaQueEntrega: string;
     FechaDevolucion: Dayjs;
+    Subarrendatario: string;
 }
 
 interface ItemDevolucion {
@@ -113,20 +115,20 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
         IdEstado: 8,
         PersonaQueRecibe: '',
         PersonaQueEntrega: '',
-        FechaDevolucion: dayjs()
+        FechaDevolucion: dayjs(),
+        Subarrendatario: ''
     });
 
     const [clientes, setClientes] = React.useState<Option[]>([]);
     const [proyectos, setProyectos] = React.useState<Option[]>([]);
     const [remisiones, setRemisiones] = React.useState<Option[]>([]);
     const [itemsRemision, setItemsRemision] = React.useState<ItemDevolucion[]>([]);
+    const [subarrendatarios, setSubarrendatarios] = React.useState<Option[]>([]);
 
     //Para el manejo de las notificiones/alertas
     const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
     const [mensajeAlerta, setMensajeAlerta] = React.useState('');
     const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
-
-    const [value, setValue] = React.useState<Dayjs | null>(dayjs('2022-04-17'));
 
     // 5. USEEFFECT PARA LA CARGA INICIAL Y SOCKETS
     // Cargar remisiones pendientes cuando se selecciona cliente y proyecto
@@ -147,6 +149,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
     React.useEffect(() => {
         if (datos.Cliente && datos.IdProyecto) {
             cargarRemisionesPendientes(datos.Cliente, datos.IdProyecto);
+            CargarSubarrendatariosConRemisionesAsignadasClienteProyecto();
         }
     }, [datos.Cliente, datos.IdProyecto]);
 
@@ -176,6 +179,16 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
             console.error('Error al cargar remisiones:', error);
         }
     };
+
+    // Cargar subarrendatarios que tienen remisiones asignadas para el cliente y proyecto
+    const CargarSubarrendatariosConRemisionesAsignadasClienteProyecto = async () => {
+        try {
+            const SubarrendatariosConRemisionesAsignadas = await ConsultarSubarrendatariosConRemisionesAsignadasClienteProyecto({ DocumentoCliente: datos.Cliente, IdProyecto: datos.IdProyecto });
+            setSubarrendatarios(SubarrendatariosConRemisionesAsignadas);
+        } catch (error) {
+            console.error(`Error al consultar subarrendatarios con remisiones asignadas para cliente/proyecto: ${error}`);
+        }
+    }
 
     // Cargar siguiente no devolución
     const CargarSiguienteNoDevolucion = async () => {
@@ -271,12 +284,17 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
             setProyectos([]);
             setRemisiones([]);
             setItemsRemision([]);
+            setSubarrendatarios([]);
         }
 
         // Cargar items si se selecciona una remisión
         if (name === 'IdRemision') {
             cargarItemsRemision(value);
             CargarProfesionales();
+        }
+
+        if (name === 'Subarrendatario') {
+
         }
     };
 
@@ -521,17 +539,17 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                         )} */}
                         <Grid md={3} xs={12}>
                             <InputSelect
-                                label="Remisión No"
-                                value={Number(datos.IdRemision)}
-                                options={remisiones}
+                                label="Subarrendatario"
+                                value={Number(datos.Subarrendatario)}
+                                options={subarrendatarios}
                                 onChange={handleChange}
-                                valorname="IdRemision"
+                                valorname="Subarrendatario"
                             />
                         </Grid>
 
                         <Grid md={3} xs={12}>
                             <InputSelect
-                                label="Subarrendatario"
+                                label="Remisión No"
                                 value={Number(datos.IdRemision)}
                                 options={remisiones}
                                 onChange={handleChange}
