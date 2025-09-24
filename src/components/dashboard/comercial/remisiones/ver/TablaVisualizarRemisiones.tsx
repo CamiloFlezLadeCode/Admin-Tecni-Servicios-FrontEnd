@@ -143,7 +143,7 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
                 <GenerarPDF
                     servicioPDF={(id) => VisualizarPDFRemision(row.IdRemision)}
                     idRecurso={row.IdRemision}
-                    nombreArchivo={`devolución-No${row.IdRemision}.pdf`}
+                    nombreArchivo={`remisión-No${row.IdRemision}.pdf`}
                     mensajes={{
                         generando: 'Generando pdf de remisión. Por favor espere',
                         exito: 'PDF generado correctamente',
