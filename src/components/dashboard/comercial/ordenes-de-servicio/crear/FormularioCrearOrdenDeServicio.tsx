@@ -246,7 +246,7 @@ export function FormularioCrearOrdenDeServicio(): React.JSX.Element {
                         Cantidad: Number(equipo.cantidad),
                         DescripcionEquipo: equipo.descripcion
                     })),
-                    FechaOrdenDeServicio: datos.FechaOrdenDeServicio
+                    FechaOrdenDeServicio: datos.FechaOrdenDeServicio.format('YYYY-MM-DD HH:mm:ss')
                 };
 
                 // 4. Enviar a la API
@@ -282,7 +282,7 @@ export function FormularioCrearOrdenDeServicio(): React.JSX.Element {
 
     // ✅ Manejador específico para el DateTimePicker
     const handleFechaChange = (fecha: Dayjs | null) => {
-        setDatos(prev => ({ ...prev, FechaRemision: fecha || dayjs() }));
+        setDatos(prev => ({ ...prev, FechaOrdenDeServicio: fecha || dayjs() }));
     };
     // ...
 
