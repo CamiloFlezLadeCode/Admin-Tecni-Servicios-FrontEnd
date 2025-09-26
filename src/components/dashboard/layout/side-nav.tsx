@@ -69,10 +69,10 @@ export function SideNav(): React.JSX.Element {
         '&::-webkit-scrollbar': { display: 'none' },
       }}
     >
-      <Stack spacing={2} sx={{ p: 3 }}>
+      <Stack spacing={2} sx={{ p: 3 }} style={{alignItems: 'center'}}>
         <Box component={RouterLink} href={paths.home} sx={{ display: 'inline-flex' }}>
           {/* <Logo color="light" height={32} width={122} /> */}
-          <Logo color="light" height={112} width={222} />
+          <Logo color="light" height={112} width={222}/>
         </Box>
         {/* <Box
           sx={{

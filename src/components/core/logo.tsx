@@ -28,7 +28,7 @@ export function Logo({ color = 'dark', emblem, height = HEIGHT, width = WIDTH }:
     url = color === 'light' ? '/assets/LogoCompany.webp' : '/assets/LogoCompany.webp';
   }
 
-  return <Box alt="logo" component="img" height={height} src={url} width={width} />;
+  return <Box alt="logo" component="img" height={height} src={url} width={width} style={{borderRadius: '4%'}}/>;
 }
 
 export interface DynamicLogoProps {
