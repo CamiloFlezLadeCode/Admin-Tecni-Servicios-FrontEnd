@@ -1,19 +1,19 @@
 'use client';
 
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
-import { useSocketIO } from '@/hooks/use-WebSocket';
 import Input from '@/components/dashboard/componentes_generales/formulario/Input';
 import InputSelectConEstado from '@/components/dashboard/componentes_generales/formulario/SelectConEstado';
 import FormularioValidator from '@/components/dashboard/componentes_generales/formulario/ValidarCampos';
 import { UserContext } from '@/contexts/user-context';
+import { useSocketIO } from '@/hooks/use-WebSocket';
 import { ConsultarCantidadDisponibleEquipo } from '@/services/comercial/remisiones/ConsultarCantidadDisponibleEquipoService';
 import { ConsultarSiguienteNoRemision } from '@/services/comercial/remisiones/ConsultarSiguienteNoRemisionService';
 import { CrearRemision } from '@/services/comercial/remisiones/CrearRemisionService';
+import { VerDisponibilidadDeEquipos } from '@/services/comercial/remisiones/VerDisponibilidadDeEquiposService';
 import { ListarBodegueros } from '@/services/generales/ListarBodeguerosService';
 import { ListarCategorias } from '@/services/generales/ListarCategoriasServices';
 import { ListarClientes } from '@/services/generales/ListarClientesService';
 import { ListarDespachadores } from '@/services/generales/ListarDespachadores';
-import { VerDisponibilidadDeEquipos } from '@/services/comercial/remisiones/VerDisponibilidadDeEquiposService';
 import { ListarProyectos } from '@/services/generales/ListarProyectos';
 import { ListarSubarrendatarios } from '@/services/generales/ListarSubarrendatariosService';
 import { ListarTransportadores } from '@/services/generales/ListarTranspotadoresService';
@@ -31,10 +31,12 @@ import * as React from 'react';
 import InputSelect from '../../../componentes_generales/formulario/Select';
 import ModalVerItemsRemision from './ModalVerItemsRemision';
 // Importar componentes de Modal de Material-UI
+import FechayHora from '@/components/dashboard/componentes_generales/formulario/DateTimePicker';
+import { EmpresaAnfitriona, OpcionPorDefecto } from '@/lib/constants/option-default';
+import { OrdenarSubarrendatarios } from '@/lib/order/orders';
+import { ListarEquipos } from '@/services/comercial/remisiones/ListarEquiposService';
 import Modal from '@mui/material/Modal';
 import { styled } from '@mui/material/styles';
-import { ListarEquipos } from '@/services/comercial/remisiones/ListarEquiposService';
-import FechayHora from '@/components/dashboard/componentes_generales/formulario/DateTimePicker';
 import dayjs, { Dayjs } from 'dayjs';
 
 
@@ -116,7 +118,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
     const [proyectos, setProyectos] = React.useState<{ value: string | number; label: string }[]>([]);
     const [equipos, setEquipos] = React.useState<Equipo[]>([]);
 
-    const OpcionPorDefecto = { value: 'SinSeleccionar', label: 'Sin seleccionar' };
+    // const OpcionPorDefecto = { value: 'SinSeleccionar', label: 'Sin seleccionar' };
 
     // Estados para datos del formulario
     const [datos, setDatos] = React.useState<DatosFormulario>({
@@ -132,10 +134,10 @@ export function FormularioCrearRemision(): React.JSX.Element {
         Subarrendatario: '0',
         Bodega: '0',
         EquipoDisponible: '',
-        Bodeguero: 'SinSeleccionar',
-        Despachador: 'SinSeleccionar',
-        Transportador: 'SinSeleccionar',
-        Vehiculo: 'SinSeleccionar',
+        Bodeguero: OpcionPorDefecto.value,
+        Despachador: OpcionPorDefecto.value,
+        Transportador: OpcionPorDefecto.value,
+        Vehiculo: OpcionPorDefecto.value,
         Placa: '',
         Recibe: '',
         ObservacionesEmpresa: '',
@@ -167,7 +169,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
 
     // Función para verificar si el subarrendatario es TECNISERVICIOS
     const esTecniservicios = () => {
-        return datos.Subarrendatario === 'ABC';
+        return datos.Subarrendatario === EmpresaAnfitriona.value;
     };
 
     // Cargar datos iniciales
@@ -199,9 +201,8 @@ export function FormularioCrearRemision(): React.JSX.Element {
                 //Categorias
                 setCategoria(categoriasRes);
                 //Subarrendatarios
-                let Subarrendatarios = subarrRes;
-                Subarrendatarios.unshift({ value: 'ABC', label: 'TECNISERVICIOS J.F S.A.S' })
-                setSubarrendatarios(Subarrendatarios);
+                // setSubarrendatarios(await OrdenarSubarrendatarios(subarrRes));
+                setSubarrendatarios(await OrdenarSubarrendatarios({ AllSubarrendatarios: subarrRes }));
                 //Bodegueros
                 bodeguerosRes.unshift(OpcionPorDefecto);
                 setBodegueros(bodeguerosRes);
@@ -253,7 +254,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
             try {
                 let equipos = [];
 
-                if (datos.Subarrendatario == 'ABC') {
+                if (datos.Subarrendatario == EmpresaAnfitriona.value) {
                     equipos = await VerDisponibilidadDeEquipos({
                         IdCategoria: datos.IdCategoria,
                         DocumentoSubarrendatario: datos.Subarrendatario

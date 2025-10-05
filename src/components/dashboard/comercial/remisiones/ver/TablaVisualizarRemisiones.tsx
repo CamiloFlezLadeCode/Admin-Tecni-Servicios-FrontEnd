@@ -1,8 +1,6 @@
 'use client';
 
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
-import { BotonEliminarRemision } from '@/components/dashboard/comercial/remisiones/acciones-remision/EliminarRemision';
-import { GenerarPDFRemision } from '@/components/dashboard/comercial/remisiones/acciones-remision/GenerarPDFRemision';
 import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useSocketIO } from '@/hooks/use-WebSocket';
 import { ConsultarRemisiones } from '@/services/comercial/remisiones/ConsultarRemisionesService';
@@ -10,12 +8,12 @@ import { Chip } from '@mui/material';
 import { PencilSimple } from '@phosphor-icons/react/dist/ssr';
 import * as React from 'react';
 // import { EditarRemision } from '@/components/dashboard/comercial/remisiones/acciones-remision/EditarRemision';
-import MensajeDeCarga from '@/components/dashboard/componentes_generales/mensajedecarga/BackDropCircularProgress';
-import { GenerarPDF } from '@/components/dashboard/componentes_generales/acciones/GenerarPDF';
 import { EliminarRegistro } from '@/components/dashboard/componentes_generales/acciones/EliminarRegistro';
+import { GenerarPDF } from '@/components/dashboard/componentes_generales/acciones/GenerarPDF';
+import MensajeDeCarga from '@/components/dashboard/componentes_generales/mensajedecarga/BackDropCircularProgress';
 // Servicios
-import { VisualizarPDFRemision } from '@/services/comercial/remisiones/ObtenerPDFRemisionService';
 import { EliminarRemision } from '@/services/comercial/remisiones/EliminarRemisionService';
+import { VisualizarPDFRemision } from '@/services/comercial/remisiones/ObtenerPDFRemisionService';
 
 
 interface Remision {

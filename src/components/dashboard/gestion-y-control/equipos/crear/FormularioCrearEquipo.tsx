@@ -23,6 +23,7 @@ import type { SelectChangeEvent } from '@mui/material/Select';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import Input from '@/components/dashboard/componentes_generales/formulario/Input';
 import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
+import { EmpresaAnfitriona } from '@/lib/constants/option-default';
 
 interface OpcionSelect {
     value: string | number;
@@ -139,7 +140,7 @@ export function FormularioCrearEquipo(): React.JSX.Element {
         UsuarioCreacion: documentoUsuarioActivo,
         EstadoEquipo: '0',
         Cantidad: null,
-        DocumentoSubarrendatario: 'ABC',
+        DocumentoSubarrendatario: EmpresaAnfitriona.value,
         // TipoDeEquipo: 'ABC',
         TipoDeEquipo: '1',
         UnidadDeMedida: '0',

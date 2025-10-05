@@ -31,8 +31,6 @@ export const Login = async (datos: { NombreUsuario: string; ClaveUsuario: string
 
     // 2. Cifrar credenciales
     const encryptedData = await encryptCredentials(datos, sessionKey);
-    console.log(datos);
-    console.log(encryptedData);
 
     // 3. Enviar datos cifrados
     const response = await axiosInstance.post(
@@ -43,6 +41,11 @@ export const Login = async (datos: { NombreUsuario: string; ClaveUsuario: string
       },
       {
         withCredentials: true,
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
       },
 
     );

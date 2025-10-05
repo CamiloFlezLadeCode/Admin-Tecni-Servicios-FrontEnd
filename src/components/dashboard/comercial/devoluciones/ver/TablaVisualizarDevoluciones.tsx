@@ -1,19 +1,17 @@
 'use client';
+import { EliminarRegistro } from '@/components/dashboard/componentes_generales/acciones/EliminarRegistro';
+import { GenerarPDF } from '@/components/dashboard/componentes_generales/acciones/GenerarPDF';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
-import * as React from 'react';
-import { useSocketIO } from '@/hooks/use-WebSocket';
+import MensajeDeCarga from '@/components/dashboard/componentes_generales/mensajedecarga/BackDropCircularProgress';
 import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
+import { useSocketIO } from '@/hooks/use-WebSocket';
+import { EliminarDevolucion } from '@/services/comercial/devoluciones/EliminarDevolucionService';
+import { ObtenerPDFDevolucion } from '@/services/comercial/devoluciones/ObtenerPDFDevolucionService';
 import { VerTodasLasDevoluciones } from '@/services/comercial/devoluciones/VerTodasLasDevolucionesService';
-import { GenerarPDFDevolucion } from '../acciones/GenerarPDFDevolucion';
-import { BotonEliminarDevolucion } from '../acciones/EliminarDevolucion';
 import {
     Chip
 } from '@mui/material';
-import MensajeDeCarga from '@/components/dashboard/componentes_generales/mensajedecarga/BackDropCircularProgress';
-import { GenerarPDF } from '@/components/dashboard/componentes_generales/acciones/GenerarPDF';
-import { ObtenerPDFDevolucion } from '@/services/comercial/devoluciones/ObtenerPDFDevolucionService';
-import { EliminarRegistro } from '@/components/dashboard/componentes_generales/acciones/EliminarRegistro';
-import { EliminarDevolucion } from '@/services/comercial/devoluciones/EliminarDevolucionService';
+import * as React from 'react';
 
 
 interface Devolucion {
@@ -48,6 +46,7 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
                 setError(null);
                 const response = await VerTodasLasDevoluciones();
                 setData(response);
+                console.log(response)
             } catch (err) {
                 setError(`Error al cargar las devoluciones: ${err}`);
             } finally {
@@ -148,16 +147,6 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
     };
 
     const actions: ActionDefinition<Devolucion>[] = [
-        // {
-        //     render: (row: Devolucion) => (
-        //         <GenerarPDFDevolucion
-        //             IdDevolucion={row.IdDevolucion}
-        //             onMostrarCarga={manejarCarga}
-        //             onMostrarMensaje={mostrarMensaje}
-        //         />
-        //     ),
-        //     tooltip: 'Imprimir devolución'
-        // },
         {
             render: (row: Devolucion) => (
                 <GenerarPDF
@@ -195,17 +184,6 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
             ),
             tooltip: 'Eliminar devolución'
         }
-        // {
-        //     render: (row: Devolucion) => (
-        //         <BotonEliminarDevolucion
-        //             IdDevolucion={row.IdDevolucion}
-        //             NoDevolucion={row.NoDevolucion}
-        //             sendMessage={sendMessage}
-        //             mostrarMensaje={mostrarMensaje}
-        //         />
-        //     ),
-        //     tooltip: 'Eliminar devolución'
-        // }
     ];
 
     return (
