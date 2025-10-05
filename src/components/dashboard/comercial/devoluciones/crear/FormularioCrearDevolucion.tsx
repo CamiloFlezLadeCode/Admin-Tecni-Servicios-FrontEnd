@@ -1213,7 +1213,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                         {itemsRemision.map((item) => (
                                             <TableRow
                                                 key={`${item.IdEquipo}-${item.IdRemision}`}
-                                                sx={{ padding: { xs: '6px 8px', md: '8px 12px' } }}
+                                                sx={{ padding: { xs: '6px 8px', md: '8px 12px' }, display: item.CantidadPendiente === '0' ? 'none' : 'table-row' }}
                                             >
                                                 <TableCell>{item.Descripcion}</TableCell>
                                                 <TableCell>{item.NombreEquipo}</TableCell>
