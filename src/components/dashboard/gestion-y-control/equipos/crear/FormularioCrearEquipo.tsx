@@ -4,8 +4,8 @@ import Input from '@/components/dashboard/componentes_generales/formulario/Input
 import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
 import { UserContext } from '@/contexts/user-context';
 import { useSocketIO } from '@/hooks/use-WebSocket';
-import { EmpresaAnfitriona, OpcionPorDefecto } from '@/lib/constants/option-default';
-import { ListarBodegasPorSubarrendatario } from '@/services/generales/ListarBodegasPorSubarrendatarioService';
+import { EmpresaAnfitriona, OpcionPorDefecto, OpcionPorDefectoNumber } from '@/lib/constants/option-default';
+import { ListarBodegasPorTipo } from '@/services/generales/ListarBodegasPorTipoService';
 import { ListarCategorias } from '@/services/generales/ListarCategoriasServices';
 import { ListarEstados } from '@/services/generales/ListarEstadosService';
 import { ListarSubarrendatarios } from '@/services/generales/ListarSubarrendatariosService';
@@ -39,6 +39,7 @@ interface FormData {
     EstadoEquipo: string;
     Cantidad: number | null;
     DocumentoSubarrendatario: string;
+    IdTipoBodega: number;
     TipoDeEquipo: string;
     UnidadDeMedida: string;
     Bodega: string;
@@ -51,6 +52,7 @@ interface ErrorForm {
     EstadoEquipo?: string;
     Cantidad?: string;
     DocumentoSubarrendatario?: string;
+    IdTipoBodega?: string;
     TipoDeEquipo?: string;
     Bodega?: string;
     [key: string]: string | undefined;
@@ -143,7 +145,8 @@ export function FormularioCrearEquipo(): React.JSX.Element {
         // TipoDeEquipo: 'ABC',
         TipoDeEquipo: OpcionPorDefecto.value,
         UnidadDeMedida: OpcionPorDefecto.value,
-        Bodega: OpcionPorDefecto.value
+        Bodega: OpcionPorDefecto.value,
+        IdTipoBodega: OpcionPorDefectoNumber.value
     });
 
     const [tipoDeEquipoSeleccionado, setTipoDeEquipoSeleccionado] = useState('');
@@ -341,9 +344,9 @@ export function FormularioCrearEquipo(): React.JSX.Element {
         }
     }, [mostrarMensaje]);
 
-    const cargarBodegas = useCallback(async (Documento: string) => {
+    const cargarBodegas = useCallback(async (IdTipoBodega: number) => {
         try {
-            const data = await ListarBodegasPorSubarrendatario(Documento);
+            const data = await ListarBodegasPorTipo({ IdTipoBodega });
             data.unshift(OpcionPorDefecto);
             setBodegas(data);
         } catch (error) {
@@ -367,17 +370,18 @@ export function FormularioCrearEquipo(): React.JSX.Element {
             // Resetear formulario
             setFormData({
                 NombreEquipo: '',
-                CategoriaEquipo: '0',
+                CategoriaEquipo: OpcionPorDefecto.value,
                 PrecioVenta: null,
                 PrecioAlquiler: null,
                 PrecioReparacion: null,
                 UsuarioCreacion: documentoUsuarioActivo,
-                EstadoEquipo: '0',
+                EstadoEquipo: OpcionPorDefecto.value,
                 Cantidad: null,
-                DocumentoSubarrendatario: 'ABC',
-                TipoDeEquipo: 'ABC',
-                UnidadDeMedida: '0',
-                Bodega: '123'
+                DocumentoSubarrendatario: OpcionPorDefecto.value,
+                TipoDeEquipo: OpcionPorDefecto.value,
+                UnidadDeMedida: OpcionPorDefecto.value,
+                Bodega: OpcionPorDefecto.value,
+                IdTipoBodega: OpcionPorDefectoNumber.value
             });
         } catch (error) {
             mostrarMensaje(`Error al crear equipo: ${error instanceof Error ? error.message : String(error)}`, 'error');
@@ -393,27 +397,57 @@ export function FormularioCrearEquipo(): React.JSX.Element {
         cargarEstados();
         cargarTiposDeEquipos();
         cargarUnidadesDeMedida();
-        cargarBodegas('0');
+        cargarBodegas(formData.IdTipoBodega);
     }, [cargarSubarrendatarios, cargarCategorias, cargarEstados, cargarTiposDeEquipos, cargarUnidadesDeMedida, cargarBodegas]);
 
     // Efectos para mostrar u ocultar el select de subarrendatarios, dependiendo del tipo de equipo
     const tipoDeEquipoSeleccionadoRef = useRef(formData.TipoDeEquipo);
+    // useEffect(() => {
+    //     tipoDeEquipoSeleccionadoRef.current = formData.TipoDeEquipo;
+    //     const NuevoValor = tipoDeEquipoSeleccionadoRef.current;
+    //     console.log(NuevoValor);
+    //     setTipoDeEquipoSeleccionado(String(NuevoValor));
+    //     if (NuevoValor === '1') {
+    //         const nuevoFormData = {
+    //             ...formData,
+    //             DocumentoSubarrendatario: '0'
+    //         };
+    //         setFormData(nuevoFormData);
+    //         cargarBodegas(nuevoFormData.IdTipoBodega);
+    //     } else {
+    //         cargarBodegas(formData.IdTipoBodega);
+    //     }
+    // }, [formData.TipoDeEquipo, formData.DocumentoSubarrendatario]);
     useEffect(() => {
         tipoDeEquipoSeleccionadoRef.current = formData.TipoDeEquipo;
-        const NuevoValor = tipoDeEquipoSeleccionadoRef.current;
-        console.log(NuevoValor);
-        setTipoDeEquipoSeleccionado(String(NuevoValor));
-        if (NuevoValor === '1') {
-            const nuevoFormData = {
-                ...formData,
-                DocumentoSubarrendatario: '0'
-            };
-            setFormData(nuevoFormData);
-            cargarBodegas(nuevoFormData.DocumentoSubarrendatario);
-        } else {
-            cargarBodegas(formData.DocumentoSubarrendatario);
+        const nuevoValor = tipoDeEquipoSeleccionadoRef.current;
+        console.log('Tipo de equipo seleccionado:', nuevoValor);
+        setTipoDeEquipoSeleccionado(String(nuevoValor));
+
+        // Determinar el IdTipoBodega según el tipo de equipo
+        let idTipoBodega = OpcionPorDefectoNumber.value; // Valor por defecto
+
+        if (nuevoValor == '1') { // Equipo propio
+            idTipoBodega = 3; // Bodegas de alquiler
+        } else if (nuevoValor == '2') { // Equipo ajeno
+            idTipoBodega = 1; // Bodegas de reparación
         }
-    }, [formData.TipoDeEquipo, formData.DocumentoSubarrendatario]);
+
+        // Actualizar el formData con el IdTipoBodega correcto
+        const nuevoFormData = {
+            ...formData,
+            IdTipoBodega: idTipoBodega,
+            // Si es equipo propio, resetear el subarrendatario
+            DocumentoSubarrendatario: nuevoValor === '1' ? '0' : formData.DocumentoSubarrendatario
+        };
+
+        setFormData(nuevoFormData);
+
+        // Cargar las bodegas con el tipo correcto
+        if (idTipoBodega !== OpcionPorDefectoNumber.value) {
+            cargarBodegas(idTipoBodega);
+        }
+    }, [formData.TipoDeEquipo]);
 
     const isFirstRender = useRef(true);
 
@@ -490,19 +524,22 @@ export function FormularioCrearEquipo(): React.JSX.Element {
                         </Grid>
                     )}
 
-                    <Grid md={4} xs={12} mt={0.5}>
-                        <InputSelect
-                            required
-                            label="Bodega"
-                            value={formData.Bodega}
-                            options={bodegas}
-                            size="small"
-                            onChange={handleChange}
-                            valorname="Bodega"
-                            error={!!errores.Bodega}
-                            helperText={errores.Bodega}
-                        />
-                    </Grid>
+                    {tipoDeEquipoSeleccionado !== 'SinSeleccionar' && (
+                        <Grid md={4} xs={12} mt={0.5}>
+                            <InputSelect
+                                required
+                                label="Bodega"
+                                value={formData.Bodega}
+                                options={bodegas}
+                                size="small"
+                                onChange={handleChange}
+                                valorname="Bodega"
+                                error={!!errores.Bodega}
+                                helperText={errores.Bodega}
+                            />
+                        </Grid>
+                    )}
+
                     <Grid md={4} xs={12} mt={0.5}>
                         <InputSelect
                             required
