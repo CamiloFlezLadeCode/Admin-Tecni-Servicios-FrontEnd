@@ -3,6 +3,7 @@
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import Input from '@/components/dashboard/componentes_generales/formulario/Input';
 import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
+import { ListarEstados } from '@/services/generales/ListarEstadosService';
 import { ActualizarVehiculo } from '@/services/gestionycontrol/vehiculos/ActualizarVehiculoService';
 import { ConsultarVehiculoPorId } from '@/services/gestionycontrol/vehiculos/ConsultarVehiculoPorIdService';
 import {
@@ -21,19 +22,23 @@ import {
 import Grid from '@mui/material/Unstable_Grid2';
 import { PencilSimple, X } from '@phosphor-icons/react/dist/ssr';
 import * as React from 'react';
-import { ListarEstados } from '@/services/generales/ListarEstadosService';
 
 const EstadoVehiculo = [
     { value: 1, label: 'Activo' },
     { value: 2, label: 'Inactivo' },
 ]
+
+interface Props {
+    IdVehiculo: number;
+    sendMessage: (event: string, payload: any) => void;
+    onMostrarMensaje: (mensaje: string, tipo: 'success' | 'error') => void;
+}
+
 export function FormularioModalEditarVehiculo({
     IdVehiculo,
     sendMessage,
-}: {
-    IdVehiculo: number;
-    sendMessage: (event: string, payload: any) => void;
-}): React.JSX.Element {
+    onMostrarMensaje
+}: Props): React.JSX.Element {
     const [modalAbierto, setModalAbierto] = React.useState(false);
     const EditarVehiculo = async () => {
         try {
@@ -108,9 +113,9 @@ export function FormularioModalEditarVehiculo({
             await ActualizarVehiculo(datos);
             // 🔥 Emitir evento por socket
             sendMessage('vehiculo-actualizado', {});
-            mostrarMensaje('Vehículo actualizado correctamente', 'success');
+            onMostrarMensaje('Vehículo actualizado correctamente', 'success');
         } catch (error) {
-            mostrarMensaje(`Error al actualizar el vehículo. Error: ${error}`, 'error');
+            onMostrarMensaje(`Error al actualizar el vehículo. Error: ${error}`, 'error');
         }
     };
     return (

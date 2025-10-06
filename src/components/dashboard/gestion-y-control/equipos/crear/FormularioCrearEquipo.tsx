@@ -1,15 +1,17 @@
 'use client';
-
-import React, { useState, useEffect, useContext, useCallback, useRef } from 'react';
+import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
+import Input from '@/components/dashboard/componentes_generales/formulario/Input';
+import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
 import { UserContext } from '@/contexts/user-context';
 import { useSocketIO } from '@/hooks/use-WebSocket';
-import { CrearEquipo } from '@/services/gestionycontrol/equipos/CrearEquipoService';
-import { ListarSubarrendatarios } from '@/services/generales/ListarSubarrendatariosService';
+import { EmpresaAnfitriona, OpcionPorDefecto } from '@/lib/constants/option-default';
+import { ListarBodegasPorSubarrendatario } from '@/services/generales/ListarBodegasPorSubarrendatarioService';
 import { ListarCategorias } from '@/services/generales/ListarCategoriasServices';
 import { ListarEstados } from '@/services/generales/ListarEstadosService';
+import { ListarSubarrendatarios } from '@/services/generales/ListarSubarrendatariosService';
 import { ListarTiposDeEquipos } from '@/services/generales/ListarTiposDeEquiposService';
 import { ListarUnidadesDeMedida } from '@/services/generales/ListarUnidadesDeMedidaService';
-import { ListarBodegasPorSubarrendatario } from '@/services/generales/ListarBodegasPorSubarrendatarioService';
+import { CrearEquipo } from '@/services/gestionycontrol/equipos/CrearEquipoService';
 import {
     Button,
     Card,
@@ -18,12 +20,9 @@ import {
     Divider,
     Typography
 } from '@mui/material';
-import Grid from '@mui/material/Unstable_Grid2';
 import type { SelectChangeEvent } from '@mui/material/Select';
-import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
-import Input from '@/components/dashboard/componentes_generales/formulario/Input';
-import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
-import { EmpresaAnfitriona } from '@/lib/constants/option-default';
+import Grid from '@mui/material/Unstable_Grid2';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 interface OpcionSelect {
     value: string | number;
@@ -133,18 +132,18 @@ export function FormularioCrearEquipo(): React.JSX.Element {
     // Estados
     const [formData, setFormData] = useState<FormData>({
         NombreEquipo: '',
-        CategoriaEquipo: '0',
+        CategoriaEquipo: OpcionPorDefecto.value,
         PrecioVenta: null,
         PrecioAlquiler: null,
         PrecioReparacion: null,
         UsuarioCreacion: documentoUsuarioActivo,
-        EstadoEquipo: '0',
+        EstadoEquipo: OpcionPorDefecto.value,
         Cantidad: null,
-        DocumentoSubarrendatario: EmpresaAnfitriona.value,
+        DocumentoSubarrendatario: OpcionPorDefecto.value,
         // TipoDeEquipo: 'ABC',
-        TipoDeEquipo: '1',
-        UnidadDeMedida: '0',
-        Bodega: '123'
+        TipoDeEquipo: OpcionPorDefecto.value,
+        UnidadDeMedida: OpcionPorDefecto.value,
+        Bodega: OpcionPorDefecto.value
     });
 
     const [tipoDeEquipoSeleccionado, setTipoDeEquipoSeleccionado] = useState('');
@@ -282,9 +281,7 @@ export function FormularioCrearEquipo(): React.JSX.Element {
     const cargarSubarrendatarios = useCallback(async () => {
         try {
             const data = await ListarSubarrendatarios();
-            data.unshift(
-                { value: 'ABC', label: 'Sin seleccionar' }
-            );
+            data.unshift(OpcionPorDefecto);
             setSubarrendatarios(data);
         } catch (error) {
             console.error('Error al listar subarrendatarios:', error);
@@ -295,9 +292,7 @@ export function FormularioCrearEquipo(): React.JSX.Element {
     const cargarCategorias = useCallback(async () => {
         try {
             const data = await ListarCategorias();
-            data.unshift(
-                { value: 0, label: 'Sin seleccionar' }
-            );
+            data.unshift(OpcionPorDefecto);
             setCategorias(data);
         } catch (error) {
             console.error('Error al listar categorías:', error);
@@ -313,7 +308,7 @@ export function FormularioCrearEquipo(): React.JSX.Element {
                 estadosPermitidos.has(item.label.toLowerCase().trim())
             );
             estadosFiltrados.unshift(
-                { value: 0, label: 'Sin seleccionar' }
+                OpcionPorDefecto
             );
             setEstados(estadosFiltrados);
         } catch (error) {
@@ -325,9 +320,7 @@ export function FormularioCrearEquipo(): React.JSX.Element {
     const cargarTiposDeEquipos = useCallback(async () => {
         try {
             const data = await ListarTiposDeEquipos();
-            data.unshift(
-                { value: 'ABC', label: 'Sin seleccionar' }
-            );
+            data.unshift(OpcionPorDefecto);
             setTiposDeEquipos(data);
         } catch (error) {
             console.error('Error al listar los tipos de equipos:', error);
@@ -339,7 +332,7 @@ export function FormularioCrearEquipo(): React.JSX.Element {
         try {
             const data = await ListarUnidadesDeMedida();
             data.unshift(
-                { value: 0, label: 'Sin seleccionar' }
+                OpcionPorDefecto
             );
             setUnidadesDeMedida(data);
         } catch (error) {
@@ -351,12 +344,10 @@ export function FormularioCrearEquipo(): React.JSX.Element {
     const cargarBodegas = useCallback(async (Documento: string) => {
         try {
             const data = await ListarBodegasPorSubarrendatario(Documento);
-            data.unshift(
-                { value: '123', label: 'Sin seleccionar' }
-            );
+            data.unshift(OpcionPorDefecto);
             setBodegas(data);
         } catch (error) {
-            console.error(`Error al describir la acción: ${error}`);
+            console.error(`Error al listar las bodegas: ${error}`);
         }
     }, [mostrarMensaje]);
 
@@ -407,22 +398,22 @@ export function FormularioCrearEquipo(): React.JSX.Element {
 
     // Efectos para mostrar u ocultar el select de subarrendatarios, dependiendo del tipo de equipo
     const tipoDeEquipoSeleccionadoRef = useRef(formData.TipoDeEquipo);
-    // useEffect(() => {
-    //     tipoDeEquipoSeleccionadoRef.current = formData.TipoDeEquipo;
-    //     const NuevoValor = tipoDeEquipoSeleccionadoRef.current;
-    //     console.log(NuevoValor);
-    //     setTipoDeEquipoSeleccionado(String(NuevoValor));
-    //     if (NuevoValor === '1') {
-    //         const nuevoFormData = {
-    //             ...formData,
-    //             DocumentoSubarrendatario: '0'
-    //         };
-    //         setFormData(nuevoFormData);
-    //         cargarBodegas(nuevoFormData.DocumentoSubarrendatario);
-    //     } else {
-    //         cargarBodegas(formData.DocumentoSubarrendatario);
-    //     }
-    // }, [formData.TipoDeEquipo, formData.DocumentoSubarrendatario]);
+    useEffect(() => {
+        tipoDeEquipoSeleccionadoRef.current = formData.TipoDeEquipo;
+        const NuevoValor = tipoDeEquipoSeleccionadoRef.current;
+        console.log(NuevoValor);
+        setTipoDeEquipoSeleccionado(String(NuevoValor));
+        if (NuevoValor === '1') {
+            const nuevoFormData = {
+                ...formData,
+                DocumentoSubarrendatario: '0'
+            };
+            setFormData(nuevoFormData);
+            cargarBodegas(nuevoFormData.DocumentoSubarrendatario);
+        } else {
+            cargarBodegas(formData.DocumentoSubarrendatario);
+        }
+    }, [formData.TipoDeEquipo, formData.DocumentoSubarrendatario]);
 
     const isFirstRender = useRef(true);
 
@@ -469,7 +460,7 @@ export function FormularioCrearEquipo(): React.JSX.Element {
 
             <CardContent sx={{ paddingTop: '10px', paddingBottom: '10px' }}>
                 <Grid container spacing={1}>
-                    <Grid md={4} xs={12} mt={0.5} display="none">
+                    <Grid md={4} xs={12} mt={0.5}>
                         <InputSelect
                             required
                             label="Tipo Equipo"
@@ -487,7 +478,7 @@ export function FormularioCrearEquipo(): React.JSX.Element {
                         <Grid md={4} xs={12} mt={0.5}>
                             <InputSelect
                                 required
-                                label="Subarrendatario"
+                                label="Propietario"
                                 value={formData.DocumentoSubarrendatario}
                                 options={subarrendatarios}
                                 size="small"

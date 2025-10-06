@@ -1,11 +1,11 @@
 'use client';
-import { useSocketIO } from '@/hooks/use-WebSocket';
-import * as React from 'react';
-import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
-import { Chip } from '@mui/material';
-import { VerBodegas } from '@/services/gestionycontrol/bodegas/VerBodegasService';
-import { FormularioEditarBodega } from '../editar/FormularioEditarBodega';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
+import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
+import { useSocketIO } from '@/hooks/use-WebSocket';
+import { VerBodegas } from '@/services/gestionycontrol/bodegas/VerBodegasService';
+import { Chip } from '@mui/material';
+import * as React from 'react';
+import { FormularioEditarBodega } from '../editar/FormularioEditarBodega';
 
 // 1. INTERFACES Ó TYPES
 interface Bodega {
@@ -106,10 +106,6 @@ export function TablaVisualizarBodegas(): React.JSX.Element {
         //     header: 'Tipo'
         // },
         {
-            key: 'Subarrendatario',
-            header: 'Propietario'
-        },
-        {
             key: 'NombreBodega',
             header: 'Bodega',
         },
@@ -144,6 +140,7 @@ export function TablaVisualizarBodegas(): React.JSX.Element {
             render: (row: Bodega) => (
                 <FormularioEditarBodega
                     IdBodega={row.IdBodega}
+                    onMostrarMensaje={mostrarMensaje}
                 />
             ),
             tooltip: 'Editar bodega'

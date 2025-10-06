@@ -50,7 +50,13 @@ interface Datos {
     Contacto: string;
 }
 
-export function FormularioEditarUsuarioGeneral({ onMostrarMensaje, DatosUsuarioAActualizar, sendMessage }: { onMostrarMensaje: (mensaje: string, tipo: 'success' | 'error') => void; DatosUsuarioAActualizar: string; sendMessage: (event: string, payload: any) => void; }): React.JSX.Element {
+interface Props {
+    readonly onMostrarMensaje: (mensaje: string, tipo: 'success' | 'error') => void;
+    readonly DatosUsuarioAActualizar: string;
+    readonly sendMessage: (event: string, payload: any) => void;
+}
+
+export function FormularioEditarUsuarioGeneral({ onMostrarMensaje, DatosUsuarioAActualizar, sendMessage }: Props): React.JSX.Element {
     const [modalAbierto, setModalAbierto] = React.useState(false);
     const EditarUsuarioGeneral = async () => {
         try {
@@ -279,6 +285,7 @@ export function FormularioEditarUsuarioGeneral({ onMostrarMensaje, DatosUsuarioA
                 size="small"
                 color="primary"
                 onClick={EditarUsuarioGeneral}
+                title='Editar'
             >
                 <PencilSimple size={20} weight="bold" />
             </IconButton>

@@ -31,35 +31,36 @@ import { Controller, useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
 // Para actualizar la bodega
 import { ActualizarBodega } from '@/services/gestionycontrol/bodegas/ActualizarBodegaService';
+import { OpcionPorDefecto } from '@/lib/constants/option-default';
 
 
 // Esquema de validación corregido
 const schema = zod.object({
-    TipoDeBodega: zod.number().min(1, { message: 'El tipo de bodega es obligatorio' }),
-    DocumentoSubarrendatario: zod.string().optional(),
+    TipoDeBodega: zod.string()
+        .min(1, { message: 'El tipo de bodega es obligatorio' })
+        .refine(value => value !== OpcionPorDefecto.value, {
+            message: 'Debe seleccionar un tipo de bodega válido'
+        }),
     NombreDeBodega: zod.string().min(1, { message: 'El nombre de la bodega es obligatorio' }),
     Descripcion: zod.string().optional(),
-    Estado: zod.number().min(1, { message: 'El estado de la bodega es obligatorio' })
-}).superRefine((data, ctx) => {
-    if (data.TipoDeBodega === 2 && !data.DocumentoSubarrendatario) {
-        ctx.addIssue({
-            code: zod.ZodIssueCode.custom,
-            message: "El subarrendatario es obligatorio",
-            path: ["DocumentoSubarrendatario"]
-        });
-    }
-});
+    Estado: zod.string()
+        .min(1, { message: 'El estado de la bodega es obligatorio' })
+        .refine(value => value !== OpcionPorDefecto.value, {
+            message: 'Debe seleccionar un estado válido'
+        })
+})
 
 type FormValues = zod.infer<typeof schema>;
 
 // 1. INTERFACES Ó TYPES
 interface PropsFormulario {
     IdBodega: number;
+    onMostrarMensaje: (mensaje: string, tipo: 'success' | 'error') => void;
 }
 
 
 // 2. COMPONENTE PRINCIPAL
-export function FormularioEditarBodega({ IdBodega }: PropsFormulario): React.JSX.Element {
+export function FormularioEditarBodega({ IdBodega, onMostrarMensaje }: PropsFormulario): React.JSX.Element {
     // 3. HOOKS DE REACT Y DE LIBRERÍAS
     const { sendMessage, messages } = useSocketIO();
 
@@ -87,11 +88,10 @@ export function FormularioEditarBodega({ IdBodega }: PropsFormulario): React.JSX
         clearErrors // Añadido para limpiar errores
     } = useForm<FormValues>({
         defaultValues: {
-            TipoDeBodega: 0,
-            DocumentoSubarrendatario: '',
+            TipoDeBodega: OpcionPorDefecto.value,
             NombreDeBodega: '',
             Descripcion: '',
-            Estado: 1,
+            Estado: OpcionPorDefecto.value,
         },
         resolver: zodResolver(schema)
     });
@@ -117,25 +117,20 @@ export function FormularioEditarBodega({ IdBodega }: PropsFormulario): React.JSX
                 ConsultarInfoBodega(IdBodega),
                 ListarSubarrendatarios()
             ]);
-            TiposDeBodegas.unshift(
-                { value: 0, label: 'Sin seleccionar' }
-            );
+            TiposDeBodegas.unshift(OpcionPorDefecto);
             setTiposDeBodegas(TiposDeBodegas);
             const EstadosPermitidos = new Set(['activo', 'inactivo']);
             const EstadosFiltrados = Estados.filter((item: any) =>
                 EstadosPermitidos.has(item.label.toLowerCase().trim())
             );
-            EstadosFiltrados.unshift(
-                { value: 0, label: 'Sin seleccionar' }
-            );
+            EstadosFiltrados.unshift(OpcionPorDefecto);
             setEstados(EstadosFiltrados);
             const DatosBodega = InfoBodega[0];
             reset({
-                TipoDeBodega: DatosBodega.IdTipoBodega,
-                DocumentoSubarrendatario: DatosBodega.DocumentoSubarrendatario || '',
+                TipoDeBodega: String(DatosBodega.IdTipoBodega),
                 NombreDeBodega: DatosBodega.NombreBodega,
                 Descripcion: DatosBodega.Descripcion,
-                Estado: DatosBodega.IdEstado || 1 // Valor por defecto si no existe
+                Estado: String(DatosBodega.IdEstado || 1) // Valor por defecto si no existe
             });
             setSubarrendatarios(Subarrendatarios);
         } catch (error) {
@@ -157,11 +152,11 @@ export function FormularioEditarBodega({ IdBodega }: PropsFormulario): React.JSX
                 IdBodega
             };
             ActualizarBodega(NuevosDatos);
-            mostrarMensaje('Bodega actualizada correctamente', 'success');
+            onMostrarMensaje('Bodega actualizada correctamente', 'success');
             sendMessage('bodega-actualizada', {});
         } catch (error) {
             console.error(`Error al actualizar la bodega: ${error}`);
-            mostrarMensaje(`Hubo un error al actualizar la bodega. ${error}`, 'error');
+            onMostrarMensaje(`Hubo un error al actualizar la bodega. ${error}`, 'error');
         }
     };
     // ....
@@ -242,14 +237,11 @@ export function FormularioEditarBodega({ IdBodega }: PropsFormulario): React.JSX
                                                 <FormControl fullWidth>
                                                     <InputSelect
                                                         label='Tipo de bodega'
-                                                        value={field.value}
+                                                        value={String(field.value)}
                                                         options={tiposDeBodegas}
                                                         size='small'
                                                         onChange={(e) => {
-                                                            field.onChange(Number(e.target.value));
-                                                            if (Number(e.target.value) !== 2) {
-                                                                control._formValues.DocumentoSubarrendatario = '';
-                                                            }
+                                                            field.onChange(String(e.target.value));
                                                         }}
                                                     />
                                                     {errors.TipoDeBodega && (
@@ -261,30 +253,6 @@ export function FormularioEditarBodega({ IdBodega }: PropsFormulario): React.JSX
                                             )}
                                         />
                                     </Grid>
-                                    {tipoBodegaSeleccionado === 2 && (
-                                        <Grid md={3} xs={12} mt={0.5}>
-                                            <Controller
-                                                name="DocumentoSubarrendatario"
-                                                control={control}
-                                                render={({ field }) => (
-                                                    <FormControl fullWidth>
-                                                        <InputSelect
-                                                            label='Subarrendatario'
-                                                            value={field.value ?? ''}
-                                                            options={subarrendatarios}
-                                                            size='small'
-                                                            onChange={(e) => field.onChange(e.target.value)}
-                                                        />
-                                                        {errors.DocumentoSubarrendatario && (
-                                                            <FormHelperText error sx={{ width: '100%', margin: 0 }}>
-                                                                {errors.DocumentoSubarrendatario.message}
-                                                            </FormHelperText>
-                                                        )}
-                                                    </FormControl>
-                                                )}
-                                            />
-                                        </Grid>
-                                    )}
                                     <Grid md={3} xs={12} mt={0.5}>
                                         <Controller
                                             name="NombreDeBodega"
@@ -337,10 +305,10 @@ export function FormularioEditarBodega({ IdBodega }: PropsFormulario): React.JSX
                                                 <FormControl fullWidth>
                                                     <InputSelect
                                                         label='Estado'
-                                                        value={field.value}
+                                                        value={String(field.value)}
                                                         options={estados}
                                                         size='small'
-                                                        onChange={(e) => field.onChange(e.target.value)}
+                                                        onChange={(e) => field.onChange(String(e.target.value))}
                                                     />
                                                     {errors.Estado && (
                                                         <FormHelperText error sx={{ width: '100%', margin: 0 }}>

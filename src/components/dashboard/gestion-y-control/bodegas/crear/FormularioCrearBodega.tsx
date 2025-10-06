@@ -1,49 +1,53 @@
 'use client';
-import * as React from 'react';
+import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
+import Input from '@/components/dashboard/componentes_generales/formulario/Input';
+import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
+import { UserContext } from '@/contexts/user-context';
 import { useSocketIO } from '@/hooks/use-WebSocket';
 import {
-    Card,
-    CardContent,
-    CardActions,
-    Typography,
-    Divider,
     Button,
-    Box,
+    Card,
+    CardActions,
+    CardContent,
+    Divider,
     FormControl,
-    FormHelperText
+    FormHelperText,
+    Typography
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
-import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
-import Input from '@/components/dashboard/componentes_generales/formulario/Input';
-import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
-import { UserContext } from '@/contexts/user-context';
+import * as React from 'react';
 // Para validar formulario
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
 // Para cargar datos iniciales
-import { ListarTiposDeBodegas } from '@/services/generales/ListarTipoDeBodegas';
-import { ListarSubarrendatarios } from '@/services/generales/ListarSubarrendatariosService';
 import { ListarEstados } from '@/services/generales/ListarEstadosService';
+import { ListarTiposDeBodegas } from '@/services/generales/ListarTipoDeBodegas';
 // Uso API para crear la bodega
+import { OpcionPorDefecto } from '@/lib/constants/option-default';
 import { CrearBodega } from '@/services/gestionycontrol/bodegas/CrearBodegaService';
+
 
 // Esquema de validación corregido
 const schema = zod.object({
-    TipoDeBodega: zod.number().min(1, { message: 'El tipo de bodega es obligatorio' }),
-    DocumentoSubarrendatario: zod.string().optional(),
+    TipoDeBodega: zod.string()
+        .min(1, { message: 'El tipo de bodega es obligatorio' })
+        .refine(value => value !== OpcionPorDefecto.value, {
+            message: 'Debe seleccionar un tipo de bodega válido'
+        }),
     NombreDeBodega: zod.string().min(1, { message: 'El nombre de la bodega es obligatorio' }),
     Descripcion: zod.string().optional(),
     Estado: zod.number().min(1, { message: 'El estado de la bodega es obligatorio' })
-}).superRefine((data, ctx) => {
-    if (data.TipoDeBodega === 2 && !data.DocumentoSubarrendatario) {
-        ctx.addIssue({
-            code: zod.ZodIssueCode.custom,
-            message: "El subarrendatario es obligatorio",
-            path: ["DocumentoSubarrendatario"]
-        });
-    }
-});
+})
+// .superRefine((data, ctx) => {
+//     if (data.TipoDeBodega === '2' && !data.DocumentoSubarrendatario) {
+//         ctx.addIssue({
+//             code: zod.ZodIssueCode.custom,
+//             message: "El subarrendatario es obligatorio",
+//             path: ["DocumentoSubarrendatario"]
+//         });
+//     }
+// });
 
 type FormValues = zod.infer<typeof schema>;
 
@@ -65,18 +69,15 @@ const FormularioCrearBodega = () => {
         clearErrors // Añadido para limpiar errores
     } = useForm<FormValues>({
         defaultValues: {
-            TipoDeBodega: 1,
-            DocumentoSubarrendatario: '0',
+            TipoDeBodega: OpcionPorDefecto.value,
             NombreDeBodega: '',
             Descripcion: '',
             Estado: 1
         },
         resolver: zodResolver(schema)
     });
-    const tipoBodegaSeleccionado = watch("TipoDeBodega");
 
     const [tiposDeBodegas, setTiposDeBodegas] = React.useState([]);
-    const [subarrendatarios, setSubarrendatarios] = React.useState([{ value: '', label: 'Sin seleccionar' },]);
     const [estados, setEstados] = React.useState([]);
 
     // 5. USEEFFECT PARA LA CARGA INICIAL Y SOCKETS
@@ -90,12 +91,8 @@ const FormularioCrearBodega = () => {
                     ListarTiposDeBodegas(),
                     ListarEstados()
                 ]);
-                TiposDeBodegas.unshift(
-                    { value: 0, label: 'Sin seleccionar' }
-                );
+                TiposDeBodegas.unshift(OpcionPorDefecto);
                 setTiposDeBodegas(TiposDeBodegas);
-                // const ValorInicial = [{ value: '', label: 'Sin seleccionar' }];
-                // setSubarrendatarios(ValorInicial);
                 const EstadosPermitidos = new Set(['activo', 'inactivo']);
                 const EstadosFiltrados = Estados.filter((item: any) =>
                     EstadosPermitidos.has(item.label.toLowerCase().trim())
@@ -110,30 +107,6 @@ const FormularioCrearBodega = () => {
         };
         CargarDatosIniciales();
     }, []);
-    // Limpiamos errores cuando cambia el tipo de bodega
-    React.useEffect(() => {
-        const CargarSubarrendatarios = async () => {
-            try {
-                const [Subarrendatarios] = await Promise.all([ListarSubarrendatarios()]);
-                Subarrendatarios.unshift({ value: '0', label: 'Sin seleccionar' });
-                setSubarrendatarios(Subarrendatarios);
-
-                // Reseteamos el campo para que se seleccione correctamente la opción vacía
-                resetField("DocumentoSubarrendatario", { defaultValue: '' });
-            } catch (error) {
-                console.error(`Error al cargar los datos: ${error}`);
-            }
-        };
-
-        if (tipoBodegaSeleccionado === 2) {
-            CargarSubarrendatarios();
-            resetField("DocumentoSubarrendatario", { defaultValue: '0' });
-        } else {
-            // Limpiamos errores y valor del campo cuando no se necesita
-            clearErrors("DocumentoSubarrendatario");
-            resetField("DocumentoSubarrendatario", { defaultValue: '0' });
-        }
-    }, [tipoBodegaSeleccionado, clearErrors, resetField]);
 
     const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error' | 'warning') => {
         setMensajeAlerta(mensaje);
@@ -167,7 +140,7 @@ const FormularioCrearBodega = () => {
                 <Divider />
                 <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                     <Grid container spacing={1}>
-                        <Grid md={3} xs={12} mt={0.5} display='none'>
+                        <Grid md={3} xs={12} mt={0.5} display='block'>
                             <Controller
                                 name="TipoDeBodega"
                                 control={control}
@@ -175,13 +148,13 @@ const FormularioCrearBodega = () => {
                                     <FormControl fullWidth>
                                         <InputSelect
                                             label='Tipo de bodega'
-                                            value={field.value}
+                                            value={String(field.value)}
                                             options={tiposDeBodegas}
                                             size='small'
                                             onChange={(e) => {
-                                                field.onChange(Number(e.target.value));
+                                                field.onChange(String(e.target.value));
                                                 // Limpiar el valor de subarrendatario cuando no es necesario
-                                                if (Number(e.target.value) !== 2) {
+                                                if (e.target.value !== '2') {
                                                     control._formValues.DocumentoSubarrendatario = '0';
                                                 }
                                             }}
@@ -195,31 +168,6 @@ const FormularioCrearBodega = () => {
                                 )}
                             />
                         </Grid>
-
-                        {tipoBodegaSeleccionado === 2 && (
-                            <Grid md={3} xs={12} mt={0.5}>
-                                <Controller
-                                    name="DocumentoSubarrendatario"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <FormControl fullWidth>
-                                            <InputSelect
-                                                label='Subarrendatario'
-                                                value={field.value ?? '0'}
-                                                options={subarrendatarios}
-                                                size='small'
-                                                onChange={(e) => field.onChange(e.target.value)}
-                                            />
-                                            {errors.DocumentoSubarrendatario && (
-                                                <FormHelperText error sx={{ width: '100%', margin: 0 }}>
-                                                    {errors.DocumentoSubarrendatario.message}
-                                                </FormHelperText>
-                                            )}
-                                        </FormControl>
-                                    )}
-                                />
-                            </Grid>
-                        )}
 
                         <Grid md={3} xs={12} mt={0.5}>
                             <Controller

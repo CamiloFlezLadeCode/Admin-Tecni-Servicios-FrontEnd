@@ -3,10 +3,9 @@ import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/
 import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useSocketIO } from '@/hooks/use-WebSocket';
 import { ConsultarVehiculos } from '@/services/gestionycontrol/vehiculos/ConsultarVehiculosService';
+import { Chip } from '@mui/material';
 import * as React from 'react';
 import { FormularioModalEditarVehiculo } from '../editar/FormularioEditarVehiculo';
-import AlertaEliminarVehiculo from '../eliminar/AlertaEliminarVehiculo';
-import { Chip } from '@mui/material';
 // Acciones generales
 import { EliminarRegistro } from '@/components/dashboard/componentes_generales/acciones/EliminarRegistro';
 // Servicios
@@ -107,7 +106,8 @@ export function TablaVisualizarVehiculos(): React.JSX.Element {
             render: (row: Vehiculo) => (
                 <FormularioModalEditarVehiculo
                     IdVehiculo={row.IdVehiculo}
-                    sendMessage={sendMessage} // 👈 pásalo como prop
+                    sendMessage={sendMessage}
+                    onMostrarMensaje={mostrarMensaje}
                 />
             ),
             tooltip: 'Editar vehiculo'

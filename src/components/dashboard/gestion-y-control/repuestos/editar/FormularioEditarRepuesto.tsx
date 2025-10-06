@@ -1,5 +1,4 @@
 'use client';
-
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import Input from '@/components/dashboard/componentes_generales/formulario/Input';
 import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
@@ -23,7 +22,12 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { PencilSimple, X } from '@phosphor-icons/react/dist/ssr';
 import * as React from 'react';
 
-export function FormularioEditarRepuesto({ IdRepuesto, sendMessage }: { IdRepuesto: number; sendMessage: (event: string, payload: any) => void; }): React.JSX.Element {
+interface Props {
+    readonly IdRepuesto: number;
+    readonly sendMessage: (event: string, payload: any) => void;
+    readonly onMostrarMensaje: (mensaje: string, tipo: 'success' | 'error') => void;
+}
+export function FormularioEditarRepuesto({ IdRepuesto, sendMessage, onMostrarMensaje }: Props): React.JSX.Element {
     // Se implementa estado para todos los campos del formulario
     const [datos, setDatos] = React.useState({
         NuevoNombreRepuesto: '',
@@ -128,9 +132,9 @@ export function FormularioEditarRepuesto({ IdRepuesto, sendMessage }: { IdRepues
         try {
             await ActualizarRepuesto(datos);
             sendMessage('repuesto-actualizado', {});
-            mostrarMensaje('Repuesto actualizado correctamente.', 'success');
+            onMostrarMensaje('Repuesto actualizado correctamente.', 'success');
         } catch (error) {
-            mostrarMensaje(`Error al actualizar el repuesto: ${error}`, 'error');
+            onMostrarMensaje(`Error al actualizar el repuesto: ${error}`, 'error');
         }
     };
     // ...

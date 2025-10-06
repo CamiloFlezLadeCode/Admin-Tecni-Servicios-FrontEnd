@@ -1,9 +1,12 @@
 'use client';
-import * as React from 'react';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
-import { SelectChangeEvent } from '@mui/material/Select';
-import Grid from '@mui/material/Unstable_Grid2';
-import { PencilSimple, X } from '@phosphor-icons/react/dist/ssr';
+import Input from '@/components/dashboard/componentes_generales/formulario/Input';
+import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
+import { ListarCategorias } from '@/services/generales/ListarCategoriasServices';
+import { ListarEstados } from '@/services/generales/ListarEstadosService';
+import { ListarSubarrendatarios } from '@/services/generales/ListarSubarrendatariosService';
+import { ActualizarEquipo } from '@/services/gestionycontrol/equipos/ActualizarEquipoService';
+import { ConsultarEquipoPorId } from '@/services/gestionycontrol/equipos/ConsultarEquipoPorIdService';
 import {
     Box,
     Button,
@@ -14,18 +17,20 @@ import {
     IconButton,
     Modal,
     Typography,
-    useMediaQuery,
     useTheme
 } from '@mui/material';
-import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
-import Input from '@/components/dashboard/componentes_generales/formulario/Input';
-import { ListarCategorias } from '@/services/generales/ListarCategoriasServices';
-import { ListarSubarrendatarios } from '@/services/generales/ListarSubarrendatariosService';
-import { ListarEstados } from '@/services/generales/ListarEstadosService';
-import { ConsultarEquipoPorId } from '@/services/gestionycontrol/equipos/ConsultarEquipoPorIdService';
-import { ActualizarEquipo } from '@/services/gestionycontrol/equipos/ActualizarEquipoService';
+import { SelectChangeEvent } from '@mui/material/Select';
+import Grid from '@mui/material/Unstable_Grid2';
+import { PencilSimple, X } from '@phosphor-icons/react/dist/ssr';
+import * as React from 'react';
 
-export function FormularioEditarEquipo({ IdEquipo, sendMessage }: { IdEquipo: number; sendMessage: (event: string, payload: any) => void; }): React.JSX.Element {
+interface Props {
+    readonly IdEquipo: number;
+    readonly sendMessage: (event: string, payload: any) => void;
+    readonly onMostrarMensaje: (mensaje: string, tipo: 'success' | 'error') => void;
+}
+
+export function FormularioEditarEquipo({ IdEquipo, sendMessage, onMostrarMensaje }: Props): React.JSX.Element {
     //Para cargar los datos de la bd para las listas desplegables
     const [Categorias, setCategorias] = React.useState<{ value: string | number; label: string }[]>([]);
     const [Subarrendatarios, setSubarrendatarios] = React.useState<{ value: string | number; label: string }[]>([]);
@@ -124,14 +129,20 @@ export function FormularioEditarEquipo({ IdEquipo, sendMessage }: { IdEquipo: nu
             }
             await ActualizarEquipo(datos);
             sendMessage('equipo-actualizado', {});
-            mostrarMensaje(`Equipo actualizado correctamente`, 'success');
+            onMostrarMensaje(`Equipo actualizado correctamente`, 'success');
         } catch (error) {
-            mostrarMensaje(`Error al actualizar el equipo: ${error}`, 'error');
+            onMostrarMensaje(`Error al actualizar el equipo: ${error}`, 'error');
         }
     };
     //...
     return (
         <>
+            <MensajeAlerta
+                open={mostrarAlertas}
+                tipo={tipoAlerta}
+                mensaje={mensajeAlerta}
+                onClose={() => setMostrarAlertas(false)}
+            />
             <IconButton
                 size="small"
                 color="primary"
@@ -140,13 +151,6 @@ export function FormularioEditarEquipo({ IdEquipo, sendMessage }: { IdEquipo: nu
             >
                 <PencilSimple size={20} weight="bold" />
             </IconButton>
-            <MensajeAlerta
-                open={mostrarAlertas}
-                tipo={tipoAlerta}
-                mensaje={mensajeAlerta}
-                onClose={() => setMostrarAlertas(false)}
-            />
-
             <Modal
                 open={modalAbierto}
                 onClose={(_, reason) => {

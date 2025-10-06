@@ -30,6 +30,7 @@ interface ProyectoAEditar {
 }
 
 interface ModalFormularioEditarProyectoProps {
+    onMostrarMensaje: (mensaje: string, tipo: 'success' | 'error') => void;
     ProyectoAEditar: ProyectoAEditar;
     sendMessage: (event: string, payload: any) => void;
 }
@@ -43,7 +44,7 @@ interface FormData {
 }
 
 // 2. Componente principal
-export function ModalFormularioEditarProyecto({ ProyectoAEditar, sendMessage }: ModalFormularioEditarProyectoProps): React.JSX.Element {
+export function ModalFormularioEditarProyecto({ onMostrarMensaje, ProyectoAEditar, sendMessage }: ModalFormularioEditarProyectoProps): React.JSX.Element {
     // 3. Hooks de React y otros hooks de librerías
     //Para el tema del modal
     const theme = useTheme();
@@ -141,13 +142,19 @@ export function ModalFormularioEditarProyecto({ ProyectoAEditar, sendMessage }: 
         try {
             await ActualizarProyecto(datos);
             sendMessage('proyecto-actualizado', {});
-            MostrarMensajeAlerta('Proyecto actualizado correctamente.', 'success');
+            onMostrarMensaje('Proyecto actualizado correctamente.', 'success');
         } catch (error) {
-            MostrarMensajeAlerta(`Error al actualizar el proyecto: ${error}`, 'error');
+            onMostrarMensaje(`Error al actualizar el proyecto: ${error}`, 'error');
         }
     };
     // 7. Renderizado JSX del componente
     return <>
+        <MensajeAlerta
+            open={mostrarAlertas}
+            tipo={tipoAlerta}
+            mensaje={mensajeAlerta}
+            onClose={() => setMostrarAlertas(false)}
+        />
         <IconButton
             size="small"
             color="primary"
@@ -156,14 +163,6 @@ export function ModalFormularioEditarProyecto({ ProyectoAEditar, sendMessage }: 
         >
             <PencilSimple size={20} weight="bold" />
         </IconButton>
-
-        <MensajeAlerta
-            open={mostrarAlertas}
-            tipo={tipoAlerta}
-            mensaje={mensajeAlerta}
-            onClose={() => setMostrarAlertas(false)}
-        />
-
         <Modal
             open={modalAbierto}
             onClose={(_, reason) => {
