@@ -710,6 +710,7 @@ import { ListarProyectos } from '@/services/generales/ListarProyectos';
 import dayjs, { Dayjs } from 'dayjs';
 import { equipos_pendientes_por_devolver } from '@/services/comercial/devoluciones/EquiposPendientesPorDevolverService';
 import { OrdenarSubarrendatarios } from '@/lib/order/orders';
+import { OpcionPorDefecto, OpcionPorDefectoNumber } from '@/lib/constants/option-default';
 
 
 // 1. INTERFACES
@@ -775,7 +776,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
         UsuarioCreacion: documentoUsuarioActivo ?? '',
         EstadoEquipo: -1,
         IdEstado: 8,
-        PersonaQueRecibe: '',
+        PersonaQueRecibe: OpcionPorDefecto.value,
         PersonaQueEntrega: '',
         FechaDevolucion: dayjs(),
         Subarrendatario: ''
@@ -922,6 +923,9 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
     const CargarProfesionales = async () => {
         try {
             const Profesionales = await ListarProfesionalesPertenecientes();
+            Profesionales.unshift(
+                OpcionPorDefecto
+            );
             setProfesionales(Profesionales);
         } catch (error) {
             console.error(`Error al cargar los profesionales: ${error}`);
@@ -1050,7 +1054,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
         }
 
         // Validar personas que reciben y entregan
-        if (!datos.PersonaQueRecibe || !datos.PersonaQueEntrega) {
+        if (!datos.PersonaQueRecibe || datos.PersonaQueRecibe === 'SinSeleccionar' || !datos.PersonaQueEntrega) {
             mostrarMensaje('Debe especificar quién recibe y quién entrega los equipos', 'error');
             return null;
         }
@@ -1092,6 +1096,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
             mostrarMensaje('Devolución creada correctamente', 'success');
             sendMessage('devolucion-creada', {});
             resetearFormulario();
+            CargarSubarrendatariosConRemisionesAsignadasClienteProyecto();
         } catch (error) {
             console.error('Error al enviar devolución:', error);
             mostrarMensaje(`Hubo un error al crear la devolución: ${error}`, 'error');
@@ -1105,7 +1110,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
             Subarrendatario: '',
             Observaciones: '',
             PersonaQueEntrega: '',
-            PersonaQueRecibe: '',
+            PersonaQueRecibe: OpcionPorDefecto.value,
             // Mantener estos valores:
             Cliente: prev.Cliente,
             IdProyecto: prev.IdProyecto,
@@ -1203,8 +1208,8 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                         <TableRow>
                                             <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Descripción Remisión</TableCell>
                                             <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Equipo</TableCell>
-                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Arrendado</TableCell>
-                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Pendiente</TableCell>
+                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Cantidad Alquilada</TableCell>
+                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Cantidad Pendiente</TableCell>
                                             <TableCell style={{ fontWeight: 'bold', color: '#000000', width: '15%' }}>A Devolver</TableCell>
                                             <TableCell sx={{ fontWeight: 'bold', color: '#000000 !important', width: { xs: '18%', md: '20%' } }}>Estado</TableCell>
                                         </TableRow>

@@ -177,10 +177,24 @@ export function FormularioCrearEquipo(): React.JSX.Element {
             valorFinal = value === '' ? null : Number(value);
         }
 
-        setFormData(prev => ({
-            ...prev,
-            [name]: valorFinal
-        }));
+        setFormData(prev => {
+            const nuevoEstado = {
+                ...prev,
+                [name]: valorFinal
+            };
+
+            // Resetear bodega cuando cambia TipoDeEquipo
+            if (name === 'TipoDeEquipo') {
+                nuevoEstado.Bodega = OpcionPorDefecto.value;
+                if (valorFinal == '1') {
+                    nuevoEstado.DocumentoSubarrendatario = EmpresaAnfitriona.value;
+                } else if (valorFinal == '2') {
+                    nuevoEstado.DocumentoSubarrendatario = OpcionPorDefecto.value;
+                }
+            }
+
+            return nuevoEstado;
+        });
 
         // Validación en tiempo real
         validarCampo(name, valorFinal);
@@ -433,15 +447,25 @@ export function FormularioCrearEquipo(): React.JSX.Element {
             idTipoBodega = 1; // Bodegas de reparación
         }
 
-        // Actualizar el formData con el IdTipoBodega correcto
-        const nuevoFormData = {
-            ...formData,
-            IdTipoBodega: idTipoBodega,
-            // Si es equipo propio, resetear el subarrendatario
-            DocumentoSubarrendatario: nuevoValor === '1' ? '0' : formData.DocumentoSubarrendatario
-        };
+        // // Actualizar el formData con el IdTipoBodega correcto
+        // const nuevoFormData = {
+        //     ...formData,
+        //     IdTipoBodega: idTipoBodega,
+        //     // Si es equipo propio, resetear el subarrendatario
+        //     DocumentoSubarrendatario: nuevoValor === '1' ? EmpresaAnfitriona.value : formData.DocumentoSubarrendatario
+        // };
+        // Actualizar el formData con el callback para obtener el estado más reciente
+        setFormData(prevFormData => {
+            const nuevoFormData = {
+                ...prevFormData,
+                IdTipoBodega: idTipoBodega,
+                // Usar el estado anterior para decidir si resetear el subarrendatario
+                DocumentoSubarrendatario: nuevoValor === '1' ? EmpresaAnfitriona.value : prevFormData.DocumentoSubarrendatario
+            };
+            return nuevoFormData;
+        });
 
-        setFormData(nuevoFormData);
+        // setFormData(nuevoFormData);
 
         // Cargar las bodegas con el tipo correcto
         if (idTipoBodega !== OpcionPorDefectoNumber.value) {

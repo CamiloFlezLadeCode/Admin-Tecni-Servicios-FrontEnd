@@ -18,8 +18,23 @@ const OpcionPorDefecto: SelectOption = {
 const OpcionPorDefectoNumber: SelectOptionNumber = {
     value: 0, label: 'Sin seleccionar'
 }
+
+const ParametroBuscarBodegasReparacion: SelectOptionNumber = {
+    value: 1, label: 'Bodegas de reparación'
+}
+
+const ParametroBuscarBodegasRepuestos: SelectOptionNumber = {
+    value: 2, label: 'Bodegas de repuestos'
+}
+
+const ParametroBuscarBodegasAlquiler: SelectOptionNumber = {
+    value: 3, label: 'Bodegas de alquiler'
+}
 export {
     EmpresaAnfitriona,
     OpcionPorDefecto,
-    OpcionPorDefectoNumber
+    OpcionPorDefectoNumber,
+    ParametroBuscarBodegasReparacion,
+    ParametroBuscarBodegasRepuestos,
+    ParametroBuscarBodegasAlquiler
 };
