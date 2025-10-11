@@ -101,7 +101,7 @@ export function GenerarPDF<T>({
                 if (mensajes.exito) {
                     // onMostrarMensaje?.(mensajes.exito, 'success');
                 }
-            }, 300);
+            }, 200);
 
         } catch (error) {
             onMostrarCarga?.(false);

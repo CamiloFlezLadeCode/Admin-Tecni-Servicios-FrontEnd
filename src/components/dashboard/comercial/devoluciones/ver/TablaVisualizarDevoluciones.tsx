@@ -46,7 +46,6 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
                 setError(null);
                 const response = await VerTodasLasDevoluciones();
                 setData(response);
-                console.log(response)
             } catch (err) {
                 setError(`Error al cargar las devoluciones: ${err}`);
             } finally {

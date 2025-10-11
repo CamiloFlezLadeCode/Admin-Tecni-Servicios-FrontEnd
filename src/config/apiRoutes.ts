@@ -62,7 +62,7 @@ export const apiRoutes = {
         listartiposdebodegas: `${API_BASE_URL}/listar-tipo-de-bodegas`,
         listartipodeequipos: `${API_BASE_URL}/listar-tipo-de-equipos`,
         listarunidades: `${API_BASE_URL}/listar-unidades-de-medida`,
-        listarbodegasporsubarrendatario: `${API_BASE_URL}/listar-bodegas-subarrendatario`
+        listarbodegasporsubarrendatario: `${API_BASE_URL}/listar-bodegas-subarrendatario`,
     },
     comercial: {
         remisiones: {
@@ -91,7 +91,10 @@ export const apiRoutes = {
             crear_orden_de_servicio: `${API_BASE_URL}/crear-orden-de-servicio`,
             ver_todas_las_ordenes_de_servicio: `${API_BASE_URL}/ver-todas-las-ordenes-de-servicio`,
             ver_pdf_orden_de_servicio: `${API_BASE_URL}/obtener-pdf-orden-de-servicio`,
-            eliminar_orden_de_servicio: `${API_BASE_URL}/eliminar-orden-de-servicio`
+            eliminar_orden_de_servicio: `${API_BASE_URL}/eliminar-orden-de-servicio`,
+            ver_equipos_del_cliente: `${API_BASE_URL}/ver-equipos-del-cliente`,
+            ver_repuestos_disponibles: `${API_BASE_URL}/ver-repuestos-disponibles`,
+            ver_disponibilidad_de_repuesto: `${API_BASE_URL}/ver-disponibilidad-de-repuesto`
         },
         estado_de_cuenta: {
             ver_estado_de_cuenta_cliente: `${API_BASE_URL}/ver-estado-de-cuenta-cliente`

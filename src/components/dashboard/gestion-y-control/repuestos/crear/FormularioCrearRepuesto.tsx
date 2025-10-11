@@ -28,7 +28,7 @@ interface EstadoRepuesto {
 
 interface FormData {
     NombreRepuesto: string;
-    Cantidad: number;
+    Cantidad: number | null;
     UsuarioCreacion: string | null;
     Estado: string;
     Bodega: number;
@@ -57,7 +57,7 @@ export function FormularioCrearRepuesto(): React.JSX.Element {
     // Estados
     const [formData, setFormData] = useState<FormData>({
         NombreRepuesto: '',
-        Cantidad: 0,
+        Cantidad: null,
         UsuarioCreacion: documentoUsuarioActivo,
         Estado: OpcionPorDefecto.value,
         Bodega: OpcionPorDefectoNumber.value
@@ -182,6 +182,7 @@ export function FormularioCrearRepuesto(): React.JSX.Element {
     //     return valido;
     // }, [formData]);
     // Validación del formulario
+
     const validarFormulario = useCallback((): boolean => {
         const nuevosErrores: ErrorForm = {};
         let valido = true;
@@ -233,7 +234,7 @@ export function FormularioCrearRepuesto(): React.JSX.Element {
             // Resetear formulario
             setFormData({
                 NombreRepuesto: '',
-                Cantidad: 0,
+                Cantidad: null,
                 UsuarioCreacion: documentoUsuarioActivo,
                 Estado: OpcionPorDefecto.value,
                 Bodega: OpcionPorDefectoNumber.value
@@ -291,7 +292,8 @@ export function FormularioCrearRepuesto(): React.JSX.Element {
                     <Grid md={4} xs={12} mt={0.5}>
                         <Input
                             label="Cantidad*"
-                            value={formData.Cantidad}
+                            // value={Number(formData.Cantidad)}
+                            value={formData.Cantidad === null ? '' : formData.Cantidad}
                             onChange={handleChange}
                             tamano="small"
                             tipo_input="number"

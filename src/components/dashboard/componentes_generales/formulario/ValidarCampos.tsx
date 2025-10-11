@@ -78,7 +78,7 @@ const FormularioValidator = forwardRef<FormularioValidatorRef, FormularioValidat
             const valor = datos[campo];
 
             if (
-                (valor === null || valor === undefined || valor === '' || valor === 'SinSeleccionar') &&
+                (valor === null || valor === undefined || valor === '' || valor === 'SinSeleccionar' || valor === 0) &&
                 campo !== 'Garantia' // excluyes la evaluación genérica de 'Garantia'
             ) {
                 mensajesFaltantes.push(mensaje);

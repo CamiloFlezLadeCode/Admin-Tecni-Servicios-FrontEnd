@@ -1,21 +1,20 @@
 import axiosInstance from '@/config/axiosConfig';
 import { apiRoutes } from '@/config/apiRoutes';
 
-interface Parametros {
-    readonly IdCategoria: number;
+interface Props {
     readonly IdTipoBodega: number;
 }
-export const ListarEquipos = async ({ IdCategoria, IdTipoBodega }: Parametros) => {
+
+export const VerRepuestosDisponibles = async ({ IdTipoBodega }: Props) => {
     try {
-        const { data } = await axiosInstance.get(apiRoutes.comercial.remisiones.listar_equipos_generales, {
+        const { data } = await axiosInstance.get(apiRoutes.comercial.ordenes_de_servicio.ver_repuestos_disponibles, {
             params: {
-                IdCategoria,
                 IdTipoBodega
             }
         });
         return data;
     } catch (error: any) {
-        console.log(`variable`);
+        console.log(`Error al ver los repuestos disponibles. ${error}`);
         throw new Error(`${error.response.data.error}`);
     }
 };

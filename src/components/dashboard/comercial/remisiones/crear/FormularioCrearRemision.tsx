@@ -1,5 +1,4 @@
 'use client';
-
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import Input from '@/components/dashboard/componentes_generales/formulario/Input';
 import InputSelectConEstado from '@/components/dashboard/componentes_generales/formulario/SelectConEstado';
@@ -32,7 +31,7 @@ import InputSelect from '../../../componentes_generales/formulario/Select';
 import ModalVerItemsRemision from './ModalVerItemsRemision';
 // Importar componentes de Modal de Material-UI
 import FechayHora from '@/components/dashboard/componentes_generales/formulario/DateTimePicker';
-import { EmpresaAnfitriona, OpcionPorDefecto } from '@/lib/constants/option-default';
+import { EmpresaAnfitriona, OpcionPorDefecto, ParametroBuscarBodegasAlquiler } from '@/lib/constants/option-default';
 import { OrdenarSubarrendatarios } from '@/lib/order/orders';
 import { ListarEquipos } from '@/services/comercial/remisiones/ListarEquiposService';
 import Modal from '@mui/material/Modal';
@@ -150,6 +149,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
     // Estados para items y disponibilidad
     const [itemsRemision, setItemsRemision] = React.useState<ItemRemision[]>([]);
     const [cantidadDisponible, setCantidadDisponible] = React.useState(0);
+    const [unidadDeMedida, setUnidadDeMedida] = React.useState('');
     const [precioAlquiler, setPrecioAlquiler] = React.useState(0);
     const [precioVenta, setPrecioVenta] = React.useState(0);
     const [precioReparacion, setPrecioReparacion] = React.useState(0);
@@ -260,7 +260,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
                         DocumentoSubarrendatario: datos.Subarrendatario
                     });
                 } else {
-                    equipos = await ListarEquipos({ IdCategoria: datos.IdCategoria });
+                    equipos = await ListarEquipos({ IdCategoria: datos.IdCategoria, IdTipoBodega: ParametroBuscarBodegasAlquiler.value });
                 }
 
                 setEquipos(equipos);
@@ -403,6 +403,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
                 setPrecioAlquiler(disponibilidad.PrecioAlquiler);
                 setPrecioVenta(disponibilidad.PrecioVenta);
                 setPrecioReparacion(disponibilidad.PrecioReparacion);
+                setUnidadDeMedida(disponibilidad.UnidadDeMedida);
 
                 // Solo consultar disponibilidad si es TECNISERVICIOS
                 if (esTecniservicios()) {
@@ -510,6 +511,10 @@ export function FormularioCrearRemision(): React.JSX.Element {
                 IdCategoria: Number(null)
             }),
         }));
+
+        if (name === 'Subarrendatario' || 'IdCategoria') {
+            setUnidadDeMedida('')
+        }
     };
 
     // ✅ Manejador específico para el DateTimePicker
@@ -862,6 +867,17 @@ export function FormularioCrearRemision(): React.JSX.Element {
                             />
                         </Grid>
                     )}
+
+                    <Grid md={3} xs={12} mt={0.5}>
+                        <Input
+                            label="Unidad de medida"
+                            value={unidadDeMedida}
+                            tamano='small'
+                            valorname='UnidadDeMedida'
+                            tipo_input='text'
+                            bloqueado
+                        />
+                    </Grid>
                 </Grid>
             </CardContent>
 

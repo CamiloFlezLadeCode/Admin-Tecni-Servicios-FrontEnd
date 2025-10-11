@@ -58,11 +58,19 @@ interface ErrorForm {
     [key: string]: string | undefined;
 }
 
-const REGLAS_VALIDACION = [
+interface ReglaValidacion {
+    campo: string;
+    mensaje: string;
+    esOpcional: boolean | ((tipoEquipo: string) => boolean);
+    validacion?: (valor: any) => boolean;
+}
+
+const REGLAS_VALIDACION: ReglaValidacion[] = [
     {
         campo: 'CategoriaEquipo',
         mensaje: 'La referencia es obligatoria',
-        esOpcional: false
+        esOpcional: false,
+        validacion: (valor: string) => valor !== 'SinSeleccionar'
     },
     {
         campo: 'NombreEquipo',
@@ -106,22 +114,26 @@ const REGLAS_VALIDACION = [
     {
         campo: 'EstadoEquipo',
         mensaje: 'El estado es obligatorio',
-        esOpcional: false
+        esOpcional: false,
+        validacion: (valor: string) => valor !== 'SinSeleccionar'
     },
     {
         campo: 'TipoDeEquipo',
         mensaje: 'El tipo de equipo es obligatorio',
-        esOpcional: false
+        esOpcional: false,
+        validacion: (valor: string) => valor !== 'SinSeleccionar'
     },
     {
         campo: 'UnidadDeMedida',
         mensaje: 'La unidad de medida es obligatoria',
-        esOpcional: false
+        esOpcional: false,
+        validacion: (valor: string) => valor !== 'SinSeleccionar'
     },
     {
         campo: 'Bodega',
         mensaje: 'La bodega es obligatoria',
-        esOpcional: false
+        esOpcional: false,
+        validacion: (valor: string) => valor !== 'SinSeleccionar'
     }
 ];
 
@@ -229,7 +241,7 @@ export function FormularioCrearEquipo(): React.JSX.Element {
             ? !regla.esOpcional(String(formData.TipoDeEquipo)) // pasar como string
             : !regla.esOpcional;
 
-        if (esObligatorio && (valor === '0' || valor === 'ABC' || valor === '' || valor === null || valor === undefined)) {
+        if (esObligatorio && (valor === '0' || valor === 'SinSeleccionar' || valor === '' || valor === null || valor === undefined)) {
             error = regla.mensaje;
         } else if (regla.validacion && !regla.validacion(valor)) {
             error = regla.mensaje;
