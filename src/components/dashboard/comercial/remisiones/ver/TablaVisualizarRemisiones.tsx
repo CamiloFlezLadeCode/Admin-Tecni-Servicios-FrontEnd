@@ -1,5 +1,4 @@
 'use client';
-
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useSocketIO } from '@/hooks/use-WebSocket';
@@ -130,12 +129,12 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
     };
 
     const actions: ActionDefinition<Remision>[] = [
-        {
-            icon: <PencilSimple size={20} />,
-            tooltip: 'Editar remisión',
-            onClick: (row: Remision) => console.log('Editar:', row.IdRemision),
-            color: 'primary'
-        },
+        // {
+        //     icon: <PencilSimple size={20} />,
+        //     tooltip: 'Editar remisión',
+        //     onClick: (row: Remision) => console.log('Editar:', row.IdRemision),
+        //     color: 'primary'
+        // },
         {
             render: (row: Remision) => (
                 <GenerarPDF
