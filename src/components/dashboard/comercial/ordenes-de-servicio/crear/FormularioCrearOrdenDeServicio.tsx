@@ -1692,6 +1692,13 @@ export function FormularioCrearOrdenDeServicio(): React.JSX.Element {
         for (let i = 0; i < equipos.length; i++) {
             const equipo = equipos[i];
 
+            // ✅ NUEVA VALIDACIÓN: Si tiene cantidad pero NO tiene repuesto válido
+            if ((equipo.cantidad && equipo.cantidad.trim() !== '') &&
+                (equipo.IdRepuesto === OpcionPorDefectoNumber.value || !equipo.esRepuesto)) {
+                mostrarMensaje(`Debes seleccionar un repuesto válido en la posición ${i + 1} cuando ingresas una cantidad`, 'error');
+                return false;
+            }
+
             // Si es un repuesto, validar que tenga todos los datos requeridos
             if (equipo.esRepuesto) {
                 // Validar que tenga repuesto seleccionado
@@ -1715,6 +1722,12 @@ export function FormularioCrearOrdenDeServicio(): React.JSX.Element {
                 // Validar que la cantidad sea mayor a 0
                 if (parseInt(equipo.cantidad) <= 0) {
                     mostrarMensaje(`La cantidad del repuesto ${i + 1} debe ser mayor a 0`, 'error');
+                    return false;
+                }
+
+                // Validar que si se ingreso cantidad, el repuesto no puede quedar en SinSeleccionar
+                if ((equipo.cantidad !== null && equipo.cantidad !== '') && (equipo.IdRepuesto === 0)) {
+                    mostrarMensaje(`Debes seleccionar un repuesto válido en la posición ${i + 1}`, 'error');
                     return false;
                 }
             }
@@ -1781,6 +1794,7 @@ export function FormularioCrearOrdenDeServicio(): React.JSX.Element {
                     FechaOrdenDeServicio: dayjs(),
                     IdEquipoCliente: OpcionPorDefectoNumber.value
                 });
+                setOpcionGarantia(null);
 
             } catch (error) {
                 console.error(`Error al crear la orden: ${error}`);
@@ -1809,6 +1823,7 @@ export function FormularioCrearOrdenDeServicio(): React.JSX.Element {
                         tamano='small'
                         tipo_input='text'
                         valorname='NoOrdenDeServicio'
+                        bloqueado
                     />
                 </Typography>
             </Box>

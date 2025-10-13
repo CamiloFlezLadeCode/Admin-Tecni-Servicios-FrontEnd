@@ -137,7 +137,11 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
         },
         {
             key: 'CantidadRepuesto',
-            header: 'Cantidad'
+            header: 'Cantidad Total'
+        },
+        {
+            key: 'CantidadDisponibleRepuesto',
+            header: 'Cantidad Disponible'
         },
         {
             key: 'UsuarioCreacion',

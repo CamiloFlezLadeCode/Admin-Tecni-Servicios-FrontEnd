@@ -9,6 +9,7 @@ import { ListarBodegasPorTipo } from '@/services/generales/ListarBodegasPorTipoS
 import { ListarCategorias } from '@/services/generales/ListarCategoriasServices';
 import { ListarEstados } from '@/services/generales/ListarEstadosService';
 import { ListarSubarrendatarios } from '@/services/generales/ListarSubarrendatariosService';
+import { ListarClientes } from '@/services/generales/ListarClientesService';
 import { ListarTiposDeEquipos } from '@/services/generales/ListarTiposDeEquiposService';
 import { ListarUnidadesDeMedida } from '@/services/generales/ListarUnidadesDeMedidaService';
 import { CrearEquipo } from '@/services/gestionycontrol/equipos/CrearEquipoService';
@@ -309,7 +310,8 @@ export function FormularioCrearEquipo(): React.JSX.Element {
     // Carga de datos
     const cargarSubarrendatarios = useCallback(async () => {
         try {
-            const data = await ListarSubarrendatarios();
+            // const data = await ListarSubarrendatarios();
+            const data = await ListarClientes();
             data.unshift(OpcionPorDefecto);
             setSubarrendatarios(data);
         } catch (error) {
