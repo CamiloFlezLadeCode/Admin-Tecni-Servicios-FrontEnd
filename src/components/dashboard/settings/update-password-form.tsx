@@ -190,7 +190,9 @@ export function UpdatePasswordForm(): React.JSX.Element {
     reset,
     formState: { errors },
   } = useForm<Values>({
-    defaultValues,
+    defaultValues: {
+      User: documentoUsuarioActivo || ''
+    },
     resolver: zodResolver(schema),
   });
 
@@ -209,7 +211,10 @@ export function UpdatePasswordForm(): React.JSX.Element {
 
   const onSubmit = async (data: Values) => {
     const datosConDocumento = {
-      ...data,
+      // ...data,
+      User: documentoUsuarioActivo,
+      Password: data.Password,
+      ConfirmPassword: data.ConfirmPassword,
       DocumentoUsuarioActivo: documentoUsuarioActivo, // o el valor que tengas
     };
     try {
@@ -259,6 +264,7 @@ export function UpdatePasswordForm(): React.JSX.Element {
                       tamano="small"
                       tipo_input="text"
                       valorname="Usuario"
+                      bloqueado
                       // InputProps={{
                       //   endAdornment: (
                       //     <Box width="40px" /> // Reserva espacio, como el ícono del ojito
