@@ -185,6 +185,35 @@ export const navItems = [
       }
     ]
   },
+
+  // Configuración para el módulo de inventario (equipos y repuestos)
+  {
+    key: 'inventario',
+    title: 'Inventario',
+    items: [
+      {
+        key: 'inventario_equipos',
+        title: 'Equipos',
+        icon: 'icono-bodegas',
+        href: paths.dashboard.inventarioequipos,
+        matcher: {
+          type: 'startsWith',
+          href: paths.dashboard.inventarioequipos,
+        }
+      },
+      {
+        key: 'inventario_repuestos',
+        title: 'Repuestos',
+        icon: 'icono-bodegas',
+        href: paths.dashboard.inventariorepuestos,
+        matcher: {
+          type: 'startsWith',
+          href: paths.dashboard.inventariorepuestos,
+        }
+      },
+    ]
+  },
+
   // {
   //   key: 'hojadevidaequipos',
   //   title: 'Hoja de vida equipos',

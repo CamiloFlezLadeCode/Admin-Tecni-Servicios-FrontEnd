@@ -105,6 +105,24 @@ export const paths = {
     // Acerca
     acerca: '/dashboard/acerca',
     // ...
+
+    // Inventario
+    inventario: '/dashboard/inventario',
+    // ...
+
+    // Inventario de equipos
+    inventarioequipos: '/dashboard/inventario/equipos',
+    inventarioequiposentrdas: '/dashboard/inventario/equipos/entradas',
+    inventarioequipossalidas: '/dashboard/inventario/equipos/salidas',
+    inventarioequiposstock: '/dashboard/inventario/equipos/stock',
+    // ...
+
+    // Inventario de repuestos
+    inventariorepuestos: '/dashboard/inventario/repuestos',
+    inventariorepuestosentradas: '/dashboard/inventario/repuestos/entradas',
+    inventariorepuestossalidas: '/dashboard/inventario/repuestos/salidas',
+    inventariorepuestosstock: '/dashboard/inventario/repuestos/stock',
+    // ...
   },
   errors: { notFound: '/errors/not-found' },
 } as const;
