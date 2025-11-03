@@ -155,6 +155,17 @@ export function useSocketIO() {
         });
         // ...
 
+        // SOCKET PARA INVENTARIO DE EQUIPOS
+        socket.on('entrada-equipos-creada', (data) => {
+            setMessages((prev) => [...prev, { tipo: 'entrada-equipos-creada', data }]);
+        });
+        // ...
+
+        // SOCKET PARA INVENTARIO DE REPUESTOS
+        socket.on('entrada-repuestos-creada', (data) => {
+            setMessages((prev) => [...prev, { tipo: 'entrada-repuestos-creada', data }]);
+        });
+
         // SOCKET DESCONECTADO
         socket.on('disconnect', (reason) => {
             // console.log('❌ Socket desconectado:', reason);

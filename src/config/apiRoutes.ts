@@ -155,5 +155,21 @@ export const apiRoutes = {
         consultar_credenciales_del_profesional: (DocumentoProfesional: string) => `${API_BASE_URL}/consultar-credenciales-del-profesional/${DocumentoProfesional}`,
         crear_credenciales_profesional_por_administrador: `${API_BASE_URL}/crear-credenciales-profesional`,
         actualizar_credenciales_profesional_por_administrador: `${API_BASE_URL}/actualizar-credenciales-profesional`
+    },
+    inventario: {
+        equipos: {
+            listar_equipos_propios: `${API_BASE_URL}/listar-equipos-propios`,
+            siguiente_numero_entrada_equipos: `${API_BASE_URL}/siguiente-no-entrada-equipos`,
+            guardar_entrada_equipos: `${API_BASE_URL}/guardar-entrada-equipos`,
+            ver_todas_las_entradas_equipos: `${API_BASE_URL}/ver-entradas-de-equipos`,
+            visualizar_entrada_equipos: `${API_BASE_URL}/visualizar-entrada-equipos`,
+        },
+        repuestos: {
+            listar_repuestos: `${API_BASE_URL}/listar-repuestos`,
+            siguiente_numero_entrada_repuestos: `${API_BASE_URL}/siguiente-no-entrada-repuestos`,
+            guardar_entrada_repuestos: `${API_BASE_URL}/guardar-entrada-repuestos`,
+            ver_todas_las_entradas_repuestos: `${API_BASE_URL}/ver-entradas-de-repuestos`,
+            visualizar_entrada_repuestos: `${API_BASE_URL}/visualizar-entrada-repuestos`,
+        }
     }
 };
