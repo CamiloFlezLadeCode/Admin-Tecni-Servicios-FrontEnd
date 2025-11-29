@@ -122,6 +122,7 @@ export default function Layout({ children }: LayoutProps): React.JSX.Element {
             flex: '1 1 auto',
             flexDirection: 'column',
             pl: { lg: 'var(--SideNav-width)' },
+            transition: 'padding-left 0.45s ease-in-out',
             minHeight: 'calc(100vh - var(--Footer-height))',
           }}
         >
@@ -137,8 +138,9 @@ export default function Layout({ children }: LayoutProps): React.JSX.Element {
         sx={{
           position: 'fixed',
           bottom: 0,
-          left: { lg: 'var(--SideNav-width)' }, // Respeta el ancho del sidebar en desktop
+          left: { lg: 'var(--SideNav-width)' },
           width: { lg: `calc(100% - var(--SideNav-width))`, xs: '100%' },
+          transition: 'left 0.45s ease-in-out, width 0.45s ease-in-out',
           textAlign: 'center',
           zIndex: 999,
           backgroundColor: 'white',
