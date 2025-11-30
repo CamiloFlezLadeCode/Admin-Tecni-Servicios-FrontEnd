@@ -41,7 +41,8 @@ interface Datos {
     TipoDocumento: string;
     Documento: string;
     Direccion: string;
-    Celular: string;
+    Celular1: string;
+    Celular2: string;
     Correo: string;
     UsuarioCreacion: any;
     Estado: string;
@@ -147,7 +148,8 @@ export function FormularioEditarUsuarioGeneral({ onMostrarMensaje, DatosUsuarioA
         TipoDocumento: '',
         Documento: '',
         Direccion: '',
-        Celular: '',
+        Celular1: '',
+        Celular2: '',
         Correo: '@gmail.com',
         UsuarioCreacion: documentoUsuarioActivo,
         Estado: '1',
@@ -180,7 +182,8 @@ export function FormularioEditarUsuarioGeneral({ onMostrarMensaje, DatosUsuarioA
                 TipoDocumento: DatosUsuarioGeneral[0].TipoDocumento,
                 Documento: DatosUsuarioGeneral[0].Documento,
                 Direccion: DatosUsuarioGeneral[0].Direccion,
-                Celular: DatosUsuarioGeneral[0].Celular,
+                Celular1: DatosUsuarioGeneral[0].Celular1,
+                Celular2: DatosUsuarioGeneral[0].Celular2,
                 Correo: DatosUsuarioGeneral[0].Correo,
                 UsuarioCreacion: DatosUsuarioGeneral[0].UsuarioCreacion,
                 Estado: DatosUsuarioGeneral[0].Estado,
@@ -398,13 +401,25 @@ export function FormularioEditarUsuarioGeneral({ onMostrarMensaje, DatosUsuarioA
                                 </Grid>
                                 <Grid md={2} xs={12} mt={0.5}>
                                     <Input
-                                        label='Celular'
-                                        value={datos.Celular}
+                                        label='Celular 1'
+                                        value={datos.Celular1}
                                         onChange={handleChange}
                                         // required
                                         tamano='small'
                                         tipo_input='text'
-                                        valorname='Celular'
+                                        valorname='Celular1'
+                                        maximalongitud={10}
+                                    />
+                                </Grid>
+                                <Grid md={2} xs={12} mt={0.5}>
+                                    <Input
+                                        label='Celular 2'
+                                        value={datos.Celular2}
+                                        onChange={handleChange}
+                                        // required
+                                        tamano='small'
+                                        tipo_input='text'
+                                        valorname='Celular2'
                                         maximalongitud={10}
                                     />
                                 </Grid>

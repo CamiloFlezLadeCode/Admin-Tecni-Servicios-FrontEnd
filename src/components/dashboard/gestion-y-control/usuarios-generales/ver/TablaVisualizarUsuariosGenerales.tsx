@@ -16,7 +16,8 @@ interface UsuarioGeneral {
     Documento: string;
     Correo: string;
     Direccion: string;
-    Celular: string;
+    Celular1: string;
+    Celular2: string;
     RolesLabel: string;
     Nivel: string;
     UsuarioCreacion: string;
@@ -128,8 +129,12 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
             header: 'Dirección'
         },
         {
-            key: 'Celular',
-            header: 'Celular'
+            key: 'Celular1',
+            header: 'Celular 1'
+        },
+        {
+            key: 'Celular2',
+            header: 'Celular 2'
         },
         {
             key: 'RolesLabel',

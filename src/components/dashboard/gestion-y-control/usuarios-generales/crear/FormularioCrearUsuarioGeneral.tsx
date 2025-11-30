@@ -34,7 +34,8 @@ interface Datos {
     TipoDocumento: string;
     Documento: string;
     Direccion: string;
-    Celular: string;
+    Celular1: string;
+    Celular2: string;
     Correo: string;
     UsuarioCreacion: any;
     Estado: string;
@@ -105,7 +106,8 @@ export function FormularioCrearUsuarioGeneral(): React.JSX.Element {
         TipoDocumento: '1',
         Documento: '',
         Direccion: '',
-        Celular: '',
+        Celular1: '',
+        Celular2: '',
         Correo: '@gmail.com',
         UsuarioCreacion: documentoUsuarioActivo,
         Estado: '1',
@@ -119,7 +121,7 @@ export function FormularioCrearUsuarioGeneral(): React.JSX.Element {
         // { campo: 'Apellidos', mensaje: 'El apellido es obligatorio.' },
         { campo: 'Documento', mensaje: 'El documento es obligatorio.' },
         { campo: 'Direccion', mensaje: 'La dirección es obligatoria.' },
-        { campo: 'Celular', mensaje: 'El celular es obligatorio y debe ser un número válido de 10 dígitos.' },
+        { campo: 'Celular1', mensaje: 'El celular 1 es obligatorio y debe ser un número válido de 10 dígitos.' },
         { campo: 'Correo', mensaje: 'El correo es obligatorio y debe ser válido.' },
         { campo: 'Estado', mensaje: 'El estado es obligatorio' },
         { campo: 'Roles', mensaje: 'El rol es obligatorio' },
@@ -151,7 +153,8 @@ export function FormularioCrearUsuarioGeneral(): React.JSX.Element {
                     TipoDocumento: '1',
                     Documento: '',
                     Direccion: '',
-                    Celular: '',
+                    Celular1: '',
+                    Celular2: '',
                     Correo: '@gmail.com',
                     UsuarioCreacion: documentoUsuarioActivo,
                     Estado: '1',
@@ -278,13 +281,25 @@ export function FormularioCrearUsuarioGeneral(): React.JSX.Element {
                     </Grid>
                     <Grid md={2} xs={12} mt={0.5}>
                         <Input
-                            label='Celular'
-                            value={datos.Celular}
+                            label='Celular 1'
+                            value={datos.Celular1}
                             onChange={handleChange}
                             // required
                             tamano='small'
                             tipo_input='text'
-                            valorname='Celular'
+                            valorname='Celular1'
+                            maximalongitud={10}
+                        />
+                    </Grid>
+                    <Grid md={2} xs={12} mt={0.5}>
+                        <Input
+                            label='Celular 2'
+                            value={datos.Celular2}
+                            onChange={handleChange}
+                            // required
+                            tamano='small'
+                            tipo_input='text'
+                            valorname='Celular2'
                             maximalongitud={10}
                         />
                     </Grid>
