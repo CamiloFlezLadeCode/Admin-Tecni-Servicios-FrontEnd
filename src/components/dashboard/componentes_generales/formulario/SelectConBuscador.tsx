@@ -155,7 +155,7 @@ const SelectConBuscador: React.FC<InputSelectProps> = ({
             <Autocomplete
                 fullWidth
                 options={options}
-                getOptionLabel={(option) => option.label}
+                getOptionLabel={(option) => String(option.label || option.value || '')}
                 isOptionEqualToValue={(option, val) => option.value === val?.value}
                 value={selectedOption}
                 disabled={bloqueado}

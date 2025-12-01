@@ -166,10 +166,16 @@ export const apiRoutes = {
         },
         repuestos: {
             listar_repuestos: `${API_BASE_URL}/listar-repuestos`,
+            listar_tipos_movimiento_repuesto: `${API_BASE_URL}/listar-tipos-movimiento-repuesto`,
             siguiente_numero_entrada_repuestos: `${API_BASE_URL}/siguiente-no-entrada-repuestos`,
             guardar_entrada_repuestos: `${API_BASE_URL}/guardar-entrada-repuestos`,
             ver_todas_las_entradas_repuestos: `${API_BASE_URL}/ver-entradas-de-repuestos`,
             visualizar_entrada_repuestos: `${API_BASE_URL}/visualizar-entrada-repuestos`,
+            ver_stock_repuestos: `${API_BASE_URL}/ver-stock-repuestos`,
+            siguiente_numero_salida_repuestos: `${API_BASE_URL}/siguiente-no-salida-repuestos`,
+            guardar_salida_repuestos: `${API_BASE_URL}/guardar-salida-repuestos`,
+            ver_todas_las_salidas_repuestos: `${API_BASE_URL}/ver-salidas-de-repuestos`,
+            visualizar_salida_repuestos: `${API_BASE_URL}/visualizar-salida-repuestos`
         }
     }
 };

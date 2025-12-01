@@ -15,7 +15,7 @@ interface NavItem {
 
 const items: NavItem[] = [
     { label: 'Entradas', path: paths.dashboard.inventarioequiposentrdas, icon: ArrowSquareIn },
-    // { label: 'Salidas', path: paths.dashboard.inventarioequipossalidas, icon: ArrowSquareOut },
+    { label: 'Salidas', path: paths.dashboard.inventarioequipossalidas, icon: ArrowSquareOut },
     { label: 'Stock', path: paths.dashboard.inventarioequiposstock, icon: Package },
 ];
 

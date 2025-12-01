@@ -165,6 +165,9 @@ export function useSocketIO() {
         socket.on('entrada-repuestos-creada', (data) => {
             setMessages((prev) => [...prev, { tipo: 'entrada-repuestos-creada', data }]);
         });
+        socket.on('salida-repuesto-creada', (data) => {
+            setMessages((prev) => [...prev, { tipo: 'salida-repuesto-creada', data }]);
+        });
 
         // SOCKET DESCONECTADO
         socket.on('disconnect', (reason) => {
