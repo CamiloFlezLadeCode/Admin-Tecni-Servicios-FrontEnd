@@ -312,7 +312,7 @@ export function ModalRegistrarVisualizarSalidaRepuestos({
             {modo === 'visualizar' ? 'Detalles de salida de repuestos' : 'Registrar salida de repuestos'}
           </Typography>
           <IconButton
-            onClick={() => setModalAbierto(false)}
+            onClick={() => { setModalAbierto(false); onClose?.(); }}
             sx={{ position: 'absolute', top: 8, right: 8 }}
           >
             <X />
@@ -406,7 +406,7 @@ export function ModalRegistrarVisualizarSalidaRepuestos({
           <Divider sx={{ mt: 1 }} />
           <CardActions>
             <Box flex={1} />
-            <Button variant='outlined' onClick={() => setModalAbierto(false)}>Cerrar</Button>
+            <Button variant='outlined' onClick={() => { setModalAbierto(false); onClose?.(); }}>Cerrar</Button>
             {modo === 'crear' && (
               <Button variant='contained' disabled={!habilitarGuardar} onClick={guardarSalida}>Guardar salida</Button>
             )}
