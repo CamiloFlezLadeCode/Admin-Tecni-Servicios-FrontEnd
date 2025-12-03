@@ -31,7 +31,6 @@ export function FormularioEditarRepuesto({ IdRepuesto, sendMessage, onMostrarMen
     // Se implementa estado para todos los campos del formulario
     const [datos, setDatos] = React.useState({
         NuevoNombreRepuesto: '',
-        NuevaCantidadRepuesto: 0,
         NuevoEstadoRepuesto: '',
         IdRepuesto: IdRepuesto
     })
@@ -58,7 +57,6 @@ export function FormularioEditarRepuesto({ IdRepuesto, sendMessage, onMostrarMen
             setEstados(EstadosSeleccionados);
             setDatos({
                 NuevoNombreRepuesto: InfoRepuesto[0].Nombre,
-                NuevaCantidadRepuesto: InfoRepuesto[0].Cantidad,
                 NuevoEstadoRepuesto: InfoRepuesto[0].Estado,
                 IdRepuesto: IdRepuesto
             });
@@ -225,17 +223,6 @@ export function FormularioEditarRepuesto({ IdRepuesto, sendMessage, onMostrarMen
                                         tamano='small'
                                         tipo_input='text'
                                         valorname='NuevoNombreRepuesto'
-                                    />
-                                </Grid>
-                                <Grid md={4} xs={12} mt={0.5}>
-                                    <Input
-                                        label='Cantidad'
-                                        value={datos.NuevaCantidadRepuesto}
-                                        onChange={handleChange}
-                                        // required
-                                        tamano='small'
-                                        tipo_input='number'
-                                        valorname='NuevaCantidadRepuesto'
                                     />
                                 </Grid>
                                 <Grid md={4} xs={12} mt={0.5}>

@@ -96,10 +96,18 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
         CargarRepuestos();
     }, []);
 
+    const OperacionesStandar = new Set([
+        'repuesto-creado',
+        'repuesto-actualizado',
+        'repuesto-eliminado',
+        'entrada-repuestos-creada',
+        'salida-repuestos-creada',
+        'orden-de-servicio-creada'
+    ]);
     React.useEffect(() => {
         if (messages.length > 0) {
             const ultimoMensaje = messages[messages.length - 1];
-            if (ultimoMensaje.tipo === 'repuesto-creado' || ultimoMensaje.tipo === 'repuesto-actualizado') {
+            if (OperacionesStandar.has(ultimoMensaje.tipo)) {
                 CargarRepuestos();
             }
         }
@@ -135,10 +143,10 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
             key: 'NombreRepuesto',
             header: 'Nombre'
         },
-        {
-            key: 'CantidadRepuesto',
-            header: 'Cantidad Total'
-        },
+        // {
+        //     key: 'CantidadRepuesto',
+        //     header: 'Cantidad Total'
+        // },
         {
             key: 'CantidadDisponibleRepuesto',
             header: 'Cantidad Disponible'

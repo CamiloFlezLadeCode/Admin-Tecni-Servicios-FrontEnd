@@ -1,6 +1,6 @@
 'use client';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
-import { DataTable, ColumnDefinition } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
+import { ColumnDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useAlertas } from '@/hooks/FuncionMostrarAlerta';
 import { VerStockRepuestos } from '@/services/inventario/repuestos/VerStockRepuestosService';
 import {
@@ -9,14 +9,11 @@ import {
   CardContent,
   Chip,
   Divider,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
   Stack,
   Typography
 } from '@mui/material';
 import * as React from 'react';
+import { useSocketIO } from '@/hooks/use-WebSocket';
 
 interface RepuestoStock {
   IdRepuesto: number;
@@ -35,6 +32,7 @@ export function TablaVisualizarStockRepuestos(): React.JSX.Element {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [categoriaFiltro, setCategoriaFiltro] = React.useState<string>('');
   const [soloBajoStock, setSoloBajoStock] = React.useState<boolean>(false);
+  const { messages } = useSocketIO();
 
   const { mostrarAlertas, mensajeAlerta, tipoAlerta, mostrarMensaje, ocultarAlerta } = useAlertas();
 
@@ -69,6 +67,17 @@ export function TablaVisualizarStockRepuestos(): React.JSX.Element {
     }
   };
 
+  React.useEffect(() => {
+    if (messages.length > 0) {
+      console.log('messages', messages);
+      const ultimo = messages[messages.length - 1];
+      console.log('ultimo', ultimo);
+      if (ultimo.tipo === 'salida-repuestos-creada' || ultimo.tipo === 'entrada-repuestos-creada') {
+        handleRefresh();
+      }
+    }
+  }, [messages]);
+
   const categorias = React.useMemo(() => {
     const set = new Set<string>();
     data.forEach((d) => { if (d.Categoria) set.add(String(d.Categoria)); });
@@ -87,19 +96,19 @@ export function TablaVisualizarStockRepuestos(): React.JSX.Element {
     {
       key: 'NombreRepuesto',
       header: 'Repuesto',
-      render: (row) => (
-        <Stack spacing={0.3}>
-          <Typography variant="body2" sx={{ fontWeight: 600 }}>{row.NombreRepuesto ?? '-'}</Typography>
-          <Typography variant="caption" color="text.secondary">{row.Categoria ?? 'Sin categoría'}</Typography>
-        </Stack>
-      )
+      // render: (row) => (
+      //   <Stack spacing={0.3}>
+      //     <Typography variant="body2" sx={{ fontWeight: 600 }}>{row.NombreRepuesto ?? '-'}</Typography>
+      //     {/* <Typography variant="caption" color="text.secondary">{row.Categoria ?? 'Sin categoría'}</Typography> */}
+      //   </Stack>
+      // )
     },
-    {
-      key: 'buscar',
-      header: 'Buscar',
-      hidden: true,
-      render: (row) => `${row.CodigoRepuesto ?? ''} ${row.NombreRepuesto ?? ''} ${row.Categoria ?? ''} ${row.UnidadMedida ?? ''} ${row.Estado ?? ''} ${row.CantidadDisponible ?? ''}`
-    },
+    // {
+    //   key: 'buscar',
+    //   header: 'Buscar',
+    //   hidden: true,
+    //   render: (row) => `${row.CodigoRepuesto ?? ''} ${row.NombreRepuesto ?? ''} ${row.Categoria ?? ''} ${row.UnidadMedida ?? ''} ${row.Estado ?? ''} ${row.CantidadDisponible ?? ''}`
+    // },
     {
       key: 'CantidadDisponible',
       header: 'Disponible',
@@ -117,7 +126,7 @@ export function TablaVisualizarStockRepuestos(): React.JSX.Element {
         );
       }
     },
-    { key: 'UnidadMedida', header: 'Unidad', width: 120 },
+    // { key: 'UnidadMedida', header: 'Unidad', width: 120 },
     {
       key: 'Estado',
       header: 'Estado',
@@ -138,7 +147,7 @@ export function TablaVisualizarStockRepuestos(): React.JSX.Element {
         <Divider />
         <CardContent>
           <Box display="flex" gap={2} mb={2} flexWrap="wrap">
-            <FormControl size="small" sx={{ minWidth: 200 }}>
+            {/* <FormControl size="small" sx={{ minWidth: 200 }}>
               <InputLabel>Categoría</InputLabel>
               <Select
                 label="Categoría"
@@ -150,7 +159,7 @@ export function TablaVisualizarStockRepuestos(): React.JSX.Element {
                   <MenuItem key={c} value={c}>{c}</MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
             <Chip
               label={soloBajoStock ? 'Solo bajo stock' : 'Todos los niveles'}
               color={soloBajoStock ? 'warning' : 'default'}
@@ -161,6 +170,7 @@ export function TablaVisualizarStockRepuestos(): React.JSX.Element {
 
           <DataTable<RepuestoStock>
             data={filtered}
+            // data={data}
             columns={columns}
             loading={loading}
             error={error}

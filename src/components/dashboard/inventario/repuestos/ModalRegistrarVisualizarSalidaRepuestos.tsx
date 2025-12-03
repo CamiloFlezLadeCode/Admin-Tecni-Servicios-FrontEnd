@@ -108,6 +108,21 @@ export function ModalRegistrarVisualizarSalidaRepuestos({
   const [estados, setEstados] = React.useState<{ value: number; label: string; }[]>([]);
   const [tiposMovimiento, setTiposMovimiento] = React.useState<{ value: number; label: string; }[]>([]);
   const { sendMessage, messages } = useSocketIO();
+  const repuestosDict = React.useMemo(() => {
+    const m = new Map<number, string>();
+    repuestos.forEach((o) => { if (o?.value) m.set(Number(o.value), String(o.label ?? '')); });
+    return m;
+  }, [repuestos]);
+  const unidadesDict = React.useMemo(() => {
+    const m = new Map<number, string>();
+    unidadesDeMedida.forEach((o) => { if (o?.value) m.set(Number(o.value), String(o.label ?? '')); });
+    return m;
+  }, [unidadesDeMedida]);
+  const estadosDict = React.useMemo(() => {
+    const m = new Map<number, string>();
+    estados.forEach((o) => { if (o?.value) m.set(Number(o.value), String(o.label ?? '')); });
+    return m;
+  }, [estados]);
 
   React.useEffect(() => {
     if (modo === 'crear') {
@@ -235,6 +250,25 @@ export function ModalRegistrarVisualizarSalidaRepuestos({
     setDatos(prev => ({ ...prev, Repuestos: prev.Repuestos.filter((_, i) => i !== index) }));
   };
 
+  const handleDatosChange = (e: any) => {
+    const { name, value } = e.target || {};
+    if (!name) return;
+    setDatos(prev => ({
+      ...prev,
+      [name]: name === 'IdTipoMovimiento' ? Number(value) : value
+    }));
+  };
+
+  const handleRepuestoItemChange = (e: any) => {
+    const { name, value } = e.target || {};
+    if (!name) return;
+    const numericos = new Set(['IdRepuesto', 'Cantidad', 'IdUnidadMedida', 'IdEstado']);
+    setRepuestoItem(prev => ({
+      ...prev,
+      [name]: numericos.has(name) ? Number(value) : value
+    }));
+  };
+
   const guardarSalida = async () => {
     try {
       const body = {
@@ -247,9 +281,32 @@ export function ModalRegistrarVisualizarSalidaRepuestos({
         IdTipoMovimiento: datos.IdTipoMovimiento ?? 5
       };
       await GuardarSalidaRepuestos(body as any);
-      sendMessage?.('salida-repuesto-creada', { numero: datos.NoSalidaRepuestos, fecha: new Date().toISOString() });
+      sendMessage?.('salida-repuestos-creada', { numero: datos.NoSalidaRepuestos, fecha: new Date().toISOString() });
       onMostrarMensaje?.('Salida registrada correctamente', 'success');
-      setModalAbierto(false);
+      setDatos(prev => ({
+        ...prev,
+        FechaSalida: dayjs(),
+        DocumentoResponsable: OpcionPorDefecto.value,
+        Observaciones: '',
+        NoSalidaRepuestos: null,
+        Repuestos: [],
+        UsuarioCreacion: documentoUsuarioActivo,
+        IdTipoMovimiento: OpcionPorDefectoNumber.value
+      }));
+      setRepuestoItem({
+        IdRepuesto: OpcionPorDefectoNumber.value,
+        Cantidad: 1,
+        IdUnidadMedida: OpcionPorDefectoNumber.value,
+        IdEstado: OpcionPorDefectoNumber.value,
+        Observacion: ''
+      });
+      try {
+        const siguiente = await ConsultarSiguienteNoSalidaRepuestos();
+        const valor = Array.isArray(siguiente)
+          ? Number(siguiente[0]?.SiguienteNoSalidaRepuestos ?? 0)
+          : Number((siguiente as any)?.SiguienteNoSalidaRepuestos ?? siguiente ?? 0);
+        setDatos(prev => ({ ...prev, NoSalidaRepuestos: valor || null }));
+      } catch { }
     } catch (error: any) {
       onMostrarMensaje?.(error?.message ?? 'Error al registrar la salida', 'error');
     }
@@ -258,7 +315,7 @@ export function ModalRegistrarVisualizarSalidaRepuestos({
   React.useEffect(() => {
     if (messages.length > 0) {
       const ultimo = messages[messages.length - 1];
-      if (ultimo.tipo === 'salida-repuesto-creada') {
+      if (ultimo.tipo === 'salida-repuestos-creada') {
         (async () => {
           try {
             const siguiente = await ConsultarSiguienteNoSalidaRepuestos();
@@ -276,7 +333,7 @@ export function ModalRegistrarVisualizarSalidaRepuestos({
     <>
       {modo === 'crear' && (
         <Box display="flex" justifyContent="flex-end" mb={1}>
-          <Button variant="contained" onClick={() => setModalAbierto(true)}>Registrar salida manual</Button>
+          <Button variant="contained" onClick={() => setModalAbierto(true)}>+ Nueva Salida Repuestos</Button>
         </Box>
       )}
 
@@ -296,9 +353,9 @@ export function ModalRegistrarVisualizarSalidaRepuestos({
             transform: 'translate(-50%)',
             width: {
               xs: '90%',
-              sm: '80%',
-              md: 900,
-              lg: 900
+              sm: '90%',
+              md: '78%',
+              lg: '78%'
             },
             bgcolor: 'background.paper',
             boxShadow: 24,
@@ -309,7 +366,7 @@ export function ModalRegistrarVisualizarSalidaRepuestos({
           }}
         >
           <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
-            {modo === 'visualizar' ? 'Detalles de salida de repuestos' : 'Registrar salida de repuestos'}
+            {modo === 'visualizar' ? 'Detalles de salida de repuestos' : 'Nueva salida repuestos'}
           </Typography>
           <IconButton
             onClick={() => { setModalAbierto(false); onClose?.(); }}
@@ -327,13 +384,13 @@ export function ModalRegistrarVisualizarSalidaRepuestos({
                 <FechayHora label='Fecha salida' value={datos.FechaSalida} onChange={handleFechaChange} disabled={modo === 'visualizar'} />
               </Grid>
               <Grid xs={12} md={3}>
-                <Select label='Responsable' value={datos.DocumentoResponsable} onChange={(e: any) => setDatos(prev => ({ ...prev, DocumentoResponsable: e.target.value }))} options={responsables} valorname='DocumentoResponsable' bloqueado={modo === 'visualizar'} />
+                <Select label='Responsable' value={datos.DocumentoResponsable} onChange={handleDatosChange} options={responsables} valorname='DocumentoResponsable' bloqueado={modo === 'visualizar'} />
               </Grid>
               <Grid xs={12} md={3}>
-                <Select label='Tipo de movimiento' value={datos.IdTipoMovimiento ?? OpcionPorDefectoNumber.value} onChange={(e: any) => setDatos(prev => ({ ...prev, IdTipoMovimiento: Number(e.target.value) }))} options={tiposMovimiento} valorname='IdTipoMovimiento' bloqueado={modo === 'visualizar'} />
+                <Select label='Tipo de movimiento' value={datos.IdTipoMovimiento ?? OpcionPorDefectoNumber.value} onChange={handleDatosChange} options={tiposMovimiento} valorname='IdTipoMovimiento' bloqueado={modo === 'visualizar'} />
               </Grid>
-              <Grid xs={12} md={6}>
-                <Input label='Observaciones' value={datos.Observaciones} onChange={(e: any) => setDatos(prev => ({ ...prev, Observaciones: e.target.value }))} tamano='small' tipo_input='textarea' bloqueado={modo === 'visualizar'} />
+              <Grid xs={12} md={12}>
+                <Input label='Observaciones' value={datos.Observaciones} onChange={handleDatosChange} tamano='small' tipo_input='textarea' valorname='Observaciones' bloqueado={modo === 'visualizar'} />
               </Grid>
 
               {modo === 'crear' && (
@@ -344,19 +401,19 @@ export function ModalRegistrarVisualizarSalidaRepuestos({
                   </Grid>
 
                   <Grid xs={12} md={3}>
-                    <SelectConBuscador label='Repuesto' value={repuestoItem.IdRepuesto} onChange={(e: any) => setRepuestoItem(prev => ({ ...prev, IdRepuesto: Number(e.target.value) }))} options={repuestos} valorname='IdRepuesto' />
+                    <SelectConBuscador label='Repuesto' value={repuestoItem.IdRepuesto} onChange={handleRepuestoItemChange} options={repuestos} valorname='IdRepuesto' />
                   </Grid>
                   <Grid xs={12} md={3}>
-                    <Input label='Cantidad' value={repuestoItem.Cantidad} onChange={(e: any) => setRepuestoItem(prev => ({ ...prev, Cantidad: Number(e.target.value) }))} tamano='small' tipo_input='number' />
+                    <Input label='Cantidad' value={repuestoItem.Cantidad} onChange={handleRepuestoItemChange} tamano='small' tipo_input='number' valorname='Cantidad' />
                   </Grid>
                   <Grid xs={12} md={3}>
-                    <Select label='Unidad' value={repuestoItem.IdUnidadMedida} onChange={(e: any) => setRepuestoItem(prev => ({ ...prev, IdUnidadMedida: Number(e.target.value) }))} options={unidadesDeMedida} valorname='IdUnidadMedida' />
+                    <Select label='Unidad' value={repuestoItem.IdUnidadMedida} onChange={handleRepuestoItemChange} options={unidadesDeMedida} valorname='IdUnidadMedida' />
                   </Grid>
                   <Grid xs={12} md={3}>
-                    <Select label='Estado' value={repuestoItem.IdEstado} onChange={(e: any) => setRepuestoItem(prev => ({ ...prev, IdEstado: Number(e.target.value) }))} options={estados} valorname='IdEstado' />
+                    <Select label='Estado' value={repuestoItem.IdEstado} onChange={handleRepuestoItemChange} options={estados} valorname='IdEstado' />
                   </Grid>
                   <Grid xs={12} md={3}>
-                    <Input label='Observación' value={repuestoItem.Observacion} onChange={(e: any) => setRepuestoItem(prev => ({ ...prev, Observacion: e.target.value }))} tamano='small' tipo_input='text' />
+                    <Input label='Observación' value={repuestoItem.Observacion} onChange={handleRepuestoItemChange} tamano='small' tipo_input='text' valorname='Observacion' />
                   </Grid>
 
                   <Grid xs={12}>
@@ -372,6 +429,7 @@ export function ModalRegistrarVisualizarSalidaRepuestos({
                   <Table size='small'>
                     <TableHead>
                       <TableRow>
+                        <TableCell>Id</TableCell>
                         <TableCell>Repuesto</TableCell>
                         <TableCell>Cantidad</TableCell>
                         <TableCell>Unidad</TableCell>
@@ -385,10 +443,11 @@ export function ModalRegistrarVisualizarSalidaRepuestos({
                     <TableBody>
                       {datos.Repuestos.map((r, idx) => (
                         <TableRow key={idx}>
-                          <TableCell>{repuestos.find((o) => o.value === r.IdRepuesto)?.label ?? '-'}</TableCell>
+                          <TableCell>{r.IdRepuesto}</TableCell>
+                          <TableCell>{repuestosDict.get(r.IdRepuesto) ?? '-'}</TableCell>
                           <TableCell>{r.Cantidad}</TableCell>
-                          <TableCell>{unidadesDeMedida.find((u) => u.value === r.IdUnidadMedida)?.label ?? '-'}</TableCell>
-                          <TableCell>{estados.find((e) => e.value === r.IdEstado)?.label ?? '-'}</TableCell>
+                          <TableCell>{unidadesDict.get(r.IdUnidadMedida) ?? '-'}</TableCell>
+                          <TableCell>{estadosDict.get(r.IdEstado) ?? '-'}</TableCell>
                           <TableCell>{r.Observacion}</TableCell>
                           {modo !== 'visualizar' && (
                             <TableCell align='right'>
@@ -406,7 +465,6 @@ export function ModalRegistrarVisualizarSalidaRepuestos({
           <Divider sx={{ mt: 1 }} />
           <CardActions>
             <Box flex={1} />
-            <Button variant='outlined' onClick={() => { setModalAbierto(false); onClose?.(); }}>Cerrar</Button>
             {modo === 'crear' && (
               <Button variant='contained' disabled={!habilitarGuardar} onClick={guardarSalida}>Guardar salida</Button>
             )}

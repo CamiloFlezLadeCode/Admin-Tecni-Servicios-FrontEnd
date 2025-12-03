@@ -19,6 +19,7 @@ import InputSelect from '@/components/dashboard/componentes_generales/formulario
 import FormularioValidator from '@/components/dashboard/componentes_generales/formulario/ValidarCampos';
 import { OpcionPorDefecto, OpcionPorDefectoNumber, ParametroBuscarBodegasRepuestos } from '@/lib/constants/option-default';
 import { ListarBodegasPorTipo } from '@/services/generales/ListarBodegasPorTipoService';
+import { ListarUnidadesDeMedida } from '@/services/generales/ListarUnidadesDeMedidaService';
 
 
 interface EstadoRepuesto {
@@ -28,18 +29,23 @@ interface EstadoRepuesto {
 
 interface FormData {
     NombreRepuesto: string;
-    Cantidad: number | null;
     UsuarioCreacion: string | null;
     Estado: string;
     Bodega: number;
+    IdUnidadMedida: number;
 }
 
 interface ErrorForm {
     NombreRepuesto?: string;
-    Cantidad?: string;
     Estado?: string;
     Bodega?: string;
     [key: string]: string | undefined;
+}
+
+interface ReglaValidacion {
+    campo: keyof FormData | string;
+    mensaje: string;
+    validacion?: (valor: any) => boolean;
 }
 
 const ESTADOS_REPUESTO: EstadoRepuesto[] = [
@@ -57,10 +63,10 @@ export function FormularioCrearRepuesto(): React.JSX.Element {
     // Estados
     const [formData, setFormData] = useState<FormData>({
         NombreRepuesto: '',
-        Cantidad: null,
         UsuarioCreacion: documentoUsuarioActivo,
         Estado: OpcionPorDefecto.value,
-        Bodega: OpcionPorDefectoNumber.value
+        Bodega: OpcionPorDefectoNumber.value,
+        IdUnidadMedida: OpcionPorDefectoNumber.value
     });
 
     const [errores, setErrores] = useState<ErrorForm>({});
@@ -74,31 +80,31 @@ export function FormularioCrearRepuesto(): React.JSX.Element {
     const formularioRef = useRef<{ manejarValidacion: () => boolean }>(null);
 
     const [bodegasRepuestos, setBodegasRepuestos] = useState([]);
+    const [unidadesDeMedida, setUnidadesDeMedida] = useState<{ value: number; label: string }[]>([]);
 
     // Reglas de validación
-    const reglasValidacion = [
+    const reglasValidacion: ReglaValidacion[] = [
         { campo: 'NombreRepuesto', mensaje: 'El nombre del repuesto es obligatorio.' },
-        {
-            campo: 'Cantidad',
-            mensaje: 'La cantidad debe ser mayor a 0.',
-            validacion: (valor: number) => valor > 0
-        },
         { campo: 'Estado', mensaje: 'El estado es obligatorio.' },
-        { campo: 'Bodega', mensaje: 'La bodega es obligatoria' }
+        { campo: 'Bodega', mensaje: 'La bodega es obligatoria' },
+        { campo: 'IdUnidadMedida', mensaje: 'La unidad de medida es obligatoria.' }
     ];
 
     // Cargar datos iniciales
     useEffect(() => {
-        const ListarBodegasRepuestos = async () => {
+        const cargarIniciales = async () => {
             try {
                 const Bodegas = await ListarBodegasPorTipo({ IdTipoBodega: ParametroBuscarBodegasRepuestos.value });
                 Bodegas.unshift(OpcionPorDefectoNumber);
                 setBodegasRepuestos(Bodegas);
+
+                const Unidades = await ListarUnidadesDeMedida();
+                setUnidadesDeMedida([OpcionPorDefectoNumber, ...Unidades]);
             } catch (error) {
-                console.error(`Error al describir la acción: ${error}`);
+                console.error(`Error al cargar datos iniciales: ${error}`);
             }
         };
-        ListarBodegasRepuestos();
+        cargarIniciales();
     }, []);
 
     // Handlers
@@ -123,7 +129,7 @@ export function FormularioCrearRepuesto(): React.JSX.Element {
 
     const handleChange = useCallback((e: SelectChangeEvent<string> | React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        const processedValue = name === 'Cantidad' || name === 'Bodega' ? Number(value) : value;
+        const processedValue = ['Bodega', 'IdUnidadMedida'].includes(String(name)) ? Number(value) : value;
 
         setFormData(prev => ({
             ...prev,
@@ -234,10 +240,10 @@ export function FormularioCrearRepuesto(): React.JSX.Element {
             // Resetear formulario
             setFormData({
                 NombreRepuesto: '',
-                Cantidad: null,
                 UsuarioCreacion: documentoUsuarioActivo,
                 Estado: OpcionPorDefecto.value,
-                Bodega: OpcionPorDefectoNumber.value
+                Bodega: OpcionPorDefectoNumber.value,
+                IdUnidadMedida: OpcionPorDefectoNumber.value
             });
         } catch (error) {
             mostrarMensaje(`Error al crear repuesto: ${error instanceof Error ? error.message : String(error)}`, 'error');
@@ -288,22 +294,19 @@ export function FormularioCrearRepuesto(): React.JSX.Element {
                             helperText={errores.NombreRepuesto}
                         />
                     </Grid>
-
                     <Grid md={4} xs={12} mt={0.5}>
-                        <Input
-                            label="Cantidad*"
-                            // value={Number(formData.Cantidad)}
-                            value={formData.Cantidad === null ? '' : formData.Cantidad}
+                        <InputSelect
+                            label="Unidad de medida*"
+                            value={formData.IdUnidadMedida}
+                            options={unidadesDeMedida}
+                            size="small"
                             onChange={handleChange}
-                            tamano="small"
-                            tipo_input="number"
-                            valorname="Cantidad"
-                            //   inputProps={{ min: 1 }}
-                            minimalongitud={1}
-                            error={!!errores.Cantidad}
-                            helperText={errores.Cantidad}
+                            valorname="IdUnidadMedida"
+                            error={!!errores.IdUnidadMedida}
+                            helperText={errores.IdUnidadMedida}
                         />
                     </Grid>
+
 
                     <Grid md={4} xs={12} mt={0.5}>
                         <InputSelect

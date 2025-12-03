@@ -772,9 +772,11 @@ export function ModalRegistrarVisualizarEntradaRepuestos({
     return (
         <>
             {modo === 'crear' && (
-                <Button variant="contained" onClick={() => { setModalAbierto(true) }}>
-                    + Nueva Entrada Repuestos
-                </Button>
+                <Box display="flex" justifyContent="flex-end" mb={1}>
+                    <Button variant="contained" onClick={() => { setModalAbierto(true) }}>
+                        + Nueva Entrada Repuestos
+                    </Button>
+                </Box>
             )}
 
             <Modal
@@ -799,8 +801,8 @@ export function ModalRegistrarVisualizarEntradaRepuestos({
                         width: {
                             xs: '95%',
                             sm: '90%',
-                            md: '80%',
-                            lg: '60%',
+                            md: '78%',
+                            lg: '78%',
                         },
                         bgcolor: 'background.paper',
                         boxShadow: 24,

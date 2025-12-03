@@ -70,7 +70,7 @@ export function TablaVisualizarSalidasRepuestos(): React.JSX.Element {
   const columns = [
     { key: 'NoSalidaRepuestos', header: 'NoSalida' },
     { key: 'FechaSalida', header: 'Fecha Salida' },
-    { key: 'Responsable', header: 'Responsable' },
+    { key: 'NombreResponsable', header: 'Responsable' },
     { key: 'TipoMovimiento', header: 'Tipo movimiento' },
     {
       key: 'Observaciones',
@@ -122,7 +122,7 @@ export function TablaVisualizarSalidasRepuestos(): React.JSX.Element {
   React.useEffect(() => {
     if (messages.length > 0) {
       const ultimo = messages[messages.length - 1];
-      if (ultimo.tipo === 'salida-repuesto-creada') {
+      if (ultimo.tipo === 'salida-repuestos-creada') {
         handleRefresh();
       }
     }
