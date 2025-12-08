@@ -13,6 +13,7 @@ import { GuardarSalidaRepuestos } from '@/services/inventario/repuestos/GuardarS
 import { ListarTiposMovimientoRepuesto } from '@/services/inventario/repuestos/ListarTiposMovimientoRepuestoService';
 import { ListarProfesionalesPertenecientes } from '@/services/configuraciones/ListarProfesionalesPertenecientesService';
 import { VisualizarSalidaRepuestos } from '@/services/inventario/repuestos/VisualizarSalidaRepuestosService';
+import { ConsultarRepuestoPorId } from '@/services/gestionycontrol/repuestos/ConsultarRepuestoPorIdService';
 import {
   Box,
   Button,
@@ -108,6 +109,7 @@ export function ModalRegistrarVisualizarSalidaRepuestos({
   const [estados, setEstados] = React.useState<{ value: number; label: string; }[]>([]);
   const [tiposMovimiento, setTiposMovimiento] = React.useState<{ value: number; label: string; }[]>([]);
   const { sendMessage, messages } = useSocketIO();
+  const [unidadPorRepuesto, setUnidadPorRepuesto] = React.useState<Map<number, number>>(new Map());
   const repuestosDict = React.useMemo(() => {
     const m = new Map<number, string>();
     repuestos.forEach((o) => { if (o?.value) m.set(Number(o.value), String(o.label ?? '')); });
@@ -123,6 +125,33 @@ export function ModalRegistrarVisualizarSalidaRepuestos({
     estados.forEach((o) => { if (o?.value) m.set(Number(o.value), String(o.label ?? '')); });
     return m;
   }, [estados]);
+
+  const asignarUnidadMedidaPorRepuesto = async (idRepuesto: number) => {
+    try {
+      const existente = unidadPorRepuesto.get(idRepuesto);
+      if (existente) {
+        setRepuestoItem(prev => ({ ...prev, IdUnidadMedida: existente }));
+        return;
+      }
+      const detalle = await ConsultarRepuestoPorId(idRepuesto);
+      const um = Number(
+        detalle?.[0]?.IdUnidadMedida ??
+        detalle?.[0]?.IdUnidadDeMedida ??
+        detalle?.IdUnidadMedida ??
+        detalle?.IdUnidadDeMedida ??
+        detalle?.UnidadMedidaId ??
+        0
+      );
+      if (um > 0) {
+        setUnidadPorRepuesto(prev => new Map(prev).set(idRepuesto, um));
+        setRepuestoItem(prev => ({ ...prev, IdUnidadMedida: um }));
+      } else {
+        setRepuestoItem(prev => ({ ...prev, IdUnidadMedida: OpcionPorDefectoNumber.value }));
+      }
+    } catch {
+      setRepuestoItem(prev => ({ ...prev, IdUnidadMedida: OpcionPorDefectoNumber.value }));
+    }
+  };
 
   React.useEffect(() => {
     if (modo === 'crear') {
@@ -210,8 +239,20 @@ export function ModalRegistrarVisualizarSalidaRepuestos({
             })();
           opcionesRepuestos.push({ value: id, label: etiqueta });
           vistos.add(id);
+          const um = Number(r?.IdUnidadMedida ?? r?.IdUnidadDeMedida ?? 0);
+          if (um > 0) {
+            // construir mapa id -> unidad
+            // defer set until final to avoid many state updates
+          }
         });
         setRepuestos([OpcionPorDefectoNumber, ...opcionesRepuestos]);
+        const mapa = new Map<number, number>();
+        (Array.isArray(Repuestos) ? Repuestos : []).forEach((r: any) => {
+          const id = Number((r && 'value' in r) ? r.value : r?.IdRepuesto);
+          const um = Number(r?.IdUnidadMedida ?? r?.IdUnidadDeMedida ?? 0);
+          if (id && um) mapa.set(id, um);
+        });
+        setUnidadPorRepuesto(mapa);
         setTiposMovimiento([OpcionPorDefectoNumber, ...Tipos]);
         setResponsables([OpcionPorDefecto, ...((Array.isArray(Resp) ? Resp : []))]);
       } catch (error) {
@@ -401,13 +442,13 @@ export function ModalRegistrarVisualizarSalidaRepuestos({
                   </Grid>
 
                   <Grid xs={12} md={3}>
-                    <SelectConBuscador label='Repuesto' value={repuestoItem.IdRepuesto} onChange={handleRepuestoItemChange} options={repuestos} valorname='IdRepuesto' />
+                    <SelectConBuscador label='Repuesto' value={repuestoItem.IdRepuesto} onChange={(e) => { const id = Number((e as any).target?.value ?? 0); setRepuestoItem(prev => ({ ...prev, IdRepuesto: id })); asignarUnidadMedidaPorRepuesto(id); }} options={repuestos} valorname='IdRepuesto' />
                   </Grid>
                   <Grid xs={12} md={3}>
                     <Input label='Cantidad' value={repuestoItem.Cantidad} onChange={handleRepuestoItemChange} tamano='small' tipo_input='number' valorname='Cantidad' />
                   </Grid>
                   <Grid xs={12} md={3}>
-                    <Select label='Unidad' value={repuestoItem.IdUnidadMedida} onChange={handleRepuestoItemChange} options={unidadesDeMedida} valorname='IdUnidadMedida' />
+                    <Input label='Unidad' value={unidadesDict.get(repuestoItem.IdUnidadMedida) ?? ''} tamano='small' tipo_input='text' bloqueado />
                   </Grid>
                   <Grid xs={12} md={3}>
                     <Select label='Estado' value={repuestoItem.IdEstado} onChange={handleRepuestoItemChange} options={estados} valorname='IdEstado' />
@@ -436,7 +477,7 @@ export function ModalRegistrarVisualizarSalidaRepuestos({
                         <TableCell>Estado</TableCell>
                         <TableCell>Observación</TableCell>
                         {modo !== 'visualizar' && (
-                          <TableCell align='right'>Acciones</TableCell>
+                          <TableCell>Acciones</TableCell>
                         )}
                       </TableRow>
                     </TableHead>
@@ -450,8 +491,15 @@ export function ModalRegistrarVisualizarSalidaRepuestos({
                           <TableCell>{estadosDict.get(r.IdEstado) ?? '-'}</TableCell>
                           <TableCell>{r.Observacion}</TableCell>
                           {modo !== 'visualizar' && (
-                            <TableCell align='right'>
-                              <Button size='small' color='error' onClick={() => eliminarRepuesto(idx)}>Eliminar</Button>
+                            <TableCell>
+                              <IconButton
+                                size="small"
+                                onClick={() => eliminarRepuesto(idx)}
+                                color="error"
+                              >
+                                <X />
+                              </IconButton>
+                              {/* <Button size='small' color='error' onClick={() => eliminarRepuesto(idx)}>Eliminar</Button> */}
                             </TableCell>
                           )}
                         </TableRow>
