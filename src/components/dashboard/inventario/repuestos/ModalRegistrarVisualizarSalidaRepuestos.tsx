@@ -448,7 +448,7 @@ export function ModalRegistrarVisualizarSalidaRepuestos({
                     <Input label='Cantidad' value={repuestoItem.Cantidad} onChange={handleRepuestoItemChange} tamano='small' tipo_input='number' valorname='Cantidad' />
                   </Grid>
                   <Grid xs={12} md={3}>
-                    <Input label='Unidad' value={unidadesDict.get(repuestoItem.IdUnidadMedida) ?? ''} tamano='small' tipo_input='text' bloqueado />
+                    <Input label='Unidad de medida' value={unidadesDict.get(repuestoItem.IdUnidadMedida) ?? ''} tamano='small' tipo_input='text' bloqueado />
                   </Grid>
                   <Grid xs={12} md={3}>
                     <Select label='Estado' value={repuestoItem.IdEstado} onChange={handleRepuestoItemChange} options={estados} valorname='IdEstado' />
@@ -465,52 +465,59 @@ export function ModalRegistrarVisualizarSalidaRepuestos({
                 </>
               )}
 
-              <Grid xs={12}>
-                <TableContainer component={Paper}>
-                  <Table size='small'>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Id</TableCell>
-                        <TableCell>Repuesto</TableCell>
-                        <TableCell>Cantidad</TableCell>
-                        <TableCell>Unidad</TableCell>
-                        <TableCell>Estado</TableCell>
-                        <TableCell>Observación</TableCell>
-                        {modo !== 'visualizar' && (
-                          <TableCell>Acciones</TableCell>
-                        )}
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {datos.Repuestos.map((r, idx) => (
-                        <TableRow key={idx}>
-                          <TableCell>{r.IdRepuesto}</TableCell>
-                          <TableCell>{repuestosDict.get(r.IdRepuesto) ?? '-'}</TableCell>
-                          <TableCell>{r.Cantidad}</TableCell>
-                          <TableCell>{unidadesDict.get(r.IdUnidadMedida) ?? '-'}</TableCell>
-                          <TableCell>{estadosDict.get(r.IdEstado) ?? '-'}</TableCell>
-                          <TableCell>{r.Observacion}</TableCell>
-                          {modo !== 'visualizar' && (
-                            <TableCell>
-                              <IconButton
-                                size="small"
-                                onClick={() => eliminarRepuesto(idx)}
-                                color="error"
-                              >
-                                <X />
-                              </IconButton>
-                              {/* <Button size='small' color='error' onClick={() => eliminarRepuesto(idx)}>Eliminar</Button> */}
-                            </TableCell>
-                          )}
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Grid>
+              {datos.Repuestos.length > 0 && (
+                <Grid xs={12} md={12}>
+                  <Box sx={{ mt: 2 }}>
+                    <Typography variant="subtitle2">
+                      Repuestos {modo === 'crear' ? 'agregados' : 'de la salida'}
+                    </Typography>
+                    <Divider sx={{ mb: 2 }} />
+                    <TableContainer component={Paper} variant="outlined">
+                      <Table size='small'>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell><strong>Id</strong></TableCell>
+                            <TableCell><strong>Repuesto</strong></TableCell>
+                            <TableCell><strong>Cantidad</strong></TableCell>
+                            <TableCell><strong>Unidad</strong></TableCell>
+                            <TableCell><strong>Estado</strong></TableCell>
+                            <TableCell><strong>Observación</strong></TableCell>
+                            {modo !== 'visualizar' && (
+                              <TableCell><strong>Acciones</strong></TableCell>
+                            )}
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {datos.Repuestos.map((r, idx) => (
+                            <TableRow key={idx}>
+                              <TableCell>{r.IdRepuesto}</TableCell>
+                              <TableCell>{repuestosDict.get(r.IdRepuesto) ?? '-'}</TableCell>
+                              <TableCell>{r.Cantidad}</TableCell>
+                              <TableCell>{unidadesDict.get(r.IdUnidadMedida) ?? '-'}</TableCell>
+                              <TableCell>{estadosDict.get(r.IdEstado) ?? '-'}</TableCell>
+                              <TableCell>{r.Observacion}</TableCell>
+                              {modo !== 'visualizar' && (
+                                <TableCell>
+                                  <IconButton
+                                    size="small"
+                                    onClick={() => eliminarRepuesto(idx)}
+                                    color="error"
+                                  >
+                                    <X />
+                                  </IconButton>
+                                  {/* <Button size='small' color='error' onClick={() => eliminarRepuesto(idx)}>Eliminar</Button> */}
+                                </TableCell>
+                              )}
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Box>
+                </Grid>
+              )}
             </Grid>
           </CardContent>
-          <Divider sx={{ mt: 1 }} />
           <CardActions>
             <Box flex={1} />
             {modo === 'crear' && (

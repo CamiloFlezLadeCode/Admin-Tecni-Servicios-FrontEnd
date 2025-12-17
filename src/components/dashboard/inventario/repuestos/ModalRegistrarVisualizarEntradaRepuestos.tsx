@@ -376,6 +376,7 @@ export function ModalRegistrarVisualizarEntradaRepuestos({
     };
 
     const obtenerNombreUnidadMedida = (idUnidad: number): string => {
+        if (!idUnidad || idUnidad === OpcionPorDefectoNumber.value) return '';
         const unidad = unidadesDeMedida.find(u => u.value === idUnidad);
         return unidad ? unidad.label : `Unidad #${idUnidad}`;
     };
@@ -577,7 +578,7 @@ export function ModalRegistrarVisualizarEntradaRepuestos({
                                             />
                                         </Grid>
 
-                                        <Grid md={3} xs={12} mt={0.5}>
+                                        <Grid md={3} xs={12}>
                                             <Input
                                                 label="Unidad de medida"
                                                 value={obtenerNombreUnidadMedida(repuestoItem.IdUnidadMedida)}
@@ -689,7 +690,7 @@ export function ModalRegistrarVisualizarEntradaRepuestos({
                                         disabled={habilitarDeshabilitarBotonGuardar}
                                         onClick={handleGuardarEntradaRepuesto}
                                     >
-                                        Guardar
+                                        Guardar entrada
                                     </Button>
                                 </CardActions>
                             )}
