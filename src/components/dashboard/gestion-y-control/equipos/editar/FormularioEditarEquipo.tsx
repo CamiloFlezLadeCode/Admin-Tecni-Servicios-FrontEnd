@@ -43,7 +43,6 @@ export function FormularioEditarEquipo({ IdEquipo, sendMessage, onMostrarMensaje
         PrecioAlquiler: '',
         PrecioReparacion: '',
         EstadoEquipo: '3',
-        Cantidad: 1,
         DocumentoSubarrendatario: '',
         IdEquipo: IdEquipo
     });
@@ -72,7 +71,6 @@ export function FormularioEditarEquipo({ IdEquipo, sendMessage, onMostrarMensaje
                 PrecioAlquiler: infoequipo[0].PrecioAlquiler,
                 PrecioReparacion: infoequipo[0].PrecioReparacion,
                 EstadoEquipo: infoequipo[0].IdEstado,
-                Cantidad: infoequipo[0].Cantidad,
                 DocumentoSubarrendatario: infoequipo[0].DocumentoSubarrendatario,
                 IdEquipo: IdEquipo
             });
@@ -123,10 +121,6 @@ export function FormularioEditarEquipo({ IdEquipo, sendMessage, onMostrarMensaje
     //Función para actualizar el equipo
     const HandleActualizarEquipo = async () => {
         try {
-            if (datos.Cantidad < 0) {
-                mostrarMensaje('La nueva cantidad no puede ser negativa', 'error');
-                return;
-            }
             await ActualizarEquipo(datos);
             sendMessage('equipo-actualizado', {});
             onMostrarMensaje(`Equipo actualizado correctamente`, 'success');
@@ -220,17 +214,6 @@ export function FormularioEditarEquipo({ IdEquipo, sendMessage, onMostrarMensaje
                                         tamano='small'
                                         tipo_input='text'
                                         valorname='NombreEquipo'
-                                    />
-                                </Grid>
-                                <Grid md={2} xs={12} mt={0.5}>
-                                    <Input
-                                        label='Cantidad'
-                                        value={datos.Cantidad}
-                                        onChange={handleChange}
-                                        // required
-                                        tamano='small'
-                                        tipo_input='number'
-                                        valorname='Cantidad'
                                     />
                                 </Grid>
                                 <Grid md={2} xs={12} mt={0.5}>

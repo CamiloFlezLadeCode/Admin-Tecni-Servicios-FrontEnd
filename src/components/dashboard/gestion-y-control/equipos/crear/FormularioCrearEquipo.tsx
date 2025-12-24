@@ -38,7 +38,6 @@ interface FormData {
     PrecioReparacion: number | null;
     UsuarioCreacion: string | null;
     EstadoEquipo: string;
-    Cantidad: number | null;
     DocumentoSubarrendatario: string;
     IdTipoBodega: number;
     TipoDeEquipo: string;
@@ -51,7 +50,6 @@ interface ErrorForm {
     CategoriaEquipo?: string;
     PrecioAlquiler?: string;
     EstadoEquipo?: string;
-    Cantidad?: string;
     DocumentoSubarrendatario?: string;
     IdTipoBodega?: string;
     TipoDeEquipo?: string;
@@ -77,12 +75,6 @@ const REGLAS_VALIDACION: ReglaValidacion[] = [
         campo: 'NombreEquipo',
         mensaje: 'El nombre es obligatorio.',
         esOpcional: false
-    },
-    {
-        campo: 'Cantidad',
-        mensaje: 'La cantidad es obligatoria y debe ser mayor a 0',
-        esOpcional: false,
-        validacion: (valor: number | null) => valor !== null && valor > 0
     },
     {
         campo: 'PrecioAlquiler',
@@ -153,7 +145,6 @@ export function FormularioCrearEquipo(): React.JSX.Element {
         PrecioReparacion: null,
         UsuarioCreacion: documentoUsuarioActivo,
         EstadoEquipo: OpcionPorDefecto.value,
-        Cantidad: null,
         DocumentoSubarrendatario: OpcionPorDefecto.value,
         // TipoDeEquipo: 'ABC',
         TipoDeEquipo: OpcionPorDefecto.value,
@@ -186,7 +177,7 @@ export function FormularioCrearEquipo(): React.JSX.Element {
         let valorFinal: string | number | null = value;
 
         // Convertir campos numéricos
-        if (['PrecioVenta', 'PrecioAlquiler', 'PrecioReparacion', 'Cantidad'].includes(name)) {
+        if (['PrecioVenta', 'PrecioAlquiler', 'PrecioReparacion'].includes(name)) {
             valorFinal = value === '' ? null : Number(value);
         }
 
@@ -404,7 +395,6 @@ export function FormularioCrearEquipo(): React.JSX.Element {
                 PrecioReparacion: null,
                 UsuarioCreacion: documentoUsuarioActivo,
                 EstadoEquipo: OpcionPorDefecto.value,
-                Cantidad: null,
                 DocumentoSubarrendatario: OpcionPorDefecto.value,
                 TipoDeEquipo: OpcionPorDefecto.value,
                 UnidadDeMedida: OpcionPorDefecto.value,
@@ -616,21 +606,6 @@ export function FormularioCrearEquipo(): React.JSX.Element {
                             valorname="UnidadDeMedida"
                             error={!!errores.UnidadDeMedida}
                             helperText={errores.UnidadDeMedida}
-                        />
-                    </Grid>
-
-                    <Grid md={2} xs={12} mt={0.5}>
-                        <Input
-                            label="Cantidad*"
-                            value={formData.Cantidad ?? ''}
-                            onChange={handleChange}
-                            tamano="small"
-                            tipo_input="number"
-                            valorname="Cantidad"
-                            // inputProps={{ min: 1 }}
-                            minimalongitud={1}
-                            error={!!errores.Cantidad}
-                            helperText={errores.Cantidad}
                         />
                     </Grid>
 
