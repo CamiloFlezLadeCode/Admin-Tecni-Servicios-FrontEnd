@@ -11,10 +11,10 @@ import { SiguienteNoEntradaEquipos } from '@/services/inventario/equipos/Consult
 import { GuardarEntradaEquipos } from '@/services/inventario/equipos/GuardarEntradaEquiposService';
 import { ListarEquiposPropios } from '@/services/inventario/equipos/ListarEquiposPropiosService';
 import { VisualizarEntradaEquipos } from '@/services/inventario/equipos/VisualizarEntradaEquiposService';
+import { ConsultarEquipoPorId } from '@/services/gestionycontrol/equipos/ConsultarEquipoPorIdService';
 import {
     Box,
     Button,
-    CardActions,
     CardContent,
     Divider,
     IconButton,
@@ -33,11 +33,13 @@ import {
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import {
-    X
+    X,
+    Trash
 } from '@phosphor-icons/react/dist/ssr';
 import dayjs, { Dayjs } from 'dayjs';
 import * as React from 'react';
 import SelectConBuscador from '../../componentes_generales/formulario/SelectConBuscador';
+import { OpcionesSelectNumero, OpcionesSelectTexto } from '@/types/select_options';
 
 // INTERFACES
 interface Equipo {
@@ -67,16 +69,6 @@ interface EntradaEquipoModal {
     Responsable?: string;
     CreadoPor?: string;
     FechaCreacion?: string;
-}
-
-interface OpcionesSelectTexto {
-    value: string;
-    label: string;
-}
-
-interface OpcionesSelectNumero {
-    value: number;
-    label: string;
 }
 
 // PROPS
@@ -121,7 +113,6 @@ export function ModalRegistrarEntradaEquipos({
         Observacion: ""
     });
 
-    const [modalEquipoAbierto, setModalEquipoAbierto] = React.useState(false);
     const [modalAbierto, setModalAbierto] = React.useState(false);
     const [habilitarDeshabilitarBotonAgregar, setHabilitarDeshabilitarBotonAgregar] = React.useState(true);
     const [habilitarDeshabilitarBotonGuardar, setHabilitarDeshabilitarBotonGuardar] = React.useState(true);
@@ -132,6 +123,24 @@ export function ModalRegistrarEntradaEquipos({
     const [equipos, setEquipos] = React.useState<OpcionesSelectNumero[]>([]);
     const [unidadesDeMedida, setUnidadesDeMedida] = React.useState<OpcionesSelectNumero[]>([]);
     const [estados, setEstados] = React.useState<OpcionesSelectNumero[]>([]);
+    const [unidadPorEquipo, setUnidadPorEquipo] = React.useState<Map<number, number>>(new Map());
+
+    // Diccionarios para visualización rápida
+    const equiposDict = React.useMemo(() => {
+        const m = new Map<number, string>();
+        equipos.forEach((o) => { if (o?.value) m.set(Number(o.value), String(o.label ?? '')); });
+        return m;
+    }, [equipos]);
+    const unidadesDict = React.useMemo(() => {
+        const m = new Map<number, string>();
+        unidadesDeMedida.forEach((o) => { if (o?.value) m.set(Number(o.value), String(o.label ?? '')); });
+        return m;
+    }, [unidadesDeMedida]);
+    const estadosDict = React.useMemo(() => {
+        const m = new Map<number, string>();
+        estados.forEach((o) => { if (o?.value) m.set(Number(o.value), String(o.label ?? '')); });
+        return m;
+    }, [estados]);
 
     // EFFECTS
     // Cargar datos cuando se abre en modo visualizar
@@ -187,8 +196,32 @@ export function ModalRegistrarEntradaEquipos({
         const CargarEquipos = async () => {
             try {
                 const Equipos = await ListarEquiposPropios();
-                Equipos.unshift(OpcionPorDefectoNumber);
-                setEquipos(Equipos);
+                // Equipos.unshift(OpcionPorDefectoNumber); // SelectConBuscador maneja su propio default o placeholder
+                const opcionesEquipos: { value: number; label: string }[] = [];
+                const vistos = new Set<number>();
+                (Array.isArray(Equipos) ? Equipos : []).forEach((r: any) => {
+                    const hasValueLabel = r && 'value' in r && 'label' in r;
+                    const id = hasValueLabel ? Number(r.value) : Number(r.IdEquipo);
+                    if (!id || vistos.has(id)) return;
+                    const etiqueta = hasValueLabel
+                        ? String(r.label ?? String(id)).trim()
+                        : (() => {
+                            const codigo = String(r.CodigoEquipo ?? '').trim();
+                            const nombre = String(r.NombreEquipo ?? '').trim();
+                            return (codigo || nombre) ? `${codigo}${codigo && nombre ? ' ' : ''}${nombre}` : `Equipo ${id}`;
+                        })();
+                    opcionesEquipos.push({ value: id, label: etiqueta });
+                    vistos.add(id);
+                });
+                setEquipos([OpcionPorDefectoNumber, ...opcionesEquipos]);
+
+                const mapa = new Map<number, number>();
+                (Array.isArray(Equipos) ? Equipos : []).forEach((r: any) => {
+                    const id = Number((r && 'value' in r) ? r.value : r?.IdEquipo);
+                    const um = Number(r?.IdUnidadMedida ?? r?.IdUnidadDeMedida ?? 0);
+                    if (id && um) mapa.set(id, um);
+                });
+                setUnidadPorEquipo(mapa);
             } catch (error) {
                 console.error(`Error al listar los equipos: ${error}`);
             }
@@ -242,6 +275,10 @@ export function ModalRegistrarEntradaEquipos({
             const respuestaArray = await VisualizarEntradaEquipos({ NoEntradaEquipos: noEntrada });
             const respuesta = respuestaArray[0];
 
+            if (!respuesta) {
+                throw new Error('No se encontraron datos para esta entrada');
+            }
+
             const datosTransformados: EntradaEquipoModal = {
                 FechaEntrada: respuesta.FechaEntrada,
                 DocumentoResponsable: respuesta.Responsable,
@@ -271,7 +308,7 @@ export function ModalRegistrarEntradaEquipos({
 
         } catch (error) {
             console.error('Error al cargar datos de visualización:', error);
-            // mostrarMensaje(`Error al cargar los detalles de la entrada: ${error}`, 'error');
+            onMostrarMensaje?.(`Error al cargar los detalles de la entrada: ${error}`, 'error');
         } finally {
             setCargandoVisualizacion(false);
         }
@@ -279,6 +316,33 @@ export function ModalRegistrarEntradaEquipos({
 
     const handleFechaChange = (fecha: Dayjs | null) => {
         setDatos(prev => ({ ...prev, FechaEntrada: fecha || dayjs() }));
+    };
+
+    const asignarUnidadMedidaPorEquipo = async (idEquipo: number) => {
+        try {
+            const existente = unidadPorEquipo.get(idEquipo);
+            if (existente) {
+                setEquipoItem(prev => ({ ...prev, IdUnidadMedida: existente }));
+                return;
+            }
+            const detalle = await ConsultarEquipoPorId(idEquipo);
+            const um = Number(
+                detalle?.[0]?.IdUnidadMedida ??
+                detalle?.[0]?.IdUnidadDeMedida ??
+                detalle?.IdUnidadMedida ??
+                detalle?.IdUnidadDeMedida ??
+                detalle?.UnidadMedidaId ??
+                0
+            );
+            if (um > 0) {
+                setUnidadPorEquipo(prev => new Map(prev).set(idEquipo, um));
+                setEquipoItem(prev => ({ ...prev, IdUnidadMedida: um }));
+            } else {
+                setEquipoItem(prev => ({ ...prev, IdUnidadMedida: OpcionPorDefectoNumber.value }));
+            }
+        } catch {
+            setEquipoItem(prev => ({ ...prev, IdUnidadMedida: OpcionPorDefectoNumber.value }));
+        }
     };
 
     const agregarEquipo = () => {
@@ -294,8 +358,6 @@ export function ModalRegistrarEntradaEquipos({
             IdEstado: OpcionPorDefectoNumber.value,
             Observacion: ""
         });
-
-        setModalEquipoAbierto(false);
     };
 
     const eliminarEquipo = (index: number) => {
@@ -308,6 +370,16 @@ export function ModalRegistrarEntradaEquipos({
     const handleChange = (e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>) => {
         const { name, value } = e.target;
         setDatos(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleEquipoItemChange = (e: any) => {
+        const { name, value } = e.target || {};
+        if (!name) return;
+        const numericos = new Set(['IdEquipo', 'Cantidad', 'IdUnidadMedida', 'IdEstado']);
+        setEquipoItem(prev => ({
+            ...prev,
+            [name]: numericos.has(name) ? Number(value) : value
+        }));
     };
 
     const habilitarBotonAgregar = () => {
@@ -359,28 +431,13 @@ export function ModalRegistrarEntradaEquipos({
                 Observacion: ""
             });
 
-            sendMessage?.('usuario-actualizado', {});
+            sendMessage?.('entrada-equipos-creada', {});
             onMostrarMensaje?.('Entrada de equipos creada correctamente', 'success');
-            // setModalAbierto(false);
+            ConsultarSiguienteNoEntradaEquipo();
         } catch (error) {
             onMostrarMensaje?.(`Hubo un error al crear la entrada de los equipos. ${error}`, 'error');
             console.error(`Hubo un error al guardar la entrada. Detalles: ${error}`);
         }
-    };
-
-    const obtenerNombreEquipo = (idEquipo: number): string => {
-        const equipo = equipos.find(e => e.value === idEquipo);
-        return equipo ? equipo.label : `Equipo #${idEquipo}`;
-    };
-
-    const obtenerNombreUnidadMedida = (idUnidad: number): string => {
-        const unidad = unidadesDeMedida.find(u => u.value === idUnidad);
-        return unidad ? unidad.label : `Unidad #${idUnidad}`;
-    };
-
-    const obtenerNombreEstado = (idEstado: number): string => {
-        const estado = estados.find(e => e.value === idEstado);
-        return estado ? estado.label : `Estado #${idEstado}`;
     };
 
     const ConsultarSiguienteNoEntradaEquipo = async () => {
@@ -406,9 +463,11 @@ export function ModalRegistrarEntradaEquipos({
     return (
         <>
             {modo === 'crear' && (
-                <Button variant="contained" onClick={() => { setModalAbierto(true) }}>
-                    + Nueva Entrada
-                </Button>
+                <Box display="flex" justifyContent="flex-end" mb={1}>
+                    <Button variant="contained" onClick={() => { setModalAbierto(true) }}>
+                        + Nueva Entrada Equipos
+                    </Button>
+                </Box>
             )}
 
             <Modal
@@ -433,8 +492,8 @@ export function ModalRegistrarEntradaEquipos({
                         width: {
                             xs: '95%',
                             sm: '90%',
-                            md: '80%',
-                            lg: '60%',
+                            md: '78%',
+                            lg: '78%',
                         },
                         bgcolor: 'background.paper',
                         boxShadow: 24,
@@ -462,14 +521,14 @@ export function ModalRegistrarEntradaEquipos({
                     ) : (
                         <>
                             <Typography variant="subtitle1" mb={1}>
-                                {modo === 'crear' ? 'Nueva entrada equipo/s' : 'Detalles de entrada de equipos'}
+                                {modo === 'crear' ? 'Nueva entrada equipos' : 'Detalles de entrada de equipos'}
                             </Typography>
 
                             <Divider />
 
                             <CardContent>
                                 <Grid container spacing={2}>
-                                    <Grid md={2} xs={12}>
+                                    <Grid md={3} xs={12}>
                                         <Input
                                             label='No Entrada'
                                             value={datos.NoEntradaEquipos ?? ''}
@@ -480,7 +539,7 @@ export function ModalRegistrarEntradaEquipos({
                                         />
                                     </Grid>
 
-                                    <Grid md={4} xs={12}>
+                                    <Grid md={3} xs={12}>
                                         <FechayHora
                                             label="Fecha y hora"
                                             value={datos.FechaEntrada}
@@ -489,7 +548,7 @@ export function ModalRegistrarEntradaEquipos({
                                         />
                                     </Grid>
 
-                                    <Grid md={4} xs={12}>
+                                    <Grid md={3} xs={12}>
                                         <InputSelect
                                             label="Responsable"
                                             value={datos.DocumentoResponsable}
@@ -500,9 +559,6 @@ export function ModalRegistrarEntradaEquipos({
                                             bloqueado={modo === 'visualizar'}
                                         />
                                     </Grid>
-                                </Grid>
-
-                                <Grid container spacing={2}>
                                     <Grid md={12} xs={12}>
                                         <Input
                                             label='Observaciones'
@@ -517,65 +573,72 @@ export function ModalRegistrarEntradaEquipos({
                                 </Grid>
 
                                 {modo === 'crear' && (
-                                    <Grid container spacing={2}>
-                                        <Button variant='text' onClick={() => setModalEquipoAbierto(true)}>
-                                            + Agregar equipo
-                                        </Button>
-                                    </Grid>
+                                    <>
+                                        <Grid xs={12}>
+                                            <Divider sx={{ my: 1 }} />
+                                            <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>Agregar equipos</Typography>
+                                        </Grid>
+
+                                        <Grid container spacing={2}>
+                                            <Grid xs={12} md={3}>
+                                                <SelectConBuscador label='Equipo' value={equipoItem.IdEquipo} onChange={(e) => { const id = Number((e as any).target?.value ?? 0); setEquipoItem(prev => ({ ...prev, IdEquipo: id })); asignarUnidadMedidaPorEquipo(id); }} options={equipos} valorname='IdEquipo' />
+                                            </Grid>
+                                            <Grid xs={12} md={3}>
+                                                <Input label='Cantidad' value={equipoItem.Cantidad} onChange={handleEquipoItemChange} tamano='small' tipo_input='number' valorname='Cantidad' />
+                                            </Grid>
+                                            <Grid xs={12} md={3}>
+                                                <Input label='Unidad de medida' value={unidadesDict.get(equipoItem.IdUnidadMedida) ?? ''} tamano='small' tipo_input='text' bloqueado />
+                                            </Grid>
+                                            <Grid xs={12} md={3}>
+                                                <InputSelect label='Estado' value={equipoItem.IdEstado} onChange={handleEquipoItemChange} options={estados} valorname='IdEstado' />
+                                            </Grid>
+                                            <Grid xs={12} md={3}>
+                                                <Input label='Observación' value={equipoItem.Observacion} onChange={handleEquipoItemChange} tamano='small' tipo_input='text' valorname='Observacion' />
+                                            </Grid>
+
+                                            <Grid xs={12}>
+                                                <Box display='flex' justifyContent='flex-end'>
+                                                    <Button variant='contained' disabled={habilitarDeshabilitarBotonAgregar} onClick={agregarEquipo}>Agregar</Button>
+                                                </Box>
+                                            </Grid>
+                                        </Grid>
+                                    </>
                                 )}
 
-                                <Grid container spacing={2}>
-                                    {datos.Equipos.length > 0 && (
+                                {datos.Equipos.length > 0 && (
+                                    <Grid container spacing={2}>
                                         <Grid md={12} xs={12}>
                                             <Box mt={2}>
                                                 <Typography variant="subtitle2">
                                                     Equipos {modo === 'crear' ? 'agregados' : 'de la entrada'}
                                                 </Typography>
                                                 <Divider sx={{ mb: 2 }} />
-
                                                 <TableContainer component={Paper} variant="outlined">
-                                                    <Table size="small">
+                                                    <Table size='small'>
                                                         <TableHead>
                                                             <TableRow>
-                                                                <TableCell><strong># Equipo</strong></TableCell>
+                                                                <TableCell><strong>Id</strong></TableCell>
+                                                                <TableCell><strong>Equipo</strong></TableCell>
                                                                 <TableCell><strong>Cantidad</strong></TableCell>
-                                                                <TableCell><strong>Unidad Medida</strong></TableCell>
+                                                                <TableCell><strong>Unidad</strong></TableCell>
                                                                 <TableCell><strong>Estado</strong></TableCell>
                                                                 <TableCell><strong>Observación</strong></TableCell>
-                                                                {modo === 'crear' && (
-                                                                    <TableCell><strong>Acciones</strong></TableCell>
-                                                                )}
+                                                                {modo === 'crear' && <TableCell align='center'><strong>Acciones</strong></TableCell>}
                                                             </TableRow>
                                                         </TableHead>
                                                         <TableBody>
-                                                            {datos.Equipos.map((eq, idx) => (
-                                                                <TableRow key={idx} hover>
-                                                                    <TableCell>{idx + 1} - {obtenerNombreEquipo(eq.IdEquipo)}</TableCell>
-                                                                    <TableCell>{eq.Cantidad}</TableCell>
-                                                                    <TableCell>{obtenerNombreUnidadMedida(eq.IdUnidadMedida)}</TableCell>
-                                                                    <TableCell>{obtenerNombreEstado(eq.IdEstado)}</TableCell>
-                                                                    <TableCell>
-                                                                        <Typography
-                                                                            variant="body2"
-                                                                            sx={{
-                                                                                maxWidth: '200px',
-                                                                                overflow: 'hidden',
-                                                                                textOverflow: 'ellipsis',
-                                                                                whiteSpace: 'nowrap'
-                                                                            }}
-                                                                            title={eq.Observacion}
-                                                                        >
-                                                                            {eq.Observacion}
-                                                                        </Typography>
-                                                                    </TableCell>
+                                                            {datos.Equipos.map((d, index) => (
+                                                                <TableRow key={index}>
+                                                                    <TableCell>{d.IdEquipo}</TableCell>
+                                                                    <TableCell>{equiposDict.get(d.IdEquipo) ?? d.IdEquipo}</TableCell>
+                                                                    <TableCell>{d.Cantidad}</TableCell>
+                                                                    <TableCell>{unidadesDict.get(d.IdUnidadMedida) ?? d.IdUnidadMedida}</TableCell>
+                                                                    <TableCell>{estadosDict.get(d.IdEstado) ?? d.IdEstado}</TableCell>
+                                                                    <TableCell>{d.Observacion}</TableCell>
                                                                     {modo === 'crear' && (
-                                                                        <TableCell>
-                                                                            <IconButton
-                                                                                size="small"
-                                                                                onClick={() => eliminarEquipo(idx)}
-                                                                                color="error"
-                                                                            >
-                                                                                <X />
+                                                                        <TableCell align='center'>
+                                                                            <IconButton size='small' color='error' onClick={() => eliminarEquipo(index)}>
+                                                                                <Trash />
                                                                             </IconButton>
                                                                         </TableCell>
                                                                     )}
@@ -586,132 +649,25 @@ export function ModalRegistrarEntradaEquipos({
                                                 </TableContainer>
                                             </Box>
                                         </Grid>
-                                    )}
-                                </Grid>
-                            </CardContent>
+                                    </Grid>
+                                )}
 
-                            {modo === 'crear' && (
-                                <CardActions sx={{ justifyContent: 'flex-end' }}>
-                                    <Button
-                                        variant='contained'
-                                        disabled={habilitarDeshabilitarBotonGuardar}
-                                        onClick={handleGuardarEntradaEquipo}
-                                    >
-                                        Guardar
-                                    </Button>
-                                </CardActions>
-                            )}
+                                {modo === 'crear' && (
+                                    <Grid container spacing={2}>
+                                        <Grid xs={12}>
+                                            <Box display='flex' justifyContent='flex-end' sx={{ mt: 2 }}>
+                                                <Button variant='contained' color='primary' disabled={habilitarDeshabilitarBotonGuardar} onClick={handleGuardarEntradaEquipo}>
+                                                    Guardar Entrada
+                                                </Button>
+                                            </Box>
+                                        </Grid>
+                                    </Grid>
+                                )}
+                            </CardContent>
                         </>
                     )}
                 </Box>
             </Modal>
-
-            {modo === 'crear' && (
-                <Modal open={modalEquipoAbierto}
-                    onClose={(_, reason) => {
-                        if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
-                            setModalEquipoAbierto(false);
-                        }
-                    }}
-                >
-                    <Box
-                        sx={{
-                            position: 'absolute',
-                            top: '1%',
-                            left: '50%',
-                            transform: 'translate(-50%)',
-                            width: {
-                                xs: '70%',
-                                sm: '50%',
-                                md: '50%',
-                                lg: '50%',
-                            },
-                            bgcolor: 'background.paper',
-                            boxShadow: 24,
-                            p: 3,
-                            borderRadius: 2,
-                            maxHeight: '90vh',
-                            overflowY: 'auto',
-                        }}
-                    >
-                        <Typography variant="subtitle1">Agregar equipo</Typography>
-                        <IconButton
-                            onClick={() => setModalEquipoAbierto(false)}
-                            sx={{
-                                position: 'absolute',
-                                top: 8,
-                                right: 8,
-                            }}
-                        >
-                            <X />
-                        </IconButton>
-                        <Divider />
-
-                        <Grid container spacing={2} mt={1}>
-                            <Grid xs={12} md={6}>
-                                <SelectConBuscador
-                                    label='Equipo'
-                                    value={equipoItem.IdEquipo}
-                                    onChange={(e) => setEquipoItem(prev => ({ ...prev, IdEquipo: Number(e.target.value) }))}
-                                    options={equipos}
-                                    size='small'
-                                    valorname='Equipo'
-                                    required
-                                />
-                            </Grid>
-
-                            <Grid xs={12} md={6}>
-                                <Input
-                                    label="Cantidad"
-                                    value={equipoItem.Cantidad}
-                                    tipo_input="number"
-                                    onChange={(e) => setEquipoItem(prev => ({ ...prev, Cantidad: Number(e.target.value) }))}
-                                    tamano='small'
-                                    required
-                                />
-                            </Grid>
-
-                            <Grid md={6} xs={12} mt={0.5}>
-                                <InputSelect
-                                    label="Unidad de medida"
-                                    value={equipoItem.IdUnidadMedida}
-                                    options={unidadesDeMedida}
-                                    size='small'
-                                    onChange={(e) => setEquipoItem(prev => ({ ...prev, IdUnidadMedida: Number(e.target.value) }))}
-                                    required
-                                />
-                            </Grid>
-
-                            <Grid xs={12} md={6}>
-                                <InputSelect
-                                    label="Estado"
-                                    value={equipoItem.IdEstado}
-                                    options={estados}
-                                    size='small'
-                                    onChange={(e) => setEquipoItem(prev => ({ ...prev, IdEstado: Number(e.target.value) }))}
-                                    required
-                                />
-                            </Grid>
-
-                            <Grid xs={12} md={12}>
-                                <Input
-                                    label="Observación"
-                                    value={equipoItem.Observacion}
-                                    tipo_input="textarea"
-                                    onChange={(e) => setEquipoItem(prev => ({ ...prev, Observacion: e.target.value }))}
-                                    tamano='small'
-                                />
-                            </Grid>
-                        </Grid>
-
-                        <Box mt={2} display="flex" justifyContent="flex-end">
-                            <Button onClick={agregarEquipo} variant="text" disabled={habilitarDeshabilitarBotonAgregar}>
-                                Agregar
-                            </Button>
-                        </Box>
-                    </Box>
-                </Modal>
-            )}
         </>
     );
 }

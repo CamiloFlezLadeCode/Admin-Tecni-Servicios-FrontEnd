@@ -163,6 +163,12 @@ export const apiRoutes = {
             guardar_entrada_equipos: `${API_BASE_URL}/guardar-entrada-equipos`,
             ver_todas_las_entradas_equipos: `${API_BASE_URL}/ver-entradas-de-equipos`,
             visualizar_entrada_equipos: `${API_BASE_URL}/visualizar-entrada-equipos`,
+            ver_stock_equipos: `${API_BASE_URL}/ver-stock-equipos`,
+            siguiente_numero_salida_equipos: `${API_BASE_URL}/siguiente-no-salida-equipos`,
+            guardar_salida_equipos: `${API_BASE_URL}/guardar-salida-equipos`,
+            ver_todas_las_salidas_equipos: `${API_BASE_URL}/ver-salidas-de-equipos`,
+            visualizar_salida_equipos: `${API_BASE_URL}/visualizar-salida-equipos`,
+            listar_tipos_movimiento_equipo: `${API_BASE_URL}/listar-tipos-movimiento-equipo`,
         },
         repuestos: {
             listar_repuestos: `${API_BASE_URL}/listar-repuestos`,

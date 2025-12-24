@@ -174,6 +174,9 @@ export function TablaVisualizarEntradasEquipos(): React.JSX.Element {
                             modo="visualizar"
                             noEntradaEquipos={noEntradaParaVisualizar}
                             onClose={cerrarModalVisualizacion}
+                            onMostrarMensaje={mostrarMensaje}
+                            sendMessage={sendMessage}
+                            mensajesSocket={messages}
                         />
                     )}
 
