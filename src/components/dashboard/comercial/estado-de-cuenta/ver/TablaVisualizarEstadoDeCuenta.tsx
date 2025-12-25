@@ -211,7 +211,7 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
         return text.slice(0, Math.max(0, left - 1)) + ellipsis;
     };
 
-    const toArrayBuffer = (bytes: Uint8Array<ArrayBufferLike>): ArrayBuffer => {
+    const toArrayBuffer = (bytes: Uint8Array): ArrayBuffer => {
         if (bytes.buffer instanceof ArrayBuffer) {
             return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
         }
@@ -221,7 +221,7 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
         return copy.buffer;
     };
 
-    const downloadBytesAsPdf = (pdfBytes: Uint8Array<ArrayBufferLike>, filename: string) => {
+    const downloadBytesAsPdf = (pdfBytes: Uint8Array, filename: string) => {
         const blob = new Blob([toArrayBuffer(pdfBytes)], { type: 'application/pdf' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
