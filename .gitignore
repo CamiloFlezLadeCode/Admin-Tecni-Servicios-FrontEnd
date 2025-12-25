@@ -29,4 +29,4 @@ yarn-error.log*
 archivo_pesado.zip
 
 # Configuraciones del Visual Studio Code
-.vscode/settings.json
+/.vscode

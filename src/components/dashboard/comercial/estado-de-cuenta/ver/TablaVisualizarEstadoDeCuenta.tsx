@@ -21,6 +21,9 @@ import { ListarClientes } from '@/services/generales/ListarClientesService';
 import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
 import { OpcionPorDefecto } from '@/lib/constants/option-default';
 import dayjs from 'dayjs';
+import { PDFDocument, StandardFonts, rgb, PDFPage, degrees } from 'pdf-lib';
+import { GenerarPDF } from '@/utils/pdf/generarPDF';
+import page from '@/app/page';
 
 interface EstadoDeCuenta {
     IdDetalleRemison?: number;
@@ -164,6 +167,48 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
         alert(`Generando reporte versión ${tipo.toUpperCase()}. Esta funcionalidad conectará con el backend.`);
     };
 
+    const generatePDF = async () => {
+        // console.log("HOlaaa")
+        // const pdfDoc = await PDFDocument.create();
+        // const page = pdfDoc.addPage();
+        // const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+        // page.drawText(clientes.find(c => c.value === datos.Cliente)?.label || '', {
+        //     x: 50,
+        //     y: page.getHeight() - 70,
+        //     size: 15,
+        //     font,
+        //     color: rgb(0, 0, 0),
+        // });
+        // // const pdfBytes = await pdfDoc.save();
+        // // const pdfBytes = new Uint8Array([0x48, 0x65, 0x6c, 0x6c, 0x6f]);
+        // const pdfBytes = new Uint8Array(await pdfDoc.save());
+        // // Descargar
+        // const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        // const link = document.createElement('a');
+        // // link.href = URL.createObjectURL(blob);
+        // // link.download = 'mi-documento.pdf';
+        // // link.click();
+
+
+        // const iframe = document.createElement('iframe');
+        // iframe.style.display = 'none';
+        // iframe.src = URL.createObjectURL(blob);
+        // document.body.appendChild(iframe);
+
+        // iframe.onload = () => {
+        //     iframe.contentWindow?.focus();
+        //     iframe.contentWindow?.print();
+
+        //     // setTimeout(() => {
+        //     //   URL.revokeObjectURL(blobURL);
+        //     //   document.body.removeChild(iframe);
+        //     // }, 1000);
+        // };
+
+       
+
+    }
+    
     const columns = [
         {
             key: 'NoRemision',
@@ -345,7 +390,8 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
                                     startIcon={<FilePdf />}
                                     size="small"
                                     fullWidth
-                                    onClick={() => handleDownloadPDF('cliente')}
+                                    // onClick={() => handleDownloadPDF('cliente')}
+                                    onClick={() => generatePDF()}
                                 >
                                     Informe Cliente
                                 </Button>
