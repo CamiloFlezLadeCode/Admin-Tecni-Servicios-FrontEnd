@@ -1,21 +1,26 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import {
     Chip,
     SelectChangeEvent,
-    Paper,
     Card,
     CardContent,
-    Box
+    Box,
+    Typography,
+    Stack,
+    Button,
+    Divider,
+    useTheme,
+    Paper
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
+import { FilePdf, Buildings, Wrench, CheckCircle, Clock } from '@phosphor-icons/react';
 import { VerEstadoDeCuentaCliente } from '@/services/comercial/estado_de_cuenta/VerEstadoDeCuentaClienteService';
 import { ListarClientes } from '@/services/generales/ListarClientesService';
-import { ListarProyectos } from '@/services/generales/ListarProyectos';
-import { ListarEquipos } from '@/services/comercial/remisiones/ListarEquiposService';
 import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
-import { OpcionPorDefecto, OpcionPorDefectoNumber } from '@/lib/constants/option-default';
+import { OpcionPorDefecto } from '@/lib/constants/option-default';
+import dayjs from 'dayjs';
 
 interface EstadoDeCuenta {
     IdDetalleRemison: number;
@@ -37,16 +42,23 @@ interface EstadoDeCuenta {
 }
 
 export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
+    const theme = useTheme();
     const [data, setData] = useState<EstadoDeCuenta[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [clientes, setClientes] = useState<{ value: string | number; label: string }[]>([]);
-    const [proyectos, setProyectos] = useState<{ value: string | number; label: string }[]>([]);
-    const [equipos, setEquipos] = useState<{ value: string | number; label: string }[]>([]);
+    
+    // Filtros
     const [datos, setDatos] = useState({
-        Cliente: OpcionPorDefecto.value
+        Cliente: OpcionPorDefecto.value,
+        Proyecto: 'Todos',
+        Equipo: 'Todos'
     });
+
+    // Opciones dinámicas para filtros
+    const [opcionesProyectos, setOpcionesProyectos] = useState<{ value: string | number; label: string }[]>([]);
+    const [opcionesEquipos, setOpcionesEquipos] = useState<{ value: string | number; label: string }[]>([]);
 
     useEffect(() => {
         const CargarClientes = async () => {
@@ -58,105 +70,152 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
                 console.error(`Error al listar los clientes: ${error}`);
             }
         };
-
-        const CargarProyectos = async () => {
-            try {
-                // const proyectos = await ListarProyectos();
-                // proyectos.unshift(OpcionPorDefectoNumber);
-                // setProyectos(proyectos);
-            } catch (error) {
-                console.error(`Error al listar los proyectos: ${error}`);
-            }
-        };
-
-        const CargarEquipos = async () => {
-            try {
-                // const equipos = await ListarEquipos();
-                // equipos.unshift(OpcionPorDefectoNumber);
-                // setEquipos(equipos);
-            } catch (error) {
-                console.error(`Error al listar los equipos: ${error}`);
-            }
-        }
-
         CargarClientes();
-        CargarProyectos();
     }, []);
 
+    // Cargar data principal al seleccionar cliente
     useEffect(() => {
-        handleRefresh();
-    }, [datos.Cliente])
+        if (datos.Cliente !== OpcionPorDefecto.value) {
+            handleRefresh();
+        } else {
+            setData([]);
+            setOpcionesProyectos([]);
+            setOpcionesEquipos([]);
+        }
+    }, [datos.Cliente]);
+
+    // Actualizar opciones de filtros basadas en la data cargada
+    useEffect(() => {
+        if (data.length > 0) {
+            // Extraer proyectos únicos
+            const proyectosUnicos = Array.from(new Set(data.map(item => item.Proyecto).filter(Boolean))).sort();
+            setOpcionesProyectos([
+                { value: 'Todos', label: 'Todos los Proyectos' },
+                ...proyectosUnicos.map(p => ({ value: p, label: p }))
+            ]);
+
+            // Extraer equipos únicos
+            const equiposUnicos = Array.from(new Set(data.map(item => item.Equipo).filter(Boolean))).sort();
+            setOpcionesEquipos([
+                { value: 'Todos', label: 'Todos los Equipos' },
+                ...equiposUnicos.map(e => ({ value: e, label: e }))
+            ]);
+        }
+    }, [data]);
 
     const handleChange = (e: SelectChangeEvent<string | number> | React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setDatos(prev => ({ ...prev, [name]: value }));
     };
 
-    const getEstadoColor = (estado: string) => {
-        switch (estado) {
-            case 'Completo': return 'success';
-            case 'Pendiente': return 'warning';
-            case 'Cancelada': return 'error';
-            case 'En Proceso': return 'info';
-            case 'Creado': return 'info'
-            default: return 'default';
-        }
-    };
-
     const handleRefresh = async () => {
+        if (datos.Cliente === OpcionPorDefecto.value) return;
+        
         try {
             setLoading(true);
             setError(null);
             setSearchTerm('');
+            // Resetear filtros secundarios al cambiar cliente
+            setDatos(prev => ({ ...prev, Proyecto: 'Todos', Equipo: 'Todos' }));
+            
             const response = await VerEstadoDeCuentaCliente(datos.Cliente);
             setData(response);
         } catch (err) {
             setError(`Error al actualizar: ${err}`);
+            setData([]);
         } finally {
             setLoading(false);
         }
     };
 
+    // Filtrado de datos en memoria
+    const filteredData = useMemo(() => {
+        return data.filter(item => {
+            const matchProyecto = datos.Proyecto === 'Todos' || item.Proyecto === datos.Proyecto;
+            const matchEquipo = datos.Equipo === 'Todos' || item.Equipo === datos.Equipo;
+            return matchProyecto && matchEquipo;
+        });
+    }, [data, datos.Proyecto, datos.Equipo]);
+
+    // Cálculos para las Cards de Resumen
+    const resumen = useMemo(() => {
+        return filteredData.reduce((acc, curr) => ({
+            totalPrestado: acc.totalPrestado + (curr.CantidadPrestada || 0),
+            totalDevuelto: acc.totalDevuelto + (curr.CantidadDevuelta || 0),
+            totalPendiente: acc.totalPendiente + (curr.CantidadPendiente || 0),
+            valorPendiente: acc.valorPendiente + (curr.ValorPendiente || 0)
+        }), { totalPrestado: 0, totalDevuelto: 0, totalPendiente: 0, valorPendiente: 0 });
+    }, [filteredData]);
+
+    const getEstadoColor = (estado: string) => {
+        switch (estado?.toLowerCase()) {
+            case 'completo': return 'success';
+            case 'pendiente': return 'warning';
+            case 'cancelada': return 'error';
+            case 'en proceso': return 'info';
+            case 'creado': return 'info';
+            default: return 'default';
+        }
+    };
+
+    const handleDownloadPDF = (tipo: 'cliente' | 'interno') => {
+        // Aquí iría la llamada al servicio de descarga del PDF
+        console.log(`Descargando PDF ${tipo}...`);
+        alert(`Generando reporte versión ${tipo.toUpperCase()}. Esta funcionalidad conectará con el backend.`);
+    };
+
     const columns = [
         {
             key: 'NoRemision',
-            header: 'No Remision'
+            header: 'Remisión',
+            render: (row: EstadoDeCuenta) => (
+                <Typography variant="body2" fontWeight="bold">{row.NoRemision}</Typography>
+            )
         },
         {
             key: 'FechaPrestamo',
-            header: 'Fecha Prestamo'
-        },
-        {
-            key: 'FechaDevolucion',
-            header: 'Fecha Devolucion'
+            header: 'Fecha Préstamo',
+            render: (row: EstadoDeCuenta) => dayjs(row.FechaPrestamo).format('DD/MM/YYYY')
         },
         {
             key: 'Proyecto',
-            header: 'Proyecto'
-        },
-        {
-            key: 'Categoria',
-            header: 'Categoria'
+            header: 'Proyecto',
+            render: (row: EstadoDeCuenta) => (
+                <Box sx={{ maxWidth: 150, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={row.Proyecto}>
+                    {row.Proyecto}
+                </Box>
+            )
         },
         {
             key: 'Equipo',
-            header: 'Equipo'
+            header: 'Equipo',
+            render: (row: EstadoDeCuenta) => (
+                <Box>
+                    <Typography variant="body2" fontWeight={500}>{row.Equipo}</Typography>
+                    <Typography variant="caption" color="text.secondary">{row.Categoría}</Typography>
+                </Box>
+            )
         },
         {
-            key: 'CantidadPrestada',
-            header: 'Cantidad Prestada'
-        },
-        {
-            key: 'CantidadDevuelta',
-            header: 'Cantidad Devuelta'
-        },
-        {
-            key: 'CantidadPendiente',
-            header: 'Cantidad Pendiente'
+            key: 'Cantidades',
+            header: 'Estado Cantidades',
+            render: (row: EstadoDeCuenta) => (
+                <Stack direction="row" spacing={1} alignItems="center">
+                    <Chip label={`Prest: ${row.CantidadPrestada}`} size="small" variant="outlined" />
+                    <Chip label={`Dev: ${row.CantidadDevuelta}`} size="small" variant="outlined" color="success" />
+                    <Chip label={`Pend: ${row.CantidadPendiente}`} size="small" color={row.CantidadPendiente > 0 ? "warning" : "default"} />
+                </Stack>
+            )
         },
         {
             key: 'TiempoPrestamo',
-            header: 'Tiempo Prestamo'
+            header: 'Tiempo',
+            render: (row: EstadoDeCuenta) => (
+                <Stack direction="row" spacing={0.5} alignItems="center">
+                    <Clock size={16} />
+                    <Typography variant="body2">{row.TiempoPrestamo}</Typography>
+                </Stack>
+            )
         },
         {
             key: 'Estado',
@@ -166,81 +225,167 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
                     label={row.Estado}
                     color={getEstadoColor(row.Estado)}
                     size="small"
-                    sx={{ color: 'white', minWidth: 100 }}
+                    sx={{ color: 'white', minWidth: 80, fontWeight: 'bold' }}
                 />
             )
-        },
-        {
-            key: '',
-            header: ''
         }
     ];
 
     const actions: ActionDefinition<EstadoDeCuenta>[] = [
         {
             render: (row: EstadoDeCuenta) => (
-                <h5>Ver</h5>
+                <Button size="small" variant="text">Ver Detalle</Button>
             ),
-            tooltip: 'Ver'
+            tooltip: 'Ver Detalle Completo'
         }
     ];
 
     return (
-        <>
-            <Box mb={2}>
-                <Card>
-                    <CardContent>
-                        <Grid container spacing={2}>
-                            <Grid md={4} xs={12}>
-                                <InputSelect
-                                    label="Empresa/Cliente"
-                                    value={datos.Cliente}
-                                    options={clientes}
-                                    size="small"
-                                    onChange={handleChange}
-                                    valorname="Cliente"
-                                    required
-                                />
-                            </Grid>
-                            <Grid md={4} xs={12}>
-                                <InputSelect
-                                    label="Proyecto"
-                                    value={datos.Cliente}
-                                    options={clientes}
-                                    size="small"
-                                    onChange={handleChange}
-                                    valorname="Cliente"
-                                />
-                            </Grid>
-                            <Grid md={4} xs={12}>
-                                <InputSelect
-                                    label="Equipo"
-                                    value={datos.Cliente}
-                                    options={clientes}
-                                    size="small"
-                                    onChange={handleChange}
-                                    valorname="Cliente"
-                                />
-                            </Grid>
+        <Box sx={{ width: '100%' }}>
+            {/* Panel de Filtros y Acciones */}
+            <Card sx={{ mb: 3, overflow: 'visible' }}>
+                <CardContent>
+                    <Grid container spacing={2} alignItems="flex-end">
+                        <Grid md={4} xs={12}>
+                            <InputSelect
+                                label="Empresa/Cliente"
+                                value={datos.Cliente}
+                                options={clientes}
+                                size="small"
+                                onChange={handleChange}
+                                valorname="Cliente"
+                                required
+                            />
                         </Grid>
-                    </CardContent>
-                </Card>
-            </Box>
-            {datos.Cliente && (
-                <DataTable<EstadoDeCuenta>
-                    data={data}
-                    columns={columns}
-                    actions={actions}
-                    loading={loading}
-                    error={error}
-                    searchTerm={searchTerm}
-                    onSearchChange={setSearchTerm}
-                    onRefresh={handleRefresh}
-                    emptyMessage="No se encontraron registros"
-                    rowKey={(row) => row.IdDetalleRemison}
-                    placeHolderBuscador='Buscar registro...'
-                />
+                        <Grid md={3} xs={12}>
+                            <InputSelect
+                                label="Filtrar por Proyecto"
+                                value={datos.Proyecto}
+                                options={opcionesProyectos}
+                                size="small"
+                                onChange={handleChange}
+                                valorname="Proyecto"
+                                // disabled={!datos.Cliente || datos.Cliente === OpcionPorDefecto.value}
+                            />
+                        </Grid>
+                        <Grid md={3} xs={12}>
+                            <InputSelect
+                                label="Filtrar por Equipo"
+                                value={datos.Equipo}
+                                options={opcionesEquipos}
+                                size="small"
+                                onChange={handleChange}
+                                valorname="Equipo"
+                                // disabled={!datos.Cliente || datos.Cliente === OpcionPorDefecto.value}
+                            />
+                        </Grid>
+                        <Grid md={2} xs={12}>
+                             <Button 
+                                fullWidth 
+                                variant="contained" 
+                                onClick={handleRefresh}
+                                disabled={!datos.Cliente || datos.Cliente === OpcionPorDefecto.value}
+                             >
+                                Actualizar
+                             </Button>
+                        </Grid>
+                    </Grid>
+                </CardContent>
+            </Card>
+
+            {/* Resumen de Métricas */}
+            {datos.Cliente && datos.Cliente !== OpcionPorDefecto.value && (
+                <Box mb={3}>
+                    <Grid container spacing={2}>
+                        <Grid xs={12} md={3}>
+                            <Card sx={{ bgcolor: theme.palette.primary.main, color: 'white' }}>
+                                <CardContent sx={{ py: 2, '&:last-child': { pb: 2 } }}>
+                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                        <Box>
+                                            <Typography variant="overline" sx={{ opacity: 0.8 }}>Total en Obra</Typography>
+                                            <Typography variant="h4">{resumen.totalPendiente}</Typography>
+                                        </Box>
+                                        <Buildings size={32} weight="duotone" style={{ opacity: 0.5 }} />
+                                    </Stack>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid xs={12} md={3}>
+                            <Card>
+                                <CardContent sx={{ py: 2, '&:last-child': { pb: 2 } }}>
+                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                        <Box>
+                                            <Typography variant="overline" color="text.secondary">Total Entregado</Typography>
+                                            <Typography variant="h4" color="success.main">{resumen.totalDevuelto}</Typography>
+                                        </Box>
+                                        <CheckCircle size={32} weight="duotone" color={theme.palette.success.main} />
+                                    </Stack>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid xs={12} md={3}>
+                            <Card>
+                                <CardContent sx={{ py: 2, '&:last-child': { pb: 2 } }}>
+                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                        <Box>
+                                            <Typography variant="overline" color="text.secondary">Total Prestado</Typography>
+                                            <Typography variant="h4">{resumen.totalPrestado}</Typography>
+                                        </Box>
+                                        <Wrench size={32} weight="duotone" color={theme.palette.info.main} />
+                                    </Stack>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid xs={12} md={3}>
+                            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 1, p: 2 }}>
+                                <Button 
+                                    variant="outlined" 
+                                    startIcon={<FilePdf />} 
+                                    size="small" 
+                                    fullWidth
+                                    onClick={() => handleDownloadPDF('cliente')}
+                                >
+                                    Informe Cliente
+                                </Button>
+                                <Button 
+                                    variant="contained" 
+                                    startIcon={<FilePdf />} 
+                                    size="small" 
+                                    fullWidth
+                                    onClick={() => handleDownloadPDF('interno')}
+                                >
+                                    Informe Interno
+                                </Button>
+                            </Card>
+                        </Grid>
+                    </Grid>
+                </Box>
             )}
-        </>
+
+            {/* Tabla de Datos */}
+            {datos.Cliente && datos.Cliente !== OpcionPorDefecto.value && (
+                <Paper sx={{ overflow: 'hidden' }}>
+                    <Box sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
+                        <Typography variant="h6">Detalle de Movimientos</Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Historial completo de equipos entregados, en obra y devoluciones.
+                        </Typography>
+                    </Box>
+                    <DataTable<EstadoDeCuenta>
+                        data={filteredData}
+                        columns={columns}
+                        actions={actions}
+                        loading={loading}
+                        error={error}
+                        searchTerm={searchTerm}
+                        onSearchChange={setSearchTerm}
+                        onRefresh={handleRefresh}
+                        emptyMessage="No se encontraron registros para los filtros seleccionados"
+                        rowKey={(row) => row.IdDetalleRemison}
+                        placeHolderBuscador='Buscar por equipo, remisión o proyecto...'
+                    />
+                </Paper>
+            )}
+        </Box>
     );
 };
