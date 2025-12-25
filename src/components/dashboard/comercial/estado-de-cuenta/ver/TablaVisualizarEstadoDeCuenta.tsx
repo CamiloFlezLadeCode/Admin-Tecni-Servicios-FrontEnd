@@ -23,22 +23,22 @@ import { OpcionPorDefecto } from '@/lib/constants/option-default';
 import dayjs from 'dayjs';
 
 interface EstadoDeCuenta {
-    IdDetalleRemison: number;
+    IdDetalleRemison?: number;
     Cliente: string;
     DocumentoCliente: string;
     NoRemision: string;
-    FechaPrestamo: string;
-    FechaDevolucion: string;
+    FechaRemision: string;
+    FechaUltimaDevolucion?: string;
     Proyecto: string;
-    Categoría: string;
+    Categoria: string;
     Equipo: string;
-    CantidadPrestada: number;
-    CantidadDevuelta: number;
-    CantidadPendiente: number;
+    CantidadPrestada: number | string;
+    CantidadDevuelta: number | string;
+    CantidadPendiente: number | string;
     TiempoPrestamo: string;
-    Estado: string;
-    ValorPendiente: number;
-    PrecioUnitario: number;
+    EstadoDevolucion: string;
+    ValorPendiente: number | string;
+    PrecioUnitario: number | string;
 }
 
 export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
@@ -48,7 +48,7 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
     const [error, setError] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [clientes, setClientes] = useState<{ value: string | number; label: string }[]>([]);
-    
+
     // Filtros
     const [datos, setDatos] = useState({
         Cliente: OpcionPorDefecto.value,
@@ -110,14 +110,14 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
 
     const handleRefresh = async () => {
         if (datos.Cliente === OpcionPorDefecto.value) return;
-        
+
         try {
             setLoading(true);
             setError(null);
             setSearchTerm('');
             // Resetear filtros secundarios al cambiar cliente
             setDatos(prev => ({ ...prev, Proyecto: 'Todos', Equipo: 'Todos' }));
-            
+
             const response = await VerEstadoDeCuentaCliente(datos.Cliente);
             setData(response);
         } catch (err) {
@@ -140,10 +140,10 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
     // Cálculos para las Cards de Resumen
     const resumen = useMemo(() => {
         return filteredData.reduce((acc, curr) => ({
-            totalPrestado: acc.totalPrestado + (curr.CantidadPrestada || 0),
-            totalDevuelto: acc.totalDevuelto + (curr.CantidadDevuelta || 0),
-            totalPendiente: acc.totalPendiente + (curr.CantidadPendiente || 0),
-            valorPendiente: acc.valorPendiente + (curr.ValorPendiente || 0)
+            totalPrestado: acc.totalPrestado + Number(curr.CantidadPrestada || 0),
+            totalDevuelto: acc.totalDevuelto + Number(curr.CantidadDevuelta || 0),
+            totalPendiente: acc.totalPendiente + Number(curr.CantidadPendiente || 0),
+            valorPendiente: acc.valorPendiente + Number(curr.ValorPendiente || 0)
         }), { totalPrestado: 0, totalDevuelto: 0, totalPendiente: 0, valorPendiente: 0 });
     }, [filteredData]);
 
@@ -173,9 +173,11 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
             )
         },
         {
-            key: 'FechaPrestamo',
+            key: 'FechaRemision',
             header: 'Fecha Préstamo',
-            render: (row: EstadoDeCuenta) => dayjs(row.FechaPrestamo).format('DD/MM/YYYY')
+            render: (row: EstadoDeCuenta) => (
+                <Typography variant="body2">{row.FechaRemision}</Typography>
+            )
         },
         {
             key: 'Proyecto',
@@ -192,7 +194,7 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
             render: (row: EstadoDeCuenta) => (
                 <Box>
                     <Typography variant="body2" fontWeight={500}>{row.Equipo}</Typography>
-                    <Typography variant="caption" color="text.secondary">{row.Categoría}</Typography>
+                    <Typography variant="caption" color="text.secondary">{row.Categoria}</Typography>
                 </Box>
             )
         },
@@ -203,7 +205,7 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
                 <Stack direction="row" spacing={1} alignItems="center">
                     <Chip label={`Prest: ${row.CantidadPrestada}`} size="small" variant="outlined" />
                     <Chip label={`Dev: ${row.CantidadDevuelta}`} size="small" variant="outlined" color="success" />
-                    <Chip label={`Pend: ${row.CantidadPendiente}`} size="small" color={row.CantidadPendiente > 0 ? "warning" : "default"} />
+                    <Chip label={`Pend: ${row.CantidadPendiente}`} size="small" color={Number(row.CantidadPendiente) > 0 ? "warning" : "default"} />
                 </Stack>
             )
         },
@@ -218,12 +220,12 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
             )
         },
         {
-            key: 'Estado',
+            key: 'EstadoDevolucion',
             header: 'Estado',
             render: (row: EstadoDeCuenta) => (
                 <Chip
-                    label={row.Estado}
-                    color={getEstadoColor(row.Estado)}
+                    label={row.EstadoDevolucion}
+                    color={getEstadoColor(row.EstadoDevolucion)}
                     size="small"
                     sx={{ color: 'white', minWidth: 80, fontWeight: 'bold' }}
                 />
@@ -265,7 +267,7 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
                                 size="small"
                                 onChange={handleChange}
                                 valorname="Proyecto"
-                                // disabled={!datos.Cliente || datos.Cliente === OpcionPorDefecto.value}
+                            // disabled={!datos.Cliente || datos.Cliente === OpcionPorDefecto.value}
                             />
                         </Grid>
                         <Grid md={3} xs={12}>
@@ -276,18 +278,18 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
                                 size="small"
                                 onChange={handleChange}
                                 valorname="Equipo"
-                                // disabled={!datos.Cliente || datos.Cliente === OpcionPorDefecto.value}
+                            // disabled={!datos.Cliente || datos.Cliente === OpcionPorDefecto.value}
                             />
                         </Grid>
                         <Grid md={2} xs={12}>
-                             <Button 
-                                fullWidth 
-                                variant="contained" 
+                            <Button
+                                fullWidth
+                                variant="contained"
                                 onClick={handleRefresh}
                                 disabled={!datos.Cliente || datos.Cliente === OpcionPorDefecto.value}
-                             >
+                            >
                                 Actualizar
-                             </Button>
+                            </Button>
                         </Grid>
                     </Grid>
                 </CardContent>
@@ -338,19 +340,19 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
                         </Grid>
                         <Grid xs={12} md={3}>
                             <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 1, p: 2 }}>
-                                <Button 
-                                    variant="outlined" 
-                                    startIcon={<FilePdf />} 
-                                    size="small" 
+                                <Button
+                                    variant="outlined"
+                                    startIcon={<FilePdf />}
+                                    size="small"
                                     fullWidth
                                     onClick={() => handleDownloadPDF('cliente')}
                                 >
                                     Informe Cliente
                                 </Button>
-                                <Button 
-                                    variant="contained" 
-                                    startIcon={<FilePdf />} 
-                                    size="small" 
+                                <Button
+                                    variant="contained"
+                                    startIcon={<FilePdf />}
+                                    size="small"
                                     fullWidth
                                     onClick={() => handleDownloadPDF('interno')}
                                 >
@@ -381,7 +383,7 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
                         onSearchChange={setSearchTerm}
                         onRefresh={handleRefresh}
                         emptyMessage="No se encontraron registros para los filtros seleccionados"
-                        rowKey={(row) => row.IdDetalleRemison}
+                        rowKey={(row) => row.IdDetalleRemison ?? Math.random()}
                         placeHolderBuscador='Buscar por equipo, remisión o proyecto...'
                     />
                 </Paper>
