@@ -496,12 +496,18 @@ export function FormularioCrearRemision(): React.JSX.Element {
         manejarMensajeRemisionCreada();
     }, [messages]);
 
+    const normalizarPlaca = (raw: unknown) => String(raw ?? '')
+        .toUpperCase()
+        .replaceAll(/[^A-Z0-9]/g, '')
+        .slice(0, 6);
+
     // Manejador de cambios en el formulario
     const handleChange = (e: SelectChangeEvent<string | number> | React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
+        const normalizedValue = name === 'Placa' ? normalizarPlaca(value) : value;
         setDatos(prev => ({
             ...prev,
-            [name ?? '']: value,
+            [name ?? '']: normalizedValue,
             ...(name === 'Cliente' && { Proyecto: '' }),
             ...(name === 'IdCategoria' && { Equipo: '', PrecioUnidad: 0, PrecioTotal: 0 }),
             ...(name === 'Subarrendatario' && {
@@ -950,6 +956,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
                             tamano="small"
                             tipo_input="text"
                             valorname="Placa"
+                            maximalongitud={6}
                         />
                     </Grid>
                 </Grid>

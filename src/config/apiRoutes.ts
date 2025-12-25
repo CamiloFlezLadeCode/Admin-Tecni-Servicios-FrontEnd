@@ -97,7 +97,9 @@ export const apiRoutes = {
             ver_disponibilidad_de_repuesto: `${API_BASE_URL}/ver-disponibilidad-de-repuesto`
         },
         estado_de_cuenta: {
-            ver_estado_de_cuenta_cliente: `${API_BASE_URL}/ver-estado-de-cuenta-cliente`
+            ver_estado_de_cuenta_cliente: `${API_BASE_URL}/ver-estado-de-cuenta-cliente`,
+            informe_cliente_equipos_en_obra: `${API_BASE_URL}/informe-cliente-equipos-en-obra`,
+            informe_interno_empresa_equipos_en_obra: `${API_BASE_URL}/informe-interno-empresa-equipos-en-obra`
         }
     },
     gestionycontrol: {
