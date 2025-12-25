@@ -52,8 +52,8 @@ export const navItems = [
   {
     key: 'comercial',
     title: 'Comercial',
+    icon: 'file-text',
     // href: paths.dashboard.comercial,
-    icon: '',
     items: [
       {
         key: 'comercial_remisiones',
@@ -102,6 +102,7 @@ export const navItems = [
   {
     key: 'gestionycontrol',
     title: 'Gestión y control',
+    icon: 'clipboard',
     items: [
       {
         key: 'bodegas',
@@ -190,6 +191,7 @@ export const navItems = [
   {
     key: 'inventario',
     title: 'Inventario',
+    icon: 'package',
     items: [
       {
         key: 'inventario_equipos',

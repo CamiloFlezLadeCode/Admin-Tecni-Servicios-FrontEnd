@@ -3,24 +3,28 @@
 import * as React from 'react';
 import RouterLink from 'next/link';
 import { usePathname } from 'next/navigation';
+import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Popover from '@mui/material/Popover';
 // import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 // import { ArrowsInLineHorizontal } from '@phosphor-icons/react/dist/ssr/ArrowsInLineHorizontal'
 import { ArrowLineLeft } from '@phosphor-icons/react/dist/ssr/ArrowLineLeft' 
 import { ArrowLineRight } from '@phosphor-icons/react/dist/ssr/ArrowLineRight'  
+import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass';
 
 // import { ArrowSquareUpRight as ArrowSquareUpRightIcon } from '@phosphor-icons/react/dist/ssr/ArrowSquareUpRight';
 // import { CaretUpDown as CaretUpDownIcon } from '@phosphor-icons/react/dist/ssr/CaretUpDown';
 
 import type { NavItemConfig } from '@/types/nav';
 import { paths } from '@/paths';
+import { config } from '@/config';
 import { isNavItemActive } from '@/lib/is-nav-item-active';
 import { Logo } from '@/components/core/logo';
 
@@ -30,7 +34,6 @@ import { navIcons } from './nav-icons';
 import { CaretDown, CaretRight } from '@phosphor-icons/react/dist/ssr';
 
 import { UserContext } from '@/contexts/user-context';
-import { height } from '@mui/system';
 
 export function SideNav(): React.JSX.Element {
   const pathname = usePathname();
@@ -48,8 +51,16 @@ export function SideNav(): React.JSX.Element {
     return false;
   });
 
+  const [query, setQuery] = React.useState('');
+
   React.useEffect(() => {
     document.body.style.setProperty('--SideNav-width', collapsed ? '72px' : '280px');
+  }, [collapsed]);
+
+  React.useEffect(() => {
+    if (collapsed) {
+      setQuery('');
+    }
   }, [collapsed]);
 
   const toggleSidebar = () => {
@@ -58,6 +69,18 @@ export function SideNav(): React.JSX.Element {
     document.body.style.setProperty('--SideNav-width', next ? '72px' : '280px');
     window.localStorage.setItem('sidebar-collapsed', String(next));
   };
+
+  const itemsFiltradosPorQuery = React.useMemo(() => {
+    const normalizedQuery = normalizeText(query);
+    if (!normalizedQuery) {
+      return itemsFiltrados;
+    }
+    return filterNavItems(itemsFiltrados, normalizedQuery);
+  }, [itemsFiltrados, query]);
+
+  const userDisplayName =
+    user?.name ?? (user as unknown as { fullName?: string } | null)?.fullName ?? user?.email ?? 'Usuario';
+  const userSecondaryText = user?.rol ?? user?.documento ?? '';
 
   return (
     <Box
@@ -86,79 +109,174 @@ export function SideNav(): React.JSX.Element {
         zIndex: 'var(--SideNav-zIndex)',
         overflow: 'hidden',
         transition: 'width 0.45s ease-in-out',
+        borderRight: '1px solid var(--mui-palette-neutral-800)',
         '&::-webkit-scrollbar': { display: 'none' },
       }}
     >
-      <Stack direction="column" spacing={1.5} sx={{ py: collapsed ? 1 : 2, px: collapsed ? 0 : 3, alignItems: 'center', justifyContent: 'center' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1,
+          px: collapsed ? 1 : 2,
+          py: collapsed ? 1 : 2,
+        }}
+      >
         <Box
           component={RouterLink}
           href={paths.home}
           sx={{
-            display: 'inline-flex',
-            width: '100%',
-            justifyContent: 'center',
+            display: 'flex',
             alignItems: 'center',
-            height: 128,
-            position: 'relative',
+            gap: 1.25,
+            minWidth: 0,
+            flex: '1 1 auto',
+            textDecoration: 'none',
           }}
         >
-          <Box
-            sx={{
-              position: 'absolute',
-              transition: 'opacity 600ms ease-in-out, transform 600ms ease-in-out',
-              opacity: collapsed ? 0 : 1,
-              transform: collapsed ? 'scale(0.96)' : 'scale(1)'
-            }}
-          >
-            <Logo color="light" height={128} width={222} />
-          </Box>
-          <Box
-            sx={{
-              position: 'absolute',
-              transition: 'opacity 600ms ease-in-out, transform 600ms ease-in-out',
-              opacity: collapsed ? 1 : 0,
-              transform: collapsed ? 'scale(1.08)' : 'scale(0.96)',
-              inset: 0,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-          >
-            <Box component="img" src="/assets/favicon.ico" alt="logo" sx={{ width: '85%', height: '85%', objectFit: 'contain' }} />
-          </Box>
+          {/* <Logo color="light" emblem={collapsed} height={44} width={collapsed ? 44 : 44} /> */}
+          {/* {!collapsed ? (
+            <Box sx={{ minWidth: 0 }}>
+              <Typography sx={{ fontWeight: 800, lineHeight: 1.2, color: 'var(--SideNav-color)' }} variant="subtitle1">
+                {config.site.name}
+              </Typography>
+              <Typography sx={{ color: 'var(--mui-palette-neutral-400)', lineHeight: 1.2 }} variant="caption">
+                Panel administrativo
+              </Typography>
+            </Box>
+          ) : null} */}
         </Box>
-        <Tooltip title={collapsed ? 'Expandir' : 'Contraer'} placement="top">
+        <Tooltip title={collapsed ? 'Expandir' : 'Contraer'} placement="bottom">
           <IconButton
             aria-label={collapsed ? 'Expandir sidebar' : 'Contraer sidebar'}
             onClick={toggleSidebar}
             sx={{
               color: 'var(--mui-palette-neutral-200)',
-              backgroundColor: 'rgba(255, 255, 255, 0.06)',
+              backgroundColor: 'var(--mui-palette-neutral-900)',
               border: '1px solid var(--mui-palette-neutral-700)',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
-              '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.12)' },
-              minWidth: collapsed ? 32 : 40,
-              minHeight: collapsed ? 32 : 40,
+              '&:hover': { backgroundColor: 'var(--mui-palette-neutral-800)' },
+              width: 36,
+              height: 36,
+              flex: '0 0 auto',
             }}
           >
             {collapsed ? <ArrowLineRight size={18} /> : <ArrowLineLeft size={20} />}
           </IconButton>
         </Tooltip>
-      </Stack>
-      <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)' }} />
-      <Box component="nav" sx={{ flex: '1 1 auto', p: '12px', overflowY: 'auto', scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' } }} tabIndex={0}>
-        {renderNavItems({ pathname, items: itemsFiltrados, collapsed })}
       </Box>
-      <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)' }} />
+
+      <Divider sx={{ borderColor: 'var(--mui-palette-neutral-800)' }} />
+
+      <Box
+        component="nav"
+        sx={{ flex: '1 1 auto', p: collapsed ? 1 : 1.5, overflowY: 'auto', scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' } }}
+        tabIndex={0}
+      >
+        {!collapsed ? (
+          <Box sx={{ px: 0.5, pb: 1 }}>
+            <TextField
+              fullWidth
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+              }}
+              placeholder="Buscar..."
+              size="small"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <MagnifyingGlassIcon size={18} color="var(--mui-palette-neutral-400)" />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  color: 'var(--SideNav-color)',
+                  bgcolor: 'var(--mui-palette-neutral-900)',
+                  borderRadius: 2,
+                  '& fieldset': { borderColor: 'var(--mui-palette-neutral-700)' },
+                  '&:hover fieldset': { borderColor: 'var(--mui-palette-neutral-600)' },
+                  '&.Mui-focused fieldset': { borderColor: 'var(--mui-palette-primary-main)' },
+                },
+                '& input::placeholder': {
+                  color: 'var(--mui-palette-neutral-400)',
+                  opacity: 1,
+                },
+              }}
+            />
+          </Box>
+        ) : null}
+
+        {renderNavItems({ pathname, items: itemsFiltradosPorQuery, collapsed, query })}
+      </Box>
+
+      <Divider sx={{ borderColor: 'var(--mui-palette-neutral-800)' }} />
+
+      <Box sx={{ p: collapsed ? 1 : 1.5 }}>
+        {/* <Tooltip title={collapsed ? `${userDisplayName}${userSecondaryText ? ` · ${userSecondaryText}` : ''}` : ''} placement="right"> */}
+        <Tooltip title={collapsed ? 'TECNISERVICIOS - Panel administrativo ' : ''} placement="right">
+          <Stack
+            direction="row"
+            spacing={1.25}
+            sx={{
+              alignItems: 'center',
+              px: collapsed ? 0 : 1,
+              py: 1,
+              borderRadius: 2,
+              bgcolor: 'var(--mui-palette-neutral-900)',
+              border: '1px solid var(--mui-palette-neutral-700)',
+              justifyContent: collapsed ? 'center' : 'flex-start',
+              overflow: 'hidden',
+            }}
+          >
+            <Avatar
+              src="/assets/LogoCompanyLogoIco.png"
+              sx={{
+                width: 34,
+                height: 34,
+                bgcolor: 'var(--mui-palette-neutral-800)',
+                color: 'var(--SideNav-color)',
+                fontWeight: 700,
+              }}
+            >
+              {(userDisplayName || 'U').charAt(0).toUpperCase()}
+            </Avatar>
+            {!collapsed ? (
+              <Box sx={{ minWidth: 0 }}>
+                <Typography sx={{ fontWeight: 700, lineHeight: 1.2 }} variant="body2">
+                  {/* {userDisplayName} */}
+                  TECNISERVICIOS
+                </Typography>
+                {userSecondaryText ? (
+                  <Typography sx={{ color: 'var(--mui-palette-neutral-400)', lineHeight: 1.2 }} variant="caption">
+                    {/* {userSecondaryText} */}
+                    Panel administrativo
+                  </Typography>
+                ) : null}
+              </Box>
+            ) : null}
+          </Stack>
+        </Tooltip>
+      </Box>
     </Box>
   );
 }
 
-function renderNavItems({ items = [], pathname, collapsed = false }: { items?: NavItemConfig[]; pathname: string; collapsed?: boolean }): React.JSX.Element {
+function renderNavItems({
+  items = [],
+  pathname,
+  collapsed = false,
+  query,
+}: {
+  items?: NavItemConfig[];
+  pathname: string;
+  collapsed?: boolean;
+  query?: string;
+}): React.JSX.Element {
   const children = items.reduce((acc: React.ReactNode[], curr: NavItemConfig): React.ReactNode[] => {
     const { key, ...item } = curr;
 
-    acc.push(<NavItem key={key} pathname={pathname} collapsed={collapsed} {...item} />);
+    acc.push(<NavItem key={key} pathname={pathname} collapsed={collapsed} query={query} {...item} />);
 
     return acc;
   }, []);
@@ -174,19 +292,29 @@ interface NavItemProps extends Omit<NavItemConfig, 'items'> {
   pathname: string;
   items?: NavItemConfig[];
   collapsed?: boolean;
+  query?: string;
 }
 
-function NavItem({ disabled, external, href, icon, matcher, pathname, title, items, collapsed }: NavItemProps): React.JSX.Element {
+function NavItem({ disabled, external, href, icon, matcher, pathname, title, items, collapsed, query }: NavItemProps): React.JSX.Element {
   const isChildActive = items?.some((item) =>
     isNavItemActive({ ...item, pathname })
   );
   const [open, setOpen] = React.useState(isChildActive);
   // const [open, setOpen] = React.useState(false);
   const active = isNavItemActive({ disabled, external, href, matcher, pathname });
+  const effectiveActive = Boolean(active || (collapsed && isChildActive));
   const Icon = icon ? navIcons[icon] : null;
   const hasChildren = items && items.length > 0;
   const [flyAnchor, setFlyAnchor] = React.useState<HTMLElement | null>(null);
   const flyOpen = Boolean(flyAnchor);
+  const [tooltipOpen, setTooltipOpen] = React.useState(false);
+  const [suppressTooltip, setSuppressTooltip] = React.useState(false);
+
+  React.useEffect(() => {
+    if (query && hasChildren) {
+      setOpen(true);
+    }
+  }, [hasChildren, query]);
 
   const handleToggle = () => {
     setOpen((prev) => !prev);
@@ -203,13 +331,25 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
             rel: external ? 'noreferrer' : undefined,
           }
           : { role: 'button' })}
-        onClick={handleToggle}
-        onMouseEnter={(e) => {
-          if (collapsed && hasChildren) setFlyAnchor(e.currentTarget as HTMLElement);
+        onClick={(e) => {
+          if (!hasChildren) return;
+          e.preventDefault();
+          if (collapsed) {
+            const currentTarget = e.currentTarget as HTMLElement;
+            setSuppressTooltip(true);
+            setTooltipOpen(false);
+            setFlyAnchor((prev) => (prev ? null : currentTarget));
+            return;
+          }
+          handleToggle();
         }}
         onMouseLeave={() => {
-          if (collapsed && hasChildren) setFlyAnchor(null);
+          if (!collapsed || !hasChildren) return;
+          setTooltipOpen(false);
+          setSuppressTooltip(false);
         }}
+        aria-current={effectiveActive ? 'page' : undefined}
+        aria-expanded={hasChildren ? (collapsed ? flyOpen : open) : undefined}
         sx={{
           alignItems: 'center',
           borderRadius: 1,
@@ -218,33 +358,36 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
           display: 'flex',
           flex: '0 0 auto',
           gap: 1,
-          p: '6px 16px',
+          p: collapsed ? '10px' : '10px 12px',
           position: 'relative',
           textDecoration: 'none',
           whiteSpace: 'nowrap',
+          justifyContent: collapsed ? 'center' : 'flex-start',
           ...(disabled && {
             bgcolor: 'var(--NavItem-disabled-background)',
             color: 'var(--NavItem-disabled-color)',
             cursor: 'not-allowed',
           }),
-          ...(active && { bgcolor: 'var(--NavItem-active-background)', color: 'var(--NavItem-active-color)' }),
-          // Estilos de hover solo si no está activo
-          ...(active ? {} : {
-            '&:hover': {
-              bgcolor: 'var(--NavItem-hover-background)',
-              color: 'var(--NavItem-hover-color)',
-            },
-          }),
+          ...(effectiveActive && { bgcolor: 'var(--NavItem-active-background)', color: 'var(--NavItem-active-color)' }),
+          ...(effectiveActive
+            ? {}
+            : {
+                '&:hover': {
+                  bgcolor: 'var(--NavItem-hover-background)',
+                },
+              }),
         }}
       >
-        <Box sx={{ alignItems: 'center', display: 'flex', justifyContent: 'center', flex: '0 0 auto' }}>
+        <Box sx={{ alignItems: 'center', display: 'flex', justifyContent: 'center', flex: '0 0 auto', width: 22 }}>
           {Icon ? (
             <Icon
               fill={active ? 'var(--NavItem-icon-active-color)' : 'var(--NavItem-icon-color)'}
               fontSize="var(--icon-fontSize-md)"
               weight={active ? 'fill' : undefined}
             />
-          ) : null}
+          ) : (
+            <Box sx={{ width: 18, height: 18 }} />
+          )}
         </Box>
         {!collapsed && (
           <Box sx={{ display: 'flex', alignItems: 'center', flex: '1 1 auto', minWidth: 0 }}>
@@ -262,7 +405,7 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
         )}
       </Box>
       {hasChildren && open && !collapsed && (
-        <Stack component="ul" spacing={0} sx={{ listStyle: 'none', m: 0, p: 0, marginLeft: '20px' }}>
+        <Stack component="ul" spacing={0} sx={{ listStyle: 'none', m: 0, p: 0, marginLeft: '14px', marginTop: 0.5 }}>
           {items.map((subItem) => {
             const { key, ...rest } = subItem;
             return (
@@ -270,6 +413,7 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
                 key={key}
                 pathname={pathname}
                 collapsed={collapsed}
+                query={query}
                 {...rest}
               />
             );
@@ -280,26 +424,61 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
         <Popover
           open={flyOpen}
           anchorEl={flyAnchor}
-          onClose={() => setFlyAnchor(null)}
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-          transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-          PaperProps={{ sx: { mt: 0.5, p: 1, minWidth: 180 } }}
+          onClose={() => {
+            setFlyAnchor(null);
+            setTooltipOpen(false);
+            setSuppressTooltip(true);
+          }}
+          disableAutoFocus
+          disableEnforceFocus
+          disableRestoreFocus
+          anchorOrigin={{ vertical: 'center', horizontal: 'right' }}
+          transformOrigin={{ vertical: 'center', horizontal: 'left' }}
+          PaperProps={{
+            sx: {
+              ml: 2,
+              p: 1,
+              minWidth: 220,
+              bgcolor: 'var(--mui-palette-neutral-900)',
+              color: 'var(--mui-palette-common-white)',
+              border: '1px solid var(--mui-palette-neutral-700)',
+              borderRadius: 2,
+              boxShadow: '12px 12px 24px rgba(0, 0, 0, 0.35)',
+              backdropFilter: 'blur(10px)',
+            },
+          }}
         >
+          <Box sx={{ px: 1, py: 0.75 }}>
+            <Typography sx={{ fontWeight: 700, lineHeight: 1.2 }} variant="subtitle2">
+              {title}
+            </Typography>
+            <Typography sx={{ color: 'var(--mui-palette-neutral-400)', lineHeight: 1.2 }} variant="caption">
+              Opciones
+            </Typography>
+          </Box>
+          <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)', my: 0.5 }} />
           <Stack component="ul" spacing={0} sx={{ listStyle: 'none', m: 0, p: 0 }}>
             {items.map((subItem) => {
-              const { key, title: stitle, href: shref, external: sexternal } = subItem;
+              const { key, title: stitle, href: shref, external: sexternal, disabled: sdisabled } = subItem;
               return (
                 <Box
                   key={key}
                   component={sexternal ? 'a' : RouterLink}
                   href={shref}
+                  onClick={() => {
+                    setFlyAnchor(null);
+                    setTooltipOpen(false);
+                    setSuppressTooltip(true);
+                  }}
                   sx={{
                     px: 1.5,
                     py: 1,
                     borderRadius: 1,
                     color: 'var(--NavItem-color)',
                     textDecoration: 'none',
-                    '&:hover': { bgcolor: 'var(--NavItem-hover-background)', color: 'var(--NavItem-hover-color)' },
+                    ...(sdisabled && { opacity: 0.6, pointerEvents: 'none' }),
+                    transition: 'background-color 120ms ease',
+                    '&:hover': { bgcolor: 'var(--mui-palette-neutral-800)' },
                   }}
                 >
                   {stitle}
@@ -315,12 +494,56 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
   return (
     <li>
       {collapsed ? (
-        <Tooltip title={title} placement="right">{content}</Tooltip>
+        <Tooltip
+          title={title}
+          placement="right"
+          disableFocusListener={hasChildren}
+          disableTouchListener={hasChildren}
+          disableInteractive={hasChildren}
+          open={hasChildren ? (flyOpen ? false : tooltipOpen) : undefined}
+          onOpen={hasChildren ? () => {
+            if (!suppressTooltip) setTooltipOpen(true);
+          } : undefined}
+          onClose={hasChildren ? () => setTooltipOpen(false) : undefined}
+          leaveDelay={0}
+        >
+          {content}
+        </Tooltip>
       ) : (
         content
       )}
     </li>
   );
+}
+
+function normalizeText(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+}
+
+function filterNavItems(items: NavItemConfig[], normalizedQuery: string): NavItemConfig[] {
+  return items
+    .map((item) => {
+      const title = item.title ?? '';
+      const normalizedTitle = normalizeText(title);
+      const children = item.items ? filterNavItems(item.items, normalizedQuery) : undefined;
+      const matchesSelf = normalizedTitle.includes(normalizedQuery);
+      const matchesChildren = Boolean(children && children.length);
+
+      if (!matchesSelf && !matchesChildren) {
+        return null;
+      }
+
+      if (children) {
+        return { ...item, items: children };
+      }
+
+      return item;
+    })
+    .filter(Boolean) as NavItemConfig[];
 }
 
 
