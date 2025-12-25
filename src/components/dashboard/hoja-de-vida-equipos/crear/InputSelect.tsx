@@ -1,3 +1,4 @@
+'use client';
 // components/InputSelect.tsx
 import React from 'react';
 import { FormControl, InputLabel, Select, MenuItem, Grid, SelectChangeEvent } from '@mui/material';

@@ -1,3 +1,4 @@
+'use client';
 // components/InputText.tsx
 import React from 'react';
 import { FormControl, InputLabel, TextField, Grid, OutlinedInput } from '@mui/material';

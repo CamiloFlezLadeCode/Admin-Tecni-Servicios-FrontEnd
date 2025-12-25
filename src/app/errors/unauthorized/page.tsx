@@ -1,6 +1,6 @@
 import * as React from 'react';
 import type { Metadata } from 'next';
-import RouterLink from 'next/link';
+import Link from 'next/link';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
@@ -27,14 +27,11 @@ export default function SinPermisos(): React.JSX.Element {
                 <Typography variant="h3" sx={{ textAlign: 'center' }}>
                     401: No tienes permisos para acceder a esta página
                 </Typography>
-                <Button
-                    component={RouterLink}
-                    href={paths.home}
-                    startIcon={<ArrowLeftIcon fontSize="var(--icon-fontSize-md)" />}
-                    variant="contained"
-                >
-                    Regresar
-                </Button>
+                <Link href={paths.home} passHref legacyBehavior>
+                    <Button component="a" startIcon={<ArrowLeftIcon fontSize="var(--icon-fontSize-md)" />} variant="contained">
+                        Regresar
+                    </Button>
+                </Link>
             </Stack>
         </Box>
     );

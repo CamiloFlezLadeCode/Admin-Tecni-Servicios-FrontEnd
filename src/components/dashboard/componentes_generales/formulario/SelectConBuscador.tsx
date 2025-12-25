@@ -113,7 +113,7 @@
 
 // export default InputSelectConEstado;
 
-
+'use client';
 import React from 'react';
 import {
     Autocomplete,

@@ -193,8 +193,8 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
   };
 
   const content = (
-    <>
-      <Box
+    <div>
+ <Box
         {...(href
           ? {
             component: external ? 'a' : RouterLink,
@@ -309,7 +309,7 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
           </Stack>
         </Popover>
       )}
-    </>
+    </div>
   );
 
   return (

@@ -146,7 +146,7 @@
 // export default RoleSelect;
 
 
-
+'use client';
 import * as React from "react";
 import { FormControl, InputLabel, Select, MenuItem, Chip, OutlinedInput, Box, SelectChangeEvent } from "@mui/material";
 

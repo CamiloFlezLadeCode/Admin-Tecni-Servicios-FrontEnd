@@ -28,8 +28,6 @@
 //   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
 //   "exclude": ["node_modules"]
 // }
-
-
 {
   "compilerOptions": {
     "target": "es2020",
@@ -49,7 +47,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     // "jsx": "preserve",
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "incremental": true,
     "allowSyntheticDefaultImports": true,
     "importsNotUsedAsValues": "remove",
@@ -70,7 +68,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"
