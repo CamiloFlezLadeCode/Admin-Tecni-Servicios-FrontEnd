@@ -503,21 +503,28 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
 
         const pdfBytes = new Uint8Array(await pdfDoc.save());
         const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-        const iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        iframe.src = URL.createObjectURL(blob);
-        document.body.appendChild(iframe);
+        if (blob) {
+            const esMovil = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            if (esMovil) {
+                window.open(URL.createObjectURL(blob), '_blank');
+                return;
+            }
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = URL.createObjectURL(blob);
+            document.body.appendChild(iframe);
 
-        iframe.onload = () => {
-            iframe.contentWindow?.focus();
-            iframe.contentWindow?.print();
+            iframe.onload = () => {
+                iframe.contentWindow?.focus();
+                iframe.contentWindow?.print();
 
-            // setTimeout(() => {
-            //   URL.revokeObjectURL(blobURL);
-            //   document.body.removeChild(iframe);
-            // }, 1000);
-        };
-        console.log("Se completó la creación del pdf")
+                // setTimeout(() => {
+                //   URL.revokeObjectURL(blobURL);
+                //   document.body.removeChild(iframe);
+                // }, 1000);
+            };
+            console.log("Se completó la creación del pdf")
+        }
     };
 
     const handleDownloadPDF = async (tipo: 'cliente' | 'interno') => {
