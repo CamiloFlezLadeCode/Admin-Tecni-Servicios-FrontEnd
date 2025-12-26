@@ -506,7 +506,12 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
         if (blob) {
             const esMovil = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
             if (esMovil) {
-                window.open(URL.createObjectURL(blob), '_blank');
+                // window.open(URL.createObjectURL(blob), '_blank');
+                // return;
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `equipos-en-obra-${tipo}-${dayjs().format('YYYY-MM-DD')}.pdf`;
+                link.click();
                 return;
             }
             const iframe = document.createElement('iframe');
