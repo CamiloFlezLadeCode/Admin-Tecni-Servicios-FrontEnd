@@ -1,4 +1,3 @@
-// const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 type Entorno = 'Produccion' | 'Desarrollo';
 
 const ENTORNO = (process.env.NEXT_PUBLIC_ENTORNO as Entorno) ?? 'Desarrollo';
@@ -70,6 +69,9 @@ export const apiRoutes = {
             consultarcantidaddisponiblequipo: (IdEquipo: number) => `${API_BASE_URL}/ver-cantidad-disponible-equipo/${IdEquipo}`,
             consultarsiguientenoremision: `${API_BASE_URL}/siguiente-no-remision`,
             ver_remisiones: `${API_BASE_URL}/ver-remisiones`,
+            cantidad_remisiones_devoluciones_ultimos_6_meses: `${API_BASE_URL}/cantidad-remisiones-devoluciones-ultimos-6-meses`,
+            totales_movimientos_mes_actual: `${API_BASE_URL}/totales-movimientos-mes-actual`,
+            actividad_reciente_movimientos: `${API_BASE_URL}/actividad-reciente-movimientos`,
             ver_pdf_remision: (IdRemision: number) => `${API_BASE_URL}/obtener-pdf-remision/${IdRemision}`,
             eliminar_remision: `${API_BASE_URL}/eliminar-remision`,
             ver_disponibilidad_de_equipos: `${API_BASE_URL}/ver-disponibilidad-equipos`,
