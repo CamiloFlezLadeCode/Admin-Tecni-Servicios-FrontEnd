@@ -296,6 +296,7 @@ interface NavItemProps extends Omit<NavItemConfig, 'items'> {
 }
 
 function NavItem({ disabled, external, href, icon, matcher, pathname, title, items, collapsed, query }: NavItemProps): React.JSX.Element {
+  const itemRef = React.useRef<HTMLDivElement>(null);
   const isChildActive = items?.some((item) =>
     isNavItemActive({ ...item, pathname })
   );
@@ -322,13 +323,36 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
     }
   }, [hasChildren, query]);
 
+  React.useEffect(() => {
+    if (active && !collapsed) {
+      const timer = setTimeout(() => {
+        if (itemRef.current) {
+          itemRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 400); // Aumentamos ligeramente el tiempo para asegurar que la expansión haya terminado
+      return () => clearTimeout(timer);
+    }
+  }, [active, collapsed]);
+
+  React.useEffect(() => {
+    if (isChildActive && !collapsed) {
+       const timer = setTimeout(() => {
+        if (itemRef.current) {
+          itemRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 400);
+      return () => clearTimeout(timer);
+    }
+  }, [isChildActive, collapsed]);
+
   const handleToggle = () => {
     setOpen((prev) => !prev);
   };
 
   const content = (
     <div>
- <Box
+      <Box
+        ref={itemRef}
         {...(href
           ? {
             component: external ? 'a' : RouterLink,
