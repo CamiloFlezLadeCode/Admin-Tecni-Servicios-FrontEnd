@@ -311,6 +311,12 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
   const [suppressTooltip, setSuppressTooltip] = React.useState(false);
 
   React.useEffect(() => {
+    if (isChildActive) {
+      setOpen(true);
+    }
+  }, [isChildActive, collapsed]);
+
+  React.useEffect(() => {
     if (query && hasChildren) {
       setOpen(true);
     }
@@ -381,9 +387,9 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
         <Box sx={{ alignItems: 'center', display: 'flex', justifyContent: 'center', flex: '0 0 auto', width: 22 }}>
           {Icon ? (
             <Icon
-              fill={active ? 'var(--NavItem-icon-active-color)' : 'var(--NavItem-icon-color)'}
+              fill={effectiveActive ? 'var(--NavItem-icon-active-color)' : 'var(--NavItem-icon-color)'}
               fontSize="var(--icon-fontSize-md)"
-              weight={active ? 'fill' : undefined}
+              weight={effectiveActive ? 'fill' : undefined}
             />
           ) : (
             <Box sx={{ width: 18, height: 18 }} />

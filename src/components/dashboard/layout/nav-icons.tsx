@@ -47,6 +47,7 @@ import {
   Receipt, //Hace referencia al estado de cuenta de los clientes
   HouseLine, //Hace referencia al menú inicial
   Info, //Hace referencia a acerca de ó aobut
+  ChartLineUp , //Hace referencia a crecimiento
 } from '@phosphor-icons/react/dist/ssr';
 
 export const navIcons = {
@@ -79,6 +80,7 @@ export const navIcons = {
   'icono-ordenes-de-servicio': ClipboardText,
   'icono-configuraciones-alto-nivel': Crown,
   'icono-estado-de-cuenta-cliente': Receipt,
+  'icono-crecimiento': ChartLineUp,
   home: HouseLine,
   user: UserIcon,
   users: UsersIcon,
