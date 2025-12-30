@@ -327,9 +327,9 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
     if (active && !collapsed) {
       const timer = setTimeout(() => {
         if (itemRef.current) {
-          itemRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          itemRef.current.scrollIntoView({ behavior: 'auto', block: 'center' });
         }
-      }, 400); // Aumentamos ligeramente el tiempo para asegurar que la expansión haya terminado
+      }, 10);
       return () => clearTimeout(timer);
     }
   }, [active, collapsed]);
@@ -338,9 +338,9 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
     if (isChildActive && !collapsed) {
        const timer = setTimeout(() => {
         if (itemRef.current) {
-          itemRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          itemRef.current.scrollIntoView({ behavior: 'auto', block: 'center' });
         }
-      }, 400);
+      }, 10);
       return () => clearTimeout(timer);
     }
   }, [isChildActive, collapsed]);
