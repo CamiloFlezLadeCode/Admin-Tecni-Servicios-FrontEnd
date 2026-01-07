@@ -431,19 +431,46 @@ export default function Page(): React.JSX.Element {
 
     const actividadRecienteFallback = React.useMemo(() => {
         const rem = remisiones
-            .map((r) => ({ tipo: 'Remisión' as const, id: r.IdRemision, numero: r.NoRemision, cliente: r.Cliente, fecha: r.FechaCreacion }))
+            .map((r) => ({
+                tipo: 'Remisión' as const,
+                id: r.IdRemision,
+                numero: r.NoRemision,
+                cliente: r.Cliente,
+                proyecto: r.Proyecto,
+                creadoPor: r.CreadoPor,
+                estado: r.EstadoRemision,
+                fecha: r.FechaCreacion
+            }))
             .filter((x) => Boolean(parseDate(x.fecha)))
             .sort((a, b) => (parseDate(b.fecha)!.valueOf() - parseDate(a.fecha)!.valueOf()))
             .slice(0, 5);
 
         const dev = devoluciones
-            .map((d) => ({ tipo: 'Devolución' as const, id: d.IdDevolucion, numero: d.NoDevolucion, cliente: d.Cliente, fecha: d.FechaCreacion }))
+            .map((d) => ({
+                tipo: 'Devolución' as const,
+                id: d.IdDevolucion,
+                numero: d.NoDevolucion,
+                cliente: d.Cliente,
+                proyecto: d.Proyecto,
+                creadoPor: d.CreadoPor,
+                estado: d.Estado,
+                fecha: d.FechaCreacion
+            }))
             .filter((x) => Boolean(parseDate(x.fecha)))
             .sort((a, b) => (parseDate(b.fecha)!.valueOf() - parseDate(a.fecha)!.valueOf()))
             .slice(0, 5);
 
         const ord = ordenes
-            .map((o) => ({ tipo: 'Órden' as const, id: o.IdOrdenDeServicio, numero: o.NoOrdenDeServicio, cliente: o.Cliente, fecha: o.FechaCreacion }))
+            .map((o) => ({
+                tipo: 'Órden' as const,
+                id: o.IdOrdenDeServicio,
+                numero: o.NoOrdenDeServicio,
+                cliente: o.Cliente,
+                proyecto: o.Proyecto,
+                creadoPor: o.CreadoPor,
+                estado: o.EstadoOrdenDeServicio,
+                fecha: o.FechaCreacion
+            }))
             .filter((x) => Boolean(parseDate(x.fecha)))
             .sort((a, b) => (parseDate(b.fecha)!.valueOf() - parseDate(a.fecha)!.valueOf()))
             .slice(0, 5);
@@ -454,27 +481,24 @@ export default function Page(): React.JSX.Element {
     const actividadReciente = React.useMemo(() => {
         const movimientos = actividadRecienteMovimientos?.Movimientos;
         if (Array.isArray(movimientos) && movimientos.length) {
-            const mapped = movimientos
-                .map((m) => {
-                    const tipo =
-                        String(m.TipoMovimiento).toUpperCase() === 'REMISION'
-                            ? ('Remisión' as const)
-                            : String(m.TipoMovimiento).toUpperCase() === 'DEVOLUCION'
-                                ? ('Devolución' as const)
-                                : String(m.TipoMovimiento).toUpperCase() === 'ORDEN_DE_SERVICIO'
-                                    ? ('Órden' as const)
-                                    : null;
-                    if (!tipo) return null;
-                    return { tipo, id: Number(m.IdMovimiento), numero: String(m.NoMovimiento), cliente: String(m.Cliente), fecha: String(m.FechaCreacion) };
-                })
-                .filter((x): x is NonNullable<typeof x> => {
-                    if (!x) return false;
-                    return Boolean(parseDate(x.fecha));
-                })
-                .sort((a, b) => (parseDate(b.fecha)!.valueOf() - parseDate(a.fecha)!.valueOf()))
-                .slice(0, Math.min(10, movimientos.length));
+            return movimientos.map((m: any) => {
+                let tipo: 'Remisión' | 'Devolución' | 'Órden' = 'Remisión';
+                const rawTipo = String(m.TipoMovimiento || '').toUpperCase();
 
-            return mapped.length ? mapped : actividadRecienteFallback;
+                if (rawTipo === 'DEVOLUCION') tipo = 'Devolución';
+                else if (rawTipo === 'ORDEN_DE_SERVICIO') tipo = 'Órden';
+
+                return {
+                    tipo,
+                    id: Number(m.IdMovimiento),
+                    numero: String(m.NoMovimiento),
+                    cliente: String(m.Cliente),
+                    proyecto: String(m.Proyecto || ''),
+                    creadoPor: String(m.CreadoPor || ''),
+                    estado: String(m.Estado || ''),
+                    fecha: String(m.FechaCreacion)
+                };
+            });
         }
 
         return actividadRecienteFallback;
@@ -631,17 +655,22 @@ export default function Page(): React.JSX.Element {
                                 <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
                                     {a.numero}
                                 </Typography>
-                                <Typography
-                                    variant="caption"
-                                    color="text.secondary"
-                                    sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block' }}
-                                >
+                                <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: 1.2 }}>
                                     {a.cliente}
                                 </Typography>
+                                {a.proyecto && (
+                                    <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                        sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block' }}
+                                    >
+                                        {a.proyecto}
+                                    </Typography>
+                                )}
                             </Box>
                         </Stack>
                         <Typography variant="caption" color="text.secondary" sx={{ flex: '0 0 auto' }}>
-                            {formatDateTimeShort12h(a.fecha)}
+                            {a.fecha}
                         </Typography>
                     </Box>
                 ))}
