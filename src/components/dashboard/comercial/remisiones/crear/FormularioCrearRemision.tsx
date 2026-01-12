@@ -728,6 +728,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
             setCantidadDisponible(0);
             setProyectos([]);
             setSubarrendatarios([]);
+            setEquipos([]);
 
             // Cargar nuevo número de remisión
             const [siguienteNoRemision] = await ConsultarSiguienteNoRemision();
