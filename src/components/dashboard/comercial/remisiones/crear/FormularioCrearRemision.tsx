@@ -31,7 +31,7 @@ import InputSelect from '../../../componentes_generales/formulario/Select';
 import ModalVerItemsRemision from './ModalVerItemsRemision';
 // Importar componentes de Modal de Material-UI
 import FechayHora from '@/components/dashboard/componentes_generales/formulario/DateTimePicker';
-import { EmpresaAnfitriona, OpcionPorDefecto, ParametroBuscarBodegasAlquiler } from '@/lib/constants/option-default';
+import { EmpresaAnfitriona, OpcionPorDefecto, ParametroBuscarBodegasAlquiler, OpcionPorDefectoNumber } from '@/lib/constants/option-default';
 import { OrdenarSubarrendatarios } from '@/lib/order/orders';
 import { ListarEquipos } from '@/services/comercial/remisiones/ListarEquiposService';
 import Modal from '@mui/material/Modal';
@@ -85,6 +85,8 @@ interface DatosFormulario {
     UsuarioCrecion: string | null;
     NoRemision: string;
     FechaRemision: Dayjs;
+    IncluyeTransporte: boolean | null;
+    ValorTransporte: number;
 }
 
 // Estilos para el Modal
@@ -121,9 +123,10 @@ export function FormularioCrearRemision(): React.JSX.Element {
 
     // Estados para datos del formulario
     const [datos, setDatos] = React.useState<DatosFormulario>({
-        Cliente: '',
+        Cliente: OpcionPorDefecto.value,
         Proyecto: '',
-        IdCategoria: Number(null),
+        // IdCategoria: Number(null),
+        IdCategoria: OpcionPorDefectoNumber.value,
         Equipo: '',
         Cantidad: 0,
         PrecioUnidad: 0,
@@ -144,6 +147,8 @@ export function FormularioCrearRemision(): React.JSX.Element {
         UsuarioCrecion: documentoUsuarioActivo,
         NoRemision: '',
         FechaRemision: dayjs(),
+        IncluyeTransporte: null,
+        ValorTransporte: 0,
     });
 
     // Estados para items y disponibilidad
@@ -197,8 +202,10 @@ export function FormularioCrearRemision(): React.JSX.Element {
                 ]);
 
                 //Clientes
+                clientesRes.unshift(OpcionPorDefecto)
                 setClientes(clientesRes);
                 //Categorias
+                categoriasRes.unshift(OpcionPorDefectoNumber)
                 setCategoria(categoriasRes);
                 //Subarrendatarios
                 // setSubarrendatarios(await OrdenarSubarrendatarios(subarrRes));
@@ -505,6 +512,17 @@ export function FormularioCrearRemision(): React.JSX.Element {
     const handleChange = (e: SelectChangeEvent<string | number> | React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         const normalizedValue = name === 'Placa' ? normalizarPlaca(value) : value;
+
+        if (name === 'IncluyeTransporte') {
+            const nuevoValor = value === 'SI' ? true : (value === 'NO' ? false : null);
+            setDatos(prev => ({
+                ...prev,
+                IncluyeTransporte: nuevoValor,
+                ValorTransporte: nuevoValor === false ? 0 : prev.ValorTransporte
+            }));
+            return;
+        }
+
         setDatos(prev => ({
             ...prev,
             [name ?? '']: normalizedValue,
@@ -666,6 +684,8 @@ export function FormularioCrearRemision(): React.JSX.Element {
                 PrecioTotal: item.PrecioTotal,
                 ObservacionesCliente: item.ObservacionesCliente
             })),
+            IncluyeTransporte: datos.IncluyeTransporte === true,
+            ValorTransporte: datos.IncluyeTransporte === true ? Number(datos.ValorTransporte) : 0,
             FechaRemision: datos.FechaRemision.format('YYYY-MM-DD HH:mm:ss')
         };
 
@@ -676,9 +696,10 @@ export function FormularioCrearRemision(): React.JSX.Element {
 
             // Resetear formulario
             setDatos({
-                Cliente: '',
+                Cliente: OpcionPorDefecto.value,
                 Proyecto: '',
-                IdCategoria: Number(null),
+                // IdCategoria: Number(null),
+                IdCategoria: OpcionPorDefectoNumber.value,
                 Equipo: '',
                 Cantidad: 1,
                 PrecioUnidad: 0,
@@ -688,21 +709,25 @@ export function FormularioCrearRemision(): React.JSX.Element {
                 Subarrendatario: '',
                 Bodega: '',
                 EquipoDisponible: '',
-                Bodeguero: '',
-                Despachador: '',
-                Transportador: '',
-                Vehiculo: '',
+                Bodeguero: OpcionPorDefecto.value,
+                Despachador: OpcionPorDefecto.value,
+                Transportador: OpcionPorDefecto.value,
+                Vehiculo: OpcionPorDefecto.value,
                 Placa: '',
                 Recibe: '',
                 ObservacionesEmpresa: '',
                 ObservacionesCliente: '',
                 UsuarioCrecion: documentoUsuarioActivo,
                 NoRemision: '',
+                IncluyeTransporte: null,
+                ValorTransporte: 0,
                 FechaRemision: dayjs(),
             });
 
             setItemsRemision([]);
             setCantidadDisponible(0);
+            setProyectos([]);
+            setSubarrendatarios([]);
 
             // Cargar nuevo número de remisión
             const [siguienteNoRemision] = await ConsultarSiguienteNoRemision();
@@ -722,10 +747,21 @@ export function FormularioCrearRemision(): React.JSX.Element {
         { campo: 'Despachador', mensaje: 'El despachador es obligatorio' },
         // { campo: 'Transportador', mensaje: 'El conductor es obligatorio' },
         // { campo: 'Vehiculo', mensaje: 'El vehículo es obligatorio' },
+        { campo: 'IncluyeTransporte', mensaje: 'Debe indicar si incluye transporte' },
     ];
+
+    if (datos.IncluyeTransporte === true) {
+        reglasValidacion.push({ campo: 'ValorTransporte', mensaje: 'El valor del transporte debe ser mayor a 0' });
+    }
 
     // Precio total general
     const precioTotalGeneral = itemsRemision.reduce((acc, item) => acc + (item.PrecioTotal ?? 0), 0);
+
+    const opcionesTransporte = [
+        { value: 'NO', label: 'NO' },
+        { value: 'SI', label: 'SÍ' }
+    ];
+    opcionesTransporte.unshift(OpcionPorDefecto);
 
     return (
         <Card>
@@ -884,6 +920,32 @@ export function FormularioCrearRemision(): React.JSX.Element {
                             bloqueado
                         />
                     </Grid>
+
+                    <Grid md={3} xs={12} mt={0.5}>
+                        <InputSelect
+                            label="¿Incluye Transporte?"
+                            value={datos.IncluyeTransporte === null ? 'SinSeleccionar' : (datos.IncluyeTransporte ? 'SI' : 'NO')}
+                            options={opcionesTransporte}
+                            size="small"
+                            onChange={handleChange}
+                            valorname="IncluyeTransporte"
+                            required
+                        />
+                    </Grid>
+
+                    {datos.IncluyeTransporte === true && (
+                        <Grid md={3} xs={12} mt={0.5}>
+                            <Input
+                                label="Valor Transporte"
+                                value={datos.ValorTransporte}
+                                onChange={handleChange}
+                                tamano="small"
+                                tipo_input="number"
+                                valorname="ValorTransporte"
+                                required
+                            />
+                        </Grid>
+                    )}
                 </Grid>
             </CardContent>
 

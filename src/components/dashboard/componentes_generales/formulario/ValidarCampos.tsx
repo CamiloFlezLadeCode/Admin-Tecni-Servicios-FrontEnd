@@ -80,9 +80,14 @@ const FormularioValidator = forwardRef<FormularioValidatorRef, FormularioValidat
 
             if (
                 (valor === null || valor === undefined || valor === '' || valor === 'SinSeleccionar' || valor === 0) &&
-                campo !== 'Garantia' // excluyes la evaluación genérica de 'Garantia'
+                campo !== 'Garantia' && // excluyes la evaluación genérica de 'Garantia'
+                campo !== 'IncluyeTransporte' // excluyes validación genérica para IncluyeTransporte
             ) {
                 mensajesFaltantes.push(mensaje);
+            } else if (campo === 'IncluyeTransporte') {
+                if (valor === null || valor === 'SinSeleccionar') {
+                    mensajesFaltantes.push(mensaje);
+                }
             } else if (campo === 'Celular' || campo === 'CelularUsuario') {
                 const esNumeroValido = /^\d{10}$/.test(valor);
                 if (!esNumeroValido) mensajesFaltantes.push(mensaje);
