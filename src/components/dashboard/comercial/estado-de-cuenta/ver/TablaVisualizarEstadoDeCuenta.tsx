@@ -23,6 +23,7 @@ import InputSelect from '@/components/dashboard/componentes_generales/formulario
 import { OpcionPorDefecto } from '@/lib/constants/option-default';
 import dayjs from 'dayjs';
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { ModalDetalleEstadoCuenta } from './ModalDetalleEstadoCuenta';
 
 interface EstadoDeCuenta {
     IdDetalleRemison?: number;
@@ -63,6 +64,10 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
     // Opciones dinámicas para filtros
     const [opcionesProyectos, setOpcionesProyectos] = useState<{ value: string | number; label: string }[]>([]);
     const [opcionesEquipos, setOpcionesEquipos] = useState<{ value: string | number; label: string }[]>([]);
+
+    // Estados para el Modal de Detalle
+    const [modalDetalleOpen, setModalDetalleOpen] = useState(false);
+    const [registroSeleccionado, setRegistroSeleccionado] = useState<EstadoDeCuenta | null>(null);
 
     useEffect(() => {
         const CargarClientes = async () => {
@@ -636,7 +641,16 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
     const actions: ActionDefinition<EstadoDeCuenta>[] = [
         {
             render: (row: EstadoDeCuenta) => (
-                <Button size="small" variant="text">Ver Detalle</Button>
+                <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={() => {
+                        setRegistroSeleccionado(row);
+                        setModalDetalleOpen(true);
+                    }}
+                >
+                    Ver Detalle
+                </Button>
             ),
             tooltip: 'Ver Detalle Completo'
         }
@@ -790,6 +804,13 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
                     />
                 </Paper>
             )}
+
+            {/* Modal de Detalle */}
+            <ModalDetalleEstadoCuenta
+                open={modalDetalleOpen}
+                onClose={() => setModalDetalleOpen(false)}
+                data={registroSeleccionado}
+            />
         </Box>
     );
 };

@@ -394,10 +394,15 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
             return null;
         }
 
-        // Validar personas que reciben y entregan
-        if (!datos.PersonaQueRecibe || datos.PersonaQueRecibe === 'SinSeleccionar' || !datos.PersonaQueEntrega) {
-            mostrarMensaje('Debe especificar quién recibe y quién entrega los equipos', 'error');
-            return null;
+        // Validar personas que reciben y entregan si IncluyeTransporte es true
+        if (datos.IncluyeTransporte === true) {
+            const recibeInvalido = !datos.PersonaQueRecibe || datos.PersonaQueRecibe === OpcionPorDefecto.value;
+            const entregaInvalido = !datos.PersonaQueEntrega || datos.PersonaQueEntrega.trim() === '';
+
+            if (recibeInvalido || entregaInvalido) {
+                mostrarMensaje('Debe especificar quién recibe y quién entrega los equipos cuando se incluye transporte', 'error');
+                return null;
+            }
         }
 
         // Validar transporte
@@ -667,6 +672,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                         onChange={handleChange}
                                         valorname="PersonaQueRecibe"
                                         bloqueado={todosItemsSinPendiente}
+                                        required={datos.IncluyeTransporte === true}
                                     />
                                 </Grid>
                                 <Grid md={3} xs={12}>
@@ -678,6 +684,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                         tipo_input='text'
                                         valorname='PersonaQueEntrega'
                                         bloqueado={todosItemsSinPendiente}
+                                        required={datos.IncluyeTransporte === true}
                                     />
                                 </Grid>
                             </Grid>
