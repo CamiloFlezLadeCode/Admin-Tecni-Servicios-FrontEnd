@@ -516,7 +516,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                             tamano='small'
                             tipo_input='text'
                             valorname='NoDevolucion'
-                            bloqueado
+                            // bloqueado
                         />
                     </Typography>
                 </Box>

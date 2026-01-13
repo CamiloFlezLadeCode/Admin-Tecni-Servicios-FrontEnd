@@ -501,7 +501,7 @@ export function FormularioCrearOrdenDeServicio(): React.JSX.Element {
                         tamano='small'
                         tipo_input='text'
                         valorname='NoOrdenDeServicio'
-                        bloqueado
+                        // bloqueado
                     />
                 </Typography>
             </Box>

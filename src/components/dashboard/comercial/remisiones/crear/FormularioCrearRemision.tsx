@@ -778,7 +778,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
                         tamano="small"
                         tipo_input="text"
                         valorname="NoRemision"
-                        bloqueado
+                        // bloqueado
                     />
                 </Typography>
             </Box>
