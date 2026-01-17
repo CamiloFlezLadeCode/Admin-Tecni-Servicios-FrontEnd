@@ -156,8 +156,18 @@ export function FormularioEditarEquipo({ IdEquipo, sendMessage, onMostrarMensaje
                 <Box
                     sx={{
                         position: 'absolute',
-                        top: '50%',
-                        left: '50%',
+                        top: {
+                            xs: '40%',
+                            sm: '50%',
+                            md: '50%',
+                            lg: '30%',
+                        },
+                        left: {
+                            xs: '50%',
+                            sm: '50%',
+                            md: '50%',
+                            lg: '50%',
+                        },
                         transform: 'translate(-50%, -50%)',
                         // width: '90%',
                         // maxWidth: 1000,

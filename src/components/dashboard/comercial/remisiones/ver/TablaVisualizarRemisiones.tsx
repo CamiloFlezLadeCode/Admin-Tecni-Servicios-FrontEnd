@@ -164,7 +164,7 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
                     mensajes={{
                         ariaLabel: `eliminar-remision-${row.IdRemision}`,
                         socket: 'remision-eliminada',
-                        info: `¿Realmente quieres eliminar la remisión ${row.IdRemision}?`,
+                        info: `¿Realmente quieres eliminar la remisión ${row.NoRemision}?`,
                         exito: 'Remisión eliminada correctamente',
                         error: 'Error al eliminar remisión'
                     }}

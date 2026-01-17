@@ -79,11 +79,16 @@ export function ModalDetalleEstadoCuenta({ open, onClose, data }: ModalDetalleEs
     };
 
     const estadoColor = getEstadoColor(data.EstadoDevolucion);
+    const handleDialogClose = (_event: object, reason: 'backdropClick' | 'escapeKeyDown') => {
+        if (reason === 'backdropClick' || reason === 'escapeKeyDown') return;
+        onClose();
+    };
 
     return (
         <Dialog
             open={open}
-            onClose={onClose}
+            onClose={handleDialogClose}
+            disableEscapeKeyDown
             maxWidth="md"
             fullWidth
             PaperProps={{
@@ -284,7 +289,7 @@ export function ModalDetalleEstadoCuenta({ open, onClose, data }: ModalDetalleEs
             </DialogContent>
 
             <DialogActions sx={{ p: 3, bgcolor: theme.palette.background.default }}>
-                <Button onClick={onClose} variant="outlined" color="inherit">
+                <Button onClick={onClose} variant="contained" color="primary">
                     Cerrar
                 </Button>
             </DialogActions>

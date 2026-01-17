@@ -59,7 +59,7 @@ export const navIcons = {
   'arrow-circle-right': ArrowCircleRight,
   'arrow-circle-left': ArrowCircleLeft,
   'detective': Detective,
-  'currency-dollar': CurrencyDollar,
+  'icono-facturacion': CurrencyDollar,
   'read-cv-logo': ReadCvLogo,
   'file-text': FileText,
   clipboard: Clipboard,

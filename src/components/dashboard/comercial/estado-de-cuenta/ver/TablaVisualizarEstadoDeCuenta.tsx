@@ -11,7 +11,8 @@ import {
     Stack,
     Button,
     useTheme,
-    Paper
+    Paper,
+    IconButton,
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { FilePdf, Buildings, Wrench, CheckCircle, Clock } from '@phosphor-icons/react';
@@ -24,6 +25,7 @@ import { OpcionPorDefecto } from '@/lib/constants/option-default';
 import dayjs from 'dayjs';
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import { ModalDetalleEstadoCuenta } from './ModalDetalleEstadoCuenta';
+import { Eye } from '@phosphor-icons/react/dist/ssr';
 
 interface EstadoDeCuenta {
     IdDetalleRemison?: number;
@@ -641,16 +643,16 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
     const actions: ActionDefinition<EstadoDeCuenta>[] = [
         {
             render: (row: EstadoDeCuenta) => (
-                <Button
+                <IconButton
                     size="small"
-                    variant="outlined"
+                    color="secondary"
                     onClick={() => {
                         setRegistroSeleccionado(row);
                         setModalDetalleOpen(true);
                     }}
                 >
-                    Ver Detalle
-                </Button>
+                    <Eye size={20} weight="bold" />
+                </IconButton>
             ),
             tooltip: 'Ver Detalle Completo'
         }

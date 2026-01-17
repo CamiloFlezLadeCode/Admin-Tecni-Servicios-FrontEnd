@@ -123,6 +123,10 @@ export const paths = {
     inventariorepuestossalidas: '/dashboard/inventario/repuestos/salidas',
     inventariorepuestosstock: '/dashboard/inventario/repuestos/stock',
     // ...
+
+    // Facturación 
+    facturacion: '/dashboard/facturacion',
+    // ...
   },
   errors: { notFound: '/errors/not-found' },
 } as const;

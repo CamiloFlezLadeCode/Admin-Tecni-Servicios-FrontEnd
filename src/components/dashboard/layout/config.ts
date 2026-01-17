@@ -216,6 +216,34 @@ export const navItems = [
       },
     ]
   },
+  { key: 'facturacion', title: 'Facturación', href: paths.dashboard.facturacion, icon: 'icono-facturacion' },
+  // {
+  //   key: 'facturacion',
+  //   title: 'Facturación',
+  //   icon: 'icono-facturacion',
+  //   items: [
+  //     // {
+  //     //   key: 'facturacion_remisiones',
+  //     //   title: 'Remisiones',
+  //     //   icon: 'icono-remisiones',
+  //     //   href: paths.dashboard.facturacion,
+  //     //   matcher: {
+  //     //     type: 'startsWith',
+  //     //     href: paths.dashboard.facturacion,
+  //     //   }
+  //     // },
+  //     // {
+  //     //   key: 'facturacion_devoluciones',
+  //     //   title: 'Devoluciones',
+  //     //   icon: 'icono-devoluciones',
+  //     //   href: paths.dashboard.facturaciondevoluciones,
+  //     //   matcher: {
+  //     //     type: 'startsWith',
+  //     //     href: paths.dashboard.facturaciondevoluciones,
+  //     //   }
+  //     // },
+  //   ]
+  // },
 
   // {
   //   key: 'hojadevidaequipos',

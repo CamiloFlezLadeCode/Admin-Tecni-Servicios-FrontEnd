@@ -17,8 +17,47 @@ export function useSocketIO() {
     const [messages, setMessages] = useState<any[]>([]);
 
     useEffect(() => {
+        // const socket = io(SOCKET_URL, {
+        //     transports: ['websocket'], // usa sólo websockets, opcional
+        // });
+
+        /** Configuración de WebSocket para evitar desconexiones inesperadas */
         const socket = io(SOCKET_URL, {
-            transports: ['websocket'], // usa sólo websockets, opcional
+            // 🔹 TRANSPORTES
+            transports: ['websocket', 'polling'], // IMPORTANTE: no usar solo websocket
+
+            // 🔹 RECONEXIÓN AUTOMÁTICA
+            reconnection: true,
+            reconnectionAttempts: Infinity,       // Intentar reconectar indefinidamente
+            reconnectionDelay: 1000,              // 1 segundo entre intentos
+            reconnectionDelayMax: 5000,           // Máximo 5 segundos
+
+            // 🔹 TIMEOUTS (deben coincidir con el servidor)
+            timeout: 45000,                       // Tiempo de espera para conexión
+            // pingTimeout: 30000,
+            // pingInterval: 15000,
+
+            // 🔹 POLÍTICA DE RECONEXIÓN INTELIGENTE
+            randomizationFactor: 0.5,             // Variación en delays de reconexión
+
+            // 🔹 AUTO-CONEXIÓN Y ESTADO
+            autoConnect: true,                    // Conectar automáticamente
+            forceNew: false,                      // Reutilizar conexión si es posible
+
+            // 🔹 CREDENCIALES Y CORS
+            withCredentials: true,                // IMPORTANTE para cookies/sesiones
+
+            // 🔹 ESTRATEGIA DE FALLO
+            transportOptions: {
+                polling: {
+                    extraHeaders: {
+                        // Headers personalizados si los necesitas
+                    }
+                }
+            },
+
+            // 🔹 DETECCIÓN DE DESCONEXIÓN
+            closeOnBeforeunload: false,           // No cerrar al recargar página
         });
 
         socketRef.current = socket;
