@@ -117,7 +117,6 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
             ]);
 
             const remision = Array.isArray(remisionRes) ? remisionRes[0] : remisionRes;
-            console.log(remision)
             setDatosGenerales({
                 NoRemision: remision.NoRemision,
                 ObservacionesEmpresa: remision.ObservacionesInternasEmpresa || remision.ObservacionesEmpresa || '',
