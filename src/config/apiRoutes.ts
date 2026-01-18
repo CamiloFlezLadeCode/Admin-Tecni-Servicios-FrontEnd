@@ -69,11 +69,13 @@ export const apiRoutes = {
             consultarcantidaddisponiblequipo: (IdEquipo: number) => `${API_BASE_URL}/ver-cantidad-disponible-equipo/${IdEquipo}`,
             consultarsiguientenoremision: `${API_BASE_URL}/siguiente-no-remision`,
             ver_remisiones: `${API_BASE_URL}/ver-remisiones`,
+            ver_remision_por_id: `${API_BASE_URL}/ver-remision-por-id`,
             cantidad_remisiones_devoluciones_ultimos_6_meses: `${API_BASE_URL}/cantidad-remisiones-devoluciones-ultimos-6-meses`,
             totales_movimientos_mes_actual: `${API_BASE_URL}/totales-movimientos-mes-actual`,
             actividad_reciente_movimientos: `${API_BASE_URL}/actividad-reciente-movimientos`,
             ver_pdf_remision: (IdRemision: number) => `${API_BASE_URL}/obtener-pdf-remision/${IdRemision}`,
             eliminar_remision: `${API_BASE_URL}/eliminar-remision`,
+            actualizar_remision: `${API_BASE_URL}/actualizar-remision`,
             ver_disponibilidad_de_equipos: `${API_BASE_URL}/ver-disponibilidad-equipos`,
             listar_equipos_generales: `${API_BASE_URL}/ver-disponibilidad-equipos-generales`
         },

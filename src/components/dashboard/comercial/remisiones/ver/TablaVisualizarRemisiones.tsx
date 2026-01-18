@@ -1,15 +1,17 @@
 'use client';
+import { EditarRemision } from '@/components/dashboard/comercial/remisiones/acciones-remision/EditarRemision';
+import { EliminarRegistro } from '@/components/dashboard/componentes_generales/acciones/EliminarRegistro';
+import { GenerarPDF } from '@/components/dashboard/componentes_generales/acciones/GenerarPDF';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
+import MensajeDeCarga from '@/components/dashboard/componentes_generales/mensajedecarga/BackDropCircularProgress';
 import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useSocketIO } from '@/hooks/use-WebSocket';
 import { ConsultarRemisiones } from '@/services/comercial/remisiones/ConsultarRemisionesService';
-import { Chip } from '@mui/material';
-import { PencilSimple } from '@phosphor-icons/react/dist/ssr';
+import {
+    Chip,
+    useTheme
+} from '@mui/material';
 import * as React from 'react';
-// import { EditarRemision } from '@/components/dashboard/comercial/remisiones/acciones-remision/EditarRemision';
-import { EliminarRegistro } from '@/components/dashboard/componentes_generales/acciones/EliminarRegistro';
-import { GenerarPDF } from '@/components/dashboard/componentes_generales/acciones/GenerarPDF';
-import MensajeDeCarga from '@/components/dashboard/componentes_generales/mensajedecarga/BackDropCircularProgress';
 // Servicios
 import { EliminarRemision } from '@/services/comercial/remisiones/EliminarRemisionService';
 import { VisualizarPDFRemision } from '@/services/comercial/remisiones/ObtenerPDFRemisionService';
@@ -28,6 +30,7 @@ interface Remision {
 
 export function TablaVisualizarRemisiones(): React.JSX.Element {
     const { sendMessage, messages } = useSocketIO();
+    const theme = useTheme();
     const [data, setData] = React.useState<Remision[]>([]);
     const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState<string | null>(null);
@@ -35,7 +38,7 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
     // Estados para alertas
     const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
     const [mensajeAlerta, setMensajeAlerta] = React.useState('');
-    const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
+    const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'info' | 'error' | 'warning'>('success');
     const [mensajeDeCarga, setMensajeDeCarga] = React.useState('');
     const [mostrarMensajeDeCarga, setMostrarMensajeDeCarga] = React.useState(false);
 
@@ -59,7 +62,7 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
     React.useEffect(() => {
         if (messages.length > 0) {
             const ultimomensajes = messages[messages.length - 1];
-            if (ultimomensajes.tipo === 'remision-creada' || ultimomensajes.tipo === 'remision-eliminada') {
+            if (ultimomensajes.tipo === 'remision-creada' || ultimomensajes.tipo === 'remision-eliminada' || ultimomensajes.tipo === 'remision-actualizada') {
                 handleRefresh();
             }
         }
@@ -71,7 +74,8 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
             case 'Pendiente': return 'warning';
             case 'Cancelada': return 'error';
             case 'En Proceso': return 'info';
-            case 'Creado': return 'info'
+            case 'Creado': return 'success';
+            case 'Actualizado': return 'info';
             default: return 'default';
         }
     };
@@ -129,12 +133,16 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
     };
 
     const actions: ActionDefinition<Remision>[] = [
-        // {
-        //     icon: <PencilSimple size={20} />,
-        //     tooltip: 'Editar remisión',
-        //     onClick: (row: Remision) => console.log('Editar:', row.IdRemision),
-        //     color: 'primary'
-        // },
+        {
+            render: (row: Remision) => (
+                <EditarRemision
+                    IdRemision={row.IdRemision}
+                    onSuccess={handleRefresh}
+                    onMostrarMensaje={mostrarMensaje}
+                />
+            ),
+            tooltip: 'Editar remisión',
+        },
         {
             render: (row: Remision) => (
                 <GenerarPDF
@@ -202,7 +210,7 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
     };
 
     // Función para mostrar mensajes de alerta
-    const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error') => {
+    const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error' | 'info' | 'warning') => {
         setMensajeAlerta(mensaje);
         setTipoAlerta(tipo);
         setMostrarAlertas(true);
