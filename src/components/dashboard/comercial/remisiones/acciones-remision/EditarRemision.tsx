@@ -24,6 +24,7 @@ import {
     Modal,
     Paper,
     SelectChangeEvent,
+    Skeleton,
     Table,
     TableBody,
     TableCell,
@@ -67,6 +68,7 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
 
     const [open, setOpen] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
+    const [guardando, setGuardando] = React.useState(false);
     const [categorias, setCategorias] = React.useState<{ value: string | number; label: string }[]>([]);
     const [subarrendatarios, setSubarrendatarios] = React.useState<{ value: string | number; label: string }[]>([]);
     const [equipos, setEquipos] = React.useState<any[]>([]);
@@ -179,7 +181,7 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
     };
 
     const handleClose = () => {
-        if (loading) return;
+        if (loading || guardando) return;
         setOpen(false);
 
         // Reiniciar todos los estados a sus valores iniciales
@@ -436,7 +438,7 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
             return;
         }
 
-        setLoading(true);
+        setGuardando(true);
         try {
             const payload = {
                 IdRemision,
@@ -475,7 +477,7 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
         } catch (error) {
             onMostrarMensaje(`Error al actualizar la remisión: ${error}`, 'error');
         } finally {
-            setLoading(false);
+            setGuardando(false);
         }
     };
 
@@ -511,7 +513,7 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
                 }}>
                     <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                         <Typography variant="h5">Editar Remisión: {datosGenerales.NoRemision}</Typography>
-                        <IconButton onClick={handleClose} disabled={loading}>
+                        <IconButton onClick={handleClose} disabled={loading || guardando}>
                             <X size={24} />
                         </IconButton>
                     </Box>
@@ -655,55 +657,73 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {items.map((item, index) => (
-                                    <TableRow key={item.IdDetalleRemision}>
-                                        <TableCell>{item.label}</TableCell>
-                                        <TableCell>{item.NombreSubarrendatario}</TableCell>
-                                        <TableCell align="right" sx={{ width: '130px' }}>
-                                            <Input
-                                                value={item.Cantidad}
-                                                onChange={(e) => handleEditItemChange(index, 'Cantidad', Number(e.target.value))}
-                                                tipo_input="number"
-                                                tamano="small"
-                                                label=""
-                                            />
-                                        </TableCell>
-                                        {items.some(i => i.Subarrendatario === EmpresaAnfitriona.value && i.value !== 0) && (
-                                            <TableCell align="right" sx={{ width: '130px' }}>
-                                                {item.Subarrendatario === EmpresaAnfitriona.value && item.value !== 0 ? (
+                                {loading ? (
+                                    Array.from(new Array(3)).map((_, index) => (
+                                        <TableRow key={`skeleton-${index}`}>
+                                            <TableCell><Skeleton variant="text" /></TableCell>
+                                            <TableCell><Skeleton variant="text" /></TableCell>
+                                            <TableCell><Skeleton variant="rectangular" height={30} /></TableCell>
+                                            {items.some(i => i.Subarrendatario === EmpresaAnfitriona.value && i.value !== 0) && (
+                                                <TableCell><Skeleton variant="rectangular" height={30} /></TableCell>
+                                            )}
+                                            <TableCell><Skeleton variant="rectangular" height={30} /></TableCell>
+                                            <TableCell><Skeleton variant="text" /></TableCell>
+                                            <TableCell align="center"><Skeleton variant="circular" width={20} height={20} /></TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <>
+                                        {items.map((item, index) => (
+                                            <TableRow key={item.IdDetalleRemision}>
+                                                <TableCell>{item.label}</TableCell>
+                                                <TableCell>{item.NombreSubarrendatario}</TableCell>
+                                                <TableCell align="right" sx={{ width: '130px' }}>
                                                     <Input
-                                                        value={item.CantidadDisponible || 0}
+                                                        value={item.Cantidad}
+                                                        onChange={(e) => handleEditItemChange(index, 'Cantidad', Number(e.target.value))}
                                                         tipo_input="number"
                                                         tamano="small"
                                                         label=""
-                                                        bloqueado={true}
                                                     />
-                                                ) : '-'}
-                                            </TableCell>
+                                                </TableCell>
+                                                {items.some(i => i.Subarrendatario === EmpresaAnfitriona.value && i.value !== 0) && (
+                                                    <TableCell align="right" sx={{ width: '130px' }}>
+                                                        {item.Subarrendatario === EmpresaAnfitriona.value && item.value !== 0 ? (
+                                                            <Input
+                                                                value={item.CantidadDisponible || 0}
+                                                                tipo_input="number"
+                                                                tamano="small"
+                                                                label=""
+                                                                bloqueado={true}
+                                                            />
+                                                        ) : '-'}
+                                                    </TableCell>
+                                                )}
+                                                <TableCell align="right" sx={{ width: '150px' }}>
+                                                    <Input
+                                                        value={item.PrecioUnidad}
+                                                        onChange={(e) => handleEditItemChange(index, 'PrecioUnidad', Number(e.target.value))}
+                                                        tipo_input="number"
+                                                        tamano="small"
+                                                        label=''
+                                                    />
+                                                </TableCell>
+                                                <TableCell align="right">${item.PrecioTotal.toLocaleString()}</TableCell>
+                                                <TableCell align="center">
+                                                    <IconButton color="error" onClick={() => eliminarItem(index)}>
+                                                        <Trash size={18} />
+                                                    </IconButton>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                        {items.length === 0 && (
+                                            <TableRow>
+                                                <TableCell colSpan={items.some(i => i.Subarrendatario === EmpresaAnfitriona.value && i.value !== 0) ? 7 : 6} align="center" sx={{ py: 3 }}>
+                                                    No hay items en la remisión
+                                                </TableCell>
+                                            </TableRow>
                                         )}
-                                        <TableCell align="right" sx={{ width: '150px' }}>
-                                            <Input
-                                                value={item.PrecioUnidad}
-                                                onChange={(e) => handleEditItemChange(index, 'PrecioUnidad', Number(e.target.value))}
-                                                tipo_input="number"
-                                                tamano="small"
-                                                label=''
-                                            />
-                                        </TableCell>
-                                        <TableCell align="right">${item.PrecioTotal.toLocaleString()}</TableCell>
-                                        <TableCell align="center">
-                                            <IconButton color="error" onClick={() => eliminarItem(index)}>
-                                                <Trash size={18} />
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                                {items.length === 0 && (
-                                    <TableRow>
-                                        <TableCell colSpan={items.some(i => i.Subarrendatario === EmpresaAnfitriona.value && i.value !== 0) ? 7 : 6} align="center" sx={{ py: 3 }}>
-                                            No hay items en la remisión
-                                        </TableCell>
-                                    </TableRow>
+                                    </>
                                 )}
                             </TableBody>
                         </Table>
@@ -721,17 +741,17 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
                     </Box>
 
                     <CardActions sx={{ justifyContent: 'flex-end', mt: 4, px: 0 }}>
-                        <Button variant="outlined" onClick={handleClose} disabled={loading}>
+                        <Button variant="outlined" onClick={handleClose} disabled={loading || guardando}>
                             Cancelar
                         </Button>
-                        <Button variant="contained" onClick={handleGuardar} disabled={loading}>
+                        <Button variant="contained" onClick={handleGuardar} disabled={loading || guardando}>
                             Guardar Cambios
                         </Button>
                     </CardActions>
                 </Box>
             </Modal>
 
-            <MensajeDeCarga MostrarMensaje={loading} Mensaje="Procesando..." />
+            <MensajeDeCarga MostrarMensaje={guardando} Mensaje="Procesando..." />
         </>
     );
 }
