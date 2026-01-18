@@ -209,7 +209,15 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
 
     const handleChangeGenerales = (e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string | number>) => {
         const { name, value } = e.target;
-        const newValue = value;
+        let newValue = value;
+
+        // Validar que el IVA no sea negativo
+        if (name === 'IVA') {
+            const numValue = Number(value);
+            if (numValue < 0) {
+                newValue = 0;
+            }
+        }
 
         setDatosGenerales(prev => ({ ...prev, [name]: newValue }));
 
