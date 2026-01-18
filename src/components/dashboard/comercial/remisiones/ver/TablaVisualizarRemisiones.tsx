@@ -141,7 +141,7 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
                     onMostrarMensaje={mostrarMensaje}
                 />
             ),
-            tooltip: 'Editar remisión',
+            // tooltip: 'Editar remisión',
         },
         {
             render: (row: Remision) => (

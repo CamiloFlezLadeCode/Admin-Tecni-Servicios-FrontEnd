@@ -78,7 +78,9 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
         ObservacionesEmpresa: '',
         IVA: 0,
         IncluyeTransporte: 0,
-        ValorTransporte: 0
+        ValorTransporte: 0,
+        NombreCliente: '',
+        FechaRemision: ''
     });
 
     const [items, setItems] = React.useState<ItemRemision[]>([]);
@@ -115,13 +117,15 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
             ]);
 
             const remision = Array.isArray(remisionRes) ? remisionRes[0] : remisionRes;
-
+            console.log(remision)
             setDatosGenerales({
                 NoRemision: remision.NoRemision,
                 ObservacionesEmpresa: remision.ObservacionesInternasEmpresa || remision.ObservacionesEmpresa || '',
                 IVA: remision.IVA || 19,
                 IncluyeTransporte: Number(remision.IncluyeTransporte) || 0,
-                ValorTransporte: Number(remision.ValorTransporte) || 0
+                ValorTransporte: Number(remision.ValorTransporte) || 0,
+                NombreCliente: remision.Cliente || '',
+                FechaRemision: remision.FechaCreacion || ''
             });
 
             // Usar Detalles de la remisión si existen, si no usar itemsRes
@@ -190,7 +194,9 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
             ObservacionesEmpresa: '',
             IVA: 0,
             IncluyeTransporte: 0,
-            ValorTransporte: 0
+            ValorTransporte: 0,
+            NombreCliente: '',
+            FechaRemision: ''
         });
 
         setItems([]);
@@ -521,6 +527,31 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
                     <Divider sx={{ mb: 3 }} />
 
                     <Grid container spacing={2}>
+                        <Grid xs={12} md={4}>
+                            <Input
+                                label="Cliente"
+                                value={datosGenerales.NombreCliente}
+                                onChange={handleChangeGenerales}
+                                valorname="NombreCliente"
+                                tipo_input="text"
+                                tamano="small"
+                                bloqueado={true}
+                            />
+                        </Grid>
+                        <Grid xs={12} md={5}>
+                            <Input
+                                label="Fecha Remisión"
+                                value={datosGenerales.FechaRemision}
+                                onChange={handleChangeGenerales}
+                                valorname="FechaRemision"
+                                tipo_input="text"
+                                tamano="small"
+                                bloqueado={true}
+                            />
+                        </Grid>
+                    </Grid>
+
+                    <Grid container spacing={2}>
                         <Grid xs={12} md={1.5}>
                             <Input
                                 label="IVA General %"
@@ -750,7 +781,6 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
                     </CardActions>
                 </Box>
             </Modal>
-
             <MensajeDeCarga MostrarMensaje={guardando} Mensaje="Procesando..." />
         </>
     );

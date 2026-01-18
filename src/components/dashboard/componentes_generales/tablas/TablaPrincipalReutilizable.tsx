@@ -36,7 +36,7 @@ export type ColumnDefinition<T> = {
 
 export type ActionDefinition<T> = {
     icon?: React.ReactNode;
-    tooltip: string;
+    tooltip?: string;
     onClick?: (row: T) => void;
     color?: 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success';
     hidden?: (row: T) => boolean;
