@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { Trash } from '@phosphor-icons/react/dist/ssr';
 import { ModalEliminarRegistro } from '@/components/dashboard/componentes_generales/acciones/eliminar_registro/EliminarRegistro';
 import { EliminarRemision } from '@/services/comercial/remisiones/EliminarRemisionService';
-import { IconButton } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
+import { PencilSimple } from '@phosphor-icons/react/dist/ssr';
 
 interface BotonEliminarRemisionProps {
     IdRemision: number;
@@ -45,14 +46,17 @@ export function BotonEliminarRemision({
 
     return (
         <>
-            <IconButton
-                size="small"
-                color="error"
-                onClick={() => setModalAbierto(true)}
-                aria-label={`Eliminar remisión ${NoRemision}`}
-            >
-                <Trash size={20} weight="bold" />
-            </IconButton>
+            <Tooltip title="Eliminar remisión" disableInteractive={false}>
+                <IconButton
+                    size="small"
+                    color="error"
+                    onClick={() => setModalAbierto(true)}
+                // aria-label={`Eliminar remisión ${NoRemision}`}
+                >
+                    {/* <Trash size={20} weight="bold" /> */}
+                    <PencilSimple size={20} weight="bold" />
+                </IconButton>
+            </Tooltip>
 
             <ModalEliminarRegistro
                 abrir={modalAbierto}

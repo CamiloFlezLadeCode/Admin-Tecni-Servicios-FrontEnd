@@ -179,9 +179,10 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
                         exito: 'Devolución eliminada correctamente',
                         error: 'Error al eliminar devolución'
                     }}
+                    TituloParaTooltip="Eliminar devolución"
                 />
             ),
-            tooltip: 'Eliminar devolución'
+            // tooltip: 'Eliminar devolución'
         }
     ];
 

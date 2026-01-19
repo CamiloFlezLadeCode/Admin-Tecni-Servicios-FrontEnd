@@ -176,9 +176,10 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
                         exito: 'Remisión eliminada correctamente',
                         error: 'Error al eliminar remisión'
                     }}
+                    TituloParaTooltip="Eliminar remisión"
                 />
             ),
-            tooltip: 'Eliminar remisión'
+            // tooltip: 'Eliminar remisión'
         }
         // {
         //     render: (row: Remision) => (

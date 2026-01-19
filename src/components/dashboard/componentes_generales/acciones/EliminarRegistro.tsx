@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Trash } from '@phosphor-icons/react/dist/ssr';
 import { ModalEliminarRegistro } from '@/components/dashboard/componentes_generales/acciones/eliminar_registro/EliminarRegistro';
-import { IconButton } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 
 interface Eliminar {
     servicioEliminarRegistro: (id: number | string) => Promise<string>;
@@ -15,10 +15,11 @@ interface Eliminar {
         info: string;
         exito?: string;
         error: string;
-    }
+    };
+    TituloParaTooltip?: string;
 }
 
-export function EliminarRegistro({ servicioEliminarRegistro, sendMessage, mostrarMensaje, mensajes, idRecurso }: Eliminar): React.JSX.Element {
+export function EliminarRegistro({ servicioEliminarRegistro, sendMessage, mostrarMensaje, mensajes, idRecurso, TituloParaTooltip }: Eliminar): React.JSX.Element {
     const [modalAbierto, setModalAbierto] = useState(false);
 
     const handleEliminar = async () => {
@@ -39,14 +40,16 @@ export function EliminarRegistro({ servicioEliminarRegistro, sendMessage, mostra
 
     return (
         <>
-            <IconButton
-                size="small"
-                color="error"
-                onClick={() => setModalAbierto(true)}
-                aria-label={mensajes.ariaLabel}
-            >
-                <Trash size={20} weight="bold" />
-            </IconButton>
+            <Tooltip title={TituloParaTooltip}>
+                <IconButton
+                    size="small"
+                    color="error"
+                    onClick={() => setModalAbierto(true)}
+                    aria-label={mensajes.ariaLabel}
+                >
+                    <Trash size={20} weight="bold" />
+                </IconButton>
+            </Tooltip>
 
             <ModalEliminarRegistro
                 abrir={modalAbierto}
