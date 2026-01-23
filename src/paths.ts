@@ -51,6 +51,10 @@ export const paths = {
 
     // Estado de cuenta
     comercialestadodecuenta: '/dashboard/comercial/estado-de-cuenta',
+
+    // Movimientos generales
+    comercialmovimientogenerales: '/dashboard/comercial/movimientos-generales',
+
     //...
 
     // MODULO GESTIÓN Y CONTROL (EQUIPOS, CLIENTES, MACANICOS, PROYECTOS, REPUESTOS)

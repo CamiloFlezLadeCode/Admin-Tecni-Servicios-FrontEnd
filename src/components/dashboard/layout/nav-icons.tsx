@@ -47,7 +47,9 @@ import {
   Receipt, //Hace referencia al estado de cuenta de los clientes
   HouseLine, //Hace referencia al menú inicial
   Info, //Hace referencia a acerca de ó aobut
-  ChartLineUp , //Hace referencia a crecimiento
+  ChartLineUp, //Hace referencia a crecimiento
+  FileMinus, //Hace referencia a movimientos generales
+  ArrowsLeftRight, //Hace referencia a movimientos generales (remisiones y devoluciones)
 } from '@phosphor-icons/react/dist/ssr';
 
 export const navIcons = {
@@ -81,6 +83,10 @@ export const navIcons = {
   'icono-configuraciones-alto-nivel': Crown,
   'icono-estado-de-cuenta-cliente': Receipt,
   'icono-crecimiento': ChartLineUp,
+  'icono-movimientos-generales': FileMinus,
+  'icono-remisiones-y-devoluciones': ArrowsLeftRight,
+  'icono-remisiones': ArrowCircleRight,
+  'icono-devoluciones': ArrowCircleLeft,
   home: HouseLine,
   user: UserIcon,
   users: UsersIcon,

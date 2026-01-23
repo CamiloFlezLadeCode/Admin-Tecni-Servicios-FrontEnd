@@ -3,7 +3,7 @@ import { paths } from '@/paths';
 
 export const navItems = [
   // { key: 'home', title: 'Inicio', href: paths.dashboard.home, icon: 'home' },
-  {key: 'home', title: 'Panel', href: paths.dashboard.home, icon: 'icono-crecimiento'},
+  { key: 'home', title: 'Panel', href: paths.dashboard.home, icon: 'icono-crecimiento' },
   // { key: 'overview', title: 'Panel', href: paths.dashboard.overview, icon: 'chart-pie' },
   // { key: 'customers', title: 'Clientes', href: paths.dashboard.customers, icon: 'users' },
 
@@ -95,7 +95,17 @@ export const navItems = [
           type: 'startsWith',
           href: paths.dashboard.comercialestadodecuenta
         }
-      }
+      },
+      {
+        key: 'comercial_movimientos_generales',
+        title: 'Movimientos generales',
+        href: paths.dashboard.comercialmovimientogenerales,
+        icon: 'icono-movimientos-generales',
+        matcher: {
+          type: 'startsWith',
+          href: paths.dashboard.comercialmovimientogenerales
+        }
+      },
     ]
   },
 

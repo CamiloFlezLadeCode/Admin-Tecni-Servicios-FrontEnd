@@ -7,7 +7,7 @@ export const metadata = { title: `Facturación | ${config.site.name}` } satisfie
 export default function Page(): React.JSX.Element {
     return (
         <div>
-            <Typography variant="h4">¡Hola! Este será el Módulo de Facturación</Typography>
+            <Typography variant="h6">¡Hola! Este será el Módulo de Facturación</Typography>
             <Typography variant="body1">Está en desarrollo</Typography>
         </div>
     )
