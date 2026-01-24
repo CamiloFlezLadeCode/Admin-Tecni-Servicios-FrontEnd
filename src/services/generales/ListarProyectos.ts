@@ -12,7 +12,7 @@ import { apiRoutes } from '@/config/apiRoutes';
 // };
 
 
-export const ListarProyectos = async (datos: any) => {
+export const ListarProyectos = async (datos?: any) => {
     try {
         const { data } = await axiosInstance.get(apiRoutes.generales.listarproyectos, {
             params: datos, // 👈 esto es clave

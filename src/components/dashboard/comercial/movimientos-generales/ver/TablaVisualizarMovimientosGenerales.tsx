@@ -12,7 +12,9 @@ import {
     Button,
     SelectChangeEvent,
     Paper,
-    Divider
+    Divider,
+    IconButton,
+    Tooltip,
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import {
@@ -23,10 +25,12 @@ import {
     ArrowCircleLeft,
     Wrench,
     DownloadSimple,
-    MagnifyingGlass
+    MagnifyingGlass,
+    MicrosoftExcelLogo,
+    Eraser
 } from '@phosphor-icons/react';
 import dayjs, { Dayjs } from 'dayjs';
-import { DataTable, ActionDefinition } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
+import { DataTable, ActionDefinition, ColumnDefinition } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { VerMovimientosGenerales, MovimientoGeneral } from '@/services/comercial/movimientos_generales/VerMovimientosGeneralesService';
 import { ListarClientes } from '@/services/generales/ListarClientesService';
 import { ListarProyectos } from '@/services/generales/ListarProyectos';
@@ -60,22 +64,75 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
         FechaFin: dayjs().endOf('month'),
     });
 
-    // Cargar clientes y proyectos al inicio
+    // Cargar clientes al inicio
     React.useEffect(() => {
-        const cargarDatosIniciales = async () => {
+        const cargarClientes = async () => {
             try {
-                const [resClientes, resProyectos] = await Promise.all([
-                    ListarClientes(),
-                    ListarProyectos(),
-                ]);
+                const resClientes = await ListarClientes();
                 setClientes([OpcionPorDefecto, ...resClientes]);
-                setProyectos([{ value: 'Todos', label: 'Todos los Proyectos' }, ...resProyectos]);
             } catch (err) {
-                console.error('Error al cargar datos iniciales:', err);
+                console.error('Error al cargar clientes:', err);
             }
         };
-        cargarDatosIniciales();
+        cargarClientes();
     }, []);
+
+    // Cargar proyectos cuando cambie el cliente
+    React.useEffect(() => {
+        const cargarProyectos = async () => {
+            try {
+                const params = filtros.Cliente !== OpcionPorDefecto.value ? { Cliente: filtros.Cliente } : undefined;
+                const resProyectos = await ListarProyectos(params);
+                setProyectos([{ value: 'Todos', label: 'Todos los Proyectos' }, ...resProyectos]);
+                // Si el proyecto actual no está en la nueva lista, resetear a 'Todos'
+                if (filtros.Proyecto !== 'Todos' && !resProyectos.find((p: any) => p.value === filtros.Proyecto)) {
+                    setFiltros(prev => ({ ...prev, Proyecto: 'Todos' }));
+                }
+            } catch (err) {
+                console.error('Error al cargar proyectos:', err);
+                setProyectos([{ value: 'Todos', label: 'Todos los Proyectos' }]);
+            }
+        };
+        cargarProyectos();
+    }, [filtros.Cliente]);
+
+    const handleClearFilters = () => {
+        setFiltros({
+            Cliente: OpcionPorDefecto.value,
+            Proyecto: 'Todos',
+            FechaInicio: dayjs().startOf('month'),
+            FechaFin: dayjs().endOf('month'),
+        });
+        setData([]);
+    };
+
+    const exportToCSV = () => {
+        if (data.length === 0) return;
+
+        const headers = ['Tipo', 'No. Documento', 'Fecha', 'Cliente', 'Proyecto', 'Valor Total', 'Estado'];
+        const csvRows = [
+            headers.join(','),
+            ...data.map(row => [
+                row.TipoMovimiento,
+                row.NoMovimiento,
+                dayjs(row.Fecha).format('DD/MM/YYYY'),
+                `"${row.Cliente}"`,
+                `"${row.Proyecto}"`,
+                row.Total || 0,
+                row.Estado
+            ].join(','))
+        ];
+
+        const csvString = csvRows.join('\n');
+        const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', `Movimientos_${dayjs().format('YYYY-MM-DD')}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
 
     const fetchData = async () => {
         try {
@@ -179,12 +236,12 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
         }
     };
 
-    const columns = [
+    const columns: ColumnDefinition<MovimientoGeneral>[] = [
         {
             key: 'TipoMovimiento',
             header: 'Tipo',
-            render: (value: string) => {
-                const info = getTipoMovimientoInfo(value);
+            render: (row) => {
+                const info = getTipoMovimientoInfo(row.TipoMovimiento);
                 return (
                     <Chip
                         icon={info.icon}
@@ -203,7 +260,7 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
         {
             key: 'Fecha',
             header: 'Fecha',
-            render: (value: string) => dayjs(value).format('DD/MM/YYYY')
+            render: (row) => dayjs(row.Fecha).format('DD/MM/YYYY')
         },
         {
             key: 'Cliente',
@@ -216,27 +273,32 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
         {
             key: 'Total',
             header: 'Valor Total',
-            render: (value: number) => value ? new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(value) : '-'
+            render: (row) => row.Total ? new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(row.Total) : '-'
         },
         {
             key: 'Estado',
             header: 'Estado',
-            render: (value: string) => (
+            render: (row) => (
                 <Chip
-                    label={value}
-                    color={value === 'Activa' || value === 'Completo' ? 'success' : 'default'}
+                    label={row.Estado}
+                    color={row.Estado === 'Activa' || row.Estado === 'Completo' ? 'success' : 'default'}
                     size="small"
                 />
             )
         }
     ];
 
-    const actions: ActionDefinition[] = [
+    const actions: ActionDefinition<MovimientoGeneral>[] = [
         {
-            label: 'Ver PDF',
-            icon: <DownloadSimple />,
-            onClick: handleDownloadPDF,
-            color: 'primary'
+            render: (row: MovimientoGeneral) => (
+                <IconButton
+                    size="small"
+                    onClick={() => handleDownloadPDF(row)}
+                    color="secondary"
+                >
+                    <DownloadSimple size={20} weight='bold' />
+                </IconButton>
+            )
         }
     ];
 
@@ -252,103 +314,140 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
         }, { remisiones: 0, devoluciones: 0, ordenes: 0, total: 0 });
     }, [data]);
 
+    // Obtener nombre del cliente seleccionado para el título
+    const nombreCliente = React.useMemo(() => {
+        const cliente = clientes.find(c => c.value === filtros.Cliente);
+        return cliente && cliente.value !== OpcionPorDefecto.value ? cliente.label : 'Todos los Clientes';
+    }, [filtros.Cliente, clientes]);
+
     return (
         <Stack spacing={3}>
             <Card>
                 <CardContent>
-                    <Grid container spacing={2} alignItems="center">
-                        <Grid xs={12} md={3}>
-                            <InputSelect
-                                label="Cliente"
-                                name="Cliente"
-                                value={filtros.Cliente}
-                                options={clientes}
-                                onChange={handleFilterChange}
-                            />
+                    <Stack spacing={2}>
+                        <Stack direction="row" justifyContent="space-between" alignItems="center">
+                            <Typography variant="h6">Filtros de Búsqueda</Typography>
+                            <Stack direction="row" spacing={1}>
+                                <Button
+                                    size="small"
+                                    startIcon={<Eraser />}
+                                    onClick={handleClearFilters}
+                                    color="inherit"
+                                >
+                                    Limpiar
+                                </Button>
+                                <Button
+                                    size="small"
+                                    variant="outlined"
+                                    startIcon={<MicrosoftExcelLogo />}
+                                    onClick={exportToCSV}
+                                    disabled={data.length === 0}
+                                    color="success"
+                                >
+                                    Exportar CSV
+                                </Button>
+                            </Stack>
+                        </Stack>
+                        <Grid container spacing={2} alignItems="center">
+                            <Grid xs={12} md={3}>
+                                <InputSelect
+                                    label="Cliente"
+                                    value={filtros.Cliente}
+                                    options={clientes}
+                                    onChange={handleFilterChange}
+                                    valorname="Cliente"
+                                />
+                            </Grid>
+                            <Grid xs={12} md={3}>
+                                <InputSelect
+                                    label="Proyecto"
+                                    value={filtros.Proyecto}
+                                    options={proyectos}
+                                    onChange={handleFilterChange}
+                                    valorname="Proyecto"
+                                />
+                            </Grid>
+                            <Grid xs={12} md={2.5}>
+                                <FechayHora
+                                    label="Fecha Inicio"
+                                    value={filtros.FechaInicio}
+                                    onChange={(val) => handleDateChange('FechaInicio', val)}
+                                />
+                            </Grid>
+                            <Grid xs={12} md={2.5}>
+                                <FechayHora
+                                    label="Fecha Fin"
+                                    value={filtros.FechaFin}
+                                    onChange={(val) => handleDateChange('FechaFin', val)}
+                                />
+                            </Grid>
+                            <Grid xs={12} md={1}>
+                                <Button
+                                    fullWidth
+                                    variant="contained"
+                                    startIcon={<MagnifyingGlass />}
+                                    onClick={fetchData}
+                                    sx={{ height: '56px' }}
+                                >
+                                    Buscar
+                                </Button>
+                            </Grid>
                         </Grid>
-                        <Grid xs={12} md={3}>
-                            <InputSelect
-                                label="Proyecto"
-                                name="Proyecto"
-                                value={filtros.Proyecto}
-                                options={proyectos}
-                                onChange={handleFilterChange}
-                            />
-                        </Grid>
-                        <Grid xs={12} md={2.5}>
-                            <FechayHora
-                                label="Fecha Inicio"
-                                value={filtros.FechaInicio}
-                                onChange={(val) => handleDateChange('FechaInicio', val)}
-                            />
-                        </Grid>
-                        <Grid xs={12} md={2.5}>
-                            <FechayHora
-                                label="Fecha Fin"
-                                value={filtros.FechaFin}
-                                onChange={(val) => handleDateChange('FechaFin', val)}
-                            />
-                        </Grid>
-                        <Grid xs={12} md={1}>
-                            <Button
-                                fullWidth
-                                variant="contained"
-                                startIcon={<MagnifyingGlass />}
-                                onClick={fetchData}
-                                sx={{ height: '56px' }}
-                            >
-                                Buscar
-                            </Button>
-                        </Grid>
-                    </Grid>
+                    </Stack>
                 </CardContent>
             </Card>
 
-            <Grid container spacing={3}>
-                <Grid xs={12} sm={6} md={3}>
-                    <Paper sx={{ p: 2, textAlign: 'center', borderLeft: `4px solid ${theme.palette.primary.main}` }}>
-                        <Typography variant="overline" color="text.secondary">Total Remisiones</Typography>
-                        <Typography variant="h6">{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(resumen.remisiones)}</Typography>
-                    </Paper>
+            <Box>
+                <Typography variant="h5" gutterBottom sx={{ px: 1 }}>
+                    Resumen de Cobro: <Box component="span" sx={{ color: 'primary.main', fontWeight: 'bold' }}>{nombreCliente}</Box>
+                </Typography>
+                <Grid container spacing={3}>
+                    <Grid xs={12} sm={6} md={3}>
+                        <Paper elevation={2} sx={{ p: 2, textAlign: 'center', borderLeft: `4px solid ${theme.palette.primary.main}` }}>
+                            <Typography variant="overline" color="text.secondary">Total Remisiones (+)</Typography>
+                            <Typography variant="h6">{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(resumen.remisiones)}</Typography>
+                        </Paper>
+                    </Grid>
+                    <Grid xs={12} sm={6} md={3}>
+                        <Paper elevation={2} sx={{ p: 2, textAlign: 'center', borderLeft: `4px solid ${theme.palette.warning.main}` }}>
+                            <Typography variant="overline" color="text.secondary">Total Devoluciones (-)</Typography>
+                            <Typography variant="h6">{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(resumen.devoluciones)}</Typography>
+                        </Paper>
+                    </Grid>
+                    <Grid xs={12} sm={6} md={3}>
+                        <Paper elevation={2} sx={{ p: 2, textAlign: 'center', borderLeft: `4px solid ${theme.palette.info.main}` }}>
+                            <Typography variant="overline" color="text.secondary">Total Ordenes S. (+)</Typography>
+                            <Typography variant="h6">{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(resumen.ordenes)}</Typography>
+                        </Paper>
+                    </Grid>
+                    <Grid xs={12} sm={6} md={3}>
+                        <Paper elevation={4} sx={{ p: 2, textAlign: 'center', bgcolor: 'primary.main', color: 'primary.contrastText' }}>
+                            <Typography variant="overline" sx={{ opacity: 0.9 }}>Saldo Neto Facturable (=)</Typography>
+                            <Typography variant="h6">{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(resumen.remisiones - resumen.devoluciones + resumen.ordenes)}</Typography>
+                        </Paper>
+                    </Grid>
                 </Grid>
-                <Grid xs={12} sm={6} md={3}>
-                    <Paper sx={{ p: 2, textAlign: 'center', borderLeft: `4px solid ${theme.palette.warning.main}` }}>
-                        <Typography variant="overline" color="text.secondary">Total Devoluciones</Typography>
-                        <Typography variant="h6">{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(resumen.devoluciones)}</Typography>
-                    </Paper>
-                </Grid>
-                <Grid xs={12} sm={6} md={3}>
-                    <Paper sx={{ p: 2, textAlign: 'center', borderLeft: `4px solid ${theme.palette.info.main}` }}>
-                        <Typography variant="overline" color="text.secondary">Total Ordenes S.</Typography>
-                        <Typography variant="h6">{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(resumen.ordenes)}</Typography>
-                    </Paper>
-                </Grid>
-                <Grid xs={12} sm={6} md={3}>
-                    <Paper sx={{ p: 2, textAlign: 'center', bgcolor: 'primary.main', color: 'primary.contrastText' }}>
-                        <Typography variant="overline">Saldo Neto Facturable</Typography>
-                        <Typography variant="h6">{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(resumen.remisiones - resumen.devoluciones + resumen.ordenes)}</Typography>
-                    </Paper>
-                </Grid>
-            </Grid>
+            </Box>
 
             <Card>
-                <DataTable
-                    title="Listado de Movimientos Detallados"
+                <DataTable<MovimientoGeneral>
                     columns={columns}
                     data={data}
                     actions={actions}
                     loading={loading}
+                    placeHolderBuscador="Buscar por número de documento o cliente..."
                 />
             </Card>
 
             {mostrarAlertas && (
                 <MensajeAlerta
+                    open={mostrarAlertas}
                     mensaje={mensajeAlerta}
                     tipo={tipoAlerta}
-                    onCerrar={() => setMostrarAlertas(false)}
+                    onClose={() => setMostrarAlertas(false)}
                 />
             )}
-            <MensajeDeCarga mostrar={loading} mensaje="Procesando..." />
+            <MensajeDeCarga MostrarMensaje={loading} Mensaje="Procesando..." />
         </Stack>
     );
 }
