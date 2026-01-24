@@ -97,8 +97,8 @@ export function TablaVisualizarSalidasEquipos(): React.JSX.Element {
   const actions: ActionDefinition<SalidaDeEquiposLista>[] = [
     {
       render: (row: SalidaDeEquiposLista) => (
-        <IconButton size="small" onClick={() => abrirModalVisualizacion(row)} color="primary">
-          <Eye size={20} />
+        <IconButton size="small" onClick={() => abrirModalVisualizacion(row)} color="secondary">
+          <Eye size={20} weight='bold'/>
         </IconButton>
       ),
       tooltip: 'Ver detalles'

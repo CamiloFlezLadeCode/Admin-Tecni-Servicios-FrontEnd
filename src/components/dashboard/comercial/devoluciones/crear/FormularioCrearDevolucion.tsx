@@ -361,14 +361,19 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
 
     const prepararDatosEnvio = (): DevolucionEnvio | null => {
         // Validar datos básicos
-        if (!datos.Cliente || !datos.IdProyecto) {
-            mostrarMensaje('Debe seleccionar cliente y proyecto', 'error');
+        if (!datos.Cliente || !datos.IdProyecto || !datos.Subarrendatario) {
+            mostrarMensaje('Debe seleccionar cliente, proyecto y subarrendatario', 'error');
             return null;
         }
 
-        // Validar que haya subarrendatario seleccionado
-        if (!datos.Subarrendatario) {
-            mostrarMensaje('Debe seleccionar un subarrendatario', 'error');
+        // Validar transporte
+        if (datos.IncluyeTransporte === null) {
+            mostrarMensaje('Debe indicar si incluye transporte', 'error');
+            return null;
+        }
+
+        if (datos.IncluyeTransporte && (!datos.ValorTransporte || datos.ValorTransporte <= 0)) {
+            mostrarMensaje('El valor del transporte debe ser mayor a 0', 'error');
             return null;
         }
 
@@ -382,10 +387,10 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
 
         // Validar que todos los items tengan estado seleccionado
         const itemsInvalidos = itemsAEnviar.some(item => item.EstadoEquipo === -1);
-        if (itemsInvalidos) {
-            mostrarMensaje('Todos los items deben tener un estado válido seleccionado', 'error');
-            return null;
-        }
+        // if (itemsInvalidos) {
+        //     mostrarMensaje('Todos los items deben tener un estado válido seleccionado', 'error');
+        //     return null;
+        // }
 
         // Validar que todos los items tengan IdRemision
         const itemsSinRemision = itemsAEnviar.some(item => !item.IdRemision);
@@ -399,21 +404,15 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
             const recibeInvalido = !datos.PersonaQueRecibe || datos.PersonaQueRecibe === OpcionPorDefecto.value;
             const entregaInvalido = !datos.PersonaQueEntrega || datos.PersonaQueEntrega.trim() === '';
 
-            if (recibeInvalido || entregaInvalido) {
-                mostrarMensaje('Debe especificar quién recibe y quién entrega los equipos cuando se incluye transporte', 'error');
+            // if (recibeInvalido || entregaInvalido) {
+            //     mostrarMensaje('Debe especificar quién recibe y quién entrega los equipos cuando se incluye transporte', 'error');
+            //     return null;
+            // }
+
+            if (recibeInvalido) {
+                mostrarMensaje('Debe especificar quién recibe los equipos cuando se incluye transporte', 'error');
                 return null;
             }
-        }
-
-        // Validar transporte
-        if (datos.IncluyeTransporte === null) {
-            mostrarMensaje('Debe indicar si incluye transporte', 'error');
-            return null;
-        }
-
-        if (datos.IncluyeTransporte && (!datos.ValorTransporte || datos.ValorTransporte <= 0)) {
-            mostrarMensaje('El valor del transporte debe ser mayor a 0', 'error');
-            return null;
         }
 
         return {
@@ -516,7 +515,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                             tamano='small'
                             tipo_input='text'
                             valorname='NoDevolucion'
-                            // bloqueado
+                        // bloqueado
                         />
                     </Typography>
                 </Box>

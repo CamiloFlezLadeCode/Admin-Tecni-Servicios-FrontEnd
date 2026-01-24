@@ -651,7 +651,7 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
                         setModalDetalleOpen(true);
                     }}
                 >
-                    <Eye size={20} weight="bold" />
+                    <Eye size={20} weight="bold"/>
                 </IconButton>
             ),
             tooltip: 'Ver Detalle Completo'

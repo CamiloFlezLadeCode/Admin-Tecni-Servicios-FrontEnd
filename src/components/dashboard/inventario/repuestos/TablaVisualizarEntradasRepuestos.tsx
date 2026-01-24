@@ -127,9 +127,9 @@ export function TablaVisualizarEntradasRepuestos(): React.JSX.Element {
                 <IconButton
                     size="small"
                     onClick={() => abrirModalVisualizacion(row)}
-                    color="primary"
+                    color="secondary"
                 >
-                    <Eye size={20} />
+                    <Eye size={20} weight='bold'/>
                 </IconButton>
             ),
             tooltip: 'Ver detalles'
