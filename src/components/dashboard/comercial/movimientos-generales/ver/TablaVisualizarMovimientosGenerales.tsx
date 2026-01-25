@@ -134,13 +134,18 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
         document.body.removeChild(link);
     };
 
-    const fetchData = async () => {
+    const fetchData = React.useCallback(async () => {
+        // No ejecutar si el rango de fechas es inválido
+        if (filtros.FechaFin.isBefore(filtros.FechaInicio)) {
+            return;
+        }
+
         try {
             setLoading(true);
             setError(null);
             const response = await VerMovimientosGenerales({
-                FechaInicio: filtros.FechaInicio.toISOString(),
-                FechaFin: filtros.FechaFin.toISOString(),
+                FechaInicio: filtros.FechaInicio.format('YYYY-MM-DD'),
+                FechaFin: filtros.FechaFin.format('YYYY-MM-DD'),
                 DocumentoCliente: filtros.Cliente !== OpcionPorDefecto.value ? String(filtros.Cliente) : undefined,
                 IdProyecto: filtros.Proyecto !== 'Todos' ? filtros.Proyecto : undefined,
             });
@@ -153,7 +158,12 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
         } finally {
             setLoading(false);
         }
-    };
+    }, [filtros]);
+
+    // Cargar movimientos automáticamente cuando cambien los filtros
+    React.useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
     const handleFilterChange = (e: SelectChangeEvent<string | number>) => {
         const { name, value } = e.target;
@@ -163,8 +173,22 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
     const handleDateChange = (name: string, value: Dayjs | null) => {
         if (value) {
             setFiltros(prev => ({ ...prev, [name]: value }));
+
+            // Validaciones visuales inmediatas
+            if (name === 'FechaInicio' && value.isAfter(filtros.FechaFin)) {
+                setMensajeAlerta('Atención: La fecha de inicio es posterior a la fecha fin');
+                setTipoAlerta('warning');
+                setMostrarAlertas(true);
+            } else if (name === 'FechaFin' && value.isBefore(filtros.FechaInicio)) {
+                setMensajeAlerta('Atención: La fecha fin es anterior a la fecha de inicio');
+                setTipoAlerta('warning');
+                setMostrarAlertas(true);
+            }
         }
     };
+
+    // Validación de rango de fechas para bloquear el botón
+    const rangoFechasInvalido = filtros.FechaFin.isBefore(filtros.FechaInicio);
 
     const getTipoMovimientoInfo = (tipo: string) => {
         switch (tipo) {
@@ -387,9 +411,10 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
                                     variant="contained"
                                     startIcon={<MagnifyingGlass />}
                                     onClick={fetchData}
+                                    disabled={loading || rangoFechasInvalido}
                                     sx={{ height: '56px' }}
                                 >
-                                    Buscar
+                                    {loading ? 'Buscando...' : 'Buscar'}
                                 </Button>
                             </Grid>
                         </Grid>
@@ -410,7 +435,7 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
                     </Grid>
                     <Grid xs={12} sm={6} md={3}>
                         <Paper elevation={2} sx={{ p: 2, textAlign: 'center', borderLeft: `4px solid ${theme.palette.warning.main}` }}>
-                            <Typography variant="overline" color="text.secondary">Total Devoluciones (-)</Typography>
+                            <Typography variant="overline" color="text.secondary">Total Devoluciones (+)</Typography>
                             <Typography variant="h6">{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(resumen.devoluciones)}</Typography>
                         </Paper>
                     </Grid>
@@ -423,7 +448,7 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
                     <Grid xs={12} sm={6} md={3}>
                         <Paper elevation={4} sx={{ p: 2, textAlign: 'center', bgcolor: 'primary.main', color: 'primary.contrastText' }}>
                             <Typography variant="overline" sx={{ opacity: 0.9 }}>Saldo Neto Facturable (=)</Typography>
-                            <Typography variant="h6">{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(resumen.remisiones - resumen.devoluciones + resumen.ordenes)}</Typography>
+                            <Typography variant="h6">{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(resumen.remisiones + resumen.devoluciones + resumen.ordenes)}</Typography>
                         </Paper>
                     </Grid>
                 </Grid>
