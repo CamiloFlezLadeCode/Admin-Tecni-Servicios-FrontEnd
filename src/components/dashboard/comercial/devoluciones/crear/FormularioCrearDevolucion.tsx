@@ -683,7 +683,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                         tipo_input='text'
                                         valorname='PersonaQueEntrega'
                                         bloqueado={todosItemsSinPendiente}
-                                        required={datos.IncluyeTransporte === true}
+                                        // required={datos.IncluyeTransporte === true}
                                     />
                                 </Grid>
                             </Grid>
