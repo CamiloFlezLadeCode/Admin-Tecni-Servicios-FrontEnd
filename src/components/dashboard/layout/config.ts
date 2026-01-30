@@ -250,7 +250,7 @@ export const navItems = [
       },
     ]
   },
-  { key: 'facturacion', title: 'Facturación', href: paths.dashboard.facturacion, icon: 'icono-facturacion' },
+  // { key: 'facturacion', title: 'Facturación', href: paths.dashboard.facturacion, icon: 'icono-facturacion' },
   // {
   //   key: 'facturacion',
   //   title: 'Facturación',

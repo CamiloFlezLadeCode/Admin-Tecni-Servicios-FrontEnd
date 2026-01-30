@@ -71,6 +71,7 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
     const [guardando, setGuardando] = React.useState(false);
     const [categorias, setCategorias] = React.useState<{ value: string | number; label: string }[]>([]);
     const [subarrendatarios, setSubarrendatarios] = React.useState<{ value: string | number; label: string }[]>([]);
+    const [proyectos, setProyectos] = React.useState<{ value: string | number; label: string }[]>([]);
     const [equipos, setEquipos] = React.useState<any[]>([]);
 
     const [datosGenerales, setDatosGenerales] = React.useState({
@@ -80,6 +81,8 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
         IncluyeTransporte: 0,
         ValorTransporte: 0,
         NombreCliente: '',
+        DocumentoCliente: '',
+        IdProyecto: OpcionPorDefectoNumber.value,
         FechaRemision: ''
     });
 
@@ -124,8 +127,13 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
                 IncluyeTransporte: Number(remision.IncluyeTransporte) || 0,
                 ValorTransporte: Number(remision.ValorTransporte) || 0,
                 NombreCliente: remision.Cliente || '',
+                DocumentoCliente: remision.DocumentoCliente || '',
+                IdProyecto: remision.IdProyecto || OpcionPorDefectoNumber.value,
                 FechaRemision: remision.FechaCreacion || ''
             });
+
+            // Cargar proyectos del cliente
+            setProyectos(remision.ProyectosCliente)
 
             // Usar Detalles de la remisión si existen, si no usar itemsRes
             const itemsRaw = remision.Detalles || itemsRes || [];
@@ -195,12 +203,15 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
             IncluyeTransporte: 0,
             ValorTransporte: 0,
             NombreCliente: '',
+            DocumentoCliente: '',
+            IdProyecto: OpcionPorDefectoNumber.value,
             FechaRemision: ''
         });
 
         setItems([]);
         setCantidadesOriginales({});
         setEquipos([]);
+        setProyectos([]);
         setCantidadDisponible(0);
 
         setNuevoItem({
@@ -447,6 +458,7 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
         try {
             const payload = {
                 IdRemision,
+                IdProyecto: datosGenerales.IdProyecto,
                 ObservacionesEmpresa: datosGenerales.ObservacionesEmpresa,
                 IVA: datosGenerales.IVA,
                 IncluyeTransporte: datosGenerales.IncluyeTransporte,
@@ -467,7 +479,6 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
                 })),
                 UsuarioQueActualiza: documentoUsuarioActivo
             };
-
             const response = await ActualizarRemision(payload);
             if (response.status === 200) {
                 onMostrarMensaje('Remisión actualizada con éxito', 'success');
@@ -512,46 +523,94 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
                     maxHeight: '95vh',
                     bgcolor: 'background.paper',
                     boxShadow: 24,
-                    p: 4,
+                    // p: 4,
                     borderRadius: 2,
-                    overflowY: 'auto'
+                    // overflowY: 'auto'
+                    display: 'flex',          // 🔥 CLAVE
+                    flexDirection: 'column',  // 🔥 CLAVE
+                    overflow: 'hidden',       // 🔥 protege bordes
                 }}>
-                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                        <Typography variant="h5">Editar Remisión: {datosGenerales.NoRemision}</Typography>
-                        <IconButton onClick={handleClose} disabled={loading || guardando}>
-                            <X size={24} />
-                        </IconButton>
+                    <Box px={4} pt={4}>
+                        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                            <Typography variant="h5">
+                                Editar Remisión: {datosGenerales.NoRemision}
+                            </Typography>
+                            <IconButton onClick={handleClose} disabled={loading || guardando}>
+                                <X size={24} />
+                            </IconButton>
+                        </Box>
+
+                        <Divider />
                     </Box>
-
-                    <Divider sx={{ mb: 3 }} />
-
-                    <Grid container spacing={2}>
-                        <Grid xs={12} md={4}>
-                            <Input
-                                label="Cliente"
-                                value={datosGenerales.NombreCliente}
-                                onChange={handleChangeGenerales}
-                                valorname="NombreCliente"
-                                tipo_input="text"
-                                tamano="small"
-                                bloqueado={true}
-                            />
+                    <Box
+                        sx={{
+                            px: 4,
+                            pb: 4,
+                            overflowY: 'auto',
+                            flex: 1,              // 🔥 ESTO HACE APARECER EL SCROLL
+                        }}
+                    >
+                        <Grid container spacing={2} mt={2}>
+                            <Grid container xs={12} md={12}>
+                                <Grid xs={12} md={4}>
+                                    <Input
+                                        label="Cliente"
+                                        value={datosGenerales.NombreCliente}
+                                        onChange={handleChangeGenerales}
+                                        valorname="NombreCliente"
+                                        tipo_input="text"
+                                        tamano="small"
+                                        bloqueado={true}
+                                    />
+                                </Grid>
+                                <Grid xs={12} md={4}>
+                                    <Input
+                                        label="Fecha Remisión"
+                                        value={datosGenerales.FechaRemision}
+                                        onChange={handleChangeGenerales}
+                                        valorname="FechaRemision"
+                                        tipo_input="text"
+                                        tamano="small"
+                                        bloqueado={true}
+                                    />
+                                </Grid>
+                                <Grid xs={12} md={4}>
+                                    <InputSelect
+                                        label="Proyecto"
+                                        value={datosGenerales.IdProyecto}
+                                        options={proyectos}
+                                        onChange={handleChangeGenerales}
+                                        valorname="IdProyecto"
+                                    />
+                                </Grid>
+                            </Grid>
+                            <Grid container xs={12} md={12}>
+                                <Grid xs={12} md={12}>
+                                    <Input
+                                        label="Observaciones Empresa"
+                                        value={datosGenerales.ObservacionesEmpresa}
+                                        onChange={handleChangeGenerales}
+                                        valorname="ObservacionesEmpresa"
+                                        tipo_input="textarea"
+                                        tamano="small"
+                                    />
+                                </Grid>
+                            </Grid>
                         </Grid>
-                        <Grid xs={12} md={5}>
-                            <Input
-                                label="Fecha Remisión"
-                                value={datosGenerales.FechaRemision}
-                                onChange={handleChangeGenerales}
-                                valorname="FechaRemision"
-                                tipo_input="text"
-                                tamano="small"
-                                bloqueado={true}
-                            />
-                        </Grid>
-                    </Grid>
 
-                    <Grid container spacing={2}>
-                        <Grid xs={12} md={1.5}>
+                        <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mt: 2 }}>
+                            <Typography variant="h6">Agregar / Editar Items</Typography>
+                            <Button
+                                variant="outlined"
+                                color="secondary"
+                                startIcon={<Truck />}
+                                onClick={agregarTransporte}
+                                disabled={items.some(item => item.value === 0)}
+                            >
+                                Agregar Transporte
+                            </Button>
+                        </Box>
+                        <Grid container xs={3} md={1.5} mb={1}>
                             <Input
                                 label="IVA General %"
                                 value={datosGenerales.IVA}
@@ -561,223 +620,200 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
                                 tamano="small"
                             />
                         </Grid>
-                        <Grid xs={12} md={7.5}>
-                            <Input
-                                label="Observaciones Empresa"
-                                value={datosGenerales.ObservacionesEmpresa}
-                                onChange={handleChangeGenerales}
-                                valorname="ObservacionesEmpresa"
-                                tipo_input="text"
-                                tamano="small"
-                            />
-                        </Grid>
-                    </Grid>
-
-                    <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mt: 4, mb: 2 }}>
-                        <Typography variant="h6">Agregar / Editar Items</Typography>
-                        <Button
-                            variant="outlined"
-                            color="secondary"
-                            startIcon={<Truck />}
-                            onClick={agregarTransporte}
-                            disabled={items.some(item => item.value === 0)}
-                        >
-                            Agregar Transporte
-                        </Button>
-                    </Box>
-                    <Card variant="outlined" sx={{ p: 2, mb: 3, bgcolor: '#f8f9fa' }}>
-                        <Grid container spacing={2} alignItems="center">
-                            <Grid xs={12} md={nuevoItem.Subarrendatario === EmpresaAnfitriona.value ? 2.2 : 3}>
-                                <InputSelect
-                                    label="Subarrendatario"
-                                    value={nuevoItem.Subarrendatario}
-                                    options={subarrendatarios}
-                                    onChange={handleChangeNuevoItem}
-                                    valorname="Subarrendatario"
-                                />
-                            </Grid>
-                            <Grid xs={12} md={nuevoItem.Subarrendatario === EmpresaAnfitriona.value ? 2.2 : 3}>
-                                <InputSelect
-                                    label="Categoría"
-                                    value={nuevoItem.IdCategoria}
-                                    options={categorias}
-                                    onChange={handleChangeNuevoItem}
-                                    valorname="IdCategoria"
-                                />
-                            </Grid>
-                            <Grid xs={12} md={nuevoItem.Subarrendatario === EmpresaAnfitriona.value ? 2.2 : 3}>
-                                <InputSelectConEstado
-                                    label="Equipo"
-                                    value={nuevoItem.Equipo}
-                                    options={equipos}
-                                    onChange={handleChangeNuevoItem}
-                                    valorname="Equipo"
-                                />
-                            </Grid>
-                            <Grid xs={6} md={2}>
-                                <Input
-                                    label="Cantidad"
-                                    value={nuevoItem.Cantidad}
-                                    onChange={handleChangeNuevoItem}
-                                    valorname="Cantidad"
-                                    tipo_input="number"
-                                    tamano="small"
-                                    error={!cargandoDisponibilidad && nuevoItem.Subarrendatario === EmpresaAnfitriona.value && nuevoItem.Equipo !== '' && nuevoItem.Equipo !== OpcionPorDefectoNumber.value.toString() && nuevoItem.Cantidad > cantidadDisponible}
-                                    helperText={!cargandoDisponibilidad && nuevoItem.Subarrendatario === EmpresaAnfitriona.value && nuevoItem.Equipo !== '' && nuevoItem.Equipo !== OpcionPorDefectoNumber.value.toString() && nuevoItem.Cantidad > cantidadDisponible ? 'Excede disponible' : ''}
-                                />
-                            </Grid>
-                            {nuevoItem.Subarrendatario === EmpresaAnfitriona.value && (
-                                <Grid xs={6} md={1.2}>
-                                    <Input
-                                        label="Disponible"
-                                        value={cantidadDisponible}
-                                        tipo_input="number"
-                                        tamano="small"
-                                        bloqueado={true}
+                        <Card variant="outlined" sx={{ p: 2, mb: 3, bgcolor: '#f8f9fa' }}>
+                            <Grid container spacing={2} alignItems="center">
+                                <Grid xs={12} md={nuevoItem.Subarrendatario === EmpresaAnfitriona.value ? 2.2 : 3}>
+                                    <InputSelect
+                                        label="Subarrendatario"
+                                        value={nuevoItem.Subarrendatario}
+                                        options={subarrendatarios}
+                                        onChange={handleChangeNuevoItem}
+                                        valorname="Subarrendatario"
                                     />
                                 </Grid>
-                            )}
-                            <Grid xs={6} md={nuevoItem.Subarrendatario === EmpresaAnfitriona.value ? 1.5 : 1.5}>
-                                <Input
-                                    label="Precio Unit."
-                                    value={nuevoItem.PrecioUnidad}
-                                    onChange={handleChangeNuevoItem}
-                                    valorname="PrecioUnidad"
-                                    tipo_input="number"
-                                    tamano="small"
-                                />
-                            </Grid>
-                            <Grid xs={12} md={10}>
-                                <Input
-                                    label="Observaciones Item (Opcional)"
-                                    value={nuevoItem.ObservacionesCliente}
-                                    onChange={handleChangeNuevoItem}
-                                    valorname="ObservacionesCliente"
-                                    tipo_input="text"
-                                    tamano="small"
-                                />
-                            </Grid>
-                            <Grid xs={12} md={2}>
-                                <Button
-                                    fullWidth
-                                    variant="contained"
-                                    startIcon={<Plus />}
-                                    onClick={agregarItem}
-                                    sx={{ height: '40px' }}
-                                >
-                                    Agregar
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </Card>
-
-                    <TableContainer component={Paper} variant="outlined">
-                        <Table size="small">
-                            <TableHead sx={{ bgcolor: '#eee' }}>
-                                <TableRow>
-                                    <TableCell>Equipo</TableCell>
-                                    <TableCell>Subarrendatario</TableCell>
-                                    <TableCell align="right">Cant.</TableCell>
-                                    {items.some(item => item.Subarrendatario === EmpresaAnfitriona.value && item.value !== 0) && (
-                                        <TableCell align="right">Cant. Dispo.</TableCell>
-                                    )}
-                                    <TableCell align="right">Precio Unit.</TableCell>
-                                    <TableCell align="right">Total</TableCell>
-                                    <TableCell align="center">Acciones</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {loading ? (
-                                    Array.from(new Array(3)).map((_, index) => (
-                                        <TableRow key={`skeleton-${index}`}>
-                                            <TableCell><Skeleton variant="text" /></TableCell>
-                                            <TableCell><Skeleton variant="text" /></TableCell>
-                                            <TableCell><Skeleton variant="rectangular" height={30} /></TableCell>
-                                            {items.some(i => i.Subarrendatario === EmpresaAnfitriona.value && i.value !== 0) && (
-                                                <TableCell><Skeleton variant="rectangular" height={30} /></TableCell>
-                                            )}
-                                            <TableCell><Skeleton variant="rectangular" height={30} /></TableCell>
-                                            <TableCell><Skeleton variant="text" /></TableCell>
-                                            <TableCell align="center"><Skeleton variant="circular" width={20} height={20} /></TableCell>
-                                        </TableRow>
-                                    ))
-                                ) : (
-                                    <>
-                                        {items.map((item, index) => (
-                                            <TableRow key={item.IdDetalleRemision}>
-                                                <TableCell>{item.label}</TableCell>
-                                                <TableCell>{item.NombreSubarrendatario}</TableCell>
-                                                <TableCell align="right" sx={{ width: '130px' }}>
-                                                    <Input
-                                                        value={item.Cantidad}
-                                                        onChange={(e) => handleEditItemChange(index, 'Cantidad', Number(e.target.value))}
-                                                        tipo_input="number"
-                                                        tamano="small"
-                                                        label=""
-                                                    />
-                                                </TableCell>
-                                                {items.some(i => i.Subarrendatario === EmpresaAnfitriona.value && i.value !== 0) && (
-                                                    <TableCell align="right" sx={{ width: '130px' }}>
-                                                        {item.Subarrendatario === EmpresaAnfitriona.value && item.value !== 0 ? (
-                                                            <Input
-                                                                value={item.CantidadDisponible || 0}
-                                                                tipo_input="number"
-                                                                tamano="small"
-                                                                label=""
-                                                                bloqueado={true}
-                                                            />
-                                                        ) : '-'}
-                                                    </TableCell>
-                                                )}
-                                                <TableCell align="right" sx={{ width: '150px' }}>
-                                                    <Input
-                                                        value={item.PrecioUnidad}
-                                                        onChange={(e) => handleEditItemChange(index, 'PrecioUnidad', Number(e.target.value))}
-                                                        tipo_input="number"
-                                                        tamano="small"
-                                                        label=''
-                                                    />
-                                                </TableCell>
-                                                <TableCell align="right">${item.PrecioTotal.toLocaleString()}</TableCell>
-                                                <TableCell align="center">
-                                                    <IconButton color="error" onClick={() => eliminarItem(index)}>
-                                                        <Trash size={18} />
-                                                    </IconButton>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                        {items.length === 0 && (
-                                            <TableRow>
-                                                <TableCell colSpan={items.some(i => i.Subarrendatario === EmpresaAnfitriona.value && i.value !== 0) ? 7 : 6} align="center" sx={{ py: 3 }}>
-                                                    No hay items en la remisión
-                                                </TableCell>
-                                            </TableRow>
-                                        )}
-                                    </>
+                                <Grid xs={12} md={nuevoItem.Subarrendatario === EmpresaAnfitriona.value ? 2.2 : 3}>
+                                    <InputSelect
+                                        label="Categoría"
+                                        value={nuevoItem.IdCategoria}
+                                        options={categorias}
+                                        onChange={handleChangeNuevoItem}
+                                        valorname="IdCategoria"
+                                    />
+                                </Grid>
+                                <Grid xs={12} md={nuevoItem.Subarrendatario === EmpresaAnfitriona.value ? 2.2 : 3}>
+                                    <InputSelectConEstado
+                                        label="Equipo"
+                                        value={nuevoItem.Equipo}
+                                        options={equipos}
+                                        onChange={handleChangeNuevoItem}
+                                        valorname="Equipo"
+                                    />
+                                </Grid>
+                                <Grid xs={6} md={2}>
+                                    <Input
+                                        label="Cantidad"
+                                        value={nuevoItem.Cantidad}
+                                        onChange={handleChangeNuevoItem}
+                                        valorname="Cantidad"
+                                        tipo_input="number"
+                                        tamano="small"
+                                        error={!cargandoDisponibilidad && nuevoItem.Subarrendatario === EmpresaAnfitriona.value && nuevoItem.Equipo !== '' && nuevoItem.Equipo !== OpcionPorDefectoNumber.value.toString() && nuevoItem.Cantidad > cantidadDisponible}
+                                        helperText={!cargandoDisponibilidad && nuevoItem.Subarrendatario === EmpresaAnfitriona.value && nuevoItem.Equipo !== '' && nuevoItem.Equipo !== OpcionPorDefectoNumber.value.toString() && nuevoItem.Cantidad > cantidadDisponible ? 'Excede disponible' : ''}
+                                    />
+                                </Grid>
+                                {nuevoItem.Subarrendatario === EmpresaAnfitriona.value && (
+                                    <Grid xs={6} md={1.2}>
+                                        <Input
+                                            label="Disponible"
+                                            value={cantidadDisponible}
+                                            tipo_input="number"
+                                            tamano="small"
+                                            bloqueado={true}
+                                        />
+                                    </Grid>
                                 )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                                <Grid xs={6} md={nuevoItem.Subarrendatario === EmpresaAnfitriona.value ? 1.5 : 1.5}>
+                                    <Input
+                                        label="Precio Unit."
+                                        value={nuevoItem.PrecioUnidad}
+                                        onChange={handleChangeNuevoItem}
+                                        valorname="PrecioUnidad"
+                                        tipo_input="number"
+                                        tamano="small"
+                                    />
+                                </Grid>
+                                <Grid xs={12} md={10}>
+                                    <Input
+                                        label="Observaciones Item (Opcional)"
+                                        value={nuevoItem.ObservacionesCliente}
+                                        onChange={handleChangeNuevoItem}
+                                        valorname="ObservacionesCliente"
+                                        tipo_input="text"
+                                        tamano="small"
+                                    />
+                                </Grid>
+                                <Grid xs={12} md={2}>
+                                    <Button
+                                        fullWidth
+                                        variant="contained"
+                                        startIcon={<Plus />}
+                                        onClick={agregarItem}
+                                        sx={{ height: '40px' }}
+                                    >
+                                        Agregar
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Card>
 
-                    <Box display="flex" justifyContent="flex-end" mt={3} gap={2}>
-                        <Box sx={{ textAlign: 'right', mr: 2 }}>
-                            <Typography variant="subtitle2" color="text.secondary">Total sin IVA</Typography>
-                            <Typography variant="h6">${items.reduce((acc, item) => acc + item.PrecioTotalSinIVA, 0).toLocaleString()}</Typography>
+                        <TableContainer component={Paper} variant="outlined">
+                            <Table size="small">
+                                <TableHead sx={{ bgcolor: '#eee' }}>
+                                    <TableRow>
+                                        <TableCell>Equipo</TableCell>
+                                        <TableCell>Subarrendatario</TableCell>
+                                        <TableCell align="right">Cant.</TableCell>
+                                        {items.some(item => item.Subarrendatario === EmpresaAnfitriona.value && item.value !== 0) && (
+                                            <TableCell align="right">Cant. Dispo.</TableCell>
+                                        )}
+                                        <TableCell align="right">Precio Unit.</TableCell>
+                                        <TableCell align="right">Total</TableCell>
+                                        <TableCell align="center">Acciones</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {loading ? (
+                                        Array.from(new Array(3)).map((_, index) => (
+                                            <TableRow key={`skeleton-${index}`}>
+                                                <TableCell><Skeleton variant="text" /></TableCell>
+                                                <TableCell><Skeleton variant="text" /></TableCell>
+                                                <TableCell><Skeleton variant="rectangular" height={30} /></TableCell>
+                                                {items.some(i => i.Subarrendatario === EmpresaAnfitriona.value && i.value !== 0) && (
+                                                    <TableCell><Skeleton variant="rectangular" height={30} /></TableCell>
+                                                )}
+                                                <TableCell><Skeleton variant="rectangular" height={30} /></TableCell>
+                                                <TableCell><Skeleton variant="text" /></TableCell>
+                                                <TableCell align="center"><Skeleton variant="circular" width={20} height={20} /></TableCell>
+                                            </TableRow>
+                                        ))
+                                    ) : (
+                                        <>
+                                            {items.map((item, index) => (
+                                                <TableRow key={item.IdDetalleRemision}>
+                                                    <TableCell>{item.label}</TableCell>
+                                                    <TableCell>{item.NombreSubarrendatario}</TableCell>
+                                                    <TableCell align="right" sx={{ width: '130px' }}>
+                                                        <Input
+                                                            value={item.Cantidad}
+                                                            onChange={(e) => handleEditItemChange(index, 'Cantidad', Number(e.target.value))}
+                                                            tipo_input="number"
+                                                            tamano="small"
+                                                            label=""
+                                                        />
+                                                    </TableCell>
+                                                    {items.some(i => i.Subarrendatario === EmpresaAnfitriona.value && i.value !== 0) && (
+                                                        <TableCell align="right" sx={{ width: '130px' }}>
+                                                            {item.Subarrendatario === EmpresaAnfitriona.value && item.value !== 0 ? (
+                                                                <Input
+                                                                    value={item.CantidadDisponible || 0}
+                                                                    tipo_input="number"
+                                                                    tamano="small"
+                                                                    label=""
+                                                                    bloqueado={true}
+                                                                />
+                                                            ) : '-'}
+                                                        </TableCell>
+                                                    )}
+                                                    <TableCell align="right" sx={{ width: '150px' }}>
+                                                        <Input
+                                                            value={item.PrecioUnidad}
+                                                            onChange={(e) => handleEditItemChange(index, 'PrecioUnidad', Number(e.target.value))}
+                                                            tipo_input="number"
+                                                            tamano="small"
+                                                            label=''
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell align="right">${item.PrecioTotal.toLocaleString()}</TableCell>
+                                                    <TableCell align="center">
+                                                        <IconButton color="error" onClick={() => eliminarItem(index)}>
+                                                            <Trash size={18} />
+                                                        </IconButton>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                            {items.length === 0 && (
+                                                <TableRow>
+                                                    <TableCell colSpan={items.some(i => i.Subarrendatario === EmpresaAnfitriona.value && i.value !== 0) ? 7 : 6} align="center" sx={{ py: 3 }}>
+                                                        No hay items en la remisión
+                                                    </TableCell>
+                                                </TableRow>
+                                            )}
+                                        </>
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+
+                        <Box display="flex" justifyContent="flex-end" mt={3} gap={2}>
+                            <Box sx={{ textAlign: 'right', mr: 2 }}>
+                                <Typography variant="subtitle2" color="text.secondary">Total sin IVA</Typography>
+                                <Typography variant="h6">${items.reduce((acc, item) => acc + item.PrecioTotalSinIVA, 0).toLocaleString()}</Typography>
+                            </Box>
+                            <Box sx={{ textAlign: 'right' }}>
+                                <Typography variant="subtitle2" color="text.secondary">Total con IVA</Typography>
+                                <Typography variant="h5" color="primary.main">${items.reduce((acc, item) => acc + item.PrecioTotal, 0).toLocaleString()}</Typography>
+                            </Box>
                         </Box>
-                        <Box sx={{ textAlign: 'right' }}>
-                            <Typography variant="subtitle2" color="text.secondary">Total con IVA</Typography>
-                            <Typography variant="h5" color="primary.main">${items.reduce((acc, item) => acc + item.PrecioTotal, 0).toLocaleString()}</Typography>
-                        </Box>
+
+                        <CardActions sx={{ justifyContent: 'flex-end', mt: 4, px: 0 }}>
+                            <Button variant="outlined" onClick={handleClose} disabled={loading || guardando}>
+                                Cancelar
+                            </Button>
+                            <Button variant="contained" onClick={handleGuardar} disabled={loading || guardando}>
+                                Guardar Cambios
+                            </Button>
+                        </CardActions>
                     </Box>
-
-                    <CardActions sx={{ justifyContent: 'flex-end', mt: 4, px: 0 }}>
-                        <Button variant="outlined" onClick={handleClose} disabled={loading || guardando}>
-                            Cancelar
-                        </Button>
-                        <Button variant="contained" onClick={handleGuardar} disabled={loading || guardando}>
-                            Guardar Cambios
-                        </Button>
-                    </CardActions>
                 </Box>
             </Modal>
             <MensajeDeCarga MostrarMensaje={guardando} Mensaje="Procesando..." />
