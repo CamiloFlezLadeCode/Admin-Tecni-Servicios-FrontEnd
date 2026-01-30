@@ -54,6 +54,7 @@ export const paths = {
 
     // Movimientos generales
     comercialmovimientogenerales: '/dashboard/comercial/movimientos-generales',
+    comercialmovimientogeneralesver: '/dashboard/comercial/movimientos-generales/ver-movimientos-generales',
 
     //...
 

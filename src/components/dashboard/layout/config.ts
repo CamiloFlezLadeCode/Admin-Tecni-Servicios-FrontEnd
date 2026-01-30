@@ -59,31 +59,37 @@ export const navItems = [
       {
         key: 'comercial_remisiones',
         title: 'Remisiones',
-        href: paths.dashboard.comercialremisiones,
+        // href: paths.dashboard.comercialremisiones,
+        href: paths.dashboard.comercialremisionesver,
         icon: 'arrow-circle-right',
         matcher: {
           type: 'startsWith',
-          href: paths.dashboard.comercialremisiones
+          // href: paths.dashboard.comercialremisiones,
+          href: paths.dashboard.comercialremisionesver,
         }
       },
       {
         key: 'comercial_devoluciones',
         title: 'Devoluciones',
-        href: paths.dashboard.comercialdevoluciones,
+        // href: paths.dashboard.comercialdevoluciones,
+        href: paths.dashboard.comercialdevolucionesver,
         icon: 'arrow-circle-left',
         matcher: {
           type: 'startsWith',
-          href: paths.dashboard.comercialdevoluciones
+          // href: paths.dashboard.comercialdevoluciones,
+          href: paths.dashboard.comercialdevolucionesver,
         }
       },
       {
         key: 'comercial_ordenes_de_servicio',
         title: 'Ordenes de servicio',
-        href: paths.dashboard.comercialordenesdeservicio,
+        // href: paths.dashboard.comercialordenesdeservicio,
+        href: paths.dashboard.comercialordenesdeserviciover,
         icon: 'icono-ordenes-de-servicio',
         matcher: {
           type: 'startsWith',
-          href: paths.dashboard.comercialordenesdeservicio
+          // href: paths.dashboard.comercialordenesdeservicio,
+          href: paths.dashboard.comercialordenesdeserviciover,
         }
       },
       {
@@ -99,11 +105,13 @@ export const navItems = [
       {
         key: 'comercial_movimientos_generales',
         title: 'Movimientos generales',
-        href: paths.dashboard.comercialmovimientogenerales,
+        // href: paths.dashboard.comercialmovimientogenerales,
+        href: paths.dashboard.comercialmovimientogeneralesver,
         icon: 'icono-movimientos-generales',
         matcher: {
           type: 'startsWith',
-          href: paths.dashboard.comercialmovimientogenerales
+          // href: paths.dashboard.comercialmovimientogenerales,
+          href: paths.dashboard.comercialmovimientogeneralesver,
         }
       },
     ]
@@ -119,10 +127,12 @@ export const navItems = [
         key: 'bodegas',
         title: 'Bodegas',
         icon: 'icono-bodegas',
-        href: paths.dashboard.gestionycontrolbodegas,
+        // href: paths.dashboard.gestionycontrolbodegas,
+        href: paths.dashboard.gestionycontrolbodegasver,
         matcher: {
           type: 'startsWith',
-          href: paths.dashboard.gestionycontrolbodegas,
+          // href: paths.dashboard.gestionycontrolbodegas,
+          href: paths.dashboard.gestionycontrolbodegasver,
         }
       },
       // {
@@ -139,10 +149,12 @@ export const navItems = [
         key: 'equipos',
         title: 'Equipos',
         icon: 'icono-equipos',
-        href: paths.dashboard.gestionycontrolequipos,
+        // href: paths.dashboard.gestionycontrolequipos,
+        href: paths.dashboard.gestionycontrolequiposver,
         matcher: {
           type: 'startsWith',
-          href: paths.dashboard.gestionycontrolequipos
+          // href: paths.dashboard.gestionycontrolequipos,
+          href: paths.dashboard.gestionycontrolequiposver,
         }
       },
       // {
@@ -159,40 +171,48 @@ export const navItems = [
         key: 'proyectos',
         title: 'Proyectos',
         icon: 'icono-proyectos',
-        href: paths.dashboard.gestionycontrolproyectos,
+        // href: paths.dashboard.gestionycontrolproyectos,
+        href: paths.dashboard.gestionycontrolproyectosver,
         matcher: {
           type: 'startsWith',
-          href: paths.dashboard.gestionycontrolproyectos
+          // href: paths.dashboard.gestionycontrolproyectos,
+          href: paths.dashboard.gestionycontrolproyectosver,
         }
       },
       {
         key: 'repuestos',
         title: 'Repuestos',
         icon: 'icono-repuestos',
-        href: paths.dashboard.gestionycontrolrepuestos,
+        // href: paths.dashboard.gestionycontrolrepuestos,
+        href: paths.dashboard.gestionycontrolrepuestosver,
         matcher: {
           type: 'startsWith',
-          href: paths.dashboard.gestionycontrolrepuestos
+          // href: paths.dashboard.gestionycontrolrepuestos,
+          href: paths.dashboard.gestionycontrolrepuestosver,
         }
       },
       {
         key: 'usuariosgenerales',
         title: 'Usuarios generales',
         icon: 'usuarios-generales',
-        href: paths.dashboard.gestionycontrolusuariosgenerales,
+        // href: paths.dashboard.gestionycontrolusuariosgenerales,
+        href: paths.dashboard.gestionycontrolusuariosgeneralesver,
         matcher: {
           type: 'startsWith',
-          href: paths.dashboard.gestionycontrolusuariosgenerales,
+          // href: paths.dashboard.gestionycontrolusuariosgenerales,
+          href: paths.dashboard.gestionycontrolusuariosgeneralesver,
         }
       },
       {
         key: 'vehiculos',
         title: 'Vehículos',
         icon: 'icono-vehiculos',
-        href: paths.dashboard.gestionycontrolvehiculos,
+        // href: paths.dashboard.gestionycontrolvehiculos,
+        href: paths.dashboard.gestionycontrolvehiculosver,
         matcher: {
           type: 'startsWith',
-          href: paths.dashboard.gestionycontrolvehiculos,
+          // href: paths.dashboard.gestionycontrolvehiculos,
+          href: paths.dashboard.gestionycontrolvehiculosver,
         }
       }
     ]
@@ -208,20 +228,24 @@ export const navItems = [
         key: 'inventario_equipos',
         title: 'Equipos',
         icon: 'icono-bodegas',
-        href: paths.dashboard.inventarioequipos,
+        // href: paths.dashboard.inventarioequipos,
+        href: paths.dashboard.inventarioequiposstock,
         matcher: {
           type: 'startsWith',
-          href: paths.dashboard.inventarioequipos,
+          // href: paths.dashboard.inventarioequipos,
+          href: paths.dashboard.inventarioequiposstock,
         }
       },
       {
         key: 'inventario_repuestos',
         title: 'Repuestos',
         icon: 'icono-bodegas',
-        href: paths.dashboard.inventariorepuestos,
+        // href: paths.dashboard.inventariorepuestos,
+        href: paths.dashboard.inventariorepuestosstock,
         matcher: {
           type: 'startsWith',
-          href: paths.dashboard.inventariorepuestos,
+          // href: paths.dashboard.inventariorepuestos,
+          href: paths.dashboard.inventariorepuestosstock,
         }
       },
     ]

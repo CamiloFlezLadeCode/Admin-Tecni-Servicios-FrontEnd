@@ -472,7 +472,7 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
                     onClose={() => setMostrarAlertas(false)}
                 />
             )}
-            <MensajeDeCarga MostrarMensaje={loading} Mensaje="Procesando..." />
+            {/* <MensajeDeCarga MostrarMensaje={loading} Mensaje="Procesando..." /> */}
         </Stack>
     );
 }

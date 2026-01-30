@@ -14,7 +14,7 @@ import { paths } from '@/paths';
 const ItemsNavMovimientos = [
     {
         label: 'Ver movimientos generales',
-        path: paths.dashboard.comercialmovimientogenerales,
+        path: paths.dashboard.comercialmovimientogeneralesver,
         icon: Eye
     }
 ];

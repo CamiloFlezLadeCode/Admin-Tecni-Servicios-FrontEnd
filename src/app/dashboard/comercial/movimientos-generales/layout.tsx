@@ -1,4 +1,4 @@
-'use client';
+// 'use client';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import { NavMovimientosGenerales } from '@/components/dashboard/comercial/movimientos-generales/NavMovimientosGenerales';
