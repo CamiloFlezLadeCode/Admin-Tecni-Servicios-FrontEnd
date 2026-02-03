@@ -222,7 +222,7 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
 
     const handleDownloadPDF = async (row: MovimientoGeneral) => {
         try {
-            setLoading(true);
+            // setLoading(true);
             let blob: Blob;
             let filename = `${row.TipoMovimiento}_${row.NoMovimiento}.pdf`;
 
