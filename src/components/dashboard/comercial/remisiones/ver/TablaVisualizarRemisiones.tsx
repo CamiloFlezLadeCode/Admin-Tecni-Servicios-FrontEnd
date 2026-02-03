@@ -6,7 +6,7 @@ import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/
 import MensajeDeCarga from '@/components/dashboard/componentes_generales/mensajedecarga/BackDropCircularProgress';
 import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useSocketIO } from '@/hooks/use-WebSocket';
-import { ConsultarRemisiones } from '@/services/comercial/remisiones/ConsultarRemisionesService';
+import { ConsultarRemisiones, ConsultarRemisionesConPaginacion } from '@/services/comercial/remisiones/ConsultarRemisionesService';
 import {
     Chip,
     useTheme
@@ -15,7 +15,7 @@ import * as React from 'react';
 // Servicios
 import { EliminarRemision } from '@/services/comercial/remisiones/EliminarRemisionService';
 import { VisualizarPDFRemision } from '@/services/comercial/remisiones/ObtenerPDFRemisionService';
-
+import { getEstadoColor } from '@/utils/getEstadoColor';
 
 interface Remision {
     IdRemision: number;
@@ -67,18 +67,6 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
             }
         }
     }, [messages]);
-
-    const getEstadoColor = (estado: string) => {
-        switch (estado) {
-            case 'Activa': return 'success';
-            case 'Pendiente': return 'warning';
-            case 'Cancelada': return 'error';
-            case 'En Proceso': return 'info';
-            case 'Creado': return 'success';
-            case 'Actualizado': return 'info';
-            default: return 'default';
-        }
-    };
 
     const columns = [
         // {

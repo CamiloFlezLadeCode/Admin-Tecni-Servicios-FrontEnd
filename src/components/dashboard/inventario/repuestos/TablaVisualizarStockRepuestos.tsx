@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import * as React from 'react';
 import { useSocketIO } from '@/hooks/use-WebSocket';
+import { getEstadoColor } from '@/utils/getEstadoColor';
 
 interface RepuestoStock {
   IdRepuesto: number;
@@ -22,7 +23,7 @@ interface RepuestoStock {
   Categoria?: string;
   CantidadDisponible?: number;
   UnidadMedida?: string;
-  Estado?: string;
+  Estado: string;
 }
 
 export function TablaVisualizarStockRepuestos(): React.JSX.Element {
@@ -133,7 +134,8 @@ export function TablaVisualizarStockRepuestos(): React.JSX.Element {
       width: 120,
       render: (row) => {
         const disponible = (row.CantidadDisponible ?? 0) > 0;
-        return <Chip size="small" color={disponible ? 'success' : 'default'} label={disponible ? 'Disponible' : 'No disponible'} />;
+        // return <Chip size="small" color={disponible ? 'success' : 'default'} label={disponible ? 'Disponible' : 'No disponible'} />;
+        return <Chip size="small" color={getEstadoColor(row.Estado)} label={row.Estado} />;
       }
     }
   ];

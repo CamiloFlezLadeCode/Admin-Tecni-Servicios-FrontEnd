@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import * as React from 'react';
 import { useSocketIO } from '@/hooks/use-WebSocket';
+import { getEstadoColor } from '@/utils/getEstadoColor';
 
 interface EquipoStock {
   IdEquipo: number;
@@ -22,7 +23,7 @@ interface EquipoStock {
   Categoria?: string;
   Cantidad?: number; // Ajustado para mapear desde Cantidad
   UnidadMedida?: string;
-  Estado?: string;
+  Estado: string;
 }
 
 export function TablaVisualizarStockEquipos(): React.JSX.Element {
@@ -44,11 +45,11 @@ export function TablaVisualizarStockEquipos(): React.JSX.Element {
         const response = await VerStockEquipos();
         // Mapeo explicito si la respuesta difiere de la interfaz
         const mapeado = (Array.isArray(response) ? response : []).map((item: any) => ({
-            IdEquipo: item.IdEquipo,
-            NombreEquipo: item.NombreEquipo,
-            Cantidad: item.Cantidad,
-            Estado: item.Estado,
-            UnidadMedida: item.UnidadMedida
+          IdEquipo: item.IdEquipo,
+          NombreEquipo: item.NombreEquipo,
+          Cantidad: item.Cantidad,
+          Estado: item.Estado,
+          UnidadMedida: item.UnidadMedida
         }));
         setData(mapeado);
       } catch (err: any) {
@@ -67,13 +68,13 @@ export function TablaVisualizarStockEquipos(): React.JSX.Element {
       setError(null);
       setSearchTerm('');
       const response = await VerStockEquipos();
-       const mapeado = (Array.isArray(response) ? response : []).map((item: any) => ({
-            IdEquipo: item.IdEquipo,
-            NombreEquipo: item.NombreEquipo,
-            Cantidad: item.Cantidad,
-            Estado: item.Estado,
-            UnidadMedida: item.UnidadMedida
-        }));
+      const mapeado = (Array.isArray(response) ? response : []).map((item: any) => ({
+        IdEquipo: item.IdEquipo,
+        NombreEquipo: item.NombreEquipo,
+        Cantidad: item.Cantidad,
+        Estado: item.Estado,
+        UnidadMedida: item.UnidadMedida
+      }));
       setData(mapeado);
     } catch (err: any) {
       setError(`Error al actualizar: ${err?.message ?? err}`);
@@ -131,9 +132,10 @@ export function TablaVisualizarStockEquipos(): React.JSX.Element {
       header: 'Estado',
       width: 120,
       render: (row) => {
-         // Usar el estado directo si existe, o calcular basado en cantidad
+        // Usar el estado directo si existe, o calcular basado en cantidad
         const disponible = row.Estado === 'Disponible' || (row.Cantidad ?? 0) > 0;
-        return <Chip size="small" color={disponible ? 'success' : 'default'} label={row.Estado || (disponible ? 'Disponible' : 'No disponible')} />;
+        // return <Chip size="small" color={disponible ? 'success' : 'default'} label={row.Estado || (disponible ? 'Disponible' : 'No disponible')} />;
+        return <Chip size="small" color={getEstadoColor(row.Estado)} label={row.Estado} />;
       }
     }
   ];

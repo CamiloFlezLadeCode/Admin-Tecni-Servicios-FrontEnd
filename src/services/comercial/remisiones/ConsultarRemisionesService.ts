@@ -1,5 +1,18 @@
 import axiosInstance from "@/config/axiosConfig";
 import { apiRoutes } from "@/config/apiRoutes";
+import { TableInterfacePaginacion } from "@/types/InterfaceTablePagination";
+
+export const ConsultarRemisionesConPaginacion = async (paginacion: TableInterfacePaginacion) => {
+    try {
+        const { data } = await axiosInstance.get(apiRoutes.comercial.remisiones.ver_remisiones, {
+            params: paginacion
+        });
+        return data;
+    } catch (error: any) {
+        console.log("Error al consultar las remisiones");
+        throw new Error(`${error.response.data.error}`);
+    }
+};
 
 export const ConsultarRemisiones = async () => {
     try {

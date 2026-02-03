@@ -26,6 +26,7 @@ import dayjs from 'dayjs';
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import { ModalDetalleEstadoCuenta } from './ModalDetalleEstadoCuenta';
 import { Eye } from '@phosphor-icons/react/dist/ssr';
+import { getEstadoColor } from '@/utils/getEstadoColor';
 
 interface EstadoDeCuenta {
     IdDetalleRemison?: number;
@@ -170,17 +171,6 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
             valorPendiente: acc.valorPendiente + Number(curr.ValorPendiente || 0)
         }), { totalPrestado: 0, totalDevuelto: 0, totalPendiente: 0, valorPendiente: 0 });
     }, [filteredData]);
-
-    const getEstadoColor = (estado: string) => {
-        switch (estado?.toLowerCase()) {
-            case 'completo': return 'success';
-            case 'pendiente': return 'warning';
-            case 'cancelada': return 'error';
-            case 'en proceso': return 'info';
-            case 'creado': return 'info';
-            default: return 'default';
-        }
-    };
 
     type InformeRow = Record<string, unknown>;
 
@@ -651,7 +641,7 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
                         setModalDetalleOpen(true);
                     }}
                 >
-                    <Eye size={20} weight="bold"/>
+                    <Eye size={20} weight="bold" />
                 </IconButton>
             ),
             tooltip: 'Ver Detalle Completo'

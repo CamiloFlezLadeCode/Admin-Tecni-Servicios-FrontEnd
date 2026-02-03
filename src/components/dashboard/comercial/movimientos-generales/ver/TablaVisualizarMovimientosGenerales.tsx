@@ -42,6 +42,7 @@ import { OpcionPorDefecto } from '@/lib/constants/option-default';
 import FechayHora from '@/components/dashboard/componentes_generales/formulario/DateTimePicker';
 import MensajeDeCarga from '@/components/dashboard/componentes_generales/mensajedecarga/BackDropCircularProgress';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
+import { getEstadoColor } from '@/utils/getEstadoColor';
 
 export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
     const theme = useTheme();
@@ -305,7 +306,7 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
             render: (row) => (
                 <Chip
                     label={row.Estado}
-                    color={row.Estado === 'Activa' || row.Estado === 'Completo' ? 'success' : 'default'}
+                    color={getEstadoColor(row.Estado)}
                     size="small"
                 />
             )

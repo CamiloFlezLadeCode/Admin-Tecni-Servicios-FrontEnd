@@ -14,6 +14,7 @@ import { EliminarOrdenDeServicio } from '@/services/comercial/ordenes_de_servici
 import MensajeDeCarga from '@/components/dashboard/componentes_generales/mensajedecarga/BackDropCircularProgress';
 import { GenerarPDF } from '@/components/dashboard/componentes_generales/acciones/GenerarPDF';
 import { EliminarRegistro } from '@/components/dashboard/componentes_generales/acciones/EliminarRegistro';
+import { getEstadoColor } from '@/utils/getEstadoColor';
 
 interface OrdenDeServicio {
     IdOrdenDeServicio: number;
@@ -160,17 +161,6 @@ export function TablaVisualizarOrdenesDeServicio() {
             tooltip: 'Eliminar remisión'
         }
     ];
-
-    const getEstadoColor = (estado: string) => {
-        switch (estado) {
-            case 'Completado': return 'success';
-            case 'Pendiente': return 'warning';
-            case 'Cancelado': return 'error';
-            case 'En Proceso': return 'info';
-            case 'Creado': return 'info';
-            default: return 'default';
-        }
-    };
 
     const handleRefresh = async () => {
         try {

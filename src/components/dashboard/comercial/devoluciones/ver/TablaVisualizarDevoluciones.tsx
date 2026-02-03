@@ -12,6 +12,7 @@ import {
     Chip
 } from '@mui/material';
 import * as React from 'react';
+import { getEstadoColor } from '@/utils/getEstadoColor';
 
 
 interface Devolucion {
@@ -83,17 +84,6 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
         setMensajeAlerta(mensaje);
         setTipoAlerta(tipo);
         setMostrarAlertas(true);
-    };
-
-    const getEstadoColor = (estado: string) => {
-        switch (estado) {
-            case 'Activa': return 'success';
-            case 'Pendiente': return 'warning';
-            case 'Cancelada': return 'error';
-            case 'En Proceso': return 'info';
-            case 'Creado': return 'info'
-            default: return 'default';
-        }
     };
 
     const columns = [
