@@ -33,7 +33,7 @@ const FechayHora: React.FC<CustomDateTimePickerProps> = ({
     className
 }) => {
     return (
-        <LocalizationProvider dateAdapter={AdapterDayjs}
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es"
             localeText={{
                 okButtonLabel: "Aceptar",   // cambia el texto del botón "accept"
                 cancelButtonLabel: "Cancelar",
@@ -48,8 +48,8 @@ const FechayHora: React.FC<CustomDateTimePickerProps> = ({
                 format="DD/MM/YYYY hh:mm A"
                 ampm={true}
                 views={['year', 'month', 'day', 'hours', 'minutes']}
-                minDate={minDateTime}
-                maxDate={maxDateTime}
+                minDateTime={minDateTime}
+                maxDateTime={maxDateTime}
                 disabled={disabled}
                 reduceAnimations={true} // Mejor rendimiento en Next.js
                 slotProps={{

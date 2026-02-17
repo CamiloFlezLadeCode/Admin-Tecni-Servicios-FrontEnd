@@ -323,7 +323,8 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
                 >
                     <DownloadSimple size={20} weight='bold' />
                 </IconButton>
-            )
+            ),
+            tooltip: 'Descargar PDF'
         }
     ];
 
