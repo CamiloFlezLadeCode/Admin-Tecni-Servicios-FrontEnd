@@ -42,7 +42,7 @@ type EquipoItem = {
 
 type ModalVerItemsRemisionProps = {
     items: EquipoItem[];
-    onEliminarItem?: (itemId: string | number) => void;
+    onEliminarItem?: (itemId: string | number, subarrendatario?: string) => void;
     precioTotalGeneral?: number;
 };
 export default function ModalVerItemsRemision({ items, onEliminarItem, precioTotalGeneral }: ModalVerItemsRemisionProps) {
@@ -161,7 +161,7 @@ export default function ModalVerItemsRemision({ items, onEliminarItem, precioTot
                                     </TableBody> */}
                                     <TableBody>
                                         {items.map((item, index) => (
-                                            <TableRow key={item.value}>
+                                            <TableRow key={`${item.value}-${item.Subarrendatario}`}>
                                                 <TableCell>{index + 1}</TableCell>
                                                 <TableCell>{item.NombreSubarrendatario}</TableCell>
                                                 <TableCell>{item.Categoria ?? '-'}</TableCell>
@@ -187,7 +187,7 @@ export default function ModalVerItemsRemision({ items, onEliminarItem, precioTot
                                                     </Box>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <IconButton size="small" color="error" onClick={() => onEliminarItem?.(item.value)} title='Eliminar item'>
+                                                    <IconButton size="small" color="error" onClick={() => onEliminarItem?.(item.value, item.Subarrendatario)} title='Eliminar item'>
                                                         <Trash size={20} weight="bold" />
                                                     </IconButton>
                                                 </TableCell>

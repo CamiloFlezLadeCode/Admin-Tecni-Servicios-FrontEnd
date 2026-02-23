@@ -65,6 +65,8 @@ interface ItemDevolucion {
     IdRemision: string; // Cambiado a obligatorio
     NoRemision?: string;
     Descripcion?: string;
+    Subarrendatario?: string;
+    IdDetalleRemision: number;
 }
 
 interface DevolucionEnvio {
@@ -129,6 +131,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
         ObtenerClientes();
         CargarEstados();
         CargarSiguienteNoDevolucion();
+        CargarProfesionales();
     }, []);
 
     React.useEffect(() => {
@@ -157,11 +160,17 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
         }
     }, [messages]);
 
+    // React.useEffect(() => {
+    //     if (datos.Subarrendatario && datos.IdProyecto) {
+    //         cargarEquiposPendientesPorDevolver();
+    //     }
+    // }, [datos.Subarrendatario, datos.IdProyecto]);
+
     React.useEffect(() => {
-        if (datos.Subarrendatario && datos.IdProyecto) {
+        if (datos.IdProyecto) {
             cargarEquiposPendientesPorDevolver();
         }
-    }, [datos.Subarrendatario, datos.IdProyecto]);
+    }, [datos.IdProyecto])
 
     // 6. FUNCIONES DEL COMPONENTE
     const CargarSubarrendatariosConRemisionesAsignadasClienteProyecto = async () => {
@@ -331,7 +340,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
     const actualizarCantidadADevolver = (idCompuesto: string, nuevaCantidad: number) => {
         setItemsRemision(prevItems =>
             prevItems.map(item => {
-                const itemIdCompuesto = `${item.IdEquipo}-${item.IdRemision}`;
+                const itemIdCompuesto = `${item.IdEquipo}-${item.IdRemision}-${item.IdDetalleRemision}`;
 
                 if (itemIdCompuesto === idCompuesto) {
                     const cantidadMaxima = item.CantidadPendiente;
@@ -361,7 +370,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
 
     const prepararDatosEnvio = (): DevolucionEnvio | null => {
         // Validar datos básicos
-        if (!datos.Cliente || !datos.IdProyecto || !datos.Subarrendatario) {
+        if (!datos.Cliente || !datos.IdProyecto) {
             mostrarMensaje('Debe seleccionar cliente, proyecto y subarrendatario', 'error');
             return null;
         }
@@ -436,7 +445,9 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                 CantidadADevolver: item.CantidadADevolver,
                 EstadoEquipo: item.EstadoEquipo,
                 Observaciones: item.Observaciones ?? '',
-                IdRemision: item.IdRemision // Cada item envía su propio IdRemision
+                IdRemision: item.IdRemision, // Cada item envía su propio IdRemision
+                DocumentoSubarrendatario: item.Subarrendatario,
+                IdDetalleRemision: item.IdDetalleRemision,
             })),
             FechaDevolucion: datos.FechaDevolucion.format('YYYY-MM-DD HH:mm:ss')
         };
@@ -450,11 +461,13 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
         }
 
         try {
+            console.log(datosEnvio)
             await CrearDevolucion(datosEnvio);
             mostrarMensaje('Devolución creada correctamente', 'success');
             sendMessage('devolucion-creada', {});
             resetearFormulario();
-            CargarSubarrendatariosConRemisionesAsignadasClienteProyecto();
+            // CargarSubarrendatariosConRemisionesAsignadasClienteProyecto();
+            setProyectos([]);
         } catch (error) {
             console.error('Error al enviar devolución:', error);
             mostrarMensaje(`Hubo un error al crear la devolución: ${error}`, 'error');
@@ -471,7 +484,8 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
             PersonaQueRecibe: OpcionPorDefecto.value,
             // Mantener estos valores:
             Cliente: prev.Cliente,
-            IdProyecto: prev.IdProyecto,
+            // IdProyecto: prev.IdProyecto,
+            IdProyecto: null,
             UsuarioCreacion: documentoUsuarioActivo ?? '',
             IdEstado: 8,
             FechaDevolucion: dayjs(),
@@ -553,7 +567,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                         </Grid>
 
                         {/* Selector de Subarrendatario */}
-                        <Grid md={3} xs={12}>
+                        {/* <Grid md={3} xs={12}>
                             <InputSelect
                                 label="Subarrendatario"
                                 value={datos.Subarrendatario}
@@ -561,7 +575,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                 onChange={handleChange}
                                 valorname="Subarrendatario"
                             />
-                        </Grid>
+                        </Grid> */}
 
                         <Grid md={3} xs={12}>
                             <InputSelect
@@ -609,7 +623,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                     <TableBody>
                                         {itemsRemision.map((item) => (
                                             <TableRow
-                                                key={`${item.IdEquipo}-${item.IdRemision}`}
+                                                key={`${item.IdEquipo}-${item.IdRemision}-${item.IdDetalleRemision}`}
                                                 sx={{ padding: { xs: '6px 8px', md: '8px 12px' }, display: item.CantidadPendiente === '0' ? 'none' : 'table-row' }}
                                             >
                                                 <TableCell>{item.Descripcion}</TableCell>
@@ -626,7 +640,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                                             const raw = e.target.value;
                                                             const limpio = raw.replace(/^0+(?=\d)/, '');
                                                             const numero = limpio === '' ? 0 : parseInt(limpio, 10);
-                                                            actualizarCantidadADevolver(`${item.IdEquipo}-${item.IdRemision}`, numero);
+                                                            actualizarCantidadADevolver(`${item.IdEquipo}-${item.IdRemision}-${item.IdDetalleRemision}`, numero);
                                                         }}
                                                         bloqueado={item.CantidadPendiente === '0'}
                                                     />
@@ -683,7 +697,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                         tipo_input='text'
                                         valorname='PersonaQueEntrega'
                                         bloqueado={todosItemsSinPendiente}
-                                        // required={datos.IncluyeTransporte === true}
+                                    // required={datos.IncluyeTransporte === true}
                                     />
                                 </Grid>
                             </Grid>

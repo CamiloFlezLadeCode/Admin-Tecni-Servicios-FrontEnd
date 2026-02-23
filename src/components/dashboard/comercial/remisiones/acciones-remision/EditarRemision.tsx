@@ -53,6 +53,7 @@ interface ItemRemision {
     PrecioTotal: number;
     IVA: number;
     PrecioTotalSinIVA: number;
+    EsItemTransporte: boolean;
 }
 
 interface EditarRemisionProps {
@@ -151,6 +152,11 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
             // Mapear items de la API a la interfaz ItemRemision
             const mappedItems = await Promise.all(itemsRaw.map(async (item: any) => {
                 const isAnfitriona = item.DocumentoSubarrendatario === EmpresaAnfitriona.value;
+                const esTransporte =
+                    item?.EsItemTransporte === true ||
+                    item?.EsItemTransporte === 1 ||
+                    item?.IdEquipo === 0 ||
+                    String(item?.NombreEquipo || item?.Equipo || '').toLowerCase() === 'transporte';
                 let stock = 0;
                 if (isAnfitriona && item.IdEquipo !== 0) {
                     try {
@@ -165,18 +171,19 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
                 return {
                     IdDetalleRemision: item.IdDetalleRemision,
                     value: item.IdEquipo,
-                    label: (item.IdEquipo === 0 || item.NombreEquipo === 'Transporte') ? 'Transporte' : (item.NombreEquipo || item.Equipo),
+                    label: esTransporte ? 'Transporte' : (item.NombreEquipo || item.Equipo),
                     IdCategoria: item.IdCategoria || 0,
-                    Categoria: item.NombreCategoria || item.Categoria || ((item.IdEquipo === 0 || item.NombreEquipo === 'Transporte') ? 'Servicio' : ''),
+                    Categoria: item.NombreCategoria || item.Categoria || (esTransporte ? 'Servicio' : ''),
                     Cantidad: item.Cantidad,
                     CantidadDisponible: stock,
                     PrecioUnidad: Number(item.PrecioUnidad),
                     PrecioTotal: Number(item.PrecioTotal),
-                    IVA: (item.IdEquipo === 0 || item.NombreEquipo === 'Transporte') ? 0 : (Number(item.IVA) || 0),
+                    IVA: esTransporte ? 0 : (Number(item.IVA) || 0),
                     PrecioTotalSinIVA: Number(item.PrecioTotalSinIVA),
                     Subarrendatario: item.DocumentoSubarrendatario || '',
                     NombreSubarrendatario: item.NombreSubarrendatario || 'N/A',
-                    ObservacionesCliente: item.ObservacionesCliente || ''
+                    ObservacionesCliente: item.ObservacionesCliente || '',
+                    EsItemTransporte: esTransporte,
                 };
             }));
             setItems(mappedItems);
@@ -362,7 +369,8 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
             PrecioTotalSinIVA: precioTotalSinIVA,
             Subarrendatario: nuevoItem.Subarrendatario.toString(),
             NombreSubarrendatario: subSel?.label || '',
-            ObservacionesCliente: nuevoItem.ObservacionesCliente
+            ObservacionesCliente: nuevoItem.ObservacionesCliente,
+            EsItemTransporte: false,
         };
 
         setItems(prev => [...prev, item]);
@@ -403,7 +411,8 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
             PrecioTotalSinIVA: 0,
             Subarrendatario: '',
             NombreSubarrendatario: 'N/A',
-            ObservacionesCliente: 'Item de transporte'
+            ObservacionesCliente: 'Item de transporte',
+            EsItemTransporte: true,
         };
 
         setItems(prev => [...prev, itemTransporte]);
@@ -475,7 +484,8 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
                     PrecioTotalSinIVA: item.PrecioTotalSinIVA,
                     DocumentoSubarrendatario: item.Subarrendatario || null,
                     IdCategoria: item.IdCategoria,
-                    ObservacionesCliente: item.ObservacionesCliente
+                    ObservacionesCliente: item.ObservacionesCliente,
+                    EsItemTransporte: item.EsItemTransporte,
                 })),
                 UsuarioQueActualiza: documentoUsuarioActivo
             };

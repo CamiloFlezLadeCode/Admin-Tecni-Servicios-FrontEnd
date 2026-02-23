@@ -598,7 +598,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
         }
 
         // Verificar si el equipo ya fue agregado
-        if (itemsRemision.some(e => e.value === equipoSeleccionado.value)) {
+        if (itemsRemision.some(e => e.value === equipoSeleccionado.value && e.Subarrendatario === subarrendatarioSeleccionado?.value)) {
             mostrarMensaje('Este equipo ya fue agregado a la remisión', 'error');
             return;
         }
@@ -642,8 +642,8 @@ export function FormularioCrearRemision(): React.JSX.Element {
     };
 
     // Eliminar item de la remisión
-    const eliminarItem = (id: string | number) => {
-        setItemsRemision(prev => prev.filter(item => item.value !== id));
+    const eliminarItem = (id: string | number, subarrendatario?: string) => {
+        setItemsRemision(prev => prev.filter(item => item.value !== id || item.Subarrendatario !== subarrendatario));
         mostrarMensaje('Item eliminado', 'success');
     };
 
@@ -778,7 +778,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
                         tamano="small"
                         tipo_input="text"
                         valorname="NoRemision"
-                        // bloqueado
+                    // bloqueado
                     />
                 </Typography>
             </Box>
