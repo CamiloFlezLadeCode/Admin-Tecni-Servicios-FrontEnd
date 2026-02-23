@@ -9,10 +9,19 @@ import { EliminarDevolucion } from '@/services/comercial/devoluciones/EliminarDe
 import { ObtenerPDFDevolucion } from '@/services/comercial/devoluciones/ObtenerPDFDevolucionService';
 import { VerTodasLasDevoluciones } from '@/services/comercial/devoluciones/VerTodasLasDevolucionesService';
 import {
-    Chip
+    Chip,
+    Modal,
+    Box,
+    Typography,
+    Button,
+    Fade,
+    Backdrop,
+    CircularProgress,
+    useTheme,
 } from '@mui/material';
 import * as React from 'react';
 import { getEstadoColor } from '@/utils/getEstadoColor';
+import { EditarDevolucion } from '@/components/dashboard/comercial/devoluciones/acciones/EditarDevolucion';
 
 
 interface Devolucion {
@@ -138,6 +147,18 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
     const actions: ActionDefinition<Devolucion>[] = [
         {
             render: (row: Devolucion) => (
+                <EditarDevolucion
+                MostrarModalTemporalDesarrollo={true}
+                // IdDevolucion={row.IdDevolucion}
+                // NoDevolucion={row.NoDevolucion}
+                // sendMessage={sendMessage}
+                // mostrarMensaje={mostrarMensaje}
+                />
+            ),
+            tooltip: 'Editar devolución'
+        },
+        {
+            render: (row: Devolucion) => (
                 <GenerarPDF
                     servicioPDF={(id) => ObtenerPDFDevolucion(row.IdDevolucion)}
                     idRecurso={row.IdDevolucion}
@@ -176,6 +197,23 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
         }
     ];
 
+
+    //Para menejar el tema del modal
+    const theme = useTheme();
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => {
+        setOpen(false);
+        localStorage.setItem('MostrarModalDevoluciones', 'false');
+    };
+
+    React.useEffect(() => {
+        const mostrarModal = localStorage.getItem('MostrarModalDevoluciones');
+        if (mostrarModal === null || mostrarModal === 'true') {
+            handleOpen();
+        }
+    }, []);
+
     return (
         <>
             <DataTable<Devolucion>
@@ -201,6 +239,54 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
                 Mensaje={mensajeDeCarga}
                 MostrarMensaje={mostrarMensajeDeCarga}
             />
+            <Modal
+                open={open}
+                onClose={(_, reason) => {
+                    if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
+                        handleClose();
+                    }
+                }}
+            >
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '1%',
+                        left: '50%',
+                        transform: 'translate(-50%)', //Solo horizontalmente
+                        // width: '90%',
+                        // maxWidth: 1000,
+                        // width: '80%',
+                        width: {
+                            xs: '95%',
+                            sm: '90%',
+                            md: '80%',
+                            lg: '70%',
+                        },
+                        [theme.breakpoints.down('xl')]: {
+                            // width: 700,
+                        },
+                        bgcolor: 'background.paper',
+                        boxShadow: 24,
+                        p: 3,
+                        borderRadius: 2,
+                        maxHeight: '90vh',
+                        overflowY: 'auto',
+                    }}
+                >
+                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                        ¡HOLA MELY! 😊
+                    </Typography>
+                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                        Ya puedes realizar devoluciones marcando todos los items necesarios, sin importar el subarrendatario.
+                    </Typography>
+                    <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
+                        <Button onClick={handleClose} variant="contained" color="primary">
+                            Ok, gracias!
+                        </Button>
+                    </Box>
+                </Box>
+
+            </Modal>
         </>
     )
 }
