@@ -467,7 +467,8 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
             sendMessage('devolucion-creada', {});
             resetearFormulario();
             // CargarSubarrendatariosConRemisionesAsignadasClienteProyecto();
-            setProyectos([]);
+            // setProyectos([]);
+            await cargarEquiposPendientesPorDevolver();
         } catch (error) {
             console.error('Error al enviar devolución:', error);
             mostrarMensaje(`Hubo un error al crear la devolución: ${error}`, 'error');
@@ -484,8 +485,8 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
             PersonaQueRecibe: OpcionPorDefecto.value,
             // Mantener estos valores:
             Cliente: prev.Cliente,
-            // IdProyecto: prev.IdProyecto,
-            IdProyecto: null,
+            IdProyecto: prev.IdProyecto,
+            // IdProyecto: null,
             UsuarioCreacion: documentoUsuarioActivo ?? '',
             IdEstado: 8,
             FechaDevolucion: dayjs(),
