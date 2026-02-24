@@ -28,7 +28,7 @@ import {
     Typography
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
-import { PencilSimple, X } from '@phosphor-icons/react';
+import { PencilSimple, Trash, X } from '@phosphor-icons/react';
 import * as React from 'react';
 
 interface ItemDevolucion {
@@ -43,6 +43,7 @@ interface ItemDevolucion {
     NoRemision?: string;
     Descripcion?: string;
     Subarrendatario?: string;
+    NombreSubarrendatario?: string;
 }
 
 interface DevolucionDetalle {
@@ -119,7 +120,8 @@ export function EditarDevolucion({ IdDevolucion, NoDevolucion, sendMessage, most
                 IdRemision: String(item.IdRemision ?? ''),
                 NoRemision: item.NoRemision,
                 Descripcion: item.Descripcion,
-                Subarrendatario: item.Subarrendatario || item.DocumentoSubarrendatario
+                Subarrendatario: item.Subarrendatario || item.DocumentoSubarrendatario,
+                NombreSubarrendatario: item.NombreSubarrendatario
             }));
 
             const estadosPermitidos = new Set(['buen estado', 'dañado', 'perdido']);
@@ -351,6 +353,12 @@ export function EditarDevolucion({ IdDevolucion, NoDevolucion, sendMessage, most
                 ? 'SI'
                 : 'NO';
 
+    const eliminarItem = (index: number) => {
+        const itemAEliminar = items[index];
+        if (itemAEliminar.IdDetalleDevolucion) {
+            setItems(items.filter((item) => item.IdDetalleDevolucion !== itemAEliminar.IdDetalleDevolucion));
+        }
+    }
     return (
         <>
             <Tooltip title="Editar devolución">
@@ -509,12 +517,25 @@ export function EditarDevolucion({ IdDevolucion, NoDevolucion, sendMessage, most
                                             <TableCell align="right">Cant. devuelta</TableCell>
                                             <TableCell>Estado equipo</TableCell>
                                             <TableCell>Observaciones</TableCell>
+                                            <TableCell>Acciones</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {items.map((item) => (
+                                        {items.map((item, index) => (
                                             <TableRow key={item.IdDetalleDevolucion}>
-                                                <TableCell>{item.NombreEquipo}</TableCell>
+                                                {/* <TableCell>{item.NombreEquipo}<br></br>
+                                                    <label>Subarren: </label><span>{item.NombreSubarrendatario}</span>
+                                                </TableCell> */}
+                                                <TableCell>
+                                                    <Typography variant="body1" fontWeight="medium">
+                                                        {item.NombreEquipo}
+                                                    </Typography>
+                                                    <Typography variant="body2" color="text.secondary">
+                                                        <Typography component="span" variant="caption">
+                                                            Subarren:{' '}{item.NombreSubarrendatario}
+                                                        </Typography>
+                                                    </Typography>
+                                                </TableCell>
                                                 <TableCell>{item.NoRemision || item.IdRemision}</TableCell>
                                                 <TableCell align="right">{item.CantidadArrendada}</TableCell>
                                                 <TableCell align="right">
@@ -552,6 +573,11 @@ export function EditarDevolucion({ IdDevolucion, NoDevolucion, sendMessage, most
                                                         tipo_input="text"
                                                         tamano="small"
                                                     />
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                    <IconButton color="error" onClick={() => eliminarItem(index)}>
+                                                        <Trash size={18} />
+                                                    </IconButton>
                                                 </TableCell>
                                             </TableRow>
                                         ))}
