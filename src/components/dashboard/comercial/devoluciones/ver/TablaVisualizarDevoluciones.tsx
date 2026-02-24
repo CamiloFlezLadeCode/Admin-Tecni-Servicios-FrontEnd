@@ -11,12 +11,7 @@ import { ObtenerPDFDevolucion } from '@/services/comercial/devoluciones/ObtenerP
 import { VerTodasLasDevoluciones } from '@/services/comercial/devoluciones/VerTodasLasDevolucionesService';
 import { getEstadoColor } from '@/utils/getEstadoColor';
 import {
-    Box,
-    Button,
-    Chip,
-    Modal,
-    Typography,
-    useTheme
+    Chip
 } from '@mui/material';
 import * as React from 'react';
 
@@ -192,23 +187,6 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
         }
     ];
 
-
-    //Para menejar el tema del modal
-    const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => {
-        setOpen(false);
-        localStorage.setItem('MostrarModalDevoluciones', 'false');
-    };
-
-    React.useEffect(() => {
-        const mostrarModal = localStorage.getItem('MostrarModalDevoluciones');
-        if (mostrarModal === null || mostrarModal === 'true') {
-            handleOpen();
-        }
-    }, []);
-
     return (
         <>
             <DataTable<Devolucion>
@@ -234,54 +212,6 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
                 Mensaje={mensajeDeCarga}
                 MostrarMensaje={mostrarMensajeDeCarga}
             />
-            <Modal
-                open={open}
-                onClose={(_, reason) => {
-                    if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
-                        handleClose();
-                    }
-                }}
-            >
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: '1%',
-                        left: '50%',
-                        transform: 'translate(-50%)', //Solo horizontalmente
-                        // width: '90%',
-                        // maxWidth: 1000,
-                        // width: '80%',
-                        width: {
-                            xs: '95%',
-                            sm: '90%',
-                            md: '80%',
-                            lg: '70%',
-                        },
-                        [theme.breakpoints.down('xl')]: {
-                            // width: 700,
-                        },
-                        bgcolor: 'background.paper',
-                        boxShadow: 24,
-                        p: 3,
-                        borderRadius: 2,
-                        maxHeight: '90vh',
-                        overflowY: 'auto',
-                    }}
-                >
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
-                        ¡HOLA MELY! 😊
-                    </Typography>
-                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                        Ya puedes realizar devoluciones marcando todos los items necesarios, sin importar el subarrendatario.
-                    </Typography>
-                    <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
-                        <Button onClick={handleClose} variant="contained" color="primary">
-                            Ok, gracias!
-                        </Button>
-                    </Box>
-                </Box>
-
-            </Modal>
         </>
     )
 }
