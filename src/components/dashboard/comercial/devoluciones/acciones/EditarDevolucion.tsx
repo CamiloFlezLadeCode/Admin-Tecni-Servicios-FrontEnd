@@ -70,7 +70,7 @@ interface EditarDevolucionProps {
     IdDevolucion: number;
     NoDevolucion: string;
     sendMessage: (event: string, payload: any) => void;
-    mostrarMensaje: (mensaje: string, tipo: 'success' | 'error') => void;
+    mostrarMensaje: (mensaje: string, tipo: 'success' | 'error' | 'warning') => void;
 }
 
 export function EditarDevolucion({ IdDevolucion, NoDevolucion, sendMessage, mostrarMensaje }: EditarDevolucionProps): React.JSX.Element {
@@ -316,7 +316,8 @@ export function EditarDevolucion({ IdDevolucion, NoDevolucion, sendMessage, most
                     IdDetalleDevolucion: item.IdDetalleDevolucion,
                     CantidadDevuelta: item.CantidadDevuelta,
                     EstadoEquipo: item.EstadoEquipo,
-                    Observaciones: item.Observaciones
+                    Observaciones: item.Observaciones,
+                    DocumentoSubarrendatario: item.Subarrendatario
                 })),
                 UsuarioQueActualiza: documentoUsuarioActivo
             };
@@ -332,6 +333,8 @@ export function EditarDevolucion({ IdDevolucion, NoDevolucion, sendMessage, most
                 setTimeout(() => {
                     handleClose();
                 }, 1200);
+            } else if (response.status === 204) {
+                mostrarMensaje('No se realizó ningún cambio', 'warning');
             }
         } catch (error) {
             mostrarMensaje(`Error al actualizar la devolución: ${error}`, 'error');
