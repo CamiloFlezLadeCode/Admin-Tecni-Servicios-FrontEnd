@@ -1,4 +1,5 @@
 'use client';
+import { EditarDevolucion } from '@/components/dashboard/comercial/devoluciones/acciones/EditarDevolucion';
 import { EliminarRegistro } from '@/components/dashboard/componentes_generales/acciones/EliminarRegistro';
 import { GenerarPDF } from '@/components/dashboard/componentes_generales/acciones/GenerarPDF';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
@@ -8,20 +9,16 @@ import { useSocketIO } from '@/hooks/use-WebSocket';
 import { EliminarDevolucion } from '@/services/comercial/devoluciones/EliminarDevolucionService';
 import { ObtenerPDFDevolucion } from '@/services/comercial/devoluciones/ObtenerPDFDevolucionService';
 import { VerTodasLasDevoluciones } from '@/services/comercial/devoluciones/VerTodasLasDevolucionesService';
+import { getEstadoColor } from '@/utils/getEstadoColor';
 import {
+    Box,
+    Button,
     Chip,
     Modal,
-    Box,
     Typography,
-    Button,
-    Fade,
-    Backdrop,
-    CircularProgress,
-    useTheme,
+    useTheme
 } from '@mui/material';
 import * as React from 'react';
-import { getEstadoColor } from '@/utils/getEstadoColor';
-import { EditarDevolucion } from '@/components/dashboard/comercial/devoluciones/acciones/EditarDevolucion';
 
 
 interface Devolucion {
@@ -68,7 +65,7 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
     React.useEffect(() => {
         if (messages.length > 0) {
             const ultimomensajes = messages[messages.length - 1];
-            if (ultimomensajes.tipo === 'devolucion-creada' || ultimomensajes.tipo === 'devolucion-eliminada') {
+            if (ultimomensajes.tipo === 'devolucion-creada' || ultimomensajes.tipo === 'devolucion-eliminada' || ultimomensajes.tipo === 'devolucion-actualizada') {
                 handleRefresh();
             }
         }
@@ -148,14 +145,12 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
         {
             render: (row: Devolucion) => (
                 <EditarDevolucion
-                MostrarModalTemporalDesarrollo={true}
-                // IdDevolucion={row.IdDevolucion}
-                // NoDevolucion={row.NoDevolucion}
-                // sendMessage={sendMessage}
-                // mostrarMensaje={mostrarMensaje}
+                    IdDevolucion={row.IdDevolucion}
+                    NoDevolucion={row.NoDevolucion}
+                    sendMessage={sendMessage}
+                    mostrarMensaje={mostrarMensaje}
                 />
             ),
-            tooltip: 'Editar devolución'
         },
         {
             render: (row: Devolucion) => (

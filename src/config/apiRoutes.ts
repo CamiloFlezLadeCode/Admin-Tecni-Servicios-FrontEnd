@@ -88,7 +88,9 @@ export const apiRoutes = {
             ver_pdf_devolucion: `${API_BASE_URL}/obtener-pdf-devolucion`,
             eliminar_devolucion: `${API_BASE_URL}/eliminar-devolucion`,
             ver_subarrendatarios_con_remisiones_asignadas_cliente_proyecto: `${API_BASE_URL}/ver-subarrendatarios-con-remisiones-asignadas-para-cliente-proyecto`,
-            equipos_pendientes_por_devolver: `${API_BASE_URL}/equipos-pendientes-por-devolver`
+            equipos_pendientes_por_devolver: `${API_BASE_URL}/equipos-pendientes-por-devolver`,
+            ver_devolucion_por_id: `${API_BASE_URL}/ver-devolucion-por-id`,
+            actualizar_devolucion: `${API_BASE_URL}/actualizar-devolucion`
         },
         ordenes_de_servicio: {
             consultar_siguiente_no_orden_de_servicio: `${API_BASE_URL}/siguiente-no-orden-de-servicio`,

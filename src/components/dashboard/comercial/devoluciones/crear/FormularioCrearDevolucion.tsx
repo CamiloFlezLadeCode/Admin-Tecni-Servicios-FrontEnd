@@ -1,8 +1,19 @@
 'use client';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
+import FechayHora from '@/components/dashboard/componentes_generales/formulario/DateTimePicker';
 import Input from '@/components/dashboard/componentes_generales/formulario/Input';
 import { UserContext } from '@/contexts/user-context';
 import { useSocketIO } from '@/hooks/use-WebSocket';
+import { OpcionPorDefecto } from '@/lib/constants/option-default';
+import { OrdenarSubarrendatarios } from '@/lib/order/orders';
+import { ConsultarSiguienteNoDevolucion } from '@/services/comercial/devoluciones/ConsultarSiguienteNoDevolucionService';
+import { CrearDevolucion } from '@/services/comercial/devoluciones/CrearDevolucionService';
+import { equipos_pendientes_por_devolver } from '@/services/comercial/devoluciones/EquiposPendientesPorDevolverService';
+import { ConsultarSubarrendatariosConRemisionesAsignadasClienteProyecto } from '@/services/comercial/devoluciones/VerSubarrendatariosConRemisionesAsignadasClienteProyectoService';
+import { ListarProfesionalesPertenecientes } from '@/services/configuraciones/ListarProfesionalesPertenecientesService';
+import { ListarClientes } from '@/services/generales/ListarClientesService';
+import { ListarEstados } from '@/services/generales/ListarEstadosService';
+import { ListarProyectos } from '@/services/generales/ListarProyectos';
 import {
     Box,
     Button,
@@ -20,21 +31,9 @@ import {
     Typography,
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
+import dayjs, { Dayjs } from 'dayjs';
 import * as React from 'react';
 import InputSelect from '../../../componentes_generales/formulario/Select';
-// Servicios
-import FechayHora from '@/components/dashboard/componentes_generales/formulario/DateTimePicker';
-import { ConsultarSiguienteNoDevolucion } from '@/services/comercial/devoluciones/ConsultarSiguienteNoDevolucionService';
-import { CrearDevolucion } from '@/services/comercial/devoluciones/CrearDevolucionService';
-import { ConsultarSubarrendatariosConRemisionesAsignadasClienteProyecto } from '@/services/comercial/devoluciones/VerSubarrendatariosConRemisionesAsignadasClienteProyectoService';
-import { ListarProfesionalesPertenecientes } from '@/services/configuraciones/ListarProfesionalesPertenecientesService';
-import { ListarClientes } from '@/services/generales/ListarClientesService';
-import { ListarEstados } from '@/services/generales/ListarEstadosService';
-import { ListarProyectos } from '@/services/generales/ListarProyectos';
-import dayjs, { Dayjs } from 'dayjs';
-import { equipos_pendientes_por_devolver } from '@/services/comercial/devoluciones/EquiposPendientesPorDevolverService';
-import { OrdenarSubarrendatarios } from '@/lib/order/orders';
-import { OpcionPorDefecto, OpcionPorDefectoNumber } from '@/lib/constants/option-default';
 
 
 // 1. INTERFACES
@@ -274,7 +273,12 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>) => {
-        const { name, value } = e.target;
+        let { name, value } = e.target;
+
+        // Convertir automáticamente a mayúsculas si es necesario
+        if (name === 'PersonaQueEntrega') {
+            value = value.toUpperCase();
+        }
 
         // Manejar diferentes tipos de campos
         if (name === 'IdProyecto') {
