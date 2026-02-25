@@ -529,7 +529,7 @@ export function EditarDevolucion({ IdDevolucion, NoDevolucion, sendMessage, most
                                             <TableCell align="right">Cant. arrendada</TableCell>
                                             <TableCell align="right">Cant. devuelta</TableCell>
                                             <TableCell>Estado equipo</TableCell>
-                                            <TableCell>Observaciones</TableCell>
+                                            {/* <TableCell>Observaciones</TableCell> */}
                                             <TableCell>Acciones</TableCell>
                                         </TableRow>
                                     </TableHead>
@@ -577,7 +577,7 @@ export function EditarDevolucion({ IdDevolucion, NoDevolucion, sendMessage, most
                                                         valorname="EstadoEquipo"
                                                     />
                                                 </TableCell>
-                                                <TableCell>
+                                                {/* <TableCell>
                                                     <Input
                                                         label=""
                                                         value={item.Observaciones}
@@ -586,7 +586,7 @@ export function EditarDevolucion({ IdDevolucion, NoDevolucion, sendMessage, most
                                                         tipo_input="text"
                                                         tamano="small"
                                                     />
-                                                </TableCell>
+                                                </TableCell> */}
                                                 <TableCell align="center">
                                                     <IconButton color="error" onClick={() => eliminarItem(index)}>
                                                         <Trash size={18} />
