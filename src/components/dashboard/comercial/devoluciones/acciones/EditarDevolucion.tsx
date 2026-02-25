@@ -333,6 +333,16 @@ export function EditarDevolucion({ IdDevolucion, NoDevolucion, sendMessage, most
                 setTimeout(() => {
                     handleClose();
                 }, 1200);
+            } else if (response.status === 201) {
+                mostrarMensaje('La devolución fue eliminado por no contener items', 'success');
+                sendMessage('devolucion-eliminada', {
+                    id: IdDevolucion,
+                    numero: datosGenerales.NoDevolucion,
+                    timestamp: new Date().toISOString()
+                });
+                setTimeout(() => {
+                    handleClose();
+                }, 1200);
             } else if (response.status === 204) {
                 mostrarMensaje('No se realizó ningún cambio', 'warning');
             }

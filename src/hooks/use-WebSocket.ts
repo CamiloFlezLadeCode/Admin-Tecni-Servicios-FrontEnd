@@ -181,6 +181,10 @@ export function useSocketIO() {
         socket.on('devolucion-eliminada', (data) => {
             setMessages((prev) => [...prev, { tipo: 'devolucion-eliminada', data }]);
         });
+        // Para devolución creada
+        socket.on('devolucion-actualizada', (data) => {
+            setMessages((prev) => [...prev, { tipo: 'devolucion-actualizada', data }]);
+        });
         // ...
 
         // SOCKET PARA BODEGAS

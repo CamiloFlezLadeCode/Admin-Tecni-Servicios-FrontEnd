@@ -31,7 +31,7 @@ import InputSelect from '../../../componentes_generales/formulario/Select';
 import ModalVerItemsRemision from './ModalVerItemsRemision';
 // Importar componentes de Modal de Material-UI
 import FechayHora from '@/components/dashboard/componentes_generales/formulario/DateTimePicker';
-import { EmpresaAnfitriona, OpcionPorDefecto, ParametroBuscarBodegasAlquiler, OpcionPorDefectoNumber } from '@/lib/constants/option-default';
+import { EmpresaAnfitriona, OpcionPorDefecto, OpcionPorDefectoNumber, ParametroBuscarBodegasAlquiler } from '@/lib/constants/option-default';
 import { OrdenarSubarrendatarios } from '@/lib/order/orders';
 import { ListarEquipos } from '@/services/comercial/remisiones/ListarEquiposService';
 import Modal from '@mui/material/Modal';
@@ -133,7 +133,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
         PrecioTotal: 0,
         IVA: 19,
         PrecioTotalGeneral: 0,
-        Subarrendatario: '0',
+        Subarrendatario: OpcionPorDefecto.value,
         Bodega: '0',
         EquipoDisponible: '',
         Bodeguero: OpcionPorDefecto.value,
@@ -183,7 +183,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
             try {
                 let [
                     clientesRes,
-                    categoriasRes,
+                    // categoriasRes,
                     subarrRes,
                     bodeguerosRes,
                     despachadoresRes,
@@ -192,7 +192,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
                     siguienteNoRemision
                 ] = await Promise.all([
                     ListarClientes(),
-                    ListarCategorias(),
+                    // ListarCategorias(),
                     ListarSubarrendatarios(),
                     ListarBodegueros(),
                     ListarDespachadores(),
@@ -205,11 +205,15 @@ export function FormularioCrearRemision(): React.JSX.Element {
                 clientesRes.unshift(OpcionPorDefecto)
                 setClientes(clientesRes);
                 //Categorias
-                categoriasRes.unshift(OpcionPorDefectoNumber)
-                setCategoria(categoriasRes);
+                // categoriasRes.unshift(OpcionPorDefectoNumber)
+                // setCategoria(categoriasRes);
+
+
                 //Subarrendatarios
                 // setSubarrendatarios(await OrdenarSubarrendatarios(subarrRes));
-                setSubarrendatarios(await OrdenarSubarrendatarios({ AllSubarrendatarios: subarrRes }));
+                const subarrendatariosOrdenados = await OrdenarSubarrendatarios({ AllSubarrendatarios: subarrRes });
+                subarrendatariosOrdenados.unshift(OpcionPorDefecto);
+                setSubarrendatarios(subarrendatariosOrdenados);
                 //Bodegueros
                 bodeguerosRes.unshift(OpcionPorDefecto);
                 setBodegueros(bodeguerosRes);
@@ -508,11 +512,29 @@ export function FormularioCrearRemision(): React.JSX.Element {
         .replaceAll(/[^A-Z0-9]/g, '')
         .slice(0, 6);
 
+    // Listar categorias independientemente
+    const listarCagetoriasIndependientes = async () => {
+        try {
+            const categorias = await ListarCategorias();
+            categorias.unshift(OpcionPorDefectoNumber);
+            setCategoria(categorias);
+        } catch (error) {
+            console.error('Error al listar categorias independientes:', error);
+        }
+    }
     // Manejador de cambios en el formulario
     const handleChange = (e: SelectChangeEvent<string | number> | React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         const normalizedValue = name === 'Placa' ? normalizarPlaca(value) : value;
 
+        if (name === 'Subarrendatario') {
+            setEquipos([]);
+            if (value === OpcionPorDefecto.value) {
+                setCategoria([]);
+            } else {
+                listarCagetoriasIndependientes();
+            }
+        }
         if (name === 'IncluyeTransporte') {
             const nuevoValor = value === 'SI' ? true : (value === 'NO' ? false : null);
             setDatos(prev => ({
@@ -706,7 +728,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
                 PrecioTotal: 0,
                 IVA: 19,
                 PrecioTotalGeneral: 0,
-                Subarrendatario: '',
+                Subarrendatario: OpcionPorDefecto.value,
                 Bodega: '',
                 EquipoDisponible: '',
                 Bodeguero: OpcionPorDefecto.value,
@@ -727,7 +749,8 @@ export function FormularioCrearRemision(): React.JSX.Element {
             setItemsRemision([]);
             setCantidadDisponible(0);
             setProyectos([]);
-            setSubarrendatarios([]);
+            // setSubarrendatarios([]);
+            setCategoria([]);
             setEquipos([]);
 
             // Cargar nuevo número de remisión

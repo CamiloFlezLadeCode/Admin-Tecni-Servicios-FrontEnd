@@ -36,7 +36,7 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
     // Estados para alertas
     const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
     const [mensajeAlerta, setMensajeAlerta] = React.useState('');
-    const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
+    const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error' | 'warning'>('success');
     const [mensajeDeCarga, setMensajeDeCarga] = React.useState('');
     const [mostrarMensajeDeCarga, setMostrarMensajeDeCarga] = React.useState(false);
 
@@ -81,7 +81,7 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
     };
 
     // Función para mostrar mensajes de alerta
-    const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error') => {
+    const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error' | 'warning') => {
         setMensajeAlerta(mensaje);
         setTipoAlerta(tipo);
         setMostrarAlertas(true);
