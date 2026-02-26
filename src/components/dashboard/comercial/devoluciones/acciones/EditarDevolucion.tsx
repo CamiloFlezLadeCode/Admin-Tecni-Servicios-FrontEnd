@@ -1,4 +1,5 @@
 'use client';
+import FechayHora from '@/components/dashboard/componentes_generales/formulario/DateTimePicker';
 import Input from '@/components/dashboard/componentes_generales/formulario/Input';
 import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
 import MensajeDeCarga from '@/components/dashboard/componentes_generales/mensajedecarga/BackDropCircularProgress';
@@ -29,6 +30,7 @@ import {
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { PencilSimple, Trash, X } from '@phosphor-icons/react';
+import dayjs, { Dayjs } from 'dayjs';
 import * as React from 'react';
 
 interface ItemDevolucion {
@@ -55,7 +57,7 @@ interface DevolucionDetalle {
     Observaciones: string;
     PersonaQueRecibe: string;
     PersonaQueEntrega: string;
-    FechaDevolucion: string;
+    FechaDevolucion: Dayjs;
     IncluyeTransporte: boolean | null;
     ValorTransporte: number;
     IdEstado?: number;
@@ -87,7 +89,7 @@ export function EditarDevolucion({ IdDevolucion, NoDevolucion, sendMessage, most
         Observaciones: '',
         PersonaQueRecibe: '',
         PersonaQueEntrega: '',
-        FechaDevolucion: '',
+        FechaDevolucion: dayjs(),
         IncluyeTransporte: null,
         ValorTransporte: 0
     });
@@ -121,7 +123,7 @@ export function EditarDevolucion({ IdDevolucion, NoDevolucion, sendMessage, most
                 NoRemision: item.NoRemision,
                 Descripcion: item.Descripcion,
                 Subarrendatario: item.Subarrendatario || item.DocumentoSubarrendatario,
-                NombreSubarrendatario: item.NombreSubarrendatario
+                NombreSubarrendatario: item.NombreSubarrendatario,
             }));
 
             const estadosPermitidos = new Set(['buen estado', 'dañado', 'perdido']);
@@ -153,7 +155,7 @@ export function EditarDevolucion({ IdDevolucion, NoDevolucion, sendMessage, most
                 Observaciones: devolucion.Observaciones || '',
                 PersonaQueRecibe: devolucion.PersonaQueRecibe || '',
                 PersonaQueEntrega: devolucion.PersonaQueEntrega || '',
-                FechaDevolucion: devolucion.FechaDevolucion || devolucion.FechaCreacion || '',
+                FechaDevolucion: dayjs(devolucion.FechaDevolucion),
                 IncluyeTransporte: incluyeTransporte,
                 ValorTransporte: Number(devolucion.ValorTransporte ?? 0),
                 IdEstado: devolucion.IdEstado
@@ -176,7 +178,7 @@ export function EditarDevolucion({ IdDevolucion, NoDevolucion, sendMessage, most
             Observaciones: '',
             PersonaQueRecibe: '',
             PersonaQueEntrega: '',
-            FechaDevolucion: '',
+            FechaDevolucion: dayjs(),
             IncluyeTransporte: null,
             ValorTransporte: 0
         });
@@ -312,6 +314,7 @@ export function EditarDevolucion({ IdDevolucion, NoDevolucion, sendMessage, most
                 PersonaQueEntrega: datosGenerales.PersonaQueEntrega,
                 IncluyeTransporte: datosGenerales.IncluyeTransporte,
                 ValorTransporte: datosGenerales.ValorTransporte,
+                FechaDevolucion: dayjs(datosGenerales.FechaDevolucion),
                 Detalles: items.map((item) => ({
                     IdDetalleDevolucion: item.IdDetalleDevolucion,
                     CantidadDevuelta: item.CantidadDevuelta,
@@ -371,6 +374,10 @@ export function EditarDevolucion({ IdDevolucion, NoDevolucion, sendMessage, most
         if (itemAEliminar.IdDetalleDevolucion) {
             setItems(items.filter((item) => item.IdDetalleDevolucion !== itemAEliminar.IdDetalleDevolucion));
         }
+    }
+
+    const handleChangeFecha = (fecha: Dayjs | null) => {
+        setDatosGenerales(prev => ({ ...prev, FechaDevolucion: fecha || dayjs() }))
     }
     return (
         <>
@@ -450,14 +457,10 @@ export function EditarDevolucion({ IdDevolucion, NoDevolucion, sendMessage, most
                                         />
                                     </Grid>
                                     <Grid xs={12} md={4}>
-                                        <Input
+                                        <FechayHora
                                             label="Fecha devolución"
                                             value={datosGenerales.FechaDevolucion}
-                                            onChange={handleChangeGenerales}
-                                            valorname="FechaDevolucion"
-                                            tipo_input="text"
-                                            tamano="small"
-                                            bloqueado
+                                            onChange={handleChangeFecha}
                                         />
                                     </Grid>
                                     <Grid xs={12} md={6}>

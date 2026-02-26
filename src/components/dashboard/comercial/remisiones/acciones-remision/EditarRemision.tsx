@@ -1,4 +1,5 @@
 'use client';
+import FechayHora from '@/components/dashboard/componentes_generales/formulario/DateTimePicker';
 import Input from '@/components/dashboard/componentes_generales/formulario/Input';
 import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
 import InputSelectConEstado from '@/components/dashboard/componentes_generales/formulario/SelectConEstado';
@@ -36,9 +37,8 @@ import {
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { PencilSimple, Plus, Trash, Truck, X } from '@phosphor-icons/react/dist/ssr';
-import * as React from 'react';
-import FechayHora from '@/components/dashboard/componentes_generales/formulario/DateTimePicker';
 import dayjs, { Dayjs } from 'dayjs';
+import * as React from 'react';
 
 interface ItemRemision {
     IdDetalleRemision?: number;
