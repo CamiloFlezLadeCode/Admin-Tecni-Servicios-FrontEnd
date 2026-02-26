@@ -37,6 +37,8 @@ import {
 import Grid from '@mui/material/Unstable_Grid2';
 import { PencilSimple, Plus, Trash, Truck, X } from '@phosphor-icons/react/dist/ssr';
 import * as React from 'react';
+import FechayHora from '@/components/dashboard/componentes_generales/formulario/DateTimePicker';
+import dayjs, { Dayjs } from 'dayjs';
 
 interface ItemRemision {
     IdDetalleRemision?: number;
@@ -56,6 +58,17 @@ interface ItemRemision {
     EsItemTransporte: boolean;
 }
 
+interface DatosGeneralesFormularioActualizar {
+    NoRemision: string;
+    ObservacionesEmpresa: string;
+    IVA: number;
+    IncluyeTransporte: number;
+    ValorTransporte: number;
+    NombreCliente: string;
+    DocumentoCliente: string;
+    IdProyecto: number;
+    FechaRemision: Dayjs;
+};
 interface EditarRemisionProps {
     readonly IdRemision: number;
     readonly onSuccess: () => void;
@@ -75,7 +88,7 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
     const [proyectos, setProyectos] = React.useState<{ value: string | number; label: string }[]>([]);
     const [equipos, setEquipos] = React.useState<any[]>([]);
 
-    const [datosGenerales, setDatosGenerales] = React.useState({
+    const [datosGenerales, setDatosGenerales] = React.useState<DatosGeneralesFormularioActualizar>({
         NoRemision: '',
         ObservacionesEmpresa: '',
         IVA: 0,
@@ -84,7 +97,7 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
         NombreCliente: '',
         DocumentoCliente: '',
         IdProyecto: OpcionPorDefectoNumber.value,
-        FechaRemision: ''
+        FechaRemision: dayjs()
     });
 
     const [items, setItems] = React.useState<ItemRemision[]>([]);
@@ -130,7 +143,7 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
                 NombreCliente: remision.Cliente || '',
                 DocumentoCliente: remision.DocumentoCliente || '',
                 IdProyecto: remision.IdProyecto || OpcionPorDefectoNumber.value,
-                FechaRemision: remision.FechaCreacion || ''
+                FechaRemision: dayjs(remision.FechaRemision)
             });
 
             // Cargar proyectos del cliente
@@ -212,7 +225,7 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
             NombreCliente: '',
             DocumentoCliente: '',
             IdProyecto: OpcionPorDefectoNumber.value,
-            FechaRemision: ''
+            FechaRemision: dayjs()
         });
 
         setItems([]);
@@ -474,6 +487,7 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
                 ValorTransporte: datosGenerales.ValorTransporte,
                 PrecioTotalGeneralSinIVA: items.reduce((acc, item) => acc + Number(item.PrecioTotalSinIVA), 0),
                 PrecioTotalGeneralConIVA: items.reduce((acc, item) => acc + Number(item.PrecioTotal), 0),
+                FechaRemision: datosGenerales.FechaRemision.format('YYYY-MM-DD HH:mm:ss'),
                 Detalles: items.map(item => ({
                     IdDetalleRemision: item.IdDetalleRemision,
                     IdEquipo: item.value,
@@ -506,6 +520,10 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
             setGuardando(false);
         }
     };
+
+    const handleFechaChange = (fecha: Dayjs | null) => {
+        setDatosGenerales(prev => ({ ...prev, FechaRemision: fecha || dayjs() }))
+    }
 
     return (
         <>
@@ -574,14 +592,10 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
                                     />
                                 </Grid>
                                 <Grid xs={12} md={4}>
-                                    <Input
+                                    <FechayHora
                                         label="Fecha Remisión"
                                         value={datosGenerales.FechaRemision}
-                                        onChange={handleChangeGenerales}
-                                        valorname="FechaRemision"
-                                        tipo_input="text"
-                                        tamano="small"
-                                        bloqueado={true}
+                                        onChange={handleFechaChange}
                                     />
                                 </Grid>
                                 <Grid xs={12} md={4}>
