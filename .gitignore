@@ -30,3 +30,6 @@ archivo_pesado.zip
 
 # Configuraciones del Visual Studio Code
 /.vscode
+
+# Se ignora archivo .nvmrc el cual contiene la versión de nodejs configurada para usar solo usando "fnm use" o "nvm use", solo si se tiene configurado
+.nvmrc
