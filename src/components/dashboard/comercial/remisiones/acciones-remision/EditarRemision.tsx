@@ -143,7 +143,7 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
                 NombreCliente: remision.Cliente || '',
                 DocumentoCliente: remision.DocumentoCliente || '',
                 IdProyecto: remision.IdProyecto || OpcionPorDefectoNumber.value,
-                FechaRemision: dayjs(remision.FechaRemision)
+                FechaRemision: dayjs(remision.FechaRemision, 'DD/MM/YYYY hh:mm A')
             });
 
             // Cargar proyectos del cliente
@@ -561,7 +561,7 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
                     <Box px={4} pt={4}>
                         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                             <Typography variant="h5">
-                                Editar Remisión: {datosGenerales.NoRemision}
+                                Editar Remisiónsss: {datosGenerales.NoRemision}
                             </Typography>
                             <IconButton onClick={handleClose} disabled={loading || guardando}>
                                 <X size={24} />

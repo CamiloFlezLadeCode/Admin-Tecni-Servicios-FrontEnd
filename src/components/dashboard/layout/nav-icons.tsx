@@ -50,6 +50,7 @@ import {
   ChartLineUp, //Hace referencia a crecimiento
   FileMinus, //Hace referencia a movimientos generales
   ArrowsLeftRight, //Hace referencia a movimientos generales (remisiones y devoluciones)
+  Windmill, 
 } from '@phosphor-icons/react/dist/ssr';
 
 export const navIcons = {
@@ -87,6 +88,7 @@ export const navIcons = {
   'icono-remisiones-y-devoluciones': ArrowsLeftRight,
   'icono-remisiones': ArrowCircleRight,
   'icono-devoluciones': ArrowCircleLeft,
+  'icono-ubicacion': Windmill,
   home: HouseLine,
   user: UserIcon,
   users: UsersIcon,

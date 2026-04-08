@@ -316,5 +316,6 @@ export const navItems = [
   { key: 'account', title: 'Cuenta', href: paths.dashboard.account, icon: 'user' },
   { key: 'settings', title: 'Ajustes', href: paths.dashboard.settings, icon: 'gear-six' },
   { key: 'configuraciones', title: 'Configuraciones', href: paths.dashboard.configuraciones, icon: 'icono-configuraciones-alto-nivel', roles: ['Administrador'] },
-  { key: 'about', title: 'Acerca', href: paths.dashboard.acerca, icon: 'about' }
+  { key: 'about', title: 'Acerca', href: paths.dashboard.acerca, icon: 'about' },
+  // { key: 'municipies', title: 'Municipios', href: paths.dashboard.municipios, icon: 'icono-ubicacion' }
 ] satisfies NavItemConfig[];

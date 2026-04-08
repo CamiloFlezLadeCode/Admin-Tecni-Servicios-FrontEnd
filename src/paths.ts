@@ -132,6 +132,9 @@ export const paths = {
     // Facturación 
     facturacion: '/dashboard/facturacion',
     // ...
+
+    // Municipios
+    // municipios: '/dashboard/municipios',
   },
   errors: { notFound: '/errors/not-found' },
 } as const;
