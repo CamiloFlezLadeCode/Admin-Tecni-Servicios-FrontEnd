@@ -155,7 +155,7 @@ export function EditarDevolucion({ IdDevolucion, NoDevolucion, sendMessage, most
                 Observaciones: devolucion.Observaciones || '',
                 PersonaQueRecibe: devolucion.PersonaQueRecibe || '',
                 PersonaQueEntrega: devolucion.PersonaQueEntrega || '',
-                FechaDevolucion: dayjs(devolucion.FechaDevolucion),
+                FechaDevolucion: dayjs(devolucion.FechaDevolucion, 'DD/MM/YYYY hh:mm A'),
                 IncluyeTransporte: incluyeTransporte,
                 ValorTransporte: Number(devolucion.ValorTransporte ?? 0),
                 IdEstado: devolucion.IdEstado
