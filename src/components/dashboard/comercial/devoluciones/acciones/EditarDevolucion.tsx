@@ -314,7 +314,7 @@ export function EditarDevolucion({ IdDevolucion, NoDevolucion, sendMessage, most
                 PersonaQueEntrega: datosGenerales.PersonaQueEntrega,
                 IncluyeTransporte: datosGenerales.IncluyeTransporte,
                 ValorTransporte: datosGenerales.ValorTransporte,
-                FechaDevolucion: dayjs(datosGenerales.FechaDevolucion),
+                FechaDevolucion: dayjs(datosGenerales.FechaDevolucion).format('YYYY/MM/DD HH:mm:ss'),
                 Detalles: items.map((item) => ({
                     IdDetalleDevolucion: item.IdDetalleDevolucion,
                     CantidadDevuelta: item.CantidadDevuelta,
