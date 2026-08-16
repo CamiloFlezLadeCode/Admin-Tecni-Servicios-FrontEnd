@@ -32,7 +32,16 @@ export function TotalCustomers({ diff, trend, sx, value }: TotalCustomersProps):
               </Typography>
               <Typography variant="h4">{value}</Typography>
             </Stack>
-            <Avatar sx={{ backgroundColor: 'var(--mui-palette-success-main)', height: '56px', width: '56px' }}>
+            {/* Icono con `contrastText`: sin él heredaba `background.default`
+                y el contraste sobre el círculo quedaba al azar. */}
+            <Avatar
+              sx={{
+                backgroundColor: 'var(--mui-palette-success-main)',
+                color: 'var(--mui-palette-success-contrastText)',
+                height: '56px',
+                width: '56px',
+              }}
+            >
               <UsersIcon fontSize="var(--icon-fontSize-lg)" />
             </Avatar>
           </Stack>

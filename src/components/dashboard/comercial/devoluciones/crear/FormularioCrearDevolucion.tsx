@@ -617,12 +617,12 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                 <Table>
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Descripción Remisión</TableCell>
-                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Equipo</TableCell>
-                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Cantidad Alquilada</TableCell>
-                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Cantidad Pendiente</TableCell>
-                                            <TableCell style={{ fontWeight: 'bold', color: '#000000', width: '15%' }}>A Devolver</TableCell>
-                                            <TableCell sx={{ fontWeight: 'bold', color: '#000000 !important', width: { xs: '18%', md: '20%' } }}>Estado</TableCell>
+                                            <TableCell>Descripción Remisión</TableCell>
+                                            <TableCell>Equipo</TableCell>
+                                            <TableCell>Cantidad Alquilada</TableCell>
+                                            <TableCell>Cantidad Pendiente</TableCell>
+                                            <TableCell sx={{ width: '15%' }}>A Devolver</TableCell>
+                                            <TableCell sx={{ width: { xs: '18%', md: '20%' } }}>Estado</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>

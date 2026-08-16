@@ -10,7 +10,6 @@ import {
     Typography,
     Stack,
     Button,
-    useTheme,
     Paper,
     IconButton,
 } from '@mui/material';
@@ -49,7 +48,6 @@ interface EstadoDeCuenta {
 }
 
 export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
-    const theme = useTheme();
     const [data, setData] = useState<EstadoDeCuenta[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -624,7 +622,7 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
                     label={row.EstadoDevolucion}
                     color={getEstadoColor(row.EstadoDevolucion)}
                     size="small"
-                    sx={{ color: 'white', minWidth: 80, fontWeight: 'bold' }}
+                    sx={{ minWidth: 80, fontWeight: 'bold' }}
                 />
             )
         }
@@ -706,7 +704,8 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
                 <Box mb={3}>
                     <Grid container spacing={2}>
                         <Grid xs={12} md={3}>
-                            <Card sx={{ bgcolor: theme.palette.primary.main, color: 'white' }}>
+                            {/* Tarjeta destacada: fondo primario + texto de contraste del propio token */}
+                            <Card sx={{ bgcolor: 'var(--mui-palette-primary-main)', color: 'var(--mui-palette-primary-contrastText)' }}>
                                 <CardContent sx={{ py: 2, '&:last-child': { pb: 2 } }}>
                                     <Stack direction="row" justifyContent="space-between" alignItems="center">
                                         <Box>
@@ -726,7 +725,8 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
                                             <Typography variant="overline" color="text.secondary">Total Entregado</Typography>
                                             <Typography variant="h4" color="success.main">{resumen.totalDevuelto}</Typography>
                                         </Box>
-                                        <CheckCircle size={32} weight="duotone" color={theme.palette.success.main} />
+                                        {/* El icono hereda `currentColor`, así el token se resuelve en CSS y sigue al modo */}
+                                        <CheckCircle size={32} weight="duotone" style={{ color: 'var(--mui-palette-success-main)' }} />
                                     </Stack>
                                 </CardContent>
                             </Card>
@@ -739,7 +739,7 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
                                             <Typography variant="overline" color="text.secondary">Total Prestado</Typography>
                                             <Typography variant="h4">{resumen.totalPrestado}</Typography>
                                         </Box>
-                                        <Wrench size={32} weight="duotone" color={theme.palette.info.main} />
+                                        <Wrench size={32} weight="duotone" style={{ color: 'var(--mui-palette-info-main)' }} />
                                     </Stack>
                                 </CardContent>
                             </Card>
@@ -775,7 +775,7 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
             {/* Tabla de Datos */}
             {datos.Cliente && datos.Cliente !== OpcionPorDefecto.value && (
                 <Paper sx={{ overflow: 'hidden' }}>
-                    <Box sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
+                    <Box sx={{ p: 2, borderBottom: '1px solid var(--mui-palette-divider)' }}>
                         <Typography variant="h6">Detalle de Movimientos</Typography>
                         <Typography variant="body2" color="text.secondary">
                             Historial completo de equipos entregados, en obra y devoluciones.

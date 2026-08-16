@@ -173,7 +173,7 @@ export function DataTable<T>({
                 </Box>
 
                 {/* Table Area */}
-                <Paper sx={{ width: '100%', overflow: 'hidden', mb: 2 }}>
+                <Paper sx={{ width: '100%', overflow: 'hidden', mb: 2, border: '1px solid var(--mui-palette-divider)' }}>
                     <TableContainer
                         sx={{
                             maxHeight: stickyHeader ? maxHeight : undefined,
@@ -185,20 +185,39 @@ export function DataTable<T>({
                             stickyHeader={stickyHeader}
                             aria-label="data-table"
                             sx={{
-                                // Estilo para fijar la columna de acciones
-                                '& .MuiTableCell-root:last-child': {
+                                // Columna de acciones fijada a la derecha. Necesita fondo OPACO propio
+                                // para que las celdas no se transparenten al hacer scroll horizontal;
+                                // `:not([colspan])` la excluye de las celdas de estado (vacío / error),
+                                // que ocupan toda la fila y no deben fijarse ni llevar borde.
+                                '& .MuiTableCell-root:last-child:not([colspan])': {
                                     position: 'sticky',
                                     right: 0,
-                                    backgroundColor: 'white',
+                                    backgroundColor: 'var(--mui-palette-background-paper)',
                                     zIndex: 10,
-                                    boxShadow: '-2px 0px 4px rgba(0,0,0,0.1)'
+                                    borderLeft: '1px solid var(--mui-palette-divider)'
                                 },
+                                // Franjas zebra: facilitan seguir la fila en tablas anchas. `level1` está
+                                // sólo un escalón sobre `paper`, así que raya sin ensuciar el contraste.
+                                '& .MuiTableBody-root .MuiTableRow-root:nth-of-type(odd)': {
+                                    backgroundColor: 'var(--mui-palette-background-level1)'
+                                },
+                                // La columna fija debe replicar el fondo de su fila (zebra y hover),
+                                // si no se vería como una franja suelta sobre el resto.
+                                '& .MuiTableBody-root .MuiTableRow-root:nth-of-type(odd) .MuiTableCell-root:last-child': {
+                                    backgroundColor: 'var(--mui-palette-background-level1)'
+                                },
+                                // El hover del tema es translúcido y la zebra (opaca) lo taparía por
+                                // especificidad, así que aquí se refuerza con un nivel de superficie.
+                                '& .MuiTableBody-root .MuiTableRow-hover:hover': {
+                                    backgroundColor: 'var(--mui-palette-background-level2)'
+                                },
+                                '& .MuiTableBody-root .MuiTableRow-hover:hover .MuiTableCell-root:last-child': {
+                                    backgroundColor: 'var(--mui-palette-background-level2)'
+                                },
+                                // Cruce cabecera + columna fija: por encima de ambas.
                                 '& .MuiTableHead-root .MuiTableCell-root:last-child': {
-                                    backgroundColor: '#f5f5f5',
+                                    backgroundColor: 'var(--mui-palette-background-level1)',
                                     zIndex: 11
-                                },
-                                '& .MuiTableRow-hover:hover .MuiTableCell-root:last-child': {
-                                    backgroundColor: '#f5f5f5'
                                 }
                             }}
                         >
@@ -208,8 +227,7 @@ export function DataTable<T>({
                                         <TableCell
                                             key={column.key}
                                             sx={{
-                                                fontWeight: 'bold',
-                                                color: '#000000 !important',
+                                                // Peso, color y versalitas de la cabecera los define el tema (MuiTableHead)
                                                 width: column.width,
                                                 textAlign: column.align || 'left'
                                             }}
@@ -220,8 +238,6 @@ export function DataTable<T>({
                                     {(actions.length > 0 && RolUsuario === 'Administrador') && (
                                         <TableCell
                                             sx={{
-                                                fontWeight: 'bold',
-                                                color: '#000000 !important',
                                                 width: '120px',
                                                 textAlign: 'center',
                                                 minWidth: '120px'
@@ -253,7 +269,7 @@ export function DataTable<T>({
                                         <TableCell
                                             colSpan={visibleColumns.length + (actions.length > 0 ? 1 : 0)}
                                             align="center"
-                                            sx={{ color: 'error.main' }}
+                                            sx={{ color: 'var(--mui-palette-error-main)', fontWeight: 500, py: 4 }}
                                         >
                                             {error}
                                         </TableCell>
@@ -263,6 +279,7 @@ export function DataTable<T>({
                                         <TableCell
                                             colSpan={visibleColumns.length + (actions.length > 0 ? 1 : 0)}
                                             align="center"
+                                            sx={{ color: 'var(--mui-palette-text-secondary)', py: 5 }}
                                         >
                                             {emptyMessage}
                                         </TableCell>
@@ -286,11 +303,11 @@ export function DataTable<T>({
                                                     align="center"
                                                     sx={{
                                                         ...TABLE_PADDING,
+                                                        // El fondo de esta columna fija lo resuelve el `sx` de <Table>,
+                                                        // que ya contempla fila normal, zebra y hover con tokens del tema.
                                                         position: 'sticky',
                                                         right: 0,
-                                                        backgroundColor: 'white',
-                                                        zIndex: 10,
-                                                        boxShadow: '-2px 0px 4px rgba(0,0,0,0.1)'
+                                                        zIndex: 10
                                                     }}
                                                 >
                                                     <Box display="flex" justifyContent="center" gap={1}>
@@ -342,7 +359,6 @@ export function DataTable<T>({
                             labelDisplayedRows={({ from, to, count }) =>
                                 `${from}-${to} de ${count !== -1 ? count : `más de ${to}`}`
                             }
-                            sx={{ borderTop: '1px solid rgba(224, 224, 224, 1)' }}
                         />
                     )}
                 </Paper>
@@ -405,7 +421,7 @@ export function DataTable<T>({
                     </Box>
 
                     {/* Table Area */}
-                    <Paper sx={{ width: '100%', overflow: 'hidden', mb: 2 }}>
+                    <Paper sx={{ width: '100%', overflow: 'hidden', mb: 2, border: '1px solid var(--mui-palette-divider)' }}>
                         <TableContainer
                             sx={{
                                 maxHeight: stickyHeader ? maxHeight : undefined,
@@ -417,20 +433,39 @@ export function DataTable<T>({
                                 stickyHeader={stickyHeader}
                                 aria-label="data-table"
                                 sx={{
-                                    // Estilo para fijar la columna de acciones
-                                    '& .MuiTableCell-root:last-child': {
+                                    // Columna de acciones fijada a la derecha. Necesita fondo OPACO propio
+                                    // para que las celdas no se transparenten al hacer scroll horizontal;
+                                    // `:not([colspan])` la excluye de las celdas de estado (vacío / error),
+                                    // que ocupan toda la fila y no deben fijarse ni llevar borde.
+                                    '& .MuiTableCell-root:last-child:not([colspan])': {
                                         position: 'sticky',
                                         right: 0,
-                                        backgroundColor: 'white',
+                                        backgroundColor: 'var(--mui-palette-background-paper)',
                                         zIndex: 10,
-                                        boxShadow: '-2px 0px 4px rgba(0,0,0,0.1)'
+                                        borderLeft: '1px solid var(--mui-palette-divider)'
                                     },
+                                    // Franjas zebra: facilitan seguir la fila en tablas anchas. `level1` está
+                                    // sólo un escalón sobre `paper`, así que raya sin ensuciar el contraste.
+                                    '& .MuiTableBody-root .MuiTableRow-root:nth-of-type(odd)': {
+                                        backgroundColor: 'var(--mui-palette-background-level1)'
+                                    },
+                                    // La columna fija debe replicar el fondo de su fila (zebra y hover),
+                                    // si no se vería como una franja suelta sobre el resto.
+                                    '& .MuiTableBody-root .MuiTableRow-root:nth-of-type(odd) .MuiTableCell-root:last-child': {
+                                        backgroundColor: 'var(--mui-palette-background-level1)'
+                                    },
+                                    // El hover del tema es translúcido y la zebra (opaca) lo taparía por
+                                    // especificidad, así que aquí se refuerza con un nivel de superficie.
+                                    '& .MuiTableBody-root .MuiTableRow-hover:hover': {
+                                        backgroundColor: 'var(--mui-palette-background-level2)'
+                                    },
+                                    '& .MuiTableBody-root .MuiTableRow-hover:hover .MuiTableCell-root:last-child': {
+                                        backgroundColor: 'var(--mui-palette-background-level2)'
+                                    },
+                                    // Cruce cabecera + columna fija: por encima de ambas.
                                     '& .MuiTableHead-root .MuiTableCell-root:last-child': {
-                                        backgroundColor: '#f5f5f5',
+                                        backgroundColor: 'var(--mui-palette-background-level1)',
                                         zIndex: 11
-                                    },
-                                    '& .MuiTableRow-hover:hover .MuiTableCell-root:last-child': {
-                                        backgroundColor: '#f5f5f5'
                                     }
                                 }}
                             >
@@ -440,8 +475,7 @@ export function DataTable<T>({
                                             <TableCell
                                                 key={column.key}
                                                 sx={{
-                                                    fontWeight: 'bold',
-                                                    color: '#000000 !important',
+                                                    // Peso, color y versalitas de la cabecera los define el tema (MuiTableHead)
                                                     width: column.width,
                                                     textAlign: column.align || 'left'
                                                 }}
@@ -452,8 +486,6 @@ export function DataTable<T>({
                                         {(actions.length > 0 && RolUsuario === 'Administrador') && (
                                             <TableCell
                                                 sx={{
-                                                    fontWeight: 'bold',
-                                                    color: '#000000 !important',
                                                     width: '120px',
                                                     textAlign: 'center',
                                                     minWidth: '120px'
@@ -485,7 +517,7 @@ export function DataTable<T>({
                                             <TableCell
                                                 colSpan={visibleColumns.length + (actions.length > 0 ? 1 : 0)}
                                                 align="center"
-                                                sx={{ color: 'error.main' }}
+                                                sx={{ color: 'var(--mui-palette-error-main)', fontWeight: 500, py: 4 }}
                                             >
                                                 {error}
                                             </TableCell>
@@ -495,6 +527,7 @@ export function DataTable<T>({
                                             <TableCell
                                                 colSpan={visibleColumns.length + (actions.length > 0 ? 1 : 0)}
                                                 align="center"
+                                                sx={{ color: 'var(--mui-palette-text-secondary)', py: 5 }}
                                             >
                                                 {emptyMessage}
                                             </TableCell>
@@ -518,11 +551,11 @@ export function DataTable<T>({
                                                         align="center"
                                                         sx={{
                                                             ...TABLE_PADDING,
+                                                            // El fondo de esta columna fija lo resuelve el `sx` de <Table>,
+                                                            // que ya contempla fila normal, zebra y hover con tokens del tema.
                                                             position: 'sticky',
                                                             right: 0,
-                                                            backgroundColor: 'white',
-                                                            zIndex: 10,
-                                                            boxShadow: '-2px 0px 4px rgba(0,0,0,0.1)'
+                                                            zIndex: 10
                                                         }}
                                                     >
                                                         <Box display="flex" justifyContent="center" gap={1}>
@@ -574,7 +607,6 @@ export function DataTable<T>({
                                 labelDisplayedRows={({ from, to, count }) =>
                                     `${from}-${to} de ${count !== -1 ? count : `más de ${to}`}`
                                 }
-                                sx={{ borderTop: '1px solid rgba(224, 224, 224, 1)' }}
                             />
                         )}
                     </Paper>

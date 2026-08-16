@@ -17,7 +17,6 @@ interface InputSelectProps {
 }
 
 const InputSelect: React.FC<InputSelectProps> = ({ label, value, onChange, options, required = false, size = 'small', valorname, bloqueado, defaultValue, error = false, helperText = '' }) => {
-  const [focused, setFocused] = React.useState(false);
   // return (
   //   <Grid item md={3} xs={12}>
   //     <FormControl fullWidth required={required} variant="outlined">
@@ -61,8 +60,8 @@ const InputSelect: React.FC<InputSelectProps> = ({ label, value, onChange, optio
         <InputLabel
           id={labelId} // aquí
           shrink // 👈 Este es el truco
+          // El color del label (normal, foco, deshabilitado) lo resuelve el tema.
           style={{
-            color: focused ? '#000000' : 'gray',
             fontWeight: 'bolder',
           }}
         >
@@ -77,8 +76,6 @@ const InputSelect: React.FC<InputSelectProps> = ({ label, value, onChange, optio
           label={label}
           variant="outlined"
           size={size}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
           notched
           disabled={bloqueado}
           defaultValue={defaultValue}
@@ -90,7 +87,8 @@ const InputSelect: React.FC<InputSelectProps> = ({ label, value, onChange, optio
             </MenuItem>
           ))}
         </Select>
-        {helperText && <FormHelperText>{helperText}</FormHelperText>}
+        {/* Se propaga el estado de error para que el texto de ayuda tome el color semántico */}
+        {helperText && <FormHelperText error={error}>{helperText}</FormHelperText>}
       </FormControl>
     </Grid>
   );

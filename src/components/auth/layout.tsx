@@ -20,6 +20,8 @@ export function Layout({ children }: LayoutProps): React.JSX.Element {
         flexDirection: 'column',
         gridTemplateColumns: '1fr 1fr',
         minHeight: '100%',
+        bgcolor: 'var(--mui-palette-background-default)',
+        color: 'var(--mui-palette-text-primary)',
       }}
     >
       <Box sx={{ display: 'flex', flex: '1 1 auto', flexDirection: 'column' }}>
@@ -36,8 +38,14 @@ export function Layout({ children }: LayoutProps): React.JSX.Element {
       <Box
         sx={{
           alignItems: 'center',
-          background: 'radial-gradient(50% 50% at 50% 50%, #122647 0%, #090E23 100%)',
-          color: 'var(--mui-palette-common-white)',
+          // Panel decorativo: un halo del color de marca sobre la superficie
+          // del modo activo. En claro queda un lavado índigo sobre blanco y en
+          // oscuro un resplandor sobre pizarra profunda, sin colores fijos.
+          background:
+            'radial-gradient(60% 55% at 50% 42%, rgba(var(--mui-palette-primary-mainChannel) / 0.24) 0%, rgba(var(--mui-palette-primary-mainChannel) / 0.04) 55%, transparent 100%),' +
+            'linear-gradient(160deg, var(--mui-palette-background-paper) 0%, var(--mui-palette-background-level1) 100%)',
+          borderLeft: '1px solid var(--mui-palette-divider)',
+          color: 'var(--mui-palette-text-primary)',
           display: { xs: 'none', lg: 'flex' },
           justifyContent: 'center',
           p: 3,
@@ -47,11 +55,11 @@ export function Layout({ children }: LayoutProps): React.JSX.Element {
           <Stack spacing={1}>
             <Typography color="inherit" sx={{ fontSize: '24px', lineHeight: '32px', textAlign: 'center' }} variant="h1">
               Bienvenido a {' '}
-              <Box component="span" sx={{ color: '#15b79e' }}>
+              <Box component="span" sx={{ color: 'var(--mui-palette-success-main)' }}>
                 TecniServicios
               </Box>
             </Typography>
-            <Typography align="center" variant="subtitle1">
+            <Typography align="center" variant="subtitle1" sx={{ color: 'var(--mui-palette-text-secondary)' }}>
               Una empresa con profesionales de alta calidad
             </Typography>
           </Stack>

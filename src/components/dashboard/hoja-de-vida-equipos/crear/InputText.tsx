@@ -72,7 +72,8 @@ export const InputText: React.FC<InputTextProps> = ({ label, value, onChange, re
                 // }}
                 style={{
                     // color: focused || value ? '#000000' : '#B0B0B0', // Color negro si está enfocado o tiene valor
-                    color: focused ? '#000000' : 'gray', // Color negro si está enfocado o tiene valor
+                    // Enfocado resalta con el primario; en reposo, texto secundario (ambos siguen el modo activo)
+                    color: focused ? 'var(--mui-palette-primary-main)' : 'var(--mui-palette-text-secondary)',
                     fontWeight: 'bolder',
                 }}
                 >

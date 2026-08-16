@@ -121,17 +121,17 @@ export default function ModalVerItemsRemision({ items, onEliminarItem, precioTot
                                 <Table>
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Item</TableCell>
-                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Subarrendatario</TableCell>
-                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Categoría</TableCell>
-                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Equipo</TableCell>
-                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Cantidad</TableCell>
-                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Precio Unidad</TableCell>
-                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Total Sin IVA</TableCell>
-                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>IVA%</TableCell>
-                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Total Con IVA</TableCell>
-                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Observaciones</TableCell>
-                                            <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Acciones</TableCell>
+                                            <TableCell>Item</TableCell>
+                                            <TableCell>Subarrendatario</TableCell>
+                                            <TableCell>Categoría</TableCell>
+                                            <TableCell>Equipo</TableCell>
+                                            <TableCell>Cantidad</TableCell>
+                                            <TableCell>Precio Unidad</TableCell>
+                                            <TableCell>Total Sin IVA</TableCell>
+                                            <TableCell>IVA%</TableCell>
+                                            <TableCell>Total Con IVA</TableCell>
+                                            <TableCell>Observaciones</TableCell>
+                                            <TableCell>Acciones</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     {/* <TableBody>
@@ -198,7 +198,7 @@ export default function ModalVerItemsRemision({ items, onEliminarItem, precioTot
                             </TableContainer>
                             <Divider />
                             <Box textAlign="right" padding="10px">
-                                <Typography mt={1} style={{ fontWeight: 'bolder', color: '#000000' }}>Precio total general: <span style={{ fontWeight: 'normal' }}>{precioTotalGeneral}</span></Typography>
+                                <Typography mt={1} sx={{ fontWeight: 'bolder', color: 'var(--mui-palette-text-primary)' }}>Precio total general: <span style={{ fontWeight: 'normal' }}>{precioTotalGeneral}</span></Typography>
                             </Box>
                         </CardContent>
                     </Card>

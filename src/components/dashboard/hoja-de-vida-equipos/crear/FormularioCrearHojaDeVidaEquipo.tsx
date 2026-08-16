@@ -368,7 +368,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                         padding: '8px', // Espaciado interno más pequeño
                     }}
                 /> */}
-                <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Creación de hoja de vida de equipo</Typography>
+                <Typography variant='subtitle1' sx={{ color: 'text.primary', padding: '5px', fontWeight: 'normal' }}>Creación de hoja de vida de equipo</Typography>
                 <Divider />
                 <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                     <Grid container spacing={1}>
@@ -380,7 +380,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                             <span>Consecutivo: [{Consecutivo}] </span>
                         </Grid> */}
                         <Grid md={4} xs={12} style={{ display: 'flex', alignItems: 'center' }}>
-                            <Info style={{ marginRight: '8px', color: '#1976d2', width: '26px', height: '26px' }} />
+                            <Info style={{ marginRight: '8px', color: 'var(--mui-palette-primary-main)', width: '26px', height: '26px' }} />
                             <Typography variant="body1" style={{ fontWeight: 'normal' }}>
                                 Consecutivo: {Consecutivo}
                             </Typography>
@@ -744,7 +744,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
                     autoHideDuration={5000}
                     onClose={() => setMostrarAlertaSuccess(false)}
                 >
-                    <Alert severity="success" sx={{ width: '100%', color: '#000000' }} onClose={() => setMostrarAlertaSuccess(false)}>
+                    <Alert severity="success" sx={{ width: '100%' }} onClose={() => setMostrarAlertaSuccess(false)}>
                         Hoja de vida creada exitosamente
                     </Alert>
                 </Snackbar>

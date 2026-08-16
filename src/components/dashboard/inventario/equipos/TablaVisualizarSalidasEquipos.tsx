@@ -131,7 +131,7 @@ export function TablaVisualizarSalidasEquipos(): React.JSX.Element {
   return (
     <>
       <Card>
-        <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>
+        <Typography variant='subtitle1' sx={{ p: '5px', fontWeight: 'normal' }}>
           Visualización de salidas de equipos
         </Typography>
         <Divider />

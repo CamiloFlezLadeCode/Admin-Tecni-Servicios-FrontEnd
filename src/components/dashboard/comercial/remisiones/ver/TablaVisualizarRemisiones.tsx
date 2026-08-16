@@ -108,7 +108,7 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
                     label={row.EstadoRemision}
                     color={getEstadoColor(row.EstadoRemision)}
                     size="small"
-                    sx={{ color: 'white', minWidth: 100 }}
+                    sx={{ minWidth: 100 }}
                 />
             )
         }

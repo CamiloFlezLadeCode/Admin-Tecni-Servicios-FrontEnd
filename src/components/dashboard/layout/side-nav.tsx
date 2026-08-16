@@ -85,16 +85,22 @@ export function SideNav(): React.JSX.Element {
   return (
     <Box
       sx={{
-        '--SideNav-background': 'var(--mui-palette-neutral-950)',
-        '--SideNav-color': 'var(--mui-palette-common-white)',
-        '--NavItem-color': 'var(--mui-palette-neutral-300)',
-        '--NavItem-hover-background': 'rgba(255, 255, 255, 0.04)',
+        // El sidebar se apoya en `background-paper`, igual que la barra
+        // superior: juntos forman el marco de la aplicación (blanco limpio en
+        // claro, pizarra profunda en oscuro) sobre el lienzo `background-default`.
+        '--SideNav-background': 'var(--mui-palette-background-paper)',
+        '--SideNav-color': 'var(--mui-palette-text-primary)',
+        // Superficie de los elementos embebidos dentro del sidebar: buscador,
+        // tarjeta inferior y avatar. Un escalón por encima del fondo.
+        '--SideNav-surface': 'var(--mui-palette-background-level1)',
+        '--NavItem-color': 'var(--mui-palette-text-secondary)',
+        '--NavItem-hover-background': 'var(--mui-palette-action-hover)',
         '--NavItem-active-background': 'var(--mui-palette-primary-main)',
         '--NavItem-active-color': 'var(--mui-palette-primary-contrastText)',
-        '--NavItem-disabled-color': 'var(--mui-palette-neutral-500)',
-        '--NavItem-icon-color': 'var(--mui-palette-neutral-400)',
+        '--NavItem-disabled-color': 'var(--mui-palette-text-disabled)',
+        '--NavItem-icon-color': 'var(--mui-palette-text-secondary)',
         '--NavItem-icon-active-color': 'var(--mui-palette-primary-contrastText)',
-        '--NavItem-icon-disabled-color': 'var(--mui-palette-neutral-600)',
+        '--NavItem-icon-disabled-color': 'var(--mui-palette-text-disabled)',
         bgcolor: 'var(--SideNav-background)',
         color: 'var(--SideNav-color)',
         display: { xs: 'none', lg: 'flex' },
@@ -109,7 +115,7 @@ export function SideNav(): React.JSX.Element {
         zIndex: 'var(--SideNav-zIndex)',
         overflow: 'hidden',
         transition: 'width 0.45s ease-in-out',
-        borderRight: '1px solid var(--mui-palette-neutral-800)',
+        borderRight: '1px solid var(--mui-palette-divider)',
         '&::-webkit-scrollbar': { display: 'none' },
       }}
     >
@@ -151,10 +157,13 @@ export function SideNav(): React.JSX.Element {
             aria-label={collapsed ? 'Expandir sidebar' : 'Contraer sidebar'}
             onClick={toggleSidebar}
             sx={{
-              color: 'var(--mui-palette-neutral-200)',
-              backgroundColor: 'var(--mui-palette-neutral-900)',
-              border: '1px solid var(--mui-palette-neutral-700)',
-              '&:hover': { backgroundColor: 'var(--mui-palette-neutral-800)' },
+              color: 'var(--mui-palette-text-secondary)',
+              backgroundColor: 'var(--SideNav-surface)',
+              border: '1px solid var(--mui-palette-divider)',
+              '&:hover': {
+                backgroundColor: 'var(--mui-palette-background-level2)',
+                color: 'var(--mui-palette-text-primary)',
+              },
               width: 36,
               height: 36,
               flex: '0 0 auto',
@@ -165,7 +174,7 @@ export function SideNav(): React.JSX.Element {
         </Tooltip>
       </Box>
 
-      <Divider sx={{ borderColor: 'var(--mui-palette-neutral-800)' }} />
+      <Divider />
 
       <Box
         component="nav"
@@ -185,24 +194,13 @@ export function SideNav(): React.JSX.Element {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <MagnifyingGlassIcon size={18} color="var(--mui-palette-neutral-400)" />
+                    <MagnifyingGlassIcon size={18} color="var(--mui-palette-text-secondary)" />
                   </InputAdornment>
                 ),
               }}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  color: 'var(--SideNav-color)',
-                  bgcolor: 'var(--mui-palette-neutral-900)',
-                  borderRadius: 2,
-                  '& fieldset': { borderColor: 'var(--mui-palette-neutral-700)' },
-                  '&:hover fieldset': { borderColor: 'var(--mui-palette-neutral-600)' },
-                  '&.Mui-focused fieldset': { borderColor: 'var(--mui-palette-primary-main)' },
-                },
-                '& input::placeholder': {
-                  color: 'var(--mui-palette-neutral-400)',
-                  opacity: 1,
-                },
-              }}
+              // Borde, foco y placeholder ya vienen del tema (MuiOutlinedInput);
+              // aquí sólo se hunde el campo respecto al fondo del sidebar.
+              sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--SideNav-surface)' } }}
             />
           </Box>
         ) : null}
@@ -210,7 +208,7 @@ export function SideNav(): React.JSX.Element {
         {renderNavItems({ pathname, items: itemsFiltradosPorQuery, collapsed, query })}
       </Box>
 
-      <Divider sx={{ borderColor: 'var(--mui-palette-neutral-800)' }} />
+      <Divider />
 
       <Box sx={{ p: collapsed ? 1 : 1.5 }}>
         {/* <Tooltip title={collapsed ? `${userDisplayName}${userSecondaryText ? ` · ${userSecondaryText}` : ''}` : ''} placement="right"> */}
@@ -223,8 +221,8 @@ export function SideNav(): React.JSX.Element {
               px: collapsed ? 0 : 1,
               py: 1,
               borderRadius: 2,
-              bgcolor: 'var(--mui-palette-neutral-900)',
-              border: '1px solid var(--mui-palette-neutral-700)',
+              bgcolor: 'var(--SideNav-surface)',
+              border: '1px solid var(--mui-palette-divider)',
               justifyContent: collapsed ? 'center' : 'flex-start',
               overflow: 'hidden',
             }}
@@ -234,8 +232,8 @@ export function SideNav(): React.JSX.Element {
               sx={{
                 width: 34,
                 height: 34,
-                bgcolor: 'var(--mui-palette-neutral-800)',
-                color: 'var(--SideNav-color)',
+                bgcolor: 'var(--mui-palette-background-level2)',
+                color: 'var(--mui-palette-text-primary)',
                 fontWeight: 700,
               }}
             >
@@ -248,7 +246,7 @@ export function SideNav(): React.JSX.Element {
                   TECNISERVICIOS
                 </Typography>
                 {userSecondaryText ? (
-                  <Typography sx={{ color: 'var(--mui-palette-neutral-400)', lineHeight: 1.2 }} variant="caption">
+                  <Typography sx={{ color: 'var(--mui-palette-text-secondary)', lineHeight: 1.2 }} variant="caption">
                     {/* {userSecondaryText} */}
                     Panel administrativo
                   </Typography>
@@ -393,17 +391,25 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
           textDecoration: 'none',
           whiteSpace: 'nowrap',
           justifyContent: collapsed ? 'center' : 'flex-start',
+          transition: 'background-color 120ms ease, color 120ms ease',
           ...(disabled && {
             bgcolor: 'var(--NavItem-disabled-background)',
             color: 'var(--NavItem-disabled-color)',
             cursor: 'not-allowed',
           }),
-          ...(effectiveActive && { bgcolor: 'var(--NavItem-active-background)', color: 'var(--NavItem-active-color)' }),
+          ...(effectiveActive && {
+            bgcolor: 'var(--NavItem-active-background)',
+            color: 'var(--NavItem-active-color)',
+            // Halo derivado del propio primario: da relieve al ítem activo
+            // sin fijar una sombra negra que en modo oscuro no se vería.
+            boxShadow: '0 1px 3px rgba(var(--mui-palette-primary-mainChannel) / 0.35)',
+          }),
           ...(effectiveActive
             ? {}
             : {
                 '&:hover': {
                   bgcolor: 'var(--NavItem-hover-background)',
+                  color: 'var(--mui-palette-text-primary)',
                 },
               }),
         }}
@@ -464,29 +470,18 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
           disableRestoreFocus
           anchorOrigin={{ vertical: 'center', horizontal: 'right' }}
           transformOrigin={{ vertical: 'center', horizontal: 'left' }}
-          PaperProps={{
-            sx: {
-              ml: 2,
-              p: 1,
-              minWidth: 220,
-              bgcolor: 'var(--mui-palette-neutral-900)',
-              color: 'var(--mui-palette-common-white)',
-              border: '1px solid var(--mui-palette-neutral-700)',
-              borderRadius: 2,
-              boxShadow: '12px 12px 24px rgba(0, 0, 0, 0.35)',
-              backdropFilter: 'blur(10px)',
-            },
-          }}
+          // Fondo, borde, radio y sombra los aporta el tema (MuiPopover).
+          PaperProps={{ sx: { ml: 2, p: 1, minWidth: 220 } }}
         >
           <Box sx={{ px: 1, py: 0.75 }}>
             <Typography sx={{ fontWeight: 700, lineHeight: 1.2 }} variant="subtitle2">
               {title}
             </Typography>
-            <Typography sx={{ color: 'var(--mui-palette-neutral-400)', lineHeight: 1.2 }} variant="caption">
+            <Typography sx={{ color: 'var(--mui-palette-text-secondary)', lineHeight: 1.2 }} variant="caption">
               Opciones
             </Typography>
           </Box>
-          <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)', my: 0.5 }} />
+          <Divider sx={{ my: 0.5 }} />
           <Stack component="ul" spacing={0} sx={{ listStyle: 'none', m: 0, p: 0 }}>
             {items.map((subItem) => {
               const { key, title: stitle, href: shref, external: sexternal, disabled: sdisabled } = subItem;
@@ -500,15 +495,20 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
                     setTooltipOpen(false);
                     setSuppressTooltip(true);
                   }}
+                  // El flyout vive en un portal fuera del sidebar, así que no
+                  // hereda las variables locales `--NavItem-*`: se usan tokens.
                   sx={{
                     px: 1.5,
                     py: 1,
                     borderRadius: 1,
-                    color: 'var(--NavItem-color)',
+                    color: 'var(--mui-palette-text-secondary)',
                     textDecoration: 'none',
                     ...(sdisabled && { opacity: 0.6, pointerEvents: 'none' }),
-                    transition: 'background-color 120ms ease',
-                    '&:hover': { bgcolor: 'var(--mui-palette-neutral-800)' },
+                    transition: 'background-color 120ms ease, color 120ms ease',
+                    '&:hover': {
+                      bgcolor: 'var(--mui-palette-action-hover)',
+                      color: 'var(--mui-palette-text-primary)',
+                    },
                   }}
                 >
                   {stitle}

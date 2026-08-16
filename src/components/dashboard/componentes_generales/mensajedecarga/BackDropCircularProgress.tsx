@@ -14,8 +14,8 @@ import {
 export default function MensajeDeCarga({ Mensaje, MostrarMensaje }: { Mensaje: string; MostrarMensaje: boolean; }): React.JSX.Element {
     return (
         <Backdrop
+            // El velo (color y desenfoque) lo define el tema para cada modo.
             sx={{
-                backgroundColor: 'rgba(255, 255, 255, .8)',
                 zIndex: (theme) => theme.zIndex.drawer + 1,
                 // alignItems: 'start',
                 // mt: 10
@@ -53,7 +53,9 @@ export default function MensajeDeCarga({ Mensaje, MostrarMensaje }: { Mensaje: s
                         minHeight: 160,
                         px: 4,
                         py: 3,
-                        backgroundColor: '#fff',
+                        // El fondo lo pone el tema (background.paper); el borde
+                        // despega la tarjeta del velo desenfocado en modo oscuro.
+                        border: '1px solid var(--mui-palette-divider)',
                         borderRadius: 2,
                         boxShadow: 3,
                         display: 'flex',

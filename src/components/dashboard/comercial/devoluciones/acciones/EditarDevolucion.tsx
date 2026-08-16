@@ -760,7 +760,8 @@ export function EditarDevolucion({ IdDevolucion, NoDevolucion, sendMessage, most
                             </CardContent>
                         </Card>
 
-                        <Card variant="outlined" sx={{ mt: 3, p: 2, bgcolor: '#f8f9fa' }}>
+                        {/* Panel de captura de ítem: se eleva un escalón sobre la superficie del modal */}
+                        <Card variant="outlined" sx={{ mt: 3, p: 2, bgcolor: 'var(--mui-palette-background-level1)' }}>
                             <Typography variant="subtitle1" mb={2}>
                                 Agregar ítem/equipo a la devolución
                             </Typography>

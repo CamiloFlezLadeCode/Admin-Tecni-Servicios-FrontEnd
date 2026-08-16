@@ -644,7 +644,8 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
                                 tamano="small"
                             />
                         </Grid>
-                        <Card variant="outlined" sx={{ p: 2, mb: 3, bgcolor: '#f8f9fa' }}>
+                        {/* Panel de captura de ítem: se eleva un escalón sobre la superficie del modal */}
+                        <Card variant="outlined" sx={{ p: 2, mb: 3, bgcolor: 'var(--mui-palette-background-level1)' }}>
                             <Grid container spacing={2} alignItems="center">
                                 <Grid xs={12} md={nuevoItem.Subarrendatario === EmpresaAnfitriona.value ? 2.2 : 3}>
                                     <InputSelect
@@ -732,7 +733,7 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
 
                         <TableContainer component={Paper} variant="outlined">
                             <Table size="small">
-                                <TableHead sx={{ bgcolor: '#eee' }}>
+                                <TableHead>
                                     <TableRow>
                                         <TableCell>Equipo</TableCell>
                                         <TableCell>Subarrendatario</TableCell>

@@ -134,7 +134,7 @@ const FormularioCrearBodega = () => {
     return (
         <form onSubmit={handleSubmit(HandleCrearBodega)}>
             <Card>
-                <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>
+                <Typography variant='subtitle1' sx={{ color: 'text.primary', padding: '5px', fontWeight: 'normal' }}>
                     Creación de bodega
                 </Typography>
                 <Divider />

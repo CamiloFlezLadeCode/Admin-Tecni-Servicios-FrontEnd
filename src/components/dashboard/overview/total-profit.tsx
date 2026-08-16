@@ -24,7 +24,21 @@ export function TotalProfit({ value, sx }: TotalProfitProps): React.JSX.Element 
             </Typography>
             <Typography variant="h4">{value}</Typography>
           </Stack>
-          <Avatar sx={{ backgroundColor: 'var(--mui-palette-primary-main)', height: '56px', width: '56px' }}>
+          {/*
+            Antes era `primary`, igual que la tarjeta de Budget: dos de los
+            cuatro indicadores compartían color y el avatar dejaba de
+            identificar nada. Pasa a `info` (cian), que es el siguiente token
+            semántico libre de la fila. `contrastText` fija el color del icono,
+            que antes heredaba `background.default` por accidente.
+          */}
+          <Avatar
+            sx={{
+              backgroundColor: 'var(--mui-palette-info-main)',
+              color: 'var(--mui-palette-info-contrastText)',
+              height: '56px',
+              width: '56px',
+            }}
+          >
             <ReceiptIcon fontSize="var(--icon-fontSize-lg)" />
           </Avatar>
         </Stack>

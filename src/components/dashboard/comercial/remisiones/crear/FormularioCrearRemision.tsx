@@ -96,7 +96,10 @@ const ModalContent = styled(Box)(({ theme }) => ({
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 400,
-    backgroundColor: theme.palette.background.paper,
+    // Token directo, no `theme.palette.background.paper`: este último se
+    // resuelve contra el esquema por defecto y quedaría blanco en oscuro.
+    backgroundColor: 'var(--mui-palette-background-paper)',
+    border: '1px solid var(--mui-palette-divider)',
     boxShadow: theme.shadows[24],
     padding: theme.spacing(4),
     borderRadius: theme.shape.borderRadius,

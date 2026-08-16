@@ -29,7 +29,8 @@ const MensajeAlerta: React.FC<MensajeAlertaProps> = ({
                 sx={{ width: '100%' }}
                 onClose={onClose}
             >
-                <strong style={{ color: '#000000' }}>{mensaje}</strong>
+                {/* Sin color propio: hereda el tono semántico de la alerta */}
+                <strong>{mensaje}</strong>
             </Alert>
         </Snackbar>
     );

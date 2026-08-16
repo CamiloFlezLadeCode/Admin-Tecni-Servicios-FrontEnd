@@ -151,8 +151,9 @@ const FormularioValidator = forwardRef<FormularioValidatorRef, FormularioValidat
                 >
                     <div>
                         <ul>
+                            {/* Sin color propio: hereda el tono semántico de la alerta */}
                             {camposFaltantes.map((campo, index) => (
-                                <li key={index} style={{ color: '#000000' }}>{campo}</li>
+                                <li key={index}>{campo}</li>
                             ))}
                         </ul>
                     </div>

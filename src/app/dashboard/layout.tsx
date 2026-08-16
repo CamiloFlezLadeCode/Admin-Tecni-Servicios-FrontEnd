@@ -143,13 +143,21 @@ export default function Layout({ children }: LayoutProps): React.JSX.Element {
           transition: 'left 0.45s ease-in-out, width 0.45s ease-in-out',
           textAlign: 'center',
           zIndex: 999,
-          backgroundColor: 'white',
-          borderTop: '1px solid #ccc',          
+          backgroundColor: 'var(--mui-palette-background-paper)',
+          borderTop: '1px solid var(--mui-palette-divider)',
           // height: 'var(--Footer-height)',
         }}
       >
-        <Typography variant='subtitle2'>
-          © {new Date().getFullYear()} <strong style={{cursor: 'pointer'}} onClick={VisitarPaginaCasaDesarrolladora}>FlezLade Softworks</strong>. Todos los derechos reservados.
+        <Typography variant='subtitle2' sx={{ color: 'var(--mui-palette-text-secondary)' }}>
+          © {new Date().getFullYear()}{' '}
+          <Box
+            component="strong"
+            onClick={VisitarPaginaCasaDesarrolladora}
+            sx={{ cursor: 'pointer', color: 'var(--mui-palette-primary-main)' }}
+          >
+            FlezLade Softworks
+          </Box>
+          . Todos los derechos reservados.
         </Typography>
       </Box>
     </AuthGuard>

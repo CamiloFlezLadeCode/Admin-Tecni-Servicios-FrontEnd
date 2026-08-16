@@ -74,7 +74,7 @@ export function TablaVisualizarMecanicos(): React.JSX.Element {
                 title="Visualización de mecánicos"
                 sx={{ fontSize: '0.875rem', padding: '8px' }}
             /> */}
-            <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Visualización de mecánicos</Typography>
+            <Typography variant='subtitle1' sx={{ padding: '5px', fontWeight: 'normal' }}>Visualización de mecánicos</Typography>
 
             <Divider />
             <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
@@ -90,15 +90,15 @@ export function TablaVisualizarMecanicos(): React.JSX.Element {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Nombre</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Tipo Documento</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Documento</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Correo</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Dirección</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Celular</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Creado Por</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Fecha Creación</TableCell>
-                                    <TableCell style={{ fontWeight: 'bold', color: '#000000' }}>Estado</TableCell>
+                                    <TableCell>Nombre</TableCell>
+                                    <TableCell>Tipo Documento</TableCell>
+                                    <TableCell>Documento</TableCell>
+                                    <TableCell>Correo</TableCell>
+                                    <TableCell>Dirección</TableCell>
+                                    <TableCell>Celular</TableCell>
+                                    <TableCell>Creado Por</TableCell>
+                                    <TableCell>Fecha Creación</TableCell>
+                                    <TableCell>Estado</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>

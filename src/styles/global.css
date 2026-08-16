@@ -18,10 +18,20 @@
   --icon-fontSize-sm: 1rem;
   --icon-fontSize-md: 1.25rem;
   --icon-fontSize-lg: 1.5rem;
+
+  /*
+    Valor de reserva para el color de sombra, por si el atributo de esquema
+    todavía no está aplicado en el primer pintado. Debe ir ANTES de los bloques
+    [data-mui-color-scheme]: tienen la misma especificidad, así que si se
+    declarara después ganaría por orden y anularía la sombra del modo oscuro.
+  */
+  --app-shadow-rgb: 16 24 40;
+  --app-shadow-opacity: 0.08;
 }
 
 *:focus-visible {
   outline: 2px solid var(--mui-palette-primary-main);
+  outline-offset: 2px;
 }
 
 html {
@@ -30,4 +40,79 @@ html {
 
 body {
   height: 100%;
+  background-color: var(--mui-palette-background-default);
+  color: var(--mui-palette-text-primary);
+}
+
+/*
+  `color-scheme` le dice al navegador de qué color pintar los controles que
+  NO controlamos: scrollbars nativos, autocompletado, date pickers nativos,
+  scrollbar overlay de macOS. Sin esto quedan blancos sobre la interfaz oscura.
+  El atributo lo escribe MUI (data-mui-color-scheme) desde el script de <body>.
+*/
+[data-mui-color-scheme='light'] {
+  color-scheme: light;
+
+  /*
+    Color de las sombras (lo consume `styles/theme/shadows.ts`).
+    En claro se usa un azul-gris muy tenue en vez de negro puro: el negro
+    sobre blanco se percibe como suciedad, no como profundidad.
+  */
+  --app-shadow-rgb: 16 24 40;
+  --app-shadow-opacity: 0.08;
+}
+
+[data-mui-color-scheme='dark'] {
+  color-scheme: dark;
+
+  /* En oscuro sólo el negro muy opaco llega a percibirse como elevación. */
+  --app-shadow-rgb: 0 0 0;
+  --app-shadow-opacity: 0.44;
+}
+
+/* Barra de scroll de la página, coherente con el modo activo. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--mui-palette-neutral-400) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--mui-palette-neutral-400);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--mui-palette-neutral-500);
+}
+
+/* Selección de texto legible en ambos modos. */
+::selection {
+  background-color: rgba(var(--mui-palette-primary-mainChannel) / 0.28);
+  color: var(--mui-palette-text-primary);
+}
+
+/*
+  Respeta a quien pide menos movimiento en su sistema. Las transiciones del
+  tema son decorativas; nada de la interfaz depende de ellas.
+*/
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -1,29 +1,47 @@
 import type { Shadows } from '@mui/material/styles/shadows';
 
+/**
+ * ESCALA DE SOMBRAS.
+ *
+ * En MUI v5 `shadows` vive a nivel de tema, no dentro de cada esquema de
+ * color: la misma escala se usa en claro y en oscuro. Eso es un problema,
+ * porque una sombra negra al 8% —perfecta sobre un fondo claro— es
+ * literalmente invisible sobre una superficie oscura.
+ *
+ * La salida es delegar el COLOR de la sombra a una variable CSS que sí cambia
+ * por esquema (definida en `styles/global.css`), y dejar aquí sólo la
+ * geometría (desplazamiento y desenfoque). Así una única escala se comporta
+ * correctamente en ambos modos:
+ *   claro  → azul-gris muy tenue, para que la sombra no se vea sucia
+ *   oscuro → negro mucho más opaco, que es lo único que se percibe
+ */
+const sombra = (offsetY: number, blur: number): string =>
+  `0px ${offsetY}px ${blur}px rgba(var(--app-shadow-rgb) / var(--app-shadow-opacity))`;
+
 export const shadows = [
   'none',
-  '0px 1px 2px rgba(0, 0, 0, 0.08)',
-  '0px 1px 5px rgba(0, 0, 0, 0.08)',
-  '0px 1px 8px rgba(0, 0, 0, 0.08)',
-  '0px 1px 10px rgba(0, 0, 0, 0.08)',
-  '0px 1px 14px rgba(0, 0, 0, 0.08)',
-  '0px 1px 18px rgba(0, 0, 0, 0.08)',
-  '0px 2px 16px rgba(0, 0, 0, 0.08)',
-  '0px 3px 14px rgba(0, 0, 0, 0.08)',
-  '0px 3px 16px rgba(0, 0, 0, 0.08)',
-  '0px 4px 18px rgba(0, 0, 0, 0.08)',
-  '0px 4px 20px rgba(0, 0, 0, 0.08)',
-  '0px 5px 22px rgba(0, 0, 0, 0.08)',
-  '0px 5px 24px rgba(0, 0, 0, 0.08)',
-  '0px 5px 26px rgba(0, 0, 0, 0.08)',
-  '0px 6px 28px rgba(0, 0, 0, 0.08)',
-  '0px 6px 30px rgba(0, 0, 0, 0.08)',
-  '0px 6px 32px rgba(0, 0, 0, 0.08)',
-  '0px 7px 34px rgba(0, 0, 0, 0.08)',
-  '0px 7px 36px rgba(0, 0, 0, 0.08)',
-  '0px 8px 38px rgba(0, 0, 0, 0.08)',
-  '0px 8px 40px rgba(0, 0, 0, 0.08)',
-  '0px 8px 42px rgba(0, 0, 0, 0.08)',
-  '0px 9px 44px rgba(0, 0, 0, 0.08)',
-  '0px 9px 46px rgba(0, 0, 0, 0.08)',
+  sombra(1, 2),
+  sombra(1, 5),
+  sombra(1, 8),
+  sombra(1, 10),
+  sombra(1, 14),
+  sombra(1, 18),
+  sombra(2, 16),
+  sombra(3, 14),
+  sombra(3, 16),
+  sombra(4, 18),
+  sombra(4, 20),
+  sombra(5, 22),
+  sombra(5, 24),
+  sombra(5, 26),
+  sombra(6, 28),
+  sombra(6, 30),
+  sombra(6, 32),
+  sombra(7, 34),
+  sombra(7, 36),
+  sombra(8, 38),
+  sombra(8, 40),
+  sombra(8, 42),
+  sombra(9, 44),
+  sombra(9, 46),
 ] satisfies Shadows;

@@ -148,7 +148,6 @@ const SelectConBuscador: React.FC<InputSelectProps> = ({
     bloqueado = false,
 }) => {
     const selectedOption = options.find((option) => option.value === value) ?? null;
-    const [focused, setFocused] = React.useState(false);
 
     return (
         <Grid item md={3} xs={12}>
@@ -171,15 +170,13 @@ const SelectConBuscador: React.FC<InputSelectProps> = ({
                         required={required}
                         variant="outlined"
                         size={size}
+                        // El color del label lo resuelve el tema; aquí sólo el peso tipográfico.
                         InputLabelProps={{
                             shrink: true,
                             style: {
                                 fontWeight: 'bold',
-                                color: focused ? '#000000' : 'gray',
                             },
                         }}
-                        onFocus={() => setFocused(true)}
-                        onBlur={() => setFocused(false)}
                     />
                 )}
                 filterOptions={(options, { inputValue }) =>

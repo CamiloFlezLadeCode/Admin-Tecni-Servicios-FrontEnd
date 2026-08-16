@@ -104,7 +104,6 @@ const InputText = React.forwardRef<HTMLInputElement, InputTextProps>((props, ref
         ...rest
     } = props;
 
-    const [focused, setFocused] = React.useState(false);
 
     return (
         <FormControl
@@ -115,8 +114,8 @@ const InputText = React.forwardRef<HTMLInputElement, InputTextProps>((props, ref
             <InputLabel
                 htmlFor={label}
                 shrink
+                // El color del label (normal, foco, deshabilitado) lo resuelve el tema.
                 style={{
-                    color: focused ? '#000000' : 'gray',
                     fontWeight: 'bolder',
                     display: mostrar
                 }}
@@ -135,8 +134,6 @@ const InputText = React.forwardRef<HTMLInputElement, InputTextProps>((props, ref
                 multiline={tipo_input === 'textarea'}
                 minRows={tipo_input === 'textarea' ? 3 : 1}
                 notched
-                onFocus={() => setFocused(true)}
-                onBlur={() => setFocused(false)}
                 inputProps={{
                     maxLength: maximalongitud ?? undefined,
                     min: minimalongitud,
@@ -151,7 +148,8 @@ const InputText = React.forwardRef<HTMLInputElement, InputTextProps>((props, ref
                 }}
                 error={error}
             />
-            {helperText && <FormHelperText>{helperText}</FormHelperText>}
+            {/* Se propaga el estado de error para que el texto de ayuda tome el color semántico */}
+            {helperText && <FormHelperText error={error}>{helperText}</FormHelperText>}
         </FormControl>
     );
 });

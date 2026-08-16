@@ -15,6 +15,7 @@ import { Users as UsersIcon } from '@phosphor-icons/react/dist/ssr/Users';
 import Typography from '@mui/material/Typography';
 
 import { usePopover } from '@/hooks/use-popover';
+import { ColorSchemeToggle } from '@/components/core/theme-provider/color-scheme-toggle';
 
 import { MobileNav } from './mobile-nav';
 import { UserPopover } from './user-popover';
@@ -174,6 +175,7 @@ export function MainNav(): React.JSX.Element {
             <Button style={{ fontWeight: 'bold' }} onClick={RealizarBackUp}>
               Guardar BackUp
             </Button>
+            <ColorSchemeToggle />
             {/* <Avatar
               onClick={userPopover.handleOpen}
               ref={userPopover.anchorRef}

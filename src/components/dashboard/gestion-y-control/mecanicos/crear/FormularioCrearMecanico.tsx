@@ -222,7 +222,7 @@ export function FormularioCrearMecanico(): React.JSX.Element {
                     padding: '8px', // Espaciado interno más pequeño
                 }}
             /> */}
-            <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Creación de mecánico</Typography>
+            <Typography variant='subtitle1' sx={{ color: 'text.primary', padding: '5px', fontWeight: 'normal' }}>Creación de mecánico</Typography>
 
             <Divider />
             <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>

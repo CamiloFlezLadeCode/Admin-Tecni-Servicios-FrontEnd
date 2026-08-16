@@ -38,12 +38,30 @@ export function LatestProducts({ products = [], sx }: LatestProductsProps): Reac
           <ListItem divider={index < products.length - 1} key={product.id}>
             <ListItemAvatar>
               {product.image ? (
-                <Box component="img" src={product.image} sx={{ borderRadius: 1, height: '48px', width: '48px' }} />
+                <Box
+                  component="img"
+                  src={product.image}
+                  sx={{
+                    borderRadius: 1,
+                    // Muchas fotos de producto vienen recortadas sobre blanco;
+                    // sin este filete se funden con la tarjeta en modo claro y
+                    // forman un bloque blanco duro en modo oscuro.
+                    border: '1px solid var(--mui-palette-divider)',
+                    height: '48px',
+                    objectFit: 'cover',
+                    width: '48px',
+                  }}
+                />
               ) : (
                 <Box
                   sx={{
                     borderRadius: 1,
-                    backgroundColor: 'var(--mui-palette-neutral-200)',
+                    // `neutral-200` es un gris CLARO en las dos escalas, así
+                    // que en modo oscuro el hueco salía como un cuadrado
+                    // blanco. `background.level2` es un token de superficie:
+                    // se aclara u oscurece según el modo, como debe ser.
+                    backgroundColor: 'var(--mui-palette-background-level2)',
+                    border: '1px solid var(--mui-palette-divider)',
                     height: '48px',
                     width: '48px',
                   }}

@@ -66,22 +66,30 @@ const FechayHora: React.FC<CustomDateTimePickerProps> = ({
                             '& .MuiInputBase-input': {
                                 padding: '8px 12px',
                             },
-                            // Estilos para el label en posición "notched"
+                            // Estilos para el label en posición "notched".
+                            // El fondo debe igualar la superficie del campo para tapar el borde;
+                            // el color del texto lo resuelve el tema.
                             '& .MuiInputLabel-outlined': {
                                 transform: 'translate(14px, -6px) scale(0.75)',
-                                backgroundColor: 'white', // Fondo blanco para el efecto notched
+                                backgroundColor: 'var(--mui-palette-background-paper)',
                                 padding: '0 4px',
                                 fontWeight: 'bold',
-                                '&.Mui-focused': {
-                                    color: '#000000', // ← Negro puro cuando está enfocado
-                                },
-                            },
-                            '& .MuiOutlinedInput-root': {
-                                '& fieldset': {
-                                    // borderRadius: '4px',
+                                // Deshabilitado el campo cambia de superficie: el parche del label la sigue.
+                                '&.Mui-disabled': {
+                                    backgroundColor: 'var(--mui-palette-background-level1)',
                                 },
                             },
                         }
+                    },
+                    // El calendario flota sobre la página: se le da el mismo tratamiento
+                    // que a los menús para que no se pierda contra el fondo oscuro.
+                    desktopPaper: {
+                        sx: {
+                            backgroundImage: 'none',
+                            backgroundColor: 'var(--mui-palette-background-paper)',
+                            border: '1px solid var(--mui-palette-divider)',
+                            borderRadius: '12px',
+                        },
                     },
                     actionBar: {
                         actions: ['clear', 'accept'],

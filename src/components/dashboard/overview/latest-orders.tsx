@@ -1,6 +1,5 @@
 'use client';
 import * as React from 'react';
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -11,6 +10,7 @@ import type { SxProps } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { ArrowRight as ArrowRightIcon } from '@phosphor-icons/react/dist/ssr/ArrowRight';
@@ -40,7 +40,13 @@ export function LatestOrders({ orders = [], sx }: LatestOrdersProps): React.JSX.
     <Card sx={sx}>
       <CardHeader title="Latest orders" />
       <Divider />
-      <Box sx={{ overflowX: 'auto' }}>
+      {/*
+        Era un `<Box sx={{ overflowX: 'auto' }}>`. `TableContainer` hace lo
+        mismo y además recibe el override central de `MuiTableContainer`, que
+        tematiza la barra de scroll horizontal — la nativa es clara y sobre la
+        tarjeta oscura canta muchísimo.
+      */}
+      <TableContainer>
         <Table sx={{ minWidth: 800 }}>
           <TableHead>
             <TableRow>
@@ -67,7 +73,7 @@ export function LatestOrders({ orders = [], sx }: LatestOrdersProps): React.JSX.
             })}
           </TableBody>
         </Table>
-      </Box>
+      </TableContainer>
       <Divider />
       <CardActions sx={{ justifyContent: 'flex-end' }}>
         <Button

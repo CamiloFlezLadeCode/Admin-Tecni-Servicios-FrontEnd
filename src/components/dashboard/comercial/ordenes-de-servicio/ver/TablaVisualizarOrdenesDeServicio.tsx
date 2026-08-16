@@ -104,7 +104,7 @@ export function TablaVisualizarOrdenesDeServicio() {
                     label={row.EstadoOrdenDeServicio}
                     color={getEstadoColor(row.EstadoOrdenDeServicio)}
                     size="small"
-                    sx={{ color: 'white', minWidth: 100 }}
+                    sx={{ minWidth: 100 }}
                 />
             )
         }

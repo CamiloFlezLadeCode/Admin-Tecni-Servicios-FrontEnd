@@ -66,17 +66,20 @@ export function MobileNav({ open, onClose }: MobileNavProps): React.JSX.Element 
   return (
     <Drawer
       PaperProps={{
+        // Mismas variables que `side-nav.tsx` para que las dos navegaciones
+        // se vean idénticas en claro y en oscuro.
         sx: {
-          '--MobileNav-background': 'var(--mui-palette-neutral-950)',
-          '--MobileNav-color': 'var(--mui-palette-common-white)',
-          '--NavItem-color': 'var(--mui-palette-neutral-300)',
-          '--NavItem-hover-background': 'rgba(255, 255, 255, 0.04)',
+          '--MobileNav-background': 'var(--mui-palette-background-paper)',
+          '--MobileNav-color': 'var(--mui-palette-text-primary)',
+          '--MobileNav-surface': 'var(--mui-palette-background-level1)',
+          '--NavItem-color': 'var(--mui-palette-text-secondary)',
+          '--NavItem-hover-background': 'var(--mui-palette-action-hover)',
           '--NavItem-active-background': 'var(--mui-palette-primary-main)',
           '--NavItem-active-color': 'var(--mui-palette-primary-contrastText)',
-          '--NavItem-disabled-color': 'var(--mui-palette-neutral-500)',
-          '--NavItem-icon-color': 'var(--mui-palette-neutral-400)',
+          '--NavItem-disabled-color': 'var(--mui-palette-text-disabled)',
+          '--NavItem-icon-color': 'var(--mui-palette-text-secondary)',
           '--NavItem-icon-active-color': 'var(--mui-palette-primary-contrastText)',
-          '--NavItem-icon-disabled-color': 'var(--mui-palette-neutral-600)',
+          '--NavItem-icon-disabled-color': 'var(--mui-palette-text-disabled)',
           bgcolor: 'var(--MobileNav-background)',
           color: 'var(--MobileNav-color)',
           display: 'flex',
@@ -118,24 +121,12 @@ export function MobileNav({ open, onClose }: MobileNavProps): React.JSX.Element 
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <MagnifyingGlassIcon size={18} color="var(--mui-palette-neutral-400)" />
+                <MagnifyingGlassIcon size={18} color="var(--mui-palette-text-secondary)" />
               </InputAdornment>
             ),
           }}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              color: 'var(--MobileNav-color)',
-              bgcolor: 'var(--mui-palette-neutral-900)',
-              borderRadius: 2,
-              '& fieldset': { borderColor: 'var(--mui-palette-neutral-700)' },
-              '&:hover fieldset': { borderColor: 'var(--mui-palette-neutral-600)' },
-              '&.Mui-focused fieldset': { borderColor: 'var(--mui-palette-primary-main)' },
-            },
-            '& input::placeholder': {
-              color: 'var(--mui-palette-neutral-400)',
-              opacity: 1,
-            },
-          }}
+          // Borde, foco y placeholder los define el tema (MuiOutlinedInput).
+          sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--MobileNav-surface)' } }}
         />
         {/* <Box
           sx={{
@@ -159,12 +150,12 @@ export function MobileNav({ open, onClose }: MobileNavProps): React.JSX.Element 
           <CaretUpDownIcon />
         </Box> */}
       </Stack>
-      <Divider sx={{ borderColor: 'var(--mui-palette-neutral-800)' }} />
+      <Divider />
       <Box component="nav" sx={{ flex: '1 1 auto', p: '12px', overflowY: 'auto' }}>
         {/* {renderNavItems({ pathname, items: navItems })} */}
         {renderNavItems({ pathname, items: itemsFiltradosPorQuery, onClose, query })}
       </Box>
-      <Divider sx={{ borderColor: 'var(--mui-palette-neutral-800)' }} />
+      <Divider />
       <Box sx={{ p: 2 }}>
         <Stack
           direction="row"
@@ -174,8 +165,8 @@ export function MobileNav({ open, onClose }: MobileNavProps): React.JSX.Element 
             px: 1,
             py: 1,
             borderRadius: 2,
-            bgcolor: 'var(--mui-palette-neutral-900)',
-            border: '1px solid var(--mui-palette-neutral-700)',
+            bgcolor: 'var(--MobileNav-surface)',
+            border: '1px solid var(--mui-palette-divider)',
             overflow: 'hidden',
           }}
         >
@@ -185,8 +176,8 @@ export function MobileNav({ open, onClose }: MobileNavProps): React.JSX.Element 
             sx={{
               width: 34,
               height: 34,
-              bgcolor: 'var(--mui-palette-neutral-800)',
-              color: 'var(--MobileNav-color)',
+              bgcolor: 'var(--mui-palette-background-level2)',
+              color: 'var(--mui-palette-text-primary)',
               fontWeight: 700,
             }}
           >
@@ -198,7 +189,7 @@ export function MobileNav({ open, onClose }: MobileNavProps): React.JSX.Element 
               TECNISERVICIOS
             </Typography>
             {userSecondaryText ? (
-              <Typography sx={{ color: 'var(--mui-palette-neutral-400)', lineHeight: 1.2 }} variant="caption">
+              <Typography sx={{ color: 'var(--mui-palette-text-secondary)', lineHeight: 1.2 }} variant="caption">
                 {/* {userSecondaryText} */}
                 Panel administrativo
               </Typography>
@@ -431,17 +422,23 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
           position: 'relative',
           textDecoration: 'none',
           whiteSpace: 'nowrap',
+          transition: 'background-color 120ms ease, color 120ms ease',
           ...(disabled && {
             bgcolor: 'var(--NavItem-disabled-background)',
             color: 'var(--NavItem-disabled-color)',
             cursor: 'not-allowed',
           }),
-          ...(active && { bgcolor: 'var(--NavItem-active-background)', color: 'var(--NavItem-active-color)' }),
+          ...(active && {
+            bgcolor: 'var(--NavItem-active-background)',
+            color: 'var(--NavItem-active-color)',
+            boxShadow: '0 1px 3px rgba(var(--mui-palette-primary-mainChannel) / 0.35)',
+          }),
           ...(active
             ? {}
             : {
               '&:hover': {
                 bgcolor: 'var(--NavItem-hover-background)',
+                color: 'var(--mui-palette-text-primary)',
               },
             }),
         }}

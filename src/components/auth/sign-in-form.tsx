@@ -371,17 +371,16 @@ export function SignInForm(): React.JSX.Element {
                 textTransform: 'none', // Evita mayúsculas forzadas
                 borderRadius: '8px', // Esquinas ligeramente redondeadas
                 padding: '8px 24px', // Espaciado interno equilibrado
-                backgroundColor: '#1976d2', // Color primario discreto
-                color: 'white',
                 boxShadow: 'none', // Sin sombra para minimalismo
-                transition: 'all 0.2s ease-in-out', // Transición suave
+                transition: 'background-color 0.2s ease-in-out, transform 0.2s ease-in-out',
                 '&:hover': {
-                  backgroundColor: '#1565c0', // Color hover sutil
+                  backgroundColor: 'var(--mui-palette-primary-dark)',
+                  boxShadow: 'none',
                   transform: 'translateY(-1px)', // Efecto de elevación sutil
                 },
-                '&:disabled': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.12)', // Estilo para disabled
-                  color: 'rgba(0, 0, 0, 0.26)',
+                '&.Mui-disabled': {
+                  backgroundColor: 'var(--mui-palette-action-disabledBackground)',
+                  color: 'var(--mui-palette-text-disabled)',
                 },
               }}
             >
@@ -400,12 +399,20 @@ export function SignInForm(): React.JSX.Element {
           width: '100%',
           textAlign: 'center',
           zIndex: 999,
-          backgroundColor: 'white', // o el fondo que necesites
-          borderTop: '1px solid #ccc'
+          backgroundColor: 'var(--mui-palette-background-paper)',
+          borderTop: '1px solid var(--mui-palette-divider)',
         }}
       >
-        <Typography variant='subtitle2'>
-          © {new Date().getFullYear()} <strong style={{ cursor: 'pointer' }} onClick={VisitarPaginaCasaDesarrolladora}>FlezLade Softworks</strong>. Todos los derechos reservados.
+        <Typography variant='subtitle2' sx={{ color: 'var(--mui-palette-text-secondary)' }}>
+          © {new Date().getFullYear()}{' '}
+          <Box
+            component="strong"
+            onClick={VisitarPaginaCasaDesarrolladora}
+            sx={{ cursor: 'pointer', color: 'var(--mui-palette-primary-main)' }}
+          >
+            FlezLade Softworks
+          </Box>
+          . Todos los derechos reservados.
         </Typography>
       </Box>
     </>

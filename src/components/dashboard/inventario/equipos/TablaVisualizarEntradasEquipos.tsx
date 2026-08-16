@@ -155,7 +155,7 @@ export function TablaVisualizarEntradasEquipos(): React.JSX.Element {
     return (
         <>
             <Card>
-                <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>
+                <Typography variant='subtitle1' sx={{ p: '5px', fontWeight: 'normal' }}>
                     Visualización de entradas de equipos
                 </Typography>
                 <Divider />

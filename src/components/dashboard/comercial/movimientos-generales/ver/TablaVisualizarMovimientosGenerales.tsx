@@ -8,7 +8,6 @@ import {
     Chip,
     Stack,
     Typography,
-    useTheme,
     Button,
     SelectChangeEvent,
     Paper,
@@ -45,7 +44,6 @@ import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/
 import { getEstadoColor } from '@/utils/getEstadoColor';
 
 export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
-    const theme = useTheme();
     const [data, setData] = React.useState<MovimientoGeneral[]>([]);
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState<string | null>(null);
@@ -430,19 +428,19 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
                 </Typography>
                 <Grid container spacing={3}>
                     <Grid xs={12} sm={6} md={3}>
-                        <Paper elevation={2} sx={{ p: 2, textAlign: 'center', borderLeft: `4px solid ${theme.palette.primary.main}` }}>
+                        <Paper elevation={2} sx={{ p: 2, textAlign: 'center', borderLeft: '4px solid var(--mui-palette-primary-main)' }}>
                             <Typography variant="overline" color="text.secondary">Total Remisiones (+)</Typography>
                             <Typography variant="h6">{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(resumen.remisiones)}</Typography>
                         </Paper>
                     </Grid>
                     <Grid xs={12} sm={6} md={3}>
-                        <Paper elevation={2} sx={{ p: 2, textAlign: 'center', borderLeft: `4px solid ${theme.palette.warning.main}` }}>
+                        <Paper elevation={2} sx={{ p: 2, textAlign: 'center', borderLeft: '4px solid var(--mui-palette-warning-main)' }}>
                             <Typography variant="overline" color="text.secondary">Total Devoluciones (+)</Typography>
                             <Typography variant="h6">{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(resumen.devoluciones)}</Typography>
                         </Paper>
                     </Grid>
                     <Grid xs={12} sm={6} md={3}>
-                        <Paper elevation={2} sx={{ p: 2, textAlign: 'center', borderLeft: `4px solid ${theme.palette.info.main}` }}>
+                        <Paper elevation={2} sx={{ p: 2, textAlign: 'center', borderLeft: '4px solid var(--mui-palette-info-main)' }}>
                             <Typography variant="overline" color="text.secondary">Total Ordenes S. (+)</Typography>
                             <Typography variant="h6">{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(resumen.ordenes)}</Typography>
                         </Paper>

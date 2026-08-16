@@ -558,7 +558,7 @@ export function FormularioCrearUsuarios(): React.JSX.Element {
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <Card>
-                <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Creación de usuarios</Typography>
+                <Typography variant='subtitle1' sx={{ color: 'text.primary', padding: '5px', fontWeight: 'normal' }}>Creación de usuarios</Typography>
                 <Divider />
                 <CardContent>
                     <Grid container spacing={1}>

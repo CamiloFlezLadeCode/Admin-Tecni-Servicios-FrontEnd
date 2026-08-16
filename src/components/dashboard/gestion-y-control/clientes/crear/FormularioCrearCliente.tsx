@@ -248,7 +248,7 @@ export function FormularioCrearCliente(): React.JSX.Element {
                 
             />
             <Divider /> */}
-            <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Creación de cliente</Typography>
+            <Typography variant='subtitle1' sx={{ color: 'text.primary', padding: '5px', fontWeight: 'normal' }}>Creación de cliente</Typography>
             <Divider />
             <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                 <Grid container spacing={1}>

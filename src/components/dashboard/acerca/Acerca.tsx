@@ -9,8 +9,7 @@ import {
     CardContent,
     Avatar,
     Chip,
-    Paper,
-    useTheme
+    Paper
 } from '@mui/material';
 import {
     CircleDashed,
@@ -47,8 +46,6 @@ import {
 } from '@phosphor-icons/react/dist/ssr';
 
 export function Acerca(): React.JSX.Element {
-    const theme = useTheme();
-
     const creadores = [
         {
             nombre: 'Luis Fernando Salazar Sossa',
@@ -82,7 +79,8 @@ export function Acerca(): React.JSX.Element {
                     gutterBottom
                     sx={{
                         fontWeight: 700,
-                        background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                        background:
+                            'linear-gradient(45deg, var(--mui-palette-primary-main), var(--mui-palette-secondary-main))',
                         backgroundClip: 'text',
                         WebkitBackgroundClip: 'text',
                         color: 'transparent'
@@ -101,24 +99,46 @@ export function Acerca(): React.JSX.Element {
             {/* Misión y Visión */}
             <Grid container spacing={6} mb={8}>
                 <Grid item xs={12} md={6}>
-                    <Paper elevation={3} sx={{ p: 4, height: '100%', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+                    {/* Tarjeta de marca: degradado del primario con su propio
+                        contrastText, así el texto es legible en ambos modos. */}
+                    <Paper
+                        elevation={3}
+                        sx={{
+                            p: 4,
+                            height: '100%',
+                            background:
+                                'linear-gradient(135deg, var(--mui-palette-primary-main) 0%, var(--mui-palette-primary-dark) 100%)',
+                            color: 'var(--mui-palette-primary-contrastText)'
+                        }}
+                    >
                         <Box display="flex" alignItems="center" mb={3}>
-                            <CircleDashed size={40} color="white" />
-                            <Typography variant="h5" component="h2" color="white" ml={2}>
+                            <CircleDashed size={40} color="currentColor" />
+                            <Typography variant="h5" component="h2" color="inherit" ml={2}>
                                 Nuestra Misión
                             </Typography>
                         </Box>
-                        <Typography variant="body1" color="white" textAlign='justify' lineHeight={1.8}>
+                        <Typography variant="body1" color="inherit" textAlign='justify' lineHeight={1.8}>
                             En TECNISERVICIOS J.F S.A.S, nuestra misión es proporcionar servicios de reparación de equipos industriales de la mejor calidad. Nos comprometemos a minimizar el tiempo de inactividad de su maquinaria y a maximizar su rendimiento.
                         </Typography>
                     </Paper>
                 </Grid>
 
                 <Grid item xs={12} md={6}>
-                    <Paper elevation={3} sx={{ p: 4, height: '100%', background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }}>
+                    {/* Misma receta que Misión, pero con el acento de éxito
+                        para diferenciar las dos tarjetas sin colores fijos. */}
+                    <Paper
+                        elevation={3}
+                        sx={{
+                            p: 4,
+                            height: '100%',
+                            background:
+                                'linear-gradient(135deg, var(--mui-palette-success-main) 0%, var(--mui-palette-success-dark) 100%)',
+                            color: 'var(--mui-palette-success-contrastText)'
+                        }}
+                    >
                         <Box display="flex" alignItems="center" mb={3}>
-                            <Eye size={40} color="white" />
-                            <Typography variant="h5" component="h2" color="white" ml={2}>
+                            <Eye size={40} color="currentColor" />
+                            <Typography variant="h5" component="h2" color="inherit" ml={2}>
                                 Nuestra Visión
                             </Typography>
                         </Box>
@@ -142,7 +162,7 @@ export function Acerca(): React.JSX.Element {
                         <Grid item xs={12} md={4} key={index}>
                             <Card elevation={2} sx={{ textAlign: 'center', p: 3, height: '100%' }}>
                                 <CardContent>
-                                    <Box sx={{ color: theme.palette.primary.main, mb: 2 }}>
+                                    <Box sx={{ color: 'var(--mui-palette-primary-main)', mb: 2 }}>
                                         {valor.icono}
                                     </Box>
                                     <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
@@ -173,7 +193,9 @@ export function Acerca(): React.JSX.Element {
                             <Card elevation={4} sx={{
                                 p: 3,
                                 textAlign: 'center',
-                                background: 'linear-gradient(145deg, #f5f7fa 0%, #c3cfe2 100%)',
+                                background:
+                                    'linear-gradient(145deg, var(--mui-palette-background-paper) 0%, var(--mui-palette-background-level2) 100%)',
+                                border: '1px solid var(--mui-palette-divider)',
                                 transition: 'transform 0.3s ease',
                                 '&:hover': {
                                     transform: 'translateY(-8px)'
@@ -188,7 +210,7 @@ export function Acerca(): React.JSX.Element {
                                             height: 150,
                                             mx: 'auto',
                                             mb: 3,
-                                            border: `4px solid ${theme.palette.primary.main}`
+                                            border: '4px solid var(--mui-palette-primary-main)'
                                         }}
                                     />
 
@@ -211,8 +233,8 @@ export function Acerca(): React.JSX.Element {
                                                 size="small"
                                                 variant="outlined"
                                                 sx={{
-                                                    borderColor: theme.palette.primary.main,
-                                                    color: theme.palette.primary.main
+                                                    borderColor: 'var(--mui-palette-primary-main)',
+                                                    color: 'var(--mui-palette-primary-main)'
                                                 }}
                                             />
                                         ))}
@@ -225,7 +247,16 @@ export function Acerca(): React.JSX.Element {
             </Box>
 
             {/* Footer */}
-            <Box textAlign="center" mt={8} p={4} sx={{ backgroundColor: 'grey.50', borderRadius: 2 }}>
+            <Box
+                textAlign="center"
+                mt={8}
+                p={4}
+                sx={{
+                    backgroundColor: 'var(--mui-palette-background-level1)',
+                    border: '1px solid var(--mui-palette-divider)',
+                    borderRadius: 2
+                }}
+            >
                 <Typography variant="h6" gutterBottom>
                     Potenciando el éxito en cada proyecto de construcción
                 </Typography>

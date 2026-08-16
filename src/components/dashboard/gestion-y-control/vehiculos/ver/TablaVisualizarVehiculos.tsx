@@ -94,7 +94,7 @@ export function TablaVisualizarVehiculos(): React.JSX.Element {
                         label={row.Estado}
                         color={getEstadoColor(row.Estado)}
                         size="small"
-                        sx={{ color: 'white', minWidth: 100 }}
+                        sx={{ minWidth: 100 }}
                     />
                 )
             }

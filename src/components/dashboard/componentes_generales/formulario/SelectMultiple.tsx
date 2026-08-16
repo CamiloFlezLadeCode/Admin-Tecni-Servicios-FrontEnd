@@ -163,15 +163,14 @@ interface RoleSelectProps {
 }
 
 const SelectMultiple: React.FC<RoleSelectProps> = ({ options, value, onChange, required = false, size = 'small', valorname, bloqueado, label }) => {
-    const [focused, setFocused] = React.useState(false);
 
     return (
         <FormControl fullWidth variant="outlined">
             <InputLabel
                 id="role-select-label"
                 shrink
+                // El color del label (normal, foco, deshabilitado) lo resuelve el tema.
                 style={{
-                    color: focused ? '#000000' : 'gray',
                     fontWeight: 'bolder',
                 }}
             >{label}</InputLabel>
@@ -194,8 +193,6 @@ const SelectMultiple: React.FC<RoleSelectProps> = ({ options, value, onChange, r
                         })}
                     </Box>
                 )}
-                onFocus={() => setFocused(true)}
-                onBlur={() => setFocused(false)}
                 variant="outlined"
                 size={size}
                 name={valorname}

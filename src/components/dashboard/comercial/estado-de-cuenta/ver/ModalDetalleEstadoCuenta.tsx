@@ -13,8 +13,7 @@ import {
     Stack,
     LinearProgress,
     Card,
-    CardContent,
-    useTheme
+    CardContent
 } from '@mui/material';
 import {
     CalendarBlank,
@@ -57,8 +56,6 @@ interface ModalDetalleEstadoCuentaProps {
 }
 
 export function ModalDetalleEstadoCuenta({ open, onClose, data }: ModalDetalleEstadoCuentaProps): JSX.Element {
-    const theme = useTheme();
-
     if (!data) return <></>;
 
     const prestada = Number(data.CantidadPrestada || 0);
@@ -68,17 +65,34 @@ export function ModalDetalleEstadoCuenta({ open, onClose, data }: ModalDetalleEs
     // Calcular porcentaje de devolución
     const porcentajeDevolucion = prestada > 0 ? Math.min(100, (devuelta / prestada) * 100) : 0;
 
-    const getEstadoColor = (estado: string) => {
+    /**
+     * Devuelve el TOKEN del estado, no un color ya resuelto.
+     *
+     * Antes esto retornaba `theme.palette.success.main`, que con
+     * CssVarsProvider se evalúa una sola vez contra el esquema por defecto:
+     * el color quedaba congelado en modo claro y no cambiaba al alternar.
+     * Devolviendo el nombre del token, el color lo resuelve el CSS en cada
+     * modo.
+     */
+    const getEstadoToken = (estado: string): 'success' | 'warning' | 'error' | 'info' | null => {
         switch (estado?.toLowerCase()) {
-            case 'completo': return theme.palette.success.main;
-            case 'pendiente': return theme.palette.warning.main;
-            case 'cancelada': return theme.palette.error.main;
-            case 'en proceso': return theme.palette.info.main;
-            default: return theme.palette.text.secondary;
+            case 'completo': return 'success';
+            case 'pendiente': return 'warning';
+            case 'cancelada': return 'error';
+            case 'en proceso': return 'info';
+            default: return null;
         }
     };
 
-    const estadoColor = getEstadoColor(data.EstadoDevolucion);
+    const estadoToken = getEstadoToken(data.EstadoDevolucion);
+    // Color pleno del estado (texto de énfasis, barra de progreso, iconos).
+    const estadoColor = estadoToken
+        ? `var(--mui-palette-${estadoToken}-main)`
+        : 'var(--mui-palette-text-secondary)';
+    // Canal RGB del mismo estado, para construir tintes translúcidos.
+    const estadoCanal = estadoToken
+        ? `var(--mui-palette-${estadoToken}-mainChannel)`
+        : 'var(--mui-palette-text-secondaryChannel)';
     const handleDialogClose = (_event: object, reason: 'backdropClick' | 'escapeKeyDown') => {
         if (reason === 'backdropClick' || reason === 'escapeKeyDown') return;
         onClose();
@@ -101,8 +115,12 @@ export function ModalDetalleEstadoCuenta({ open, onClose, data }: ModalDetalleEs
             {/* Header con gradiente suave basado en el estado */}
             <Box sx={{
                 p: 3,
-                background: `linear-gradient(135deg, ${estadoColor}15 0%, ${theme.palette.background.paper} 100%)`,
-                borderBottom: `1px solid ${theme.palette.divider}`
+                // El tinte se arma con el canal RGB. Antes se concatenaba `15`
+                // al valor del color para simular un alpha en hex; eso sólo
+                // funciona si el color es un hex de 6 dígitos, y producía un
+                // valor inválido en cuanto el token era una variable CSS.
+                background: `linear-gradient(135deg, rgba(${estadoCanal} / 0.10) 0%, var(--mui-palette-background-paper) 100%)`,
+                borderBottom: '1px solid var(--mui-palette-divider)'
             }}>
                 <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
                     <Box>
@@ -110,8 +128,11 @@ export function ModalDetalleEstadoCuenta({ open, onClose, data }: ModalDetalleEs
                             <Chip
                                 label={data.EstadoDevolucion}
                                 sx={{
-                                    bgcolor: estadoColor,
-                                    color: 'white',
+                                    // Mismo criterio que el resto de chips de estado:
+                                    // tinte al 12% con texto del color pleno. Un relleno
+                                    // sólido con texto blanco deslumbra en modo oscuro.
+                                    bgcolor: `rgba(${estadoCanal} / 0.12)`,
+                                    color: estadoColor,
                                     fontWeight: 'bold',
                                     height: 24
                                 }}
@@ -156,7 +177,10 @@ export function ModalDetalleEstadoCuenta({ open, onClose, data }: ModalDetalleEs
                                     sx={{
                                         height: 10,
                                         borderRadius: 5,
-                                        bgcolor: theme.palette.grey[200],
+                                        // `grey[200]` es un gris claro fijo: en modo oscuro
+                                        // la pista quedaba casi blanca. `level2` sube o baja
+                                        // con la superficie.
+                                        bgcolor: 'var(--mui-palette-background-level2)',
                                         '& .MuiLinearProgress-bar': {
                                             bgcolor: estadoColor,
                                             borderRadius: 5
@@ -172,24 +196,24 @@ export function ModalDetalleEstadoCuenta({ open, onClose, data }: ModalDetalleEs
 
                     {/* Tarjetas de Cantidades */}
                     <Grid item xs={12} md={4}>
-                        <Box sx={{ p: 2, border: `1px solid ${theme.palette.divider}`, borderRadius: 2, textAlign: 'center' }}>
+                        <Box sx={{ p: 2, border: '1px solid var(--mui-palette-divider)', borderRadius: 2, textAlign: 'center' }}>
                             <Typography variant="overline" color="text.secondary">Cantidad Prestada</Typography>
                             <Typography variant="h4" sx={{ my: 1 }}>{prestada}</Typography>
-                            <Truck size={24} color={theme.palette.info.main} weight="duotone" />
+                            <Truck size={24} color="var(--mui-palette-info-main)" weight="duotone" />
                         </Box>
                     </Grid>
                     <Grid item xs={12} md={4}>
-                        <Box sx={{ p: 2, border: `1px solid ${theme.palette.divider}`, borderRadius: 2, textAlign: 'center', bgcolor: `${theme.palette.success.main}08` }}>
+                        <Box sx={{ p: 2, border: '1px solid var(--mui-palette-divider)', borderRadius: 2, textAlign: 'center', bgcolor: 'rgba(var(--mui-palette-success-mainChannel) / 0.08)' }}>
                             <Typography variant="overline" color="success.main">Cantidad Devuelta</Typography>
                             <Typography variant="h4" color="success.main" sx={{ my: 1 }}>{devuelta}</Typography>
-                            <CheckCircle size={24} color={theme.palette.success.main} weight="duotone" />
+                            <CheckCircle size={24} color="var(--mui-palette-success-main)" weight="duotone" />
                         </Box>
                     </Grid>
                     <Grid item xs={12} md={4}>
-                        <Box sx={{ p: 2, border: `1px solid ${theme.palette.divider}`, borderRadius: 2, textAlign: 'center', bgcolor: pendiente > 0 ? `${theme.palette.warning.main}08` : undefined }}>
+                        <Box sx={{ p: 2, border: '1px solid var(--mui-palette-divider)', borderRadius: 2, textAlign: 'center', bgcolor: pendiente > 0 ? 'rgba(var(--mui-palette-warning-mainChannel) / 0.08)' : undefined }}>
                             <Typography variant="overline" color={pendiente > 0 ? "warning.main" : "text.secondary"}>Pendiente en Obra</Typography>
                             <Typography variant="h4" color={pendiente > 0 ? "warning.main" : "text.primary"} sx={{ my: 1 }}>{pendiente}</Typography>
-                            <WarningCircle size={24} color={pendiente > 0 ? theme.palette.warning.main : theme.palette.text.secondary} weight="duotone" />
+                            <WarningCircle size={24} color={pendiente > 0 ? 'var(--mui-palette-warning-main)' : 'var(--mui-palette-text-secondary)'} weight="duotone" />
                         </Box>
                     </Grid>
 
@@ -214,7 +238,7 @@ export function ModalDetalleEstadoCuenta({ open, onClose, data }: ModalDetalleEs
 
                             <Box sx={{ display: 'flex', gap: 2 }}>
                                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                    <Clock size={20} color={theme.palette.text.secondary} />
+                                    <Clock size={20} color="var(--mui-palette-text-secondary)" />
                                 </Box>
                                 <Box>
                                     <Typography variant="body2" fontWeight="bold">Tiempo Transcurrido</Typography>
@@ -288,7 +312,7 @@ export function ModalDetalleEstadoCuenta({ open, onClose, data }: ModalDetalleEs
                 </Grid>
             </DialogContent>
 
-            <DialogActions sx={{ p: 3, bgcolor: theme.palette.background.default }}>
+            <DialogActions sx={{ p: 3, bgcolor: 'var(--mui-palette-background-default)' }}>
                 <Button onClick={onClose} variant="contained" color="primary">
                     Cerrar
                 </Button>

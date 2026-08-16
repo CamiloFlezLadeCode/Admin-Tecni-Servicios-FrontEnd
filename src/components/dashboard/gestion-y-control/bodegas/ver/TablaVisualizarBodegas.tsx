@@ -129,7 +129,7 @@ export function TablaVisualizarBodegas(): React.JSX.Element {
                     label={row.EstadoBodega}
                     color={getEstadoColor(row.EstadoBodega)}
                     size='small'
-                    sx={{ color: 'white', minWidth: 100 }}
+                    sx={{ minWidth: 100 }}
                 />
             )
         }

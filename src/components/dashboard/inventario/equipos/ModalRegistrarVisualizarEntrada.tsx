@@ -477,11 +477,6 @@ export function ModalRegistrarEntradaEquipos({
                         handleCerrarModal();
                     }
                 }}
-                sx={{
-                    '& .MuiBackdrop-root': {
-                        backgroundColor: 'rgba(0,0,0,0.5)'
-                    }
-                }}
             >
                 <Box
                     sx={{
@@ -496,6 +491,9 @@ export function ModalRegistrarEntradaEquipos({
                             lg: '78%',
                         },
                         bgcolor: 'background.paper',
+                        // En oscuro la sombra casi no se ve; el borde es lo que separa
+                        // el modal del velo del backdrop (mismo criterio que MuiDialog).
+                        border: '1px solid var(--mui-palette-divider)',
                         boxShadow: 24,
                         p: 3,
                         borderRadius: 2,

@@ -22,12 +22,14 @@ interface InputSelectConEstadoProps {
     bloqueado?: boolean;
 }
 
+// Tokens semánticos: el punto de estado conserva su código de color y se
+// reajusta solo al alternar entre modo claro y oscuro.
 const estadoColor: Record<EquipoEstadoOption['estado'], string> = {
-    Disponible: '#15b79f', //'#4caf50',    // verde
-    'No disponible': '#f04438', //'#f44336', // rojo
-    Reparación: '#fb9c0c', //'#ff9800',    // amarillo
-    Activo: 'en propuesta', // color en propuesta/pensamiento
-    Inactivo: 'en propuesta' // color en propuesta/pensamiento
+    Disponible: 'var(--mui-palette-success-main)',      // verde
+    'No disponible': 'var(--mui-palette-error-main)',   // rojo
+    Reparación: 'var(--mui-palette-warning-main)',      // ámbar
+    Activo: 'var(--mui-palette-info-main)',
+    Inactivo: 'var(--mui-palette-text-disabled)'
 };
 
 const InputSelectConEstado: React.FC<InputSelectConEstadoProps> = ({
@@ -40,7 +42,6 @@ const InputSelectConEstado: React.FC<InputSelectConEstadoProps> = ({
     valorname,
     bloqueado = false,
 }) => {
-    const [focused, setFocused] = React.useState(false);
     const labelId = `${valorname ?? label}-label`;
 
     return (
@@ -49,8 +50,8 @@ const InputSelectConEstado: React.FC<InputSelectConEstadoProps> = ({
                 <InputLabel
                     id={labelId}
                     shrink
+                    // El color del label (normal, foco, deshabilitado) lo resuelve el tema.
                     style={{
-                        color: focused ? '#000000' : 'gray',
                         fontWeight: 'bolder',
                     }}
                 >
@@ -65,8 +66,6 @@ const InputSelectConEstado: React.FC<InputSelectConEstadoProps> = ({
                     label={label}
                     variant="outlined"
                     size={size}
-                    onFocus={() => setFocused(true)}
-                    onBlur={() => setFocused(false)}
                     notched
                 >
                     {/* Con este muestra el circulo relleno justo donde termina el nombre del equipo */}
@@ -84,7 +83,11 @@ const InputSelectConEstado: React.FC<InputSelectConEstadoProps> = ({
                         <MenuItem key={val} value={val} disabled={estado !== 'Disponible'}>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'space-between', width: '100%' }}>
                                 <Typography noWrap>{lbl}</Typography>
-                                <Circle size={14} weight="fill" color={estadoColor[estado]} />
+                                {/* El token va en el contenedor y el icono lo hereda: un
+                                    `var()` suelto en la prop `color` del icono no siempre resuelve. */}
+                                <Box component="span" sx={{ display: 'flex', color: estadoColor[estado] }}>
+                                    <Circle size={14} weight="fill" color="currentColor" />
+                                </Box>
                             </Box>
                         </MenuItem>
                     ))}

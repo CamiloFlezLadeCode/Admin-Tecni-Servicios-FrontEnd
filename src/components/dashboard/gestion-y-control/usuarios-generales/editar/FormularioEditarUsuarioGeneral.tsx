@@ -318,7 +318,11 @@ export function FormularioEditarUsuarioGeneral({ onMostrarMensaje, DatosUsuarioA
                         [theme.breakpoints.down('xl')]: {
                             // width: 700,
                         },
-                        bgcolor: 'background.paper',
+                        // El Modal usa un Box plano, así que no hereda el estilo de MuiDialog:
+                        // se replica aquí (superficie + borde) para que tenga definición en oscuro.
+                        bgcolor: 'var(--mui-palette-background-paper)',
+                        color: 'var(--mui-palette-text-primary)',
+                        border: '1px solid var(--mui-palette-divider)',
                         boxShadow: 24,
                         p: 3,
                         borderRadius: 2,

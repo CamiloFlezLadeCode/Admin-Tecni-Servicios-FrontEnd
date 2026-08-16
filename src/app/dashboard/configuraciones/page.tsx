@@ -68,7 +68,8 @@ export default function Page(): React.JSX.Element {
         <Stack spacing={2}>
             <div>
                 <Box mb={1}>
-                    <Paper elevation={3} sx={{ p: 2, backgroundColor: '#f5f5f5', borderLeft: '6px solid #1976d2' }}>
+                    {/* Banner destacado: se apoya en level1 para separarse del fondo sin fijar un gris */}
+                    <Paper elevation={3} sx={{ p: 2, backgroundColor: 'var(--mui-palette-background-level1)', borderLeft: '6px solid var(--mui-palette-primary-main)' }}>
                         <Typography variant="subtitle1" fontWeight="bold" color="primary">
                             Panel administrativo / Configuraciones de alto nivel
                         </Typography>

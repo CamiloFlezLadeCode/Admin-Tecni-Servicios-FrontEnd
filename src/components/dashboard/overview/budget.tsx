@@ -32,7 +32,22 @@ export function Budget({ diff, trend, sx, value }: BudgetProps): React.JSX.Eleme
               </Typography>
               <Typography variant="h4">{value}</Typography>
             </Stack>
-            <Avatar sx={{ backgroundColor: 'var(--mui-palette-primary-main)', height: '56px', width: '56px' }}>
+            {/*
+              El avatar no llevaba color de icono, así que heredaba el
+              `background.default` del tema — casi blanco en claro y casi negro
+              en oscuro— y su contraste sobre el círculo era pura casualidad.
+              Con `contrastText` el par queda garantizado por el propio tema:
+              5.2:1 en claro y 5.7:1 en oscuro, muy por encima del 3:1 que pide
+              AA para un icono.
+            */}
+            <Avatar
+              sx={{
+                backgroundColor: 'var(--mui-palette-primary-main)',
+                color: 'var(--mui-palette-primary-contrastText)',
+                height: '56px',
+                width: '56px',
+              }}
+            >
               <CurrencyDollarIcon fontSize="var(--icon-fontSize-lg)" />
             </Avatar>
           </Stack>

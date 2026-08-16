@@ -10,7 +10,6 @@ import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
-import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
 import { ArrowRight, ArrowClockwise, Buildings, ClipboardText, Package, Receipt, Wrench } from '@phosphor-icons/react/dist/ssr';
@@ -18,6 +17,7 @@ import dayjs from 'dayjs';
 
 import { config } from '@/config';
 import { paths } from '@/paths';
+import { useChartPalette } from '@/hooks/use-chart-palette';
 import { Chart } from '@/components/core/chart';
 import { ListarClientes } from '@/services/generales/ListarClientesService';
 import { ConsultarProyectos } from '@/services/gestionycontrol/proyectos/ConsultarProyectosService';
@@ -180,7 +180,10 @@ function actividadColor(tipo: 'Remisión' | 'Devolución' | 'Órden'): 'primary'
 }
 
 export default function Page(): React.JSX.Element {
-    const theme = useTheme();
+    // Colores literales para ApexCharts, ligados al modo REAL (ver el hook:
+    // `theme.palette` no sirve aquí porque son variables CSS y `palette.mode`
+    // se queda congelado bajo `CssVarsProvider`).
+    const paletaGrafica = useChartPalette();
     const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState<string | null>(null);
 
@@ -504,58 +507,122 @@ export default function Page(): React.JSX.Element {
         return actividadRecienteFallback;
     }, [actividadRecienteFallback, actividadRecienteMovimientos]);
 
+    // El fondo de papel y el hairline de elevación ya vienen de `MuiPaper` y
+    // `MuiCard`; repetirlos aquí sólo duplicaba el borde de las tarjetas KPI.
     const kpiCardSx = React.useMemo(() => {
         return {
             height: '100%',
             overflow: 'hidden',
-            border: '1px solid',
-            borderColor: 'divider',
-            bgcolor: 'background.paper',
         };
     }, []);
 
+    /**
+     * Opciones comunes de las tres gráficas.
+     *
+     * Todo el color sale de `paletaGrafica` (hex literales) y NO de
+     * `theme.palette.*`: bajo `CssVarsProvider` esos valores son strings con
+     * `var(...)` dentro, o rgba translúcidos, y Apex —que escribe en atributos
+     * SVG— no resuelve ninguno de los dos. Y `theme.palette.mode` queda
+     * congelado en el esquema por defecto, así que ni el tema ni las
+     * dependencias del `useMemo` cambiaban al alternar el modo.
+     *
+     * `paletaGrafica` sólo cambia de identidad cuando cambia el modo real, así
+     * que tenerla en las dependencias es justo lo que faltaba para que las
+     * gráficas se repinten.
+     */
     const chartCommon = React.useMemo(() => {
         return {
-            chart: { background: 'transparent', toolbar: { show: false }, zoom: { enabled: false } },
+            chart: {
+                background: 'transparent',
+                fontFamily: 'inherit',
+                // Color por defecto de cualquier texto del SVG sin color propio.
+                foreColor: paletaGrafica.textoEje,
+                toolbar: { show: false },
+                zoom: { enabled: false },
+            },
             dataLabels: { enabled: false },
-            grid: { borderColor: theme.palette.divider, strokeDashArray: 2 },
+            grid: { borderColor: paletaGrafica.rejilla, strokeDashArray: 2 },
             stroke: { width: 3, curve: 'smooth' as const },
-            theme: { mode: theme.palette.mode },
-            tooltip: { theme: theme.palette.mode },
+            theme: { mode: paletaGrafica.modo },
+            tooltip: { theme: paletaGrafica.modo },
         };
-    }, [theme.palette.divider, theme.palette.mode]);
+    }, [paletaGrafica]);
+
+    /** Variables CSS del tooltip; las consume el CSS de `components/core/chart.tsx`. */
+    const chartTooltipVars = React.useMemo(() => {
+        return {
+            '--grafica-tooltip-fondo': paletaGrafica.tooltipFondo,
+            '--grafica-tooltip-texto': paletaGrafica.tooltipTexto,
+        };
+    }, [paletaGrafica]);
 
     const optionsRemVsDev = React.useMemo(() => {
         return {
             ...chartCommon,
-            colors: [theme.palette.primary.main, theme.palette.info.main],
-            xaxis: { categories: serieMeses.categories, labels: { style: { colors: theme.palette.text.secondary } } },
-            yaxis: { labels: { style: { colors: theme.palette.text.secondary } } },
+            // Índigo y cian: los mismos hex a los que resuelven `primary.main`
+            // e `info.main` del modo activo, para que cada área vaya a juego
+            // con su `<Chip>` ("Rem" primary / "Dev" info) de las tarjetas.
+            colors: [paletaGrafica.primario, paletaGrafica.info],
+            xaxis: {
+                categories: serieMeses.categories,
+                axisBorder: { color: paletaGrafica.bordeEje },
+                axisTicks: { color: paletaGrafica.bordeEje },
+                labels: { style: { colors: paletaGrafica.textoEje } },
+            },
+            yaxis: { labels: { style: { colors: paletaGrafica.textoEje } } },
+            // Con dos series superpuestas la leyenda es obligatoria: es lo
+            // único que ata cada color a su nombre.
+            legend: {
+                position: 'top' as const,
+                horizontalAlign: 'right' as const,
+                fontFamily: 'inherit',
+                labels: { colors: paletaGrafica.textoEje },
+                markers: { width: 10, height: 10, radius: 3 },
+            },
             fill: { type: 'gradient', gradient: { shadeIntensity: 0.2, opacityFrom: 0.35, opacityTo: 0.05, stops: [0, 90, 100] } },
         };
-    }, [chartCommon, serieMeses.categories, theme.palette.info.main, theme.palette.primary.main, theme.palette.text.secondary]);
+    }, [chartCommon, paletaGrafica, serieMeses.categories]);
 
     const optionsOrdenes = React.useMemo(() => {
         return {
             ...chartCommon,
-            colors: [theme.palette.success.main],
-            plotOptions: { bar: { columnWidth: '42px', borderRadius: 6 } },
+            colors: [paletaGrafica.exito],
+            // Punta redondeada sólo arriba: la base queda anclada al cero, que
+            // es lo que se compara entre meses.
+            plotOptions: { bar: { columnWidth: '42px', borderRadius: 6, borderRadiusApplication: 'end' as const } },
             stroke: { width: 0 },
-            xaxis: { categories: serieOrdenes6m.categories, labels: { style: { colors: theme.palette.text.secondary } } },
-            yaxis: { labels: { style: { colors: theme.palette.text.secondary } } },
+            xaxis: {
+                categories: serieOrdenes6m.categories,
+                axisBorder: { color: paletaGrafica.bordeEje },
+                axisTicks: { color: paletaGrafica.bordeEje },
+                labels: { style: { colors: paletaGrafica.textoEje } },
+            },
+            yaxis: { labels: { style: { colors: paletaGrafica.textoEje } } },
         };
-    }, [chartCommon, serieOrdenes6m.categories, theme.palette.success.main, theme.palette.text.secondary]);
+    }, [chartCommon, paletaGrafica, serieOrdenes6m.categories]);
 
     const optionsInventario = React.useMemo(() => {
         return {
             ...chartCommon,
             labels: ['OK', 'Bajo', 'Agotado'],
-            colors: [theme.palette.success.main, theme.palette.warning.main, theme.palette.error.main],
-            legend: { position: 'bottom' as const, labels: { colors: theme.palette.text.secondary } },
-            stroke: { width: 2, colors: [theme.palette.background.paper] },
+            // Trío de estado del hook, no `success/warning/error.main` tal cual:
+            // en modo claro el ámbar 600 y el rojo 500 quedan a ΔE 8.2 en
+            // visión normal —se confunden entre sí incluso sin daltonismo— y
+            // aquí van en porciones contiguas de la misma dona.
+            colors: [paletaGrafica.estadoOk, paletaGrafica.estadoAdvertencia, paletaGrafica.estadoCritico],
+            legend: {
+                position: 'bottom' as const,
+                fontFamily: 'inherit',
+                labels: { colors: paletaGrafica.textoEje },
+                markers: { width: 10, height: 10, radius: 3 },
+            },
+            // Separador entre porciones: tiene que ser el color REAL de la
+            // tarjeta en el modo activo, no una variable CSS (Apex lo escribe
+            // como atributo `stroke` del SVG y descartaría el valor).
+            stroke: { width: 2, colors: [paletaGrafica.superficie] },
             plotOptions: { pie: { donut: { size: '72%' } } },
         };
-    }, [chartCommon, theme.palette.background.paper, theme.palette.error.main, theme.palette.success.main, theme.palette.text.secondary, theme.palette.warning.main]);
+    }, [chartCommon, paletaGrafica]);
 
     const actionButtonSx = React.useMemo(() => {
         return {
@@ -905,13 +972,19 @@ export default function Page(): React.JSX.Element {
                                 </Button>
                             </Stack>
                             <Box sx={{ mt: 2 }}>
-                                {loading ? (
+                                {/* `!paletaGrafica.montado` mantiene el placeholder hasta conocer
+                                    el modo real: evita pintar una vez con la paleta equivocada. */}
+                                {loading || !paletaGrafica.montado ? (
                                     <Skeleton variant="rounded" height={320} />
                                 ) : (
                                     <Chart
+                                        // Remontar al cambiar de modo: Apex reutiliza el SVG ya
+                                        // pintado y no siempre repinta los colores literales.
+                                        key={paletaGrafica.modo}
                                         height={320}
                                         type="area"
                                         width="100%"
+                                        sx={chartTooltipVars}
                                         options={optionsRemVsDev as any}
                                         series={[
                                             { name: 'Remisiones', data: serieMeses.remisiones },
@@ -942,13 +1015,15 @@ export default function Page(): React.JSX.Element {
                             </Stack>
 
                             <Box sx={{ mt: 2 }}>
-                                {loading ? (
+                                {loading || !paletaGrafica.montado ? (
                                     <Skeleton variant="rounded" height={320} />
                                 ) : (
                                     <Chart
+                                        key={paletaGrafica.modo}
                                         height={320}
                                         type="donut"
                                         width="100%"
+                                        sx={chartTooltipVars}
                                         options={optionsInventario as any}
                                         series={[inventarioResumen.OK, inventarioResumen.Bajo, inventarioResumen.Agotado]}
                                     />
@@ -988,13 +1063,15 @@ export default function Page(): React.JSX.Element {
                                 </Button>
                             </Stack>
                             <Box sx={{ mt: 2 }}>
-                                {loading ? (
+                                {loading || !paletaGrafica.montado ? (
                                     <Skeleton variant="rounded" height={320} />
                                 ) : (
                                     <Chart
+                                        key={paletaGrafica.modo}
                                         height={320}
                                         type="bar"
                                         width="100%"
+                                        sx={chartTooltipVars}
                                         options={optionsOrdenes as any}
                                         series={[{ name: 'Órdenes', data: serieOrdenes6m.ordenes }]}
                                     />

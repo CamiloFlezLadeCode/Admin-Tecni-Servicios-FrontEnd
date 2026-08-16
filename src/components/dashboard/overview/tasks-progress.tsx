@@ -26,12 +26,41 @@ export function TasksProgress({ value, sx }: TasksProgressProps): React.JSX.Elem
               </Typography>
               <Typography variant="h4">{value}%</Typography>
             </Stack>
-            <Avatar sx={{ backgroundColor: 'var(--mui-palette-warning-main)', height: '56px', width: '56px' }}>
+            {/* Icono con `contrastText`: sin él heredaba `background.default`
+                y el contraste sobre el círculo quedaba al azar. */}
+            <Avatar
+              sx={{
+                backgroundColor: 'var(--mui-palette-warning-main)',
+                color: 'var(--mui-palette-warning-contrastText)',
+                height: '56px',
+                width: '56px',
+              }}
+            >
               <ListBulletsIcon fontSize="var(--icon-fontSize-lg)" />
             </Avatar>
           </Stack>
           <div>
-            <LinearProgress value={value} variant="determinate" />
+            {/*
+              La barra iba en `primary` mientras el avatar iba en `warning`:
+              dos colores para un solo dato. Se alinea con el avatar usando el
+              mismo token, y la pista se construye con el canal del propio
+              color (16% de opacidad) en vez de con un gris fijo, para que
+              funcione igual sobre tarjeta clara y oscura.
+            */}
+            <LinearProgress
+              aria-label="Progreso de tareas"
+              sx={{
+                backgroundColor: 'rgba(var(--mui-palette-warning-mainChannel) / 0.16)',
+                borderRadius: 999,
+                height: 8,
+                '& .MuiLinearProgress-bar': {
+                  backgroundColor: 'var(--mui-palette-warning-main)',
+                  borderRadius: 999,
+                },
+              }}
+              value={value}
+              variant="determinate"
+            />
           </div>
         </Stack>
       </CardContent>

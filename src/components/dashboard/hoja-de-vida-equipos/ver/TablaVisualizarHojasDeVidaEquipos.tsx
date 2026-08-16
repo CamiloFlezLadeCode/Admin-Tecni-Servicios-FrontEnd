@@ -59,11 +59,11 @@ export function TablaVisualizarHojasDeVidaEquipos(): React.JSX.Element {
                     padding: '8px', // Espaciado interno más pequeño
                 }}
             /> */}
-                        <Typography variant='subtitle1' style={{ color: '#000000', padding: '5px', fontWeight: 'normal' }}>Visualización de hojas de vida de equipos</Typography>
-            
+                        <Typography variant='subtitle1' sx={{ padding: '5px', fontWeight: 'normal' }}>Visualización de hojas de vida de equipos</Typography>
+
             <Divider />
             <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
-            <Paper style={{border: 'solid green'}}>
+            <Paper variant="outlined" sx={{ border: '1px solid var(--mui-palette-divider)' }}>
             <TextField
                 variant="outlined"
                 placeholder="Buscar hoja de vida..."
