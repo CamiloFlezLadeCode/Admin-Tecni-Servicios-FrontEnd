@@ -70,6 +70,7 @@ export const paths = {
     gestionycontrolequipos: '/dashboard/gestion-y-control/equipos',
     gestionycontrolequiposcrear: '/dashboard/gestion-y-control/equipos/crear-equipo',
     gestionycontrolequiposver: '/dashboard/gestion-y-control/equipos/ver-equipos',
+    gestionycontrolequiposestado: '/dashboard/gestion-y-control/equipos/estado-equipos',
 
     // Mecánicos
     gestionycontrolmecanicos: '/dashboard/gestion-y-control/mecanicos',

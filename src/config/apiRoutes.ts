@@ -126,7 +126,8 @@ export const apiRoutes = {
             verequipoporid: (IdEquipo: number) => `${API_BASE_URL}/ver-equipo/${IdEquipo}`,
             actualizarequipo: `${API_BASE_URL}/actualizar-equipo`,
             crear_equipo: `${API_BASE_URL}/crear-equipo`,
-            ver_todos_los_equipo: `${API_BASE_URL}/ver-equipos`
+            ver_todos_los_equipo: `${API_BASE_URL}/ver-equipos`,
+            ver_ubicacion_equipo: (IdEquipo: number) => `${API_BASE_URL}/ver-ubicacion-equipo/${IdEquipo}`
         },
         repuestos: {
             crear_repuesto: `${API_BASE_URL}/crear-repuesto`,

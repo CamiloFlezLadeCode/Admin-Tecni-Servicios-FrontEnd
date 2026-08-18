@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
-import { Plus, Eye } from '@phosphor-icons/react/dist/ssr';
+import { Plus, Eye, MapPin } from '@phosphor-icons/react/dist/ssr';
 import Card from '@mui/material/Card';
 import RouterLink from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -22,6 +22,11 @@ const ItemsNavEquipos = [
         label: 'Crear equipo',
         path: paths.dashboard.gestionycontrolequiposcrear,
         icon: Plus
+    },
+    {
+        label: 'Estado de equipos',
+        path: paths.dashboard.gestionycontrolequiposestado,
+        icon: MapPin
     }
 ]
 export function NavBarEquipos(): React.JSX.Element {
