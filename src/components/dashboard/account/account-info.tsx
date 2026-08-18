@@ -117,6 +117,7 @@ import { ConsultarInformacionUsuarioActivo } from '@/services/gestionycontrol/cu
 import { GuardarAvatar } from '@/services/gestionycontrol/cuenta/SubirGuardarAvatarService';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import { MostrarAvatar } from '@/services/gestionycontrol/cuenta/MostrarAvatarService';
+import { useAvatarPorDefecto } from '@/hooks/use-avatar-por-defecto';
 import Skeleton from '@mui/material/Skeleton';
 import { useSocketIO } from '@/hooks/use-WebSocket';
 
@@ -285,14 +286,22 @@ export function AccountInfo(): React.JSX.Element {
   //   cargarAvatar();
   // }, [DocumentoUsuarioActivo]);
 
-  const [avatarUrl, setAvatarUrl] = React.useState('');
+  const [avatarUrl, setAvatarUrl] = React.useState<string | null>(null);
   const [cargandoAvatar, setCargandoAvatar] = React.useState(true);
+  // La imagen de reserva cambia con el modo claro/oscuro.
+  const avatarPorDefecto = useAvatarPorDefecto();
+  const [falloAvatar, setFalloAvatar] = React.useState(false);
+
+  // Se resuelve en cada render para que el avatar por defecto siga al tema.
+  // `preview` (la imagen recien elegida, aun sin subir) tiene prioridad.
+  const avatarMostrado = preview || (!falloAvatar && avatarUrl ? avatarUrl : avatarPorDefecto);
 
   const CargarAvatar = async () => {
     if (DocumentoUsuarioActivo) {
       setCargandoAvatar(true);
+      setFalloAvatar(false);
       const url = await MostrarAvatar(DocumentoUsuarioActivo);
-      setAvatarUrl(url || '/assets/AvatarDefault.png');
+      setAvatarUrl(url);
       setCargandoAvatar(false);
     }
   }
@@ -349,13 +358,19 @@ export function AccountInfo(): React.JSX.Element {
               ) : (
                 <Avatar
                   // src={avatarUrl}
-                  src={preview || avatarUrl}
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.onerror = null;
-                    target.src = '/assets/AvatarDefault.png';
+                  src={avatarMostrado}
+                  // Se marca el fallo en el estado en vez de reescribir `src` a mano:
+                  // mutar el nodo dejaria fija la imagen del modo activo en ese momento.
+                  onError={() => {
+                    setFalloAvatar(true);
                   }}
-                  sx={{ height: '80px', width: '80px' }}
+                  // Fondo transparente a proposito. MUI pinta bajo el Avatar un
+                  // circulo gris propio (`--mui-palette-Avatar-defaultBg`:
+                  // grey[400] en claro, grey[600] en oscuro). Como el PNG por
+                  // defecto es un trazo sobre transparente, ese gris medio es lo
+                  // que se veia detras y en oscuro dejaba el dibujo en 4.5:1.
+                  // Sin el, el trazo se apoya en la superficie real de la tarjeta.
+                  sx={{ height: '80px', width: '80px', bgcolor: 'transparent' }}
                 />
               )}
 

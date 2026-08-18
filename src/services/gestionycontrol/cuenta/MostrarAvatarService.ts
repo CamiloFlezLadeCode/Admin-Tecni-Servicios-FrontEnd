@@ -15,7 +15,15 @@
 import axiosInstance from "@/config/axiosConfig";
 import { apiRoutes } from "@/config/apiRoutes";
 
-export const MostrarAvatar = async (DocumentoUsuarioActivo: string): Promise<string> => {
+/**
+ * Devuelve la URL del avatar del usuario, o `null` si no tiene ninguno.
+ *
+ * Antes esto devolvía directamente la ruta del avatar por defecto, pero esa
+ * imagen depende del modo de color (hay una variante clara y otra oscura) y un
+ * servicio no puede conocer el tema. Devolviendo `null` la decisión queda en el
+ * componente, que sí puede usar `useAvatarPorDefecto()`.
+ */
+export const MostrarAvatar = async (DocumentoUsuarioActivo: string): Promise<string | null> => {
   const url = apiRoutes.gestionycontrol.cuenta.mostrar_avatar_usuario_activo(DocumentoUsuarioActivo);
 
   try {
@@ -23,8 +31,8 @@ export const MostrarAvatar = async (DocumentoUsuarioActivo: string): Promise<str
     await axiosInstance.head(url);
     return url; // La imagen existe
   } catch (error: any) {
-    // Si falla, usamos avatar por defecto
-    console.warn("No se encontró el avatar, usando imagen por defecto.");
-    return "/assets/AvatarDefault.png";
+    // Sin avatar propio: el componente decidirá qué imagen de reserva usar.
+    console.warn("No se encontró el avatar, se usará la imagen por defecto.");
+    return null;
   }
 };
