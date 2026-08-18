@@ -9,6 +9,7 @@ import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import { Bell as BellIcon } from '@phosphor-icons/react/dist/ssr/Bell';
+import { FloppyDisk as FloppyDiskIcon } from '@phosphor-icons/react/dist/ssr/FloppyDisk';
 import { List as ListIcon } from '@phosphor-icons/react/dist/ssr/List';
 import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass';
 import { Users as UsersIcon } from '@phosphor-icons/react/dist/ssr/Users';
@@ -134,15 +135,28 @@ export function MainNav(): React.JSX.Element {
       >
         <Stack
           direction="row"
-          spacing={2}
-          sx={{ alignItems: 'center', justifyContent: 'space-between', minHeight: '64px', px: 2 }}
+          // En moviles el espacio es el recurso escaso: reducimos separacion y padding
+          // para que quepan hamburguesa + saludo + backup + tema + avatar.
+          spacing={{ xs: 1, sm: 2 }}
+          sx={{ alignItems: 'center', justifyContent: 'space-between', minHeight: '64px', px: { xs: 1.5, sm: 2 } }}
         >
-          <Stack sx={{ alignItems: 'center' }} direction="row" spacing={2}>
+          {/*
+            Bloque izquierdo. `minWidth: 0` es imprescindible: por defecto un hijo
+            flex usa `min-width: auto`, es decir se niega a encogerse por debajo del
+            ancho de su contenido. Sin esto el nombre largo no se truncaria nunca y el
+            desbordamiento se lo comeria el lado derecho (empujando el avatar fuera).
+          */}
+          <Stack
+            sx={{ alignItems: 'center', minWidth: 0, flex: '1 1 auto', overflow: 'hidden' }}
+            direction="row"
+            spacing={{ xs: 0.5, sm: 2 }}
+          >
             <IconButton
               onClick={(): void => {
                 setOpenNav(true);
               }}
-              sx={{ display: { lg: 'none' } }}
+              // El boton de menu nunca se comprime: es la unica via de navegacion en movil.
+              sx={{ display: { lg: 'none' }, flexShrink: 0 }}
             >
               <ListIcon />
             </IconButton>
@@ -153,13 +167,50 @@ export function MainNav(): React.JSX.Element {
             </Tooltip> */}
             {/* <Typography variant='h5' fontWeight="medium" color="primary">Hola,</Typography> */}
             {/* <Typography variant='h5' fontWeight="bold" color="primary">{nombreUsuarioActivo} 😊</Typography> */}
-            <Typography variant="h6" color="primary">
-              <span style={{ fontWeight: 500 }}>¡Hola, </span>
-              <span style={{ fontWeight: 700 }}>{nombreUsuarioActivo}!</span>
+            {/*
+              El saludo es la pieza que cede cuando falta espacio: se trunca con
+              puntos suspensivos en lugar de empujar al avatar fuera de la pantalla.
+              En `xs` ademas ocultamos el "¡Hola," y dejamos solo el nombre.
+            */}
+            <Typography
+              variant="h6"
+              color="primary"
+              component="div"
+              title={nombreUsuarioActivo ?? undefined}
+              sx={{
+                minWidth: 0,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                fontSize: { xs: '1rem', sm: '1.125rem', md: '1.25rem' },
+              }}
+            >
+              <Box component="span" sx={{ fontWeight: 500, display: { xs: 'none', sm: 'inline' } }}>
+                ¡Hola,{' '}
+              </Box>
+              <Box component="span" sx={{ fontWeight: 700 }}>
+                {nombreUsuarioActivo}
+              </Box>
+              <Box component="span" sx={{ fontWeight: 700, display: { xs: 'none', sm: 'inline' } }}>
+                !
+              </Box>
             </Typography>
 
           </Stack>
-          <Stack sx={{ alignItems: 'center' }} direction="row" spacing={2}>
+          {/*
+            Bloque derecho. `flexShrink: 0` evita que el navegador comprima estos
+            controles: sin el, el ultimo hijo (el avatar, que da acceso a cerrar
+            sesion) era el primero en quedarse sin sitio.
+          */}
+          <Stack
+            sx={{ alignItems: 'center', flexShrink: 0 }}
+            direction="row"
+            // Nota: el tema ya aplica `useFlexGap` a todos los Stack, asi que la
+            // separacion se resuelve con `gap` y no con margenes. Es lo que permite
+            // ocultar por breakpoint una de las dos versiones del boton de backup sin
+            // que el hijo oculto deje un hueco fantasma.
+            spacing={{ xs: 0.75, sm: 1.5, md: 2 }}
+          >
             {/* <Tooltip title="Contacts">
               <IconButton>
                 <UsersIcon />
@@ -172,7 +223,45 @@ export function MainNav(): React.JSX.Element {
                 </IconButton>
               </Badge>
             </Tooltip> */}
-            <Button style={{ fontWeight: 'bold' }} onClick={RealizarBackUp}>
+            {/*
+              El mismo comando en dos presentaciones, conmutadas con los breakpoints
+              de MUI (CSS puro). No usamos deteccion de ancho en JS porque el servidor
+              no conoce el viewport y romperia la hidratacion.
+            */}
+            <Tooltip title="Guardar BackUp">
+              <IconButton
+                onClick={RealizarBackUp}
+                aria-label="Guardar BackUp"
+                sx={{
+                  display: { xs: 'inline-flex', md: 'none' },
+                  flexShrink: 0,
+                  // Mismas medidas que el conmutador de tema para que la fila cuadre.
+                  width: 40,
+                  height: 40,
+                  borderRadius: '12px',
+                  border: '1px solid var(--mui-palette-divider)',
+                  backgroundColor: 'var(--mui-palette-background-level1)',
+                  color: 'var(--mui-palette-primary-main)',
+                  transition: 'background-color 150ms ease, border-color 150ms ease',
+                  '&:hover': {
+                    backgroundColor: 'var(--mui-palette-background-level2)',
+                    borderColor: 'var(--mui-palette-primary-main)',
+                  },
+                }}
+              >
+                <FloppyDiskIcon size={20} weight="fill" />
+              </IconButton>
+            </Tooltip>
+            <Button
+              onClick={RealizarBackUp}
+              startIcon={<FloppyDiskIcon size={18} weight="fill" />}
+              sx={{
+                display: { xs: 'none', md: 'inline-flex' },
+                flexShrink: 0,
+                fontWeight: 'bold',
+                whiteSpace: 'nowrap',
+              }}
+            >
               Guardar BackUp
             </Button>
             <ColorSchemeToggle />
@@ -184,13 +273,19 @@ export function MainNav(): React.JSX.Element {
               src="/assets/AvatarDefault.png"
               sx={{ cursor: 'pointer' }}
             /> */}
+            {/*
+              El esqueleto media 80x80 y el avatar real 40x40 (medida por defecto de
+              MUI): al cargar la imagen la cabecera daba un salto y de paso apretaba
+              al resto de controles en movil. Ahora ambos miden lo mismo.
+            */}
             {cargandoAvatar ? (
-              <Skeleton variant="circular" width={80} height={80} />
+              <Skeleton variant="circular" width={40} height={40} sx={{ flexShrink: 0 }} />
             ) : (
               <Avatar
                 onClick={userPopover.handleOpen}
                 ref={userPopover.anchorRef}
-                sx={{ cursor: 'pointer' }}
+                // El avatar es el control prioritario: medida fija y sin compresion.
+                sx={{ cursor: 'pointer', width: 40, height: 40, flexShrink: 0 }}
                 src={avatarUrl}
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
