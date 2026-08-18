@@ -65,7 +65,7 @@ export const navItems = [
         matcher: {
           type: 'startsWith',
           // href: paths.dashboard.comercialremisiones,
-          href: paths.dashboard.comercialremisionesver,
+          href: paths.dashboard.comercialremisiones,
         }
       },
       {
@@ -77,7 +77,7 @@ export const navItems = [
         matcher: {
           type: 'startsWith',
           // href: paths.dashboard.comercialdevoluciones,
-          href: paths.dashboard.comercialdevolucionesver,
+          href: paths.dashboard.comercialdevoluciones,
         }
       },
       {
@@ -89,7 +89,7 @@ export const navItems = [
         matcher: {
           type: 'startsWith',
           // href: paths.dashboard.comercialordenesdeservicio,
-          href: paths.dashboard.comercialordenesdeserviciover,
+          href: paths.dashboard.comercialordenesdeservicio,
         }
       },
       {
@@ -111,7 +111,7 @@ export const navItems = [
         matcher: {
           type: 'startsWith',
           // href: paths.dashboard.comercialmovimientogenerales,
-          href: paths.dashboard.comercialmovimientogeneralesver,
+          href: paths.dashboard.comercialmovimientogenerales,
         }
       },
     ]
@@ -132,7 +132,7 @@ export const navItems = [
         matcher: {
           type: 'startsWith',
           // href: paths.dashboard.gestionycontrolbodegas,
-          href: paths.dashboard.gestionycontrolbodegasver,
+          href: paths.dashboard.gestionycontrolbodegas,
         }
       },
       // {
@@ -154,7 +154,7 @@ export const navItems = [
         matcher: {
           type: 'startsWith',
           // href: paths.dashboard.gestionycontrolequipos,
-          href: paths.dashboard.gestionycontrolequiposver,
+          href: paths.dashboard.gestionycontrolequipos,
         }
       },
       // {
@@ -176,7 +176,7 @@ export const navItems = [
         matcher: {
           type: 'startsWith',
           // href: paths.dashboard.gestionycontrolproyectos,
-          href: paths.dashboard.gestionycontrolproyectosver,
+          href: paths.dashboard.gestionycontrolproyectos,
         }
       },
       {
@@ -188,7 +188,7 @@ export const navItems = [
         matcher: {
           type: 'startsWith',
           // href: paths.dashboard.gestionycontrolrepuestos,
-          href: paths.dashboard.gestionycontrolrepuestosver,
+          href: paths.dashboard.gestionycontrolrepuestos,
         }
       },
       {
@@ -200,7 +200,7 @@ export const navItems = [
         matcher: {
           type: 'startsWith',
           // href: paths.dashboard.gestionycontrolusuariosgenerales,
-          href: paths.dashboard.gestionycontrolusuariosgeneralesver,
+          href: paths.dashboard.gestionycontrolusuariosgenerales,
         }
       },
       {
@@ -212,7 +212,7 @@ export const navItems = [
         matcher: {
           type: 'startsWith',
           // href: paths.dashboard.gestionycontrolvehiculos,
-          href: paths.dashboard.gestionycontrolvehiculosver,
+          href: paths.dashboard.gestionycontrolvehiculos,
         }
       }
     ]
@@ -233,7 +233,7 @@ export const navItems = [
         matcher: {
           type: 'startsWith',
           // href: paths.dashboard.inventarioequipos,
-          href: paths.dashboard.inventarioequiposstock,
+          href: paths.dashboard.inventarioequipos,
         }
       },
       {
@@ -245,7 +245,7 @@ export const navItems = [
         matcher: {
           type: 'startsWith',
           // href: paths.dashboard.inventariorepuestos,
-          href: paths.dashboard.inventariorepuestosstock,
+          href: paths.dashboard.inventariorepuestos,
         }
       },
     ]

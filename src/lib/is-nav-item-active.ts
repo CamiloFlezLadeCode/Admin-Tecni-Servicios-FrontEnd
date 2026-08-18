@@ -13,7 +13,15 @@ export function isNavItemActive({
 
   if (matcher) {
     if (matcher.type === 'startsWith') {
-      return pathname.startsWith(matcher.href);
+      // Comparación por SEGMENTOS de ruta, no por prefijo de texto.
+      //
+      // Un `pathname.startsWith(base)` a secas daría falsos positivos entre
+      // rutas hermanas que comparten prefijo: con base '/dashboard/inventario/equipos'
+      // también se marcaría '/dashboard/inventario/equipos-usados', que es otro
+      // módulo. Exigiendo la barra siguiente sólo entran la propia ruta y sus
+      // descendientes reales.
+      const base = matcher.href.endsWith('/') ? matcher.href.slice(0, -1) : matcher.href;
+      return pathname === base || pathname.startsWith(`${base}/`);
     }
 
     if (matcher.type === 'equals') {
