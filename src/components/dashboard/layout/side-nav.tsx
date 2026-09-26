@@ -3,7 +3,6 @@
 import * as React from 'react';
 import RouterLink from 'next/link';
 import { usePathname } from 'next/navigation';
-import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
@@ -78,10 +77,6 @@ export function SideNav(): React.JSX.Element {
     return filterNavItems(itemsFiltrados, normalizedQuery);
   }, [itemsFiltrados, query]);
 
-  const userDisplayName =
-    user?.name ?? (user as unknown as { fullName?: string } | null)?.fullName ?? user?.email ?? 'Usuario';
-  const userSecondaryText = user?.rol ?? user?.documento ?? '';
-
   return (
     <Box
       sx={{
@@ -114,62 +109,76 @@ export function SideNav(): React.JSX.Element {
         width: 'var(--SideNav-width)',
         zIndex: 'var(--SideNav-zIndex)',
         overflow: 'hidden',
-        transition: 'width 0.45s ease-in-out',
+        // Misma duración y curva que `padding-left` del contenido y el footer (dashboard/layout.tsx)
+        transition: 'width 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
         borderRight: '1px solid var(--mui-palette-divider)',
         '&::-webkit-scrollbar': { display: 'none' },
       }}
     >
+      {/*
+        Cabecera con la misma altura que la barra superior (64px + 1px de
+        divisor = 65px de MainNav), para que ambas líneas divisorias queden
+        alineadas en los dos estados del sidebar.
+      */}
       <Box
         sx={{
           display: 'flex',
           alignItems: 'center',
+          justifyContent: collapsed ? 'center' : 'space-between',
           gap: 1,
-          px: collapsed ? 1 : 2,
-          py: collapsed ? 1 : 2,
+          height: 64,
+          flex: '0 0 auto',
+          px: collapsed ? 0 : 2,
         }}
       >
-        <Box
-          component={RouterLink}
-          href={paths.home}
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1.25,
-            minWidth: 0,
-            flex: '1 1 auto',
-            textDecoration: 'none',
-          }}
-        >
-          {/* <Logo color="light" emblem={collapsed} height={44} width={collapsed ? 44 : 44} /> */}
-          {/* {!collapsed ? (
+        {!collapsed ? (
+          <Box
+            component={RouterLink}
+            href={paths.dashboard.overview}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1.25,
+              minWidth: 0,
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+            <Box
+              component="img"
+              src="/assets/LogoCompanyLogoIco.png"
+              alt=""
+              sx={{ width: 32, height: 32, borderRadius: 1, objectFit: 'contain', flex: '0 0 auto' }}
+            />
             <Box sx={{ minWidth: 0 }}>
-              <Typography sx={{ fontWeight: 800, lineHeight: 1.2, color: 'var(--SideNav-color)' }} variant="subtitle1">
-                {config.site.name}
+              <Typography noWrap variant="subtitle2" sx={{ fontWeight: 800, lineHeight: 1.2 }}>
+                TECNISERVICIOS
               </Typography>
-              <Typography sx={{ color: 'var(--mui-palette-neutral-400)', lineHeight: 1.2 }} variant="caption">
+              <Typography noWrap variant="caption" sx={{ display: 'block', color: 'var(--mui-palette-text-secondary)', lineHeight: 1.2 }}>
                 Panel administrativo
               </Typography>
             </Box>
-          ) : null} */}
-        </Box>
-        <Tooltip title={collapsed ? 'Expandir' : 'Contraer'} placement="bottom">
+          </Box>
+        ) : null}
+        {/* A la derecha para que el tooltip no tape los ítems de navegación */}
+        <Tooltip title={collapsed ? 'Expandir menú' : 'Contraer menú'} placement="right" disableInteractive>
           <IconButton
-            aria-label={collapsed ? 'Expandir sidebar' : 'Contraer sidebar'}
+            aria-label={collapsed ? 'Expandir menú lateral' : 'Contraer menú lateral'}
+            aria-expanded={!collapsed}
             onClick={toggleSidebar}
             sx={{
+              width: 32,
+              height: 32,
+              flex: '0 0 auto',
+              borderRadius: 1,
               color: 'var(--mui-palette-text-secondary)',
-              backgroundColor: 'var(--SideNav-surface)',
-              border: '1px solid var(--mui-palette-divider)',
               '&:hover': {
-                backgroundColor: 'var(--mui-palette-background-level2)',
+                bgcolor: 'var(--NavItem-hover-background)',
                 color: 'var(--mui-palette-text-primary)',
               },
-              width: 36,
-              height: 36,
-              flex: '0 0 auto',
             }}
           >
-            {collapsed ? <ArrowLineRight size={18} /> : <ArrowLineLeft size={20} />}
+            {collapsed ? <ArrowLineRight size={18} /> : <ArrowLineLeft size={18} />}
           </IconButton>
         </Tooltip>
       </Box>
@@ -206,55 +215,6 @@ export function SideNav(): React.JSX.Element {
         ) : null}
 
         {renderNavItems({ pathname, items: itemsFiltradosPorQuery, collapsed, query })}
-      </Box>
-
-      <Divider />
-
-      <Box sx={{ p: collapsed ? 1 : 1.5 }}>
-        {/* <Tooltip title={collapsed ? `${userDisplayName}${userSecondaryText ? ` · ${userSecondaryText}` : ''}` : ''} placement="right"> */}
-        <Tooltip title={collapsed ? 'TECNISERVICIOS - Panel administrativo ' : ''} placement="right">
-          <Stack
-            direction="row"
-            spacing={1.25}
-            sx={{
-              alignItems: 'center',
-              px: collapsed ? 0 : 1,
-              py: 1,
-              borderRadius: 2,
-              bgcolor: 'var(--SideNav-surface)',
-              border: '1px solid var(--mui-palette-divider)',
-              justifyContent: collapsed ? 'center' : 'flex-start',
-              overflow: 'hidden',
-            }}
-          >
-            <Avatar
-              src="/assets/LogoCompanyLogoIco.png"
-              sx={{
-                width: 34,
-                height: 34,
-                bgcolor: 'var(--mui-palette-background-level2)',
-                color: 'var(--mui-palette-text-primary)',
-                fontWeight: 700,
-              }}
-            >
-              {(userDisplayName || 'U').charAt(0).toUpperCase()}
-            </Avatar>
-            {!collapsed ? (
-              <Box sx={{ minWidth: 0 }}>
-                <Typography sx={{ fontWeight: 700, lineHeight: 1.2 }} variant="body2">
-                  {/* {userDisplayName} */}
-                  TECNISERVICIOS
-                </Typography>
-                {userSecondaryText ? (
-                  <Typography sx={{ color: 'var(--mui-palette-text-secondary)', lineHeight: 1.2 }} variant="caption">
-                    {/* {userSecondaryText} */}
-                    Panel administrativo
-                  </Typography>
-                ) : null}
-              </Box>
-            ) : null}
-          </Stack>
-        </Tooltip>
       </Box>
     </Box>
   );
