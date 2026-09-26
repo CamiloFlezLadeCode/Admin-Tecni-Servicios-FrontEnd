@@ -164,6 +164,103 @@ body {
   }
 }
 
+/*
+  ── LOGIN ─────────────────────────────────────────────────────────────────
+  Aurora de fondo (manchas de color de marca a la deriva), entrada de la
+  tarjeta y destello del botón. La sacudida ante un error se hace con la Web
+  Animations API en `sign-in-form.tsx`.
+  `prefers-reduced-motion` (al final del archivo) las congela.
+*/
+.auth-aurora {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.auth-aurora__blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: var(--aurora-opacity, 0.55);
+  will-change: transform;
+}
+
+[data-mui-color-scheme='dark'] .auth-aurora__blob {
+  --aurora-opacity: 0.42;
+}
+
+.auth-aurora__blob--a {
+  width: 48vmax;
+  height: 48vmax;
+  top: -14vmax;
+  left: -10vmax;
+  background: radial-gradient(circle, #635bff 0%, transparent 68%);
+  animation: aurora-a 22s ease-in-out infinite alternate;
+}
+
+.auth-aurora__blob--b {
+  width: 42vmax;
+  height: 42vmax;
+  bottom: -16vmax;
+  right: -8vmax;
+  background: radial-gradient(circle, #15b79f 0%, transparent 68%);
+  animation: aurora-b 26s ease-in-out infinite alternate;
+}
+
+.auth-aurora__blob--c {
+  width: 30vmax;
+  height: 30vmax;
+  top: 38%;
+  left: 42%;
+  background: radial-gradient(circle, #f79009 0%, transparent 70%);
+  opacity: calc(var(--aurora-opacity, 0.55) * 0.45);
+  animation: aurora-c 30s ease-in-out infinite alternate;
+}
+
+@keyframes aurora-a {
+  to {
+    transform: translate3d(18vmax, 12vmax, 0) scale(1.15);
+  }
+}
+
+@keyframes aurora-b {
+  to {
+    transform: translate3d(-16vmax, -10vmax, 0) scale(1.1);
+  }
+}
+
+@keyframes aurora-c {
+  to {
+    transform: translate3d(-20vmax, -14vmax, 0) scale(0.85);
+  }
+}
+
+@keyframes auth-entrada {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.auth-entrada {
+  animation: auth-entrada 0.7s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+@keyframes auth-destello {
+  from {
+    transform: translateX(-120%) skewX(-20deg);
+  }
+  to {
+    transform: translateX(220%) skewX(-20deg);
+  }
+}
+
 /* Quien pide menos transparencia recibe una superficie sólida equivalente */
 @media (prefers-reduced-transparency: reduce) {
   .liquid-glass {

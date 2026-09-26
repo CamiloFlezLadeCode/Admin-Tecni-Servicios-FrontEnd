@@ -1,78 +1,135 @@
 'use client';
+
 import * as React from 'react';
-import RouterLink from 'next/link';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { ChartLineUp } from '@phosphor-icons/react/dist/ssr/ChartLineUp';
+import { Package } from '@phosphor-icons/react/dist/ssr/Package';
+import { Receipt } from '@phosphor-icons/react/dist/ssr/Receipt';
+import { Truck } from '@phosphor-icons/react/dist/ssr/Truck';
 
-import { paths } from '@/paths';
-import { DynamicLogo } from '@/components/core/logo';
+import { ColorSchemeToggle } from '@/components/core/theme-provider/color-scheme-toggle';
 
 export interface LayoutProps {
   children: React.ReactNode;
 }
 
+/** Módulos del sistema que se presentan en la bienvenida (solo escritorio). */
+const MODULOS = [
+  { icono: Truck, titulo: 'Remisiones y devoluciones', texto: 'Cada equipo, en qué obra está y desde cuándo.' },
+  { icono: Package, titulo: 'Inventario en tiempo real', texto: 'Stock propio y de subarriendo, sin descuadres.' },
+  { icono: Receipt, titulo: 'Estado de cuenta', texto: 'Lo pendiente por cliente y proyecto, al día.' },
+  { icono: ChartLineUp, titulo: 'Panel de indicadores', texto: 'La operación del mes de un vistazo.' },
+] as const;
+
+/**
+ * Marco de las páginas de autenticación (iniciar sesión, registro, recuperar).
+ *
+ * El fondo es una "aurora" de manchas de color de marca a la deriva
+ * (`.auth-aurora` en `styles/global.css`). Además de decorar, le da al vidrio
+ * de la tarjeta algo real que difuminar: sin color detrás, `backdrop-filter`
+ * no se nota y la tarjeta parecería un rectángulo gris.
+ */
 export function Layout({ children }: LayoutProps): React.JSX.Element {
   return (
     <Box
       sx={{
-        display: { xs: 'flex', lg: 'grid' },
-        flexDirection: 'column',
-        gridTemplateColumns: '1fr 1fr',
+        position: 'relative',
         minHeight: '100%',
         bgcolor: 'var(--mui-palette-background-default)',
         color: 'var(--mui-palette-text-primary)',
+        overflow: 'hidden',
       }}
     >
-      <Box sx={{ display: 'flex', flex: '1 1 auto', flexDirection: 'column' }}>
-        <Box sx={{ p: 3, textAlign: 'center' }}>
-          <Box component={RouterLink} href={paths.home} sx={{ display: 'inline-block', fontSize: 0 }}>
-            {/* <DynamicLogo colorDark="light" colorLight="dark" height={32} width={122} /> */}
-            <DynamicLogo colorDark="light" colorLight="dark" height={122} width={252} />
-          </Box>
-        </Box>
-        <Box sx={{ alignItems: 'center', display: 'flex', flex: '1 1 auto', justifyContent: 'center', p: 3 }}>
-          <Box sx={{ maxWidth: '450px', width: '100%' }}>{children}</Box>
-        </Box>
+      <Box className="auth-aurora" aria-hidden>
+        <Box className="auth-aurora__blob auth-aurora__blob--a" />
+        <Box className="auth-aurora__blob auth-aurora__blob--b" />
+        <Box className="auth-aurora__blob auth-aurora__blob--c" />
       </Box>
+
+      <Box sx={{ position: 'fixed', top: 16, right: 16, zIndex: 2 }}>
+        <ColorSchemeToggle />
+      </Box>
+
       <Box
         sx={{
+          position: 'relative',
+          zIndex: 1,
+          minHeight: '100vh',
+          display: 'grid',
+          gridTemplateColumns: { xs: '1fr', lg: '1.1fr 1fr' },
           alignItems: 'center',
-          // Panel decorativo: un halo del color de marca sobre la superficie
-          // del modo activo. En claro queda un lavado índigo sobre blanco y en
-          // oscuro un resplandor sobre pizarra profunda, sin colores fijos.
-          background:
-            'radial-gradient(60% 55% at 50% 42%, rgba(var(--mui-palette-primary-mainChannel) / 0.24) 0%, rgba(var(--mui-palette-primary-mainChannel) / 0.04) 55%, transparent 100%),' +
-            'linear-gradient(160deg, var(--mui-palette-background-paper) 0%, var(--mui-palette-background-level1) 100%)',
-          borderLeft: '1px solid var(--mui-palette-divider)',
-          color: 'var(--mui-palette-text-primary)',
-          display: { xs: 'none', lg: 'flex' },
-          justifyContent: 'center',
-          p: 3,
+          gap: { lg: 6 },
+          maxWidth: 1240,
+          mx: 'auto',
+          px: { xs: 2, sm: 3, lg: 6 },
+          pt: { xs: 9, lg: 4 },
+          pb: { xs: 10, lg: 4 },
         }}
       >
-        <Stack spacing={3}>
-          <Stack spacing={1}>
-            <Typography color="inherit" sx={{ fontSize: '24px', lineHeight: '32px', textAlign: 'center' }} variant="h1">
-              Bienvenido a {' '}
-              <Box component="span" sx={{ color: 'var(--mui-palette-success-main)' }}>
-                TecniServicios
+        {/* Bienvenida: solo en escritorio, donde sobra espacio */}
+        <Stack className="auth-entrada" spacing={4} sx={{ display: { xs: 'none', lg: 'flex' } }}>
+          <Stack spacing={1.5}>
+            <Typography
+              variant="overline"
+              sx={{ color: 'var(--mui-palette-primary-main)', fontWeight: 700, letterSpacing: '0.12em' }}
+            >
+              Panel administrativo
+            </Typography>
+            <Typography variant="h2" sx={{ fontWeight: 800, lineHeight: 1.1, fontSize: '2.75rem' }}>
+              Tu operación,{' '}
+              <Box
+                component="span"
+                sx={{
+                  background: 'linear-gradient(90deg, var(--mui-palette-primary-main), var(--mui-palette-success-main))',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  color: 'transparent',
+                }}
+              >
+                bajo control
               </Box>
             </Typography>
-            <Typography align="center" variant="subtitle1" sx={{ color: 'var(--mui-palette-text-secondary)' }}>
-              Una empresa con profesionales de alta calidad
+            <Typography variant="body1" sx={{ color: 'var(--mui-palette-text-secondary)', maxWidth: 460 }}>
+              Reparación, alquiler y transporte de equipos para la construcción, gestionados desde un solo lugar.
             </Typography>
           </Stack>
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            {/* <Box
-              component="img"
-              alt="Widgets"
-              // src="/assets/auth-widgets.png"
-              src="/assets/LogoCompany.webp"
-              sx={{ height: 'auto', width: '100%', maxWidth: '600px' }}
-            /> */}
+
+          <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1.5, maxWidth: 520 }}>
+            {MODULOS.map(({ icono: Icono, titulo, texto }) => (
+              <Box
+                key={titulo}
+                className="liquid-glass"
+                sx={{ borderRadius: '18px', p: 2, background: 'var(--glass-bg)' }}
+              >
+                <Box
+                  sx={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    mb: 1.25,
+                    color: 'var(--mui-palette-primary-main)',
+                    bgcolor: 'rgba(var(--mui-palette-primary-mainChannel) / 0.12)',
+                  }}
+                >
+                  <Icono size={20} weight="duotone" />
+                </Box>
+                <Typography variant="subtitle2" sx={{ fontWeight: 700, lineHeight: 1.3 }}>
+                  {titulo}
+                </Typography>
+                <Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)' }}>
+                  {texto}
+                </Typography>
+              </Box>
+            ))}
           </Box>
         </Stack>
+
+        <Box sx={{ width: '100%', maxWidth: 440, mx: 'auto' }}>{children}</Box>
       </Box>
     </Box>
   );
