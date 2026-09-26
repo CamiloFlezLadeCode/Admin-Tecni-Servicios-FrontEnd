@@ -310,6 +310,13 @@ export function AccountInfo(): React.JSX.Element {
     CargarAvatar();
   }, [DocumentoUsuarioActivo]);
 
+  // Libera la URL blob anterior al reemplazarla o al desmontar
+  React.useEffect(() => {
+    return () => {
+      if (avatarUrl) URL.revokeObjectURL(avatarUrl);
+    };
+  }, [avatarUrl]);
+
   React.useEffect(() => {
     if (messages.length > 0) {
       const ultimomensajes = messages[messages.length - 1];

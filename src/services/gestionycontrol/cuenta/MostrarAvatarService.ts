@@ -22,14 +22,22 @@ import { apiRoutes } from "@/config/apiRoutes";
  * imagen depende del modo de color (hay una variante clara y otra oscura) y un
  * servicio no puede conocer el tema. Devolviendo `null` la decisión queda en el
  * componente, que sí puede usar `useAvatarPorDefecto()`.
+ *
+ * El endpoint exige token JWT y un `<img src>` no puede enviar el header
+ * `Authorization`, así que la imagen se descarga con axios (que sí lo envía) y
+ * se devuelve como URL local `blob:`. Quien la use debe liberarla con
+ * `URL.revokeObjectURL` cuando la reemplace o se desmonte.
  */
 export const MostrarAvatar = async (DocumentoUsuarioActivo: string): Promise<string | null> => {
   const url = apiRoutes.gestionycontrol.cuenta.mostrar_avatar_usuario_activo(DocumentoUsuarioActivo);
 
   try {
-    // HEAD pide solo headers, no descarga la imagen
-    await axiosInstance.head(url);
-    return url; // La imagen existe
+    const { data } = await axiosInstance.get<Blob>(url, {
+      responseType: 'blob',
+      // Evita que el navegador sirva desde caché la imagen anterior tras subir una nueva
+      params: { t: Date.now() },
+    });
+    return URL.createObjectURL(data);
   } catch (error: any) {
     // Sin avatar propio: el componente decidirá qué imagen de reserva usar.
     console.warn("No se encontró el avatar, se usará la imagen por defecto.");

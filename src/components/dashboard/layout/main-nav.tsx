@@ -114,6 +114,13 @@ export function MainNav(): React.JSX.Element {
   React.useEffect(() => {
     CargarAvatar();
   }, [DocumentoUsuarioActivo]);
+
+  // Libera la URL blob anterior al reemplazarla o al desmontar
+  React.useEffect(() => {
+    return () => {
+      if (avatarUrl) URL.revokeObjectURL(avatarUrl);
+    };
+  }, [avatarUrl]);
   // ...
 
   // Implementacion de WebSocket
