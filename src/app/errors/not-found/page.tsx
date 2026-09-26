@@ -1,6 +1,5 @@
 import * as React from 'react';
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
@@ -9,6 +8,7 @@ import { ArrowLeft as ArrowLeftIcon } from '@phosphor-icons/react/dist/ssr/Arrow
 
 import { config } from '@/config';
 import { paths } from '@/paths';
+import { RouterLink } from '@/components/core/router-link';
 
 export const metadata = { title: `Not found | Errors | ${config.site.name}` } satisfies Metadata;
 
@@ -30,11 +30,14 @@ export default function NotFound(): React.JSX.Element {
         <Typography color="text.secondary" variant="body1" sx={{ textAlign: 'center' }}>
           You either tried some shady route or you came here by mistake. Whichever it is, try using the navigation
         </Typography>
-        <Link href={paths.home} passHref legacyBehavior>
-          <Button component="a" startIcon={<ArrowLeftIcon fontSize="var(--icon-fontSize-md)" />} variant="contained">
-            Go back to home
-          </Button>
-        </Link>
+        <Button
+          component={RouterLink}
+          href={paths.home}
+          startIcon={<ArrowLeftIcon fontSize="var(--icon-fontSize-md)" />}
+          variant="contained"
+        >
+          Go back to home
+        </Button>
       </Stack>
     </Box>
   );

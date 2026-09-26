@@ -38,6 +38,7 @@ export const colorSchemes = {
     palette: {
       action: {
         active: 'var(--mui-palette-neutral-300)',
+        activeChannel: '203 213 225',
         hover: 'rgba(148, 163, 184, 0.08)',
         selected: 'rgba(148, 163, 184, 0.16)',
         disabled: 'var(--mui-palette-neutral-600)',
@@ -117,6 +118,7 @@ export const colorSchemes = {
     palette: {
       action: {
         active: 'var(--mui-palette-neutral-500)',
+        activeChannel: '102 112 133',
         hover: 'rgba(102, 112, 133, 0.06)',
         selected: 'rgba(102, 112, 133, 0.12)',
         disabled: 'var(--mui-palette-neutral-400)',
