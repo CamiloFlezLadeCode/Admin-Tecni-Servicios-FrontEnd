@@ -21,6 +21,19 @@ export interface UbicacionEquipo {
     CantidadDevuelta: number;
     CantidadEnObra: number;
     FechaUltimaDevolucion: string | null;
+    /** `true` si las unidades son del inventario de la empresa; `false` si se tomaron en subarriendo. */
+    EsPropio: boolean;
+    DocumentoSubarrendatario: string | null;
+    Subarrendatario: string | null;
+    ContactoSubarrendatario: string | null;
+}
+
+/** Tercero que aportó unidades en subarriendo que siguen en obra. */
+export interface SubarrendatarioEnObra {
+    Documento: string;
+    Nombre: string;
+    Contacto: string | null;
+    CantidadEnObra: number;
 }
 
 export interface FichaEquipo {
@@ -32,9 +45,16 @@ export interface FichaEquipo {
     Bodega: string;
     Estado: string;
     Propietario: string;
+    /** Unidades propias registradas en inventario. */
     CantidadTotal: number;
+    /** Unidades propias en bodega. */
     CantidadDisponible: number;
+    /** Todo lo que está en obra: propio + subarriendo. */
     CantidadEnObra: number;
+    CantidadEnObraPropia: number;
+    /** Unidades en obra que NO son del inventario: se tomaron en subarriendo. */
+    CantidadEnObraSubarrendada: number;
+    Subarrendatarios: SubarrendatarioEnObra[];
 }
 
 export interface UbicacionEquipoRespuesta {

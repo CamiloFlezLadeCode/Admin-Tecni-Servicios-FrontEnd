@@ -24,6 +24,9 @@ import Typography from '@mui/material/Typography';
 import { Buildings } from '@phosphor-icons/react/dist/ssr/Buildings';
 import { CalendarBlank } from '@phosphor-icons/react/dist/ssr/CalendarBlank';
 import { CheckCircle } from '@phosphor-icons/react/dist/ssr/CheckCircle';
+import { Handshake } from '@phosphor-icons/react/dist/ssr/Handshake';
+import { Phone } from '@phosphor-icons/react/dist/ssr/Phone';
+import { Warehouse } from '@phosphor-icons/react/dist/ssr/Warehouse';
 import { MagnifyingGlass } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass';
 import { MapPin } from '@phosphor-icons/react/dist/ssr/MapPin';
 import { Package } from '@phosphor-icons/react/dist/ssr/Package';
@@ -55,11 +58,14 @@ function Indicador({
   valor,
   token,
   icono,
+  detalle,
 }: {
   titulo: string;
   valor: number;
   token: 'primary' | 'success' | 'warning';
   icono: React.ReactNode;
+  /** Aclaración bajo la cifra (qué cuenta y qué no) */
+  detalle?: React.ReactNode;
 }): React.JSX.Element {
   return (
     <Card variant="outlined" sx={{ height: '100%' }}>
@@ -90,8 +96,119 @@ function Indicador({
             </Typography>
           </Box>
         </Stack>
+        {detalle ? <Box sx={{ mt: 1.25 }}>{detalle}</Box> : null}
       </CardContent>
     </Card>
+  );
+}
+
+/** Chip de origen de unidades: propias (inventario) o de subarriendo. */
+function ChipOrigen({ propio, etiqueta }: { propio: boolean; etiqueta: string }): React.JSX.Element {
+  return (
+    <Chip
+      size="small"
+      variant="outlined"
+      icon={propio ? <Warehouse size={14} weight="fill" /> : <Handshake size={14} weight="fill" />}
+      label={etiqueta}
+      color={propio ? 'primary' : 'info'}
+      sx={{ fontWeight: 600, maxWidth: '100%' }}
+    />
+  );
+}
+
+/** Origen de una ubicación: "Propio" o "Subarriendo de <tercero>". */
+function OrigenUbicacion({ u }: { u: UbicacionEquipo }): React.JSX.Element {
+  if (u.EsPropio) return <ChipOrigen propio etiqueta="Propio" />;
+  return (
+    <Tooltip
+      title={`Doc. ${u.DocumentoSubarrendatario ?? ''}${u.ContactoSubarrendatario ? ` · ${u.ContactoSubarrendatario}` : ''}`}
+    >
+      <Stack spacing={0.5} sx={{ alignItems: 'flex-start', minWidth: 0, maxWidth: '100%' }}>
+        <ChipOrigen propio={false} etiqueta="Subarriendo" />
+        <Typography variant="caption" noWrap sx={{ color: 'var(--mui-palette-text-secondary)', maxWidth: '100%' }}>
+          de {u.Subarrendatario}
+        </Typography>
+      </Stack>
+    </Tooltip>
+  );
+}
+
+/**
+ * Ubicación en formato tarjeta, para pantallas pequeñas.
+ *
+ * En móvil la tabla de 8 columnas obligaba a deslizar horizontalmente sin ver
+ * qué quedaba fuera; aquí toda la información de la ubicación queda a la vista.
+ */
+function UbicacionTarjeta({ u }: { u: UbicacionEquipo }): React.JSX.Element {
+  const contacto = u.CelularCliente ?? u.TelefonoCliente;
+  const permanenciaLarga = u.DiasEnObra >= DIAS_PERMANENCIA_LARGA;
+  const icono = { size: 16, color: 'var(--mui-palette-text-secondary)' } as const;
+
+  return (
+    <Box
+      component="li"
+      sx={{
+        listStyle: 'none',
+        p: 2,
+        borderRadius: '16px',
+        border: '1px solid var(--mui-palette-divider)',
+        bgcolor: 'var(--mui-palette-background-level1)',
+      }}
+    >
+      <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start', justifyContent: 'space-between' }}>
+        <Box sx={{ minWidth: 0 }}>
+          <Typography variant="body2" sx={{ fontWeight: 700, wordBreak: 'break-word' }}>
+            {u.Cliente}
+          </Typography>
+          <Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)' }}>
+            {u.DocumentoCliente}
+            {contacto ? ` · ${contacto}` : ''}
+          </Typography>
+        </Box>
+        <Box sx={{ textAlign: 'right', flexShrink: 0 }}>
+          <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: 1.1 }}>
+            {u.CantidadEnObra}
+          </Typography>
+          <Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)' }}>
+            en obra
+          </Typography>
+        </Box>
+      </Stack>
+
+      <Stack spacing={0.75} sx={{ mt: 1.5 }}>
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+          <Buildings {...icono} />
+          <Typography variant="body2" sx={{ fontWeight: 600 }}>
+            {u.Proyecto}
+          </Typography>
+        </Stack>
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+          <MapPin {...icono} />
+          <Typography variant="body2">{u.DireccionProyecto || '—'}</Typography>
+        </Stack>
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+          <CalendarBlank {...icono} />
+          <Typography variant="body2">{u.FechaRemisionCompleta || u.FechaRemisionTexto}</Typography>
+        </Stack>
+        {u.CantidadDevuelta > 0 ? (
+          <Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)' }}>
+            Remisionadas {u.CantidadPrestada} · {u.CantidadDevuelta} devueltas
+          </Typography>
+        ) : null}
+      </Stack>
+
+      <Divider sx={{ my: 1.5 }} />
+
+      <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+        <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: 'flex-start', flexWrap: 'wrap', minWidth: 0 }}>
+          <Chip size="small" label={textoAntiguedad(u.DiasEnObra)} color={permanenciaLarga ? 'warning' : 'default'} />
+          <OrigenUbicacion u={u} />
+        </Stack>
+        <Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)', fontWeight: 600 }}>
+          Remisión {u.NoRemision}
+        </Typography>
+      </Stack>
+    </Box>
   );
 }
 
@@ -334,22 +451,110 @@ export function ConsultarUbicacionEquipo(): React.JSX.Element {
             </CardContent>
           </Card>
 
+          {/*
+            Total y Disponible son cifras PROPIAS (inventario de la empresa). "En obra"
+            suma además lo tomado en subarriendo, que nunca entra al inventario; por
+            eso se desglosa: sin el desglose, "en obra" podía superar al total.
+          */}
           <Grid container spacing={2}>
             <Grid item xs={12} sm={4}>
-              <Indicador titulo="Total" valor={equipo.CantidadTotal} token="primary" icono={<Package size={22} weight="duotone" />} />
-            </Grid>
-            <Grid item xs={12} sm={4}>
               <Indicador
-                titulo="Disponible"
-                valor={equipo.CantidadDisponible}
-                token="success"
-                icono={<CheckCircle size={22} weight="duotone" />}
+                titulo="Total propio"
+                valor={equipo.CantidadTotal}
+                token="primary"
+                icono={<Package size={22} weight="duotone" />}
+                detalle={
+                  <Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)' }}>
+                    Unidades registradas en el inventario de la empresa
+                  </Typography>
+                }
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Indicador titulo="En obra" valor={equipo.CantidadEnObra} token="warning" icono={<Truck size={22} weight="duotone" />} />
+              <Indicador
+                titulo="Disponible (propio)"
+                valor={equipo.CantidadDisponible}
+                token="success"
+                icono={<CheckCircle size={22} weight="duotone" />}
+                detalle={
+                  <Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)' }}>
+                    Unidades propias en bodega, listas para remisionar
+                  </Typography>
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <Indicador
+                titulo="En obra"
+                valor={equipo.CantidadEnObra}
+                token="warning"
+                icono={<Truck size={22} weight="duotone" />}
+                detalle={
+                  <Stack direction="row" spacing={0.75} useFlexGap sx={{ flexWrap: 'wrap' }}>
+                    <ChipOrigen
+                      propio
+                      etiqueta={`${equipo.CantidadEnObraPropia} ${equipo.CantidadEnObraPropia === 1 ? 'propia' : 'propias'}`}
+                    />
+                    <ChipOrigen propio={false} etiqueta={`${equipo.CantidadEnObraSubarrendada} de subarriendo`} />
+                  </Stack>
+                }
+              />
             </Grid>
           </Grid>
+
+          {equipo.CantidadEnObraSubarrendada > 0 ? (
+            <Alert
+              severity="info"
+              icon={<Handshake size={22} weight="fill" />}
+              sx={{ '& .MuiAlert-message': { width: '100%' } }}
+            >
+              <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                {equipo.CantidadEnObraSubarrendada === 1
+                  ? `1 de las ${equipo.CantidadEnObra} unidades en obra es de subarriendo`
+                  : `${equipo.CantidadEnObraSubarrendada} de las ${equipo.CantidadEnObra} unidades en obra son de subarriendo`}
+              </Typography>
+              <Typography variant="body2" sx={{ mb: 1.25 }}>
+                No son del inventario de la empresa: se tomaron en subarriendo a{' '}
+                {equipo.Subarrendatarios.length === 1 ? 'este tercero' : 'estos terceros'}, por eso no cuentan en el total
+                ni en el disponible. Al devolverlas regresan a su dueño, no a bodega.
+              </Typography>
+              <Stack spacing={1}>
+                {equipo.Subarrendatarios.map((s) => (
+                  <Stack
+                    key={s.Documento}
+                    direction={{ xs: 'column', sm: 'row' }}
+                    spacing={{ xs: 0.5, sm: 2 }}
+                    sx={{
+                      alignItems: { sm: 'center' },
+                      justifyContent: 'space-between',
+                      px: 1.5,
+                      py: 1,
+                      borderRadius: '10px',
+                      bgcolor: 'rgba(var(--mui-palette-info-mainChannel) / 0.08)',
+                      border: '1px solid rgba(var(--mui-palette-info-mainChannel) / 0.2)',
+                    }}
+                  >
+                    <Box sx={{ minWidth: 0 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                        {s.Nombre}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)' }}>
+                        Documento {s.Documento}
+                        {s.Contacto ? (
+                          <Box component="span" sx={{ ml: 1, display: 'inline-flex', alignItems: 'center', gap: 0.5 }}>
+                            <Phone size={12} /> {s.Contacto}
+                          </Box>
+                        ) : null}
+                      </Typography>
+                    </Box>
+                    <Typography variant="body2" sx={{ fontWeight: 700, flexShrink: 0 }}>
+                      {s.CantidadEnObra} {s.CantidadEnObra === 1 ? 'unidad en obra' : 'unidades en obra'}
+                    </Typography>
+                  </Stack>
+                ))}
+              </Stack>
+            </Alert>
+          ) : null}
 
           {estaEnObra ? (
             <Card>
@@ -364,8 +569,22 @@ export function ConsultarUbicacionEquipo(): React.JSX.Element {
                       : `${ubicaciones.length} ubicaciones con unidades pendientes de devolución.`}
                   </Typography>
                 </Box>
-                <TableContainer>
-                  <Table size="small" sx={{ minWidth: 900 }}>
+
+                {/* Móvil y tablet: tarjetas (sin scroll horizontal). Se conmuta con CSS
+                    y no con JS: el servidor no conoce el ancho de pantalla. */}
+                <Stack
+                  component="ul"
+                  spacing={1.5}
+                  sx={{ display: { xs: 'flex', md: 'none' }, m: 0, px: 2, pb: 2, pt: 0 }}
+                >
+                  {ubicaciones.map((u) => (
+                    <UbicacionTarjeta key={u.IdDetalleRemision} u={u} />
+                  ))}
+                </Stack>
+
+                {/* Escritorio: tabla */}
+                <TableContainer sx={{ display: { xs: 'none', md: 'block' } }}>
+                  <Table size="small" sx={{ minWidth: 1000 }}>
                     <TableHead>
                       <TableRow>
                         <TableCell>Cliente</TableCell>
@@ -374,6 +593,7 @@ export function ConsultarUbicacionEquipo(): React.JSX.Element {
                         <TableCell>Desde</TableCell>
                         <TableCell>Tiempo en obra</TableCell>
                         <TableCell align="right">Cantidad</TableCell>
+                        <TableCell>Origen</TableCell>
                         <TableCell>Remisión</TableCell>
                       </TableRow>
                     </TableHead>
@@ -437,6 +657,9 @@ export function ConsultarUbicacionEquipo(): React.JSX.Element {
                                   de {u.CantidadPrestada} · {u.CantidadDevuelta} devueltas
                                 </Typography>
                               ) : null}
+                            </TableCell>
+                            <TableCell sx={{ maxWidth: 200 }}>
+                              <OrigenUbicacion u={u} />
                             </TableCell>
                             <TableCell>
                               <Typography variant="body2">{u.NoRemision}</Typography>
