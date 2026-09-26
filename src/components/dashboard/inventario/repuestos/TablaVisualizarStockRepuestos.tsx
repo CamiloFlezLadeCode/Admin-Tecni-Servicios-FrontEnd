@@ -2,7 +2,8 @@
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import { ColumnDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useAlertas } from '@/hooks/FuncionMostrarAlerta';
-import { VerStockRepuestos } from '@/services/inventario/repuestos/VerStockRepuestosService';
+import { VerStockRepuestosPaginado } from '@/services/inventario/repuestos/VerStockRepuestosService';
+import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
 import {
   Box,
   Card,
@@ -27,46 +28,22 @@ interface RepuestoStock {
 }
 
 export function TablaVisualizarStockRepuestos(): React.JSX.Element {
-  const [data, setData] = React.useState<RepuestoStock[]>([]);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = React.useState('');
   const [categoriaFiltro, setCategoriaFiltro] = React.useState<string>('');
   const [soloBajoStock, setSoloBajoStock] = React.useState<boolean>(false);
   const { messages } = useSocketIO();
 
   const { mostrarAlertas, mensajeAlerta, tipoAlerta, mostrarMensaje, ocultarAlerta } = useAlertas();
 
-  React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await VerStockRepuestos();
-        setData(Array.isArray(response) ? response : []);
-      } catch (err: any) {
-        setError(`Error al cargar el stock de repuestos: ${err?.message ?? err}`);
-        mostrarMensaje(`No fue posible cargar el stock de repuestos`, 'error');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-  const handleRefresh = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      setSearchTerm('');
-      const response = await VerStockRepuestos();
-      setData(Array.isArray(response) ? response : []);
-    } catch (err: any) {
-      setError(`Error al actualizar: ${err?.message ?? err}`);
-    } finally {
-      setLoading(false);
+  // Paginado, búsqueda y filtro "Solo bajo stock" resueltos en el servidor
+  const tabla = usePaginacionServidor<RepuestoStock>({
+    consultar: (parametros) => VerStockRepuestosPaginado(parametros, { SoloBajoStock: soloBajoStock }),
+    filtros: [soloBajoStock],
+    mensajeError: (err: any) => {
+      mostrarMensaje(`No fue posible cargar el stock de repuestos`, 'error');
+      return `Error al cargar el stock de repuestos: ${err?.message ?? err}`;
     }
-  };
+  });
+  const data = tabla.datos;
 
   React.useEffect(() => {
     if (messages.length > 0) {
@@ -74,7 +51,7 @@ export function TablaVisualizarStockRepuestos(): React.JSX.Element {
       const ultimo = messages[messages.length - 1];
       console.log('ultimo', ultimo);
       if (ultimo.tipo === 'salida-repuestos-creada' || ultimo.tipo === 'entrada-repuestos-creada') {
-        handleRefresh();
+        tabla.recargar();
       }
     }
   }, [messages]);
@@ -85,12 +62,14 @@ export function TablaVisualizarStockRepuestos(): React.JSX.Element {
     return Array.from(set).sort();
   }, [data]);
 
+  // `Categoria` hoy llega siempre en null desde el servidor, así que el selector sólo
+  // ofrece la opción por defecto. Se conserva tal cual, aplicado a la página visible;
+  // si algún día el backend envía categorías, este filtro debe pasarse al servidor.
   const filtered = React.useMemo(() => {
     let rows = data;
     if (categoriaFiltro) rows = rows.filter((r) => String(r.Categoria) === categoriaFiltro);
-    if (soloBajoStock) rows = rows.filter((r) => (r.CantidadDisponible ?? 0) <= 5);
     return rows;
-  }, [data, categoriaFiltro, soloBajoStock]);
+  }, [data, categoriaFiltro]);
 
   const columns: ColumnDefinition<RepuestoStock>[] = [
     // { key: 'CodigoRepuesto', header: 'Código', width: 120 },
@@ -174,11 +153,12 @@ export function TablaVisualizarStockRepuestos(): React.JSX.Element {
             data={filtered}
             // data={data}
             columns={columns}
-            loading={loading}
-            error={error}
-            searchTerm={searchTerm}
-            onSearchChange={setSearchTerm}
-            onRefresh={handleRefresh}
+            loading={tabla.cargando}
+            error={tabla.error}
+            searchTerm={tabla.busqueda}
+            onSearchChange={tabla.setBusqueda}
+            onRefresh={tabla.refrescar}
+            paginacionServidor={tabla.paginacionTabla}
             emptyMessage="No se encontraron repuestos"
             rowKey={(row) => row.IdRepuesto}
             placeHolderBuscador='Buscar repuestos...'

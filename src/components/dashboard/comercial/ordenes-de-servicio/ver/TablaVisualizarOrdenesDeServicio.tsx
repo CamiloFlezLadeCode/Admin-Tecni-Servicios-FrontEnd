@@ -2,7 +2,8 @@
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useSocketIO } from '@/hooks/use-WebSocket';
-import { VerTodasLasOrdenesDeServicio } from '@/services/comercial/ordenes_de_servicio/VerTodasLasOrdenesDeServicioService';
+import { VerTodasLasOrdenesDeServicioPaginado } from '@/services/comercial/ordenes_de_servicio/VerTodasLasOrdenesDeServicioService';
+import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
 import { Chip } from '@mui/material';
 import * as React from 'react';
 import { BotonEliminarOrdenDeServicio } from '../acciones/EliminarOrdenDeServicio';
@@ -28,10 +29,11 @@ interface OrdenDeServicio {
 }
 
 export function TablaVisualizarOrdenesDeServicio() {
-    const [data, setData] = React.useState<OrdenDeServicio[]>([]);
-    const [loading, setLoading] = React.useState(true);
-    const [error, setError] = React.useState<string | null>(null);
-    const [searchTerm, setSearchTerm] = React.useState('');
+    // Paginado, búsqueda y recargas contra el servidor
+    const tabla = usePaginacionServidor<OrdenDeServicio>({
+        consultar: VerTodasLasOrdenesDeServicioPaginado,
+        mensajeError: () => 'Error al cargar las órdenes de servicio',
+    });
 
     // Estados para alertas - MOVIDOS AL PRINCIPAL
     const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
@@ -44,28 +46,12 @@ export function TablaVisualizarOrdenesDeServicio() {
 
     const { sendMessage, messages } = useSocketIO();
 
-    React.useEffect(() => {
-        const cargarDatos = async () => {
-            try {
-                setLoading(true);
-                const response = await VerTodasLasOrdenesDeServicio();
-                setData(response);
-            } catch (err) {
-                setError('Error al cargar las órdenes de servicio');
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        cargarDatos();
-    }, []);
 
     React.useEffect(() => {
         if (messages.length > 0) {
             const ultimomensajes = messages[messages.length - 1];
             if (ultimomensajes.tipo === 'orden-de-servicio-creada' || ultimomensajes.tipo === 'orden-de-servicio-eliminada') {
-                handleRefresh();
+                tabla.recargar();
             }
         }
     }, [messages]);
@@ -162,32 +148,19 @@ export function TablaVisualizarOrdenesDeServicio() {
         }
     ];
 
-    const handleRefresh = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            setSearchTerm('');
-            const response = await VerTodasLasOrdenesDeServicio();
-            setData(response);
-        } catch (err) {
-            setError('Error al actualizar las órdenes');
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     return (
         <>
             <DataTable<OrdenDeServicio>
-                data={data}
+                data={tabla.datos}
                 columns={columns}
                 actions={actions}
-                loading={loading}
-                error={error}
-                searchTerm={searchTerm}
-                onSearchChange={setSearchTerm}
-                onRefresh={handleRefresh}
+                loading={tabla.cargando}
+                error={tabla.error}
+                searchTerm={tabla.busqueda}
+                onSearchChange={tabla.setBusqueda}
+                paginacionServidor={tabla.paginacionTabla}
+                onRefresh={tabla.refrescar}
                 emptyMessage="No se encontraron órdenes de servicio"
                 rowKey={(row) => row.IdOrdenDeServicio}
                 placeHolderBuscador="Buscar órdenes..."

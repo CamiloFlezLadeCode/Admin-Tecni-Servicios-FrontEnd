@@ -2,7 +2,8 @@
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useSocketIO } from '@/hooks/use-WebSocket';
-import { ConsultarVehiculos } from '@/services/gestionycontrol/vehiculos/ConsultarVehiculosService';
+import { ConsultarVehiculosPaginado } from '@/services/gestionycontrol/vehiculos/ConsultarVehiculosService';
+import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
 import { Chip } from '@mui/material';
 import * as React from 'react';
 import { FormularioModalEditarVehiculo } from '../editar/FormularioEditarVehiculo';
@@ -22,10 +23,11 @@ interface Vehiculo {
 export function TablaVisualizarVehiculos(): React.JSX.Element {
     const { sendMessage, messages } = useSocketIO();
 
-    const [data, setData] = React.useState<Vehiculo[]>([]);
-    const [loading, setLoading] = React.useState(true);
-    const [error, setError] = React.useState<string | null>(null);
-    const [searchTerm, setSearchTerm] = React.useState('');
+    // Paginado, búsqueda y recargas contra el servidor
+    const tabla = usePaginacionServidor<Vehiculo>({
+        consultar: ConsultarVehiculosPaginado,
+        mensajeError: (error) => `Error al cargar los equipos: ${error}`,
+    });
 
     // Se implementó acá porque si se dejaba en el componente "AlertaEliminarVehiculo.tsx", se perdía al momento de eliminar el vehículo
     // ya que al no estar presente en la tabla, este desmontaba el componente por completo impidiendo la visualización de la alerta de confirmación
@@ -35,21 +37,6 @@ export function TablaVisualizarVehiculos(): React.JSX.Element {
     const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
     // ...
 
-    const CargarVehiculos = async () => {
-        try {
-            setError(null);
-            const data = await ConsultarVehiculos();
-            setData(data);
-        } catch (error) {
-            setError(`Error al cargar los equipos: ${error}`);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    React.useEffect(() => {
-        CargarVehiculos();
-    }, []);
 
     const getEstadoColor = (estado: string) => {
         switch (estado) {
@@ -63,7 +50,7 @@ export function TablaVisualizarVehiculos(): React.JSX.Element {
         if (messages.length > 0) {
             const ultimomensajes = messages[messages.length - 1];
             if (ultimomensajes.tipo === 'vehiculo-creado' || ultimomensajes.tipo === 'vehiculo-actualizado' || ultimomensajes.tipo === 'vehiculo-eliminado') {
-                CargarVehiculos();
+                tabla.recargar();
             }
         }
     }, [messages]);
@@ -151,31 +138,19 @@ export function TablaVisualizarVehiculos(): React.JSX.Element {
     };
     // ...
 
-    const handleRefresh = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            setSearchTerm('');
-            const response = await ConsultarVehiculos();
-            setData(response);
-        } catch (err) {
-            setError(`Error al actualizar: ${err}`);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     return (
         <>
             <DataTable<Vehiculo>
-                data={data}
+                data={tabla.datos}
                 columns={columns}
                 actions={actions}
-                loading={loading}
-                error={error}
-                searchTerm={searchTerm}
-                onSearchChange={setSearchTerm}
-                onRefresh={handleRefresh}
+                loading={tabla.cargando}
+                error={tabla.error}
+                searchTerm={tabla.busqueda}
+                onSearchChange={tabla.setBusqueda}
+                onRefresh={tabla.refrescar}
+                paginacionServidor={tabla.paginacionTabla}
                 emptyMessage="No se encontraron vehículos"
                 rowKey={(row) => row.IdVehiculo}
                 placeHolderBuscador='Buscar vehículos...'

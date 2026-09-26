@@ -3,7 +3,8 @@ import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/
 import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useAlertas } from '@/hooks/FuncionMostrarAlerta';
 import { useSocketIO } from '@/hooks/use-WebSocket';
-import { VerTodasLasEntradasDeRepuestos } from '@/services/inventario/repuestos/VerTodasLasEntradasDeRepuestosService';
+import { VerTodasLasEntradasDeRepuestosPaginado } from '@/services/inventario/repuestos/VerTodasLasEntradasDeRepuestosService';
+import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
 import {
     Card,
     CardContent,
@@ -28,10 +29,11 @@ interface EntradaDeRepuestosLista {
 };
 
 export function TablaVisualizarEntradasRepuestos(): React.JSX.Element {
-    const [data, setData] = React.useState<EntradaDeRepuestosLista[]>([]);
-    const [loading, setLoading] = React.useState(true);
-    const [error, setError] = React.useState<string | null>(null);
-    const [searchTerm, setSearchTerm] = React.useState('')
+    // Paginado, búsqueda y recargas contra el servidor
+    const tabla = usePaginacionServidor<EntradaDeRepuestosLista>({
+        consultar: VerTodasLasEntradasDeRepuestosPaginado,
+        mensajeError: (error) => `Error al cargar las entradas de los repuestos: ${error}`,
+    });
     const [noEntradaParaVisualizar, setNoEntradaParaVisualizar] = React.useState<number | null>(null);
     const { sendMessage, messages } = useSocketIO();
 
@@ -44,28 +46,13 @@ export function TablaVisualizarEntradasRepuestos(): React.JSX.Element {
         ocultarAlerta
     } = useAlertas();
 
-    React.useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setLoading(true);
-                setError(null);
-                const response = await VerTodasLasEntradasDeRepuestos();
-                setData(response);
-            } catch (err) {
-                setError(`Error al cargar las entradas de los repuestos: ${err}`);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchData();
-    }, []);
 
     // Socket
     React.useEffect(() => {
         if (messages.length > 0) {
             const UltimoMensaje = messages[messages.length - 1];
             if (UltimoMensaje.tipo === 'entrada-repuestos-creada') {
-                handleRefresh();
+                tabla.recargar();
             }
         }
     }, [messages]);
@@ -136,19 +123,6 @@ export function TablaVisualizarEntradasRepuestos(): React.JSX.Element {
         },
     ];
 
-    const handleRefresh = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            setSearchTerm('');
-            const response = await VerTodasLasEntradasDeRepuestos();
-            setData(response);
-        } catch (err) {
-            setError(`Error al actualizar: ${err}`);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     return (
         <>
@@ -179,14 +153,15 @@ export function TablaVisualizarEntradasRepuestos(): React.JSX.Element {
                     )}
 
                     <DataTable<EntradaDeRepuestosLista>
-                        data={data}
+                        data={tabla.datos}
                         columns={columns}
                         actions={actions}
-                        loading={loading}
-                        error={error}
-                        searchTerm={searchTerm}
-                        onSearchChange={setSearchTerm}
-                        onRefresh={handleRefresh}
+                        loading={tabla.cargando}
+                        error={tabla.error}
+                        searchTerm={tabla.busqueda}
+                        onSearchChange={tabla.setBusqueda}
+                        paginacionServidor={tabla.paginacionTabla}
+                        onRefresh={tabla.refrescar}
                         emptyMessage="No se encontraron entradas"
                         rowKey={(row) => row.NoEntradaRepuestos}
                         placeHolderBuscador='Buscar entradas...'

@@ -32,11 +32,10 @@ export const MostrarAvatar = async (DocumentoUsuarioActivo: string): Promise<str
   const url = apiRoutes.gestionycontrol.cuenta.mostrar_avatar_usuario_activo(DocumentoUsuarioActivo);
 
   try {
-    const { data } = await axiosInstance.get<Blob>(url, {
-      responseType: 'blob',
-      // Evita que el navegador sirva desde caché la imagen anterior tras subir una nueva
-      params: { t: Date.now() },
-    });
+    // Sin parámetro anti-caché: el backend sirve el archivo con `max-age=0` + ETag, así
+    // que el navegador siempre revalida y recibe el avatar nuevo tras subirlo. Una URL
+    // distinta en cada carga obligaba además a un preflight CORS nuevo cada vez.
+    const { data } = await axiosInstance.get<Blob>(url, { responseType: 'blob' });
     return URL.createObjectURL(data);
   } catch (error: any) {
     // Sin avatar propio: el componente decidirá qué imagen de reserva usar.

@@ -1,5 +1,7 @@
 import axiosInstance from '@/config/axiosConfig';
 import { apiRoutes } from '@/config/apiRoutes';
+import { consultarPaginado } from '@/services/paginacion';
+import type { ParametrosPaginacion } from '@/types/paginacion';
 
 export const VerStockEquipos = async () => {
   try {
@@ -10,3 +12,10 @@ export const VerStockEquipos = async () => {
     throw new Error(`${error?.response?.data?.error ?? 'Error desconocido'}`);
   }
 };
+
+/**
+ * Versión paginada en el servidor (ver `usePaginacionServidor`).
+ * `SoloBajoStock` replica el chip "Solo bajo stock" (cantidad ≤ 5).
+ */
+export const VerStockEquiposPaginado = (parametros: ParametrosPaginacion, filtros: { SoloBajoStock?: boolean } = {}) =>
+  consultarPaginado<any>(apiRoutes.inventario.equipos.ver_stock_equipos, parametros, { SoloBajoStock: filtros.SoloBajoStock || undefined });

@@ -2,7 +2,8 @@
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useSocketIO } from '@/hooks/use-WebSocket';
-import { VerBodegas } from '@/services/gestionycontrol/bodegas/VerBodegasService';
+import { VerBodegasPaginado } from '@/services/gestionycontrol/bodegas/VerBodegasService';
+import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
 import { Chip } from '@mui/material';
 import * as React from 'react';
 import { FormularioEditarBodega } from '../editar/FormularioEditarBodega';
@@ -22,10 +23,11 @@ export function TablaVisualizarBodegas(): React.JSX.Element {
     // 3. HOOKS DE REACT Y OTROS HOOKS DE LIBRERÍAS
 
     // 4. ESTADOS
-    const [data, setData] = React.useState<Bodega[]>([]);
-    const [loading, setLoading] = React.useState(true);
-    const [error, setError] = React.useState<string | null>(null);
-    const [searchTerm, setSearchTerm] = React.useState('');
+    // Paginado, búsqueda y recargas contra el servidor
+    const tabla = usePaginacionServidor<Bodega>({
+        consultar: VerBodegasPaginado,
+        mensajeError: () => 'Error al actualizar las bodegas',
+    });
     const { sendMessage, messages } = useSocketIO();
     //Estados para el manejo de las notificaciones/alertas
     const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
@@ -34,17 +36,13 @@ export function TablaVisualizarBodegas(): React.JSX.Element {
     //....
 
     // 5. USEEFFECT PARA CARGA DE DATOS INICIALES Y SOCKETS
-    // Carga las bodegas al cargar la página
-    React.useEffect(() => {
-        CargarBodegas();
-    }, []);
-    // ....
     // Carga las bodegas cuando se emite un evento socket
     React.useEffect(() => {
         if (messages.length > 0) {
             const UltimoMensajeEmitido = messages[messages.length - 1];
             if (UltimoMensajeEmitido.tipo === 'bodega-creada' || UltimoMensajeEmitido.tipo === 'bodega-actualizada') {
-                handleRefresh();
+                // Conserva la página y la búsqueda de quien está mirando la tabla
+                tabla.recargar();
             }
         }
     }, [messages]);
@@ -57,35 +55,6 @@ export function TablaVisualizarBodegas(): React.JSX.Element {
         setMostrarAlertas(true);
     };
     //....
-    // Función para mostrar las bodegas
-    const CargarBodegas = async () => {
-        try {
-            setError(null);
-            const Bodegas = await VerBodegas();
-            setData(Bodegas);
-        } catch (error) {
-            console.error(`Error al cargar las bodegas: ${error}`);
-        } finally {
-            setLoading(false);
-        }
-    };
-    // ....
-    // Función para refrescar los datos de la tabla
-    const handleRefresh = async () => {
-        try {
-            setLoading(false);
-            setError(null);
-            setSearchTerm('');
-            const response = await VerBodegas();
-            setData(response);
-        } catch (error) {
-            setError('Error al actualizar las bodegas');
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    };
-    // ....
     // Función para retornar el color dependiendo del estado
     const getEstadoColor = (estado: string) => {
         switch (estado) {
@@ -151,14 +120,15 @@ export function TablaVisualizarBodegas(): React.JSX.Element {
     return (
         <>
             <DataTable<Bodega>
-                data={data}
+                data={tabla.datos}
                 columns={columns}
                 actions={actions}
-                loading={loading}
-                error={error}
-                searchTerm={searchTerm}
-                onSearchChange={setSearchTerm}
-                onRefresh={handleRefresh}
+                loading={tabla.cargando}
+                error={tabla.error}
+                searchTerm={tabla.busqueda}
+                onSearchChange={tabla.setBusqueda}
+                onRefresh={tabla.refrescar}
+                paginacionServidor={tabla.paginacionTabla}
                 emptyMessage='No se encontraron bodegas'
                 rowKey={(row) => row.IdBodega}
                 placeHolderBuscador='Buscar bodegas...'

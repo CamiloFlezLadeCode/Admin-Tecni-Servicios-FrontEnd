@@ -2,7 +2,8 @@
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import { ColumnDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useAlertas } from '@/hooks/FuncionMostrarAlerta';
-import { VerStockEquipos } from '@/services/inventario/equipos/VerStockEquiposService';
+import { VerStockEquiposPaginado } from '@/services/inventario/equipos/VerStockEquiposService';
+import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
 import {
   Box,
   Card,
@@ -27,83 +28,42 @@ interface EquipoStock {
 }
 
 export function TablaVisualizarStockEquipos(): React.JSX.Element {
-  const [data, setData] = React.useState<EquipoStock[]>([]);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = React.useState('');
-  const [categoriaFiltro, setCategoriaFiltro] = React.useState<string>('');
   const [soloBajoStock, setSoloBajoStock] = React.useState<boolean>(false);
   const { messages } = useSocketIO();
 
   const { mostrarAlertas, mensajeAlerta, tipoAlerta, mostrarMensaje, ocultarAlerta } = useAlertas();
 
-  React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await VerStockEquipos();
-        // Mapeo explicito si la respuesta difiere de la interfaz
-        const mapeado = (Array.isArray(response) ? response : []).map((item: any) => ({
+  // Paginado, búsqueda y filtro "Solo bajo stock" resueltos en el servidor
+  const tabla = usePaginacionServidor<EquipoStock>({
+    consultar: async (parametros) => {
+      const respuesta = await VerStockEquiposPaginado(parametros, { SoloBajoStock: soloBajoStock });
+      // Mismo mapeo explícito que se aplicaba al listado completo
+      return {
+        ...respuesta,
+        Datos: respuesta.Datos.map((item: any) => ({
           IdEquipo: item.IdEquipo,
           NombreEquipo: item.NombreEquipo,
           Cantidad: item.Cantidad,
           Estado: item.Estado,
           UnidadMedida: item.UnidadMedida
-        }));
-        setData(mapeado);
-      } catch (err: any) {
-        setError(`Error al cargar el stock de equipos: ${err?.message ?? err}`);
-        mostrarMensaje(`No fue posible cargar el stock de equipos`, 'error');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-  const handleRefresh = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      setSearchTerm('');
-      const response = await VerStockEquipos();
-      const mapeado = (Array.isArray(response) ? response : []).map((item: any) => ({
-        IdEquipo: item.IdEquipo,
-        NombreEquipo: item.NombreEquipo,
-        Cantidad: item.Cantidad,
-        Estado: item.Estado,
-        UnidadMedida: item.UnidadMedida
-      }));
-      setData(mapeado);
-    } catch (err: any) {
-      setError(`Error al actualizar: ${err?.message ?? err}`);
-    } finally {
-      setLoading(false);
+        }))
+      };
+    },
+    filtros: [soloBajoStock],
+    mensajeError: (err: any) => {
+      mostrarMensaje(`No fue posible cargar el stock de equipos`, 'error');
+      return `Error al cargar el stock de equipos: ${err?.message ?? err}`;
     }
-  };
+  });
 
   React.useEffect(() => {
     if (messages.length > 0) {
       const ultimo = messages[messages.length - 1];
       if (ultimo.tipo === 'salida-equipos-creada' || ultimo.tipo === 'entrada-equipos-creada') {
-        handleRefresh();
+        tabla.recargar();
       }
     }
   }, [messages]);
-
-  const categorias = React.useMemo(() => {
-    const set = new Set<string>();
-    data.forEach((d) => { if (d.Categoria) set.add(String(d.Categoria)); });
-    return Array.from(set).sort();
-  }, [data]);
-
-  const filtered = React.useMemo(() => {
-    let rows = data;
-    if (categoriaFiltro) rows = rows.filter((r) => String(r.Categoria) === categoriaFiltro);
-    if (soloBajoStock) rows = rows.filter((r) => (r.Cantidad ?? 0) <= 5);
-    return rows;
-  }, [data, categoriaFiltro, soloBajoStock]);
 
   const columns: ColumnDefinition<EquipoStock>[] = [
     {
@@ -158,13 +118,14 @@ export function TablaVisualizarStockEquipos(): React.JSX.Element {
           </Box>
 
           <DataTable<EquipoStock>
-            data={filtered}
+            data={tabla.datos}
             columns={columns}
-            loading={loading}
-            error={error}
-            searchTerm={searchTerm}
-            onSearchChange={setSearchTerm}
-            onRefresh={handleRefresh}
+            loading={tabla.cargando}
+            error={tabla.error}
+            searchTerm={tabla.busqueda}
+            onSearchChange={tabla.setBusqueda}
+            onRefresh={tabla.refrescar}
+            paginacionServidor={tabla.paginacionTabla}
             emptyMessage="No se encontraron equipos"
             rowKey={(row) => row.IdEquipo}
             placeHolderBuscador='Buscar equipos...'

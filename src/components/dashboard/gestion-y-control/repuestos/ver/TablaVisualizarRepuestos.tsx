@@ -1,7 +1,8 @@
 'use client';
 import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useSocketIO } from '@/hooks/use-WebSocket';
-import { ConsultarRepuestos } from '@/services/gestionycontrol/repuestos/ConsultarRepuestosService';
+import { ConsultarRepuestosPaginado } from '@/services/gestionycontrol/repuestos/ConsultarRepuestosService';
+import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
 import { Chip } from '@mui/material';
 import * as React from 'react';
 import { FormularioEditarRepuesto } from '../editar/FormularioEditarRepuesto';
@@ -53,10 +54,11 @@ const normalizarEstado = (EstadoRepuesto: string | null | undefined): EstadoDb |
 
 export function TablaVisualizarProyectos(): React.JSX.Element {
     const { sendMessage, messages } = useSocketIO();
-    const [data, setData] = React.useState<Repuesto[]>([]);
-    const [loading, setLoading] = React.useState(true);
-    const [error, setError] = React.useState<string | null>(null);
-    const [searchTerm, setSearchTerm] = React.useState('');
+    // Paginado, búsqueda y recargas contra el servidor
+    const tabla = usePaginacionServidor<Repuesto>({
+        consultar: ConsultarRepuestosPaginado,
+        mensajeError: (error) => `Error al cargar los repuestos: ${error}`,
+    });
 
     // Estados para alertas - MOVIDOS AL PRINCIPAL
     const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
@@ -80,21 +82,7 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
     //     fetchData();
     // }, []);
 
-    const CargarRepuestos = async () => {
-        try {
-            setError(null);
-            const data = await ConsultarRepuestos();
-            setData(data);
-        } catch (error) {
-            setError(`Error al cargar los equipos: ${error}`);
-        } finally {
-            setLoading(false);
-        }
-    };
 
-    React.useEffect(() => {
-        CargarRepuestos();
-    }, []);
 
     const OperacionesStandar = new Set([
         'repuesto-creado',
@@ -108,24 +96,11 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
         if (messages.length > 0) {
             const ultimoMensaje = messages[messages.length - 1];
             if (OperacionesStandar.has(ultimoMensaje.tipo)) {
-                CargarRepuestos();
+                tabla.recargar();
             }
         }
     }, [messages]);
 
-    const handleRefresh = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            setSearchTerm('');
-            const response = await ConsultarRepuestos();
-            setData(response);
-        } catch (err) {
-            setError(`Error al actualizar: ${err}`);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     // Función para mostrar mensajes de alerta
     const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error') => {
@@ -192,14 +167,15 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
     return (
         <>
             <DataTable<Repuesto>
-                data={data}
+                data={tabla.datos}
                 columns={columns}
                 actions={actions}
-                loading={loading}
-                error={error}
-                searchTerm={searchTerm}
-                onSearchChange={setSearchTerm}
-                onRefresh={handleRefresh}
+                loading={tabla.cargando}
+                error={tabla.error}
+                searchTerm={tabla.busqueda}
+                onSearchChange={tabla.setBusqueda}
+                paginacionServidor={tabla.paginacionTabla}
+                onRefresh={tabla.refrescar}
                 emptyMessage="No se encontraron repuestos"
                 rowKey={(row) => row.IdRepuesto}
                 placeHolderBuscador='Buscar repuestos...'

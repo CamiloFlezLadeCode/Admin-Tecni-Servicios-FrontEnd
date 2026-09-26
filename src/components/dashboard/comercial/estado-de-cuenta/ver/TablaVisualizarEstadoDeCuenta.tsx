@@ -15,7 +15,8 @@ import {
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { FilePdf, Buildings, Wrench, CheckCircle, Clock } from '@phosphor-icons/react';
-import { VerEstadoDeCuentaCliente } from '@/services/comercial/estado_de_cuenta/VerEstadoDeCuentaClienteService';
+import { VerEstadoDeCuentaClientePaginado, type RespuestaEstadoDeCuenta } from '@/services/comercial/estado_de_cuenta/VerEstadoDeCuentaClienteService';
+import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
 import { InformeClienteEquiposEnObra } from '@/services/comercial/estado_de_cuenta/InformeClienteEquiposEnObraService';
 import { InformeInternoEmpresaEquiposEnObra } from '@/services/comercial/estado_de_cuenta/InformeInternoEmpresaEquiposEnObraService';
 import { ListarClientes } from '@/services/generales/ListarClientesService';
@@ -48,10 +49,8 @@ interface EstadoDeCuenta {
 }
 
 export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
-    const [data, setData] = useState<EstadoDeCuenta[]>([]);
-    const [loading, setLoading] = useState(false);
+    // Errores de los informes PDF (los de la tabla los maneja el hook de paginado)
     const [error, setError] = useState<string | null>(null);
-    const [searchTerm, setSearchTerm] = useState('');
     const [clientes, setClientes] = useState<{ value: string | number; label: string }[]>([]);
     const [pdfLoading, setPdfLoading] = useState<'cliente' | 'interno' | null>(null);
 
@@ -63,8 +62,22 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
     });
 
     // Opciones dinámicas para filtros
-    const [opcionesProyectos, setOpcionesProyectos] = useState<{ value: string | number; label: string }[]>([]);
-    const [opcionesEquipos, setOpcionesEquipos] = useState<{ value: string | number; label: string }[]>([]);
+    const clienteSeleccionado = datos.Cliente !== OpcionPorDefecto.value;
+
+    // Paginado, búsqueda y filtros de proyecto/equipo resueltos en el servidor. La
+    // respuesta trae además las opciones de los selects y el resumen de las tarjetas,
+    // calculados sobre todo el estado de cuenta del cliente.
+    const tabla = usePaginacionServidor<EstadoDeCuenta, RespuestaEstadoDeCuenta<EstadoDeCuenta>>({
+        consultar: (parametros) =>
+            VerEstadoDeCuentaClientePaginado<EstadoDeCuenta>(String(datos.Cliente), parametros, {
+                Proyecto: datos.Proyecto !== 'Todos' ? String(datos.Proyecto) : undefined,
+                Equipo: datos.Equipo !== 'Todos' ? String(datos.Equipo) : undefined,
+            }),
+        filtros: [datos.Cliente, datos.Proyecto, datos.Equipo],
+        habilitado: clienteSeleccionado,
+        mensajeError: (err) => `Error al actualizar: ${err}`,
+    });
+    const loading = tabla.cargando;
 
     // Estados para el Modal de Detalle
     const [modalDetalleOpen, setModalDetalleOpen] = useState(false);
@@ -84,91 +97,44 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
     }, []);
 
     // Cargar data principal al seleccionar cliente
-    useEffect(() => {
-        if (datos.Cliente !== OpcionPorDefecto.value) {
-            handleRefresh();
-        } else {
-            setData([]);
-            setOpcionesProyectos([]);
-            setOpcionesEquipos([]);
-        }
-    }, [datos.Cliente]);
+    // Opciones de los selects: valores distintos de TODO el estado de cuenta del cliente
+    const opcionesProyectos = useMemo<{ value: string | number; label: string }[]>(() => {
+        const proyectos = tabla.respuesta?.Opciones.Proyectos ?? [];
+        if (!clienteSeleccionado || proyectos.length === 0) return [];
+        return [{ value: 'Todos', label: 'Todos los Proyectos' }, ...proyectos.map((p) => ({ value: p, label: p }))];
+    }, [tabla.respuesta, clienteSeleccionado]);
 
-    // Actualizar opciones de filtros basadas en la data cargada
-    useEffect(() => {
-        if (data.length > 0) {
-            const proyectosUnicos = Array.from(
-                new Map(
-                    data
-                        .filter(item => Boolean(item.Proyecto))
-                        .map(item => [
-                            String(item.IdProyecto ?? item.Proyecto),
-                            { id: item.IdProyecto, nombre: item.Proyecto },
-                        ])
-                ).values()
-            ).sort((a, b) => a.nombre.localeCompare(b.nombre));
-
-            setOpcionesProyectos([
-                { value: 'Todos', label: 'Todos los Proyectos' },
-                ...proyectosUnicos.map(p => ({ value: p.id ?? p.nombre, label: p.nombre }))
-            ]);
-
-            // Extraer equipos únicos
-            const equiposUnicos = Array.from(new Set(data.map(item => item.Equipo).filter(Boolean))).sort();
-            setOpcionesEquipos([
-                { value: 'Todos', label: 'Todos los Equipos' },
-                ...equiposUnicos.map(e => ({ value: e, label: e }))
-            ]);
-        }
-    }, [data]);
+    const opcionesEquipos = useMemo<{ value: string | number; label: string }[]>(() => {
+        const equipos = tabla.respuesta?.Opciones.Equipos ?? [];
+        if (!clienteSeleccionado || equipos.length === 0) return [];
+        return [{ value: 'Todos', label: 'Todos los Equipos' }, ...equipos.map((e) => ({ value: e, label: e }))];
+    }, [tabla.respuesta, clienteSeleccionado]);
 
     const handleChange = (e: SelectChangeEvent<string | number> | React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
+        if (name === 'Cliente') {
+            // Nuevo cliente: filtros y búsqueda desde cero, en el mismo cambio para que
+            // no salga una consulta con el proyecto/equipo del cliente anterior
+            setDatos(prev => ({ ...prev, Cliente: String(value), Proyecto: 'Todos', Equipo: 'Todos' }));
+            tabla.refrescar();
+            return;
+        }
         setDatos(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleRefresh = async () => {
-        if (datos.Cliente === OpcionPorDefecto.value) return;
-
-        try {
-            setLoading(true);
-            setError(null);
-            setSearchTerm('');
-            // Resetear filtros secundarios al cambiar cliente
-            setDatos(prev => ({ ...prev, Proyecto: 'Todos', Equipo: 'Todos' }));
-
-            const response = await VerEstadoDeCuentaCliente(String(datos.Cliente));
-            setData(response);
-        } catch (err) {
-            setError(`Error al actualizar: ${err}`);
-            setData([]);
-        } finally {
-            setLoading(false);
-        }
+    // Botón "Actualizar": vuelve a "Todos", limpia la búsqueda y recarga
+    const handleRefresh = () => {
+        if (!clienteSeleccionado) return;
+        setDatos(prev => ({ ...prev, Proyecto: 'Todos', Equipo: 'Todos' }));
+        tabla.refrescar();
     };
 
     const sameValue = (a: string | number, b: string | number) => String(a) === String(b);
 
     // Filtrado de datos en memoria
-    const filteredData = useMemo(() => {
-        return data.filter(item => {
-            const matchProyecto = datos.Proyecto === 'Todos'
-                || (item.IdProyecto !== undefined && sameValue(item.IdProyecto, datos.Proyecto))
-                || item.Proyecto === datos.Proyecto;
-            const matchEquipo = datos.Equipo === 'Todos' || item.Equipo === datos.Equipo;
-            return matchProyecto && matchEquipo;
-        });
-    }, [data, datos.Proyecto, datos.Equipo]);
-
-    // Cálculos para las Cards de Resumen
-    const resumen = useMemo(() => {
-        return filteredData.reduce((acc, curr) => ({
-            totalPrestado: acc.totalPrestado + Number(curr.CantidadPrestada || 0),
-            totalDevuelto: acc.totalDevuelto + Number(curr.CantidadDevuelta || 0),
-            totalPendiente: acc.totalPendiente + Number(curr.CantidadPendiente || 0),
-            valorPendiente: acc.valorPendiente + Number(curr.ValorPendiente || 0)
-        }), { totalPrestado: 0, totalDevuelto: 0, totalPendiente: 0, valorPendiente: 0 });
-    }, [filteredData]);
+    // Resumen de las tarjetas, calculado en el servidor con los filtros de proyecto/equipo
+    // (sin la búsqueda de texto, como antes)
+    const resumen = tabla.respuesta?.Resumen ?? { totalPrestado: 0, totalDevuelto: 0, totalPendiente: 0, valorPendiente: 0 };
 
     type InformeRow = Record<string, unknown>;
 
@@ -782,14 +748,15 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
                         </Typography>
                     </Box>
                     <DataTable<EstadoDeCuenta>
-                        data={filteredData}
+                        data={tabla.datos}
                         columns={columns}
                         actions={actions}
                         loading={loading}
-                        error={error}
-                        searchTerm={searchTerm}
-                        onSearchChange={setSearchTerm}
+                        error={tabla.error ?? error}
+                        searchTerm={tabla.busqueda}
+                        onSearchChange={tabla.setBusqueda}
                         onRefresh={handleRefresh}
+                        paginacionServidor={tabla.paginacionTabla}
                         emptyMessage="No se encontraron registros para los filtros seleccionados"
                         rowKey={(row) => row.IdDetalleRemison ?? Math.random()}
                         placeHolderBuscador='Buscar por equipo, remisión o proyecto...'

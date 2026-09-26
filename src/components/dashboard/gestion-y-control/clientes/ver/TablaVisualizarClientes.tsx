@@ -15,7 +15,8 @@ import Select from '@mui/material/Select';
 import Grid from '@mui/material/Unstable_Grid2';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar'; // Alertas Flotantes
-import { TraerClientes } from '@/services/gestionycontrol/clientes/TraerClientesRegistrados';
+import { TraerClientesPaginado } from '@/services/gestionycontrol/clientes/TraerClientesRegistrados';
+import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
 import Chip from '@mui/material/Chip';
 import TablePagination from '@mui/material/TablePagination';
 import { Typography } from '@mui/material';
@@ -66,47 +67,29 @@ const Estado: Record<EstadoKey, { label: string; color: 'success' | 'error' }> =
 
 
 export function TablaVisualizarCientes(): React.JSX.Element {
-    const [clientes, setClientes] = React.useState<Client[]>([]);
-    const [searchTerm, setSearchTerm] = React.useState<string>('');
-    const [loading, setLoading] = React.useState<boolean>(true);
-    const [error, setError] = React.useState<string | null>(null);
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [mostrarTodasLasColumnas, setMostrarTodasLasColumnas] = React.useState(false);
 
+    // Paginado y búsqueda (por nombre y documento) resueltos en el servidor
+    const tabla = usePaginacionServidor<Client>({
+        consultar: TraerClientesPaginado,
+        limiteInicial: 5,
+        mensajeError: (error) => {
+            console.error('❌ Error al traer clientes:', error);
+            return 'Error al cargar clientes';
+        },
+    });
 
-    // Función para traer los clientes al cargar
-    React.useEffect(() => {
-        const fetchClientes = async () => {
-            try {
-                const data = await TraerClientes();
-                setClientes(data);
-            } catch (error) {
-                console.error('❌ Error al traer clientes:', error);
-                setError('Error al cargar clientes');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchClientes();
-    }, []);
-
-    // Filtrar
-    const filteredData = clientes.filter(item =>
-        (item.Nombre.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (item.Documento.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
-
-    if (loading) {
+    // Sólo en la primera carga: al buscar o paginar la tabla sigue montada (el
+    // buscador no pierde el foco mientras llegan los resultados)
+    if (tabla.cargando) {
         return <div>Cargando clientes...</div>;
     }
 
-    if (error) {
-        return <div>{error}</div>;
+    if (tabla.error) {
+        return <div>{tabla.error}</div>;
     }
 
-    const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    const paginatedData = tabla.datos;
 
     return (
         <Card>
@@ -121,7 +104,8 @@ export function TablaVisualizarCientes(): React.JSX.Element {
                     <TextField
                         variant="outlined"
                         placeholder="Buscar cliente..."
-                        onChange={e => setSearchTerm(e.target.value)}
+                        value={tabla.busqueda}
+                        onChange={e => tabla.setBusqueda(e.target.value)}
                         // style={{ margin: '16px' }}
                         size="small"
                     />
@@ -189,14 +173,13 @@ export function TablaVisualizarCientes(): React.JSX.Element {
                 </Paper>
                 <TablePagination
                     component="div"
-                    count={filteredData.length}
-                    page={page}
+                    count={tabla.total}
+                    page={tabla.pagina}
                     labelRowsPerPage="Filas por página"
-                    onPageChange={(event, newPage) => setPage(newPage)}
-                    rowsPerPage={rowsPerPage}
+                    onPageChange={(event, newPage) => tabla.paginacionTabla.onCambiarPagina(newPage)}
+                    rowsPerPage={tabla.limite}
                     onRowsPerPageChange={(event) => {
-                        setRowsPerPage(parseInt(event.target.value, 10));
-                        setPage(0);
+                        tabla.paginacionTabla.onCambiarLimite(parseInt(event.target.value, 10));
                     }}
                     rowsPerPageOptions={[5, 10, 25]}
                 />

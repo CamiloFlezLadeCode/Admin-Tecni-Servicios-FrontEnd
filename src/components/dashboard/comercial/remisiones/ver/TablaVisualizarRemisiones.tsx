@@ -6,7 +6,8 @@ import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/
 import MensajeDeCarga from '@/components/dashboard/componentes_generales/mensajedecarga/BackDropCircularProgress';
 import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useSocketIO } from '@/hooks/use-WebSocket';
-import { ConsultarRemisiones, ConsultarRemisionesConPaginacion } from '@/services/comercial/remisiones/ConsultarRemisionesService';
+import { ConsultarRemisionesPaginado } from '@/services/comercial/remisiones/ConsultarRemisionesService';
+import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
 import {
     Chip,
     useTheme
@@ -31,10 +32,11 @@ interface Remision {
 export function TablaVisualizarRemisiones(): React.JSX.Element {
     const { sendMessage, messages } = useSocketIO();
     const theme = useTheme();
-    const [data, setData] = React.useState<Remision[]>([]);
-    const [loading, setLoading] = React.useState(true);
-    const [error, setError] = React.useState<string | null>(null);
-    const [searchTerm, setSearchTerm] = React.useState('');
+    // Paginado, búsqueda y recargas contra el servidor
+    const tabla = usePaginacionServidor<Remision>({
+        consultar: ConsultarRemisionesPaginado,
+        mensajeError: (error) => `Error al cargar las remisiones: ${error}`,
+    });
     // Estados para alertas
     const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
     const [mensajeAlerta, setMensajeAlerta] = React.useState('');
@@ -42,28 +44,12 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
     const [mensajeDeCarga, setMensajeDeCarga] = React.useState('');
     const [mostrarMensajeDeCarga, setMostrarMensajeDeCarga] = React.useState(false);
 
-    React.useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setLoading(true);
-                setError(null);
-                const response = await ConsultarRemisiones();
-                setData(response);
-            } catch (err) {
-                setError(`Error al cargar las remisiones: ${err}`);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, []);
 
     React.useEffect(() => {
         if (messages.length > 0) {
             const ultimomensajes = messages[messages.length - 1];
             if (ultimomensajes.tipo === 'remision-creada' || ultimomensajes.tipo === 'remision-eliminada' || ultimomensajes.tipo === 'remision-actualizada') {
-                handleRefresh();
+                tabla.recargar();
             }
         }
     }, [messages]);
@@ -125,7 +111,7 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
             render: (row: Remision) => (
                 <EditarRemision
                     IdRemision={row.IdRemision}
-                    onSuccess={handleRefresh}
+                    onSuccess={tabla.recargar}
                     onMostrarMensaje={mostrarMensaje}
                 />
             ),
@@ -184,19 +170,6 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
 
     ];
 
-    const handleRefresh = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            setSearchTerm('');
-            const response = await ConsultarRemisiones();
-            setData(response);
-        } catch (err) {
-            setError(`Error al actualizar: ${err}`);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     // Función para mostrar mensajes de alerta
     const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error' | 'info' | 'warning') => {
@@ -208,14 +181,15 @@ export function TablaVisualizarRemisiones(): React.JSX.Element {
     return (
         <>
             <DataTable<Remision>
-                data={data}
+                data={tabla.datos}
                 columns={columns}
                 actions={actions}
-                loading={loading}
-                error={error}
-                searchTerm={searchTerm}
-                onSearchChange={setSearchTerm}
-                onRefresh={handleRefresh}
+                loading={tabla.cargando}
+                error={tabla.error}
+                searchTerm={tabla.busqueda}
+                onSearchChange={tabla.setBusqueda}
+                paginacionServidor={tabla.paginacionTabla}
+                onRefresh={tabla.refrescar}
                 emptyMessage="No se encontraron remisiones"
                 rowKey={(row) => row.IdRemision}
                 placeHolderBuscador='Buscar remisiones...'

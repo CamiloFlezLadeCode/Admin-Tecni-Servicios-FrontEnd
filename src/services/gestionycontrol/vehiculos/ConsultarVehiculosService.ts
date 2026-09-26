@@ -1,5 +1,7 @@
 import axiosInstance from "@/config/axiosConfig";
 import { apiRoutes } from "@/config/apiRoutes";
+import { consultarPaginado } from '@/services/paginacion';
+import type { ParametrosPaginacion } from '@/types/paginacion';
 
 export const ConsultarVehiculos = async () => {
     try {
@@ -10,3 +12,7 @@ export const ConsultarVehiculos = async () => {
         throw error;
     }
 };
+
+/** Versión paginada en el servidor (ver `usePaginacionServidor`). Mismo endpoint, con `pagina`. */
+export const ConsultarVehiculosPaginado = (parametros: ParametrosPaginacion) =>
+  consultarPaginado<any>(apiRoutes.vehiculos.vervehiculos, parametros);

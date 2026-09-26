@@ -1,7 +1,8 @@
 'use client';
 import { DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useSocketIO } from '@/hooks/use-WebSocket';
-import { ConsultarProyectos } from '@/services/gestionycontrol/proyectos/ConsultarProyectosService';
+import { ConsultarProyectosPaginado } from '@/services/gestionycontrol/proyectos/ConsultarProyectosService';
+import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
 import { Chip } from '@mui/material';
 import * as React from 'react';
 import { ModalFormularioEditarProyecto } from '../editar/ModalFormularioEditarProyecto';
@@ -31,10 +32,11 @@ const Estado: Record<EstadoKey, { label: string; color: 'success' | 'error' }> =
 };
 
 export function TablaVisualizarProyectos(): React.JSX.Element {
-    const [data, setData] = React.useState<Proyecto[]>([]);
-    const [loading, setLoading] = React.useState(true);
-    const [error, setError] = React.useState<string | null>(null);
-    const [searchTerm, setSearchTerm] = React.useState('');
+    // Paginado, búsqueda y recargas contra el servidor
+    const tabla = usePaginacionServidor<Proyecto>({
+        consultar: ConsultarProyectosPaginado,
+        mensajeError: () => 'Error al cargar los proyectos',
+    });
     const { sendMessage, messages } = useSocketIO();
 
     // Estados para alertas - MOVIDOS AL PRINCIPAL
@@ -42,28 +44,13 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
     const [mensajeAlerta, setMensajeAlerta] = React.useState('');
     const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
 
-    const cargarProyectos = async () => {
-        try {
-            setError(null);
-            const data = await ConsultarProyectos();
-            setData(data);
-        } catch (error) {
-            setError('Error al cargar los proyectos');
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    };
 
-    React.useEffect(() => {
-        cargarProyectos();
-    }, []);
 
     React.useEffect(() => {
         if (messages.length > 0) {
             const ultimoMensaje = messages[messages.length - 1];
             if (ultimoMensaje.tipo === 'proyecto-actualizado' || ultimoMensaje.tipo === 'proyecto-creado') {
-                cargarProyectos();
+                tabla.recargar();
             }
         }
     }, [messages]);
@@ -126,31 +113,19 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
         }
     ];
 
-    const handleRefresh = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            setSearchTerm('');
-            await cargarProyectos();
-        } catch (err) {
-            setError('Error al actualizar proyectos');
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     return (
         <>
             <DataTable<Proyecto>
-                data={data}
+                data={tabla.datos}
                 columns={columns}
                 actions={actions}
-                loading={loading}
-                error={error}
-                searchTerm={searchTerm}
-                onSearchChange={setSearchTerm}
-                onRefresh={handleRefresh}
+                loading={tabla.cargando}
+                error={tabla.error}
+                searchTerm={tabla.busqueda}
+                onSearchChange={tabla.setBusqueda}
+                paginacionServidor={tabla.paginacionTabla}
+                onRefresh={tabla.refrescar}
                 emptyMessage="No se encontraron proyectos"
                 rowKey={(row) => row.IdProyecto}
                 placeHolderBuscador='Buscar proyectos...'

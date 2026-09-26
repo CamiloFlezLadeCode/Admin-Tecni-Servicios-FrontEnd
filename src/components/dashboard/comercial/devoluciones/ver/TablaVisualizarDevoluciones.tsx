@@ -8,7 +8,8 @@ import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_
 import { useSocketIO } from '@/hooks/use-WebSocket';
 import { EliminarDevolucion } from '@/services/comercial/devoluciones/EliminarDevolucionService';
 import { ObtenerPDFDevolucion } from '@/services/comercial/devoluciones/ObtenerPDFDevolucionService';
-import { VerTodasLasDevoluciones } from '@/services/comercial/devoluciones/VerTodasLasDevolucionesService';
+import { VerTodasLasDevolucionesPaginado } from '@/services/comercial/devoluciones/VerTodasLasDevolucionesService';
+import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
 import { getEstadoColor } from '@/utils/getEstadoColor';
 import {
     Chip
@@ -29,10 +30,11 @@ interface Devolucion {
 
 export function TablaVisualizarDevoluciones(): React.JSX.Element {
     const { sendMessage, messages } = useSocketIO();
-    const [data, setData] = React.useState<Devolucion[]>([]);
-    const [loading, setLoading] = React.useState(true);
-    const [error, setError] = React.useState<string | null>(null);
-    const [searchTerm, setSearchTerm] = React.useState('');
+    // Paginado, búsqueda y recargas contra el servidor
+    const tabla = usePaginacionServidor<Devolucion>({
+        consultar: VerTodasLasDevolucionesPaginado,
+        mensajeError: (error) => `Error al cargar las devoluciones: ${error}`,
+    });
     // Estados para alertas
     const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
     const [mensajeAlerta, setMensajeAlerta] = React.useState('');
@@ -41,44 +43,16 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
     const [mostrarMensajeDeCarga, setMostrarMensajeDeCarga] = React.useState(false);
 
 
-    React.useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setLoading(true);
-                setError(null);
-                const response = await VerTodasLasDevoluciones();
-                setData(response);
-            } catch (err) {
-                setError(`Error al cargar las devoluciones: ${err}`);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchData();
-    }, []);
 
     React.useEffect(() => {
         if (messages.length > 0) {
             const ultimomensajes = messages[messages.length - 1];
             if (ultimomensajes.tipo === 'devolucion-creada' || ultimomensajes.tipo === 'devolucion-eliminada' || ultimomensajes.tipo === 'devolucion-actualizada') {
-                handleRefresh();
+                tabla.recargar();
             }
         }
     }, [messages]);
 
-    const handleRefresh = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            setSearchTerm('');
-            const response = await VerTodasLasDevoluciones();
-            setData(response);
-        } catch (err) {
-            setError(`Error al actualizar: ${err}`);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     // Función para mostrar mensajes de alerta
     const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error' | 'warning') => {
@@ -190,14 +164,15 @@ export function TablaVisualizarDevoluciones(): React.JSX.Element {
     return (
         <>
             <DataTable<Devolucion>
-                data={data}
+                data={tabla.datos}
                 columns={columns}
                 actions={actions}
-                loading={loading}
-                error={error}
-                searchTerm={searchTerm}
-                onSearchChange={setSearchTerm}
-                onRefresh={handleRefresh}
+                loading={tabla.cargando}
+                error={tabla.error}
+                searchTerm={tabla.busqueda}
+                onSearchChange={tabla.setBusqueda}
+                paginacionServidor={tabla.paginacionTabla}
+                onRefresh={tabla.refrescar}
                 emptyMessage="No se encontraron devoluciones"
                 rowKey={(row) => row.IdDevolucion}
                 placeHolderBuscador='Buscar devoluciones...'

@@ -2,7 +2,8 @@
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import { DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useSocketIO } from '@/hooks/use-WebSocket';
-import { TraerEquipos } from '@/services/gestionycontrol/equipos/TraerEquiposRegistradosService';
+import { TraerEquiposPaginado } from '@/services/gestionycontrol/equipos/TraerEquiposRegistradosService';
+import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
 import { Chip } from '@mui/material';
 import * as React from 'react';
 import { useCallback } from 'react'; // 🔥 Importar useCallback
@@ -62,26 +63,16 @@ type Acciones = {
 };
 
 export function TablaVisualizarEquipos(): React.JSX.Element {
-    const [data, setData] = React.useState<Equipo[]>([]);
-    const [loading, setLoading] = React.useState(true);
-    const [error, setError] = React.useState<string | null>(null);
-    const [searchTerm, setSearchTerm] = React.useState('');
+    // Paginado, búsqueda y recargas contra el servidor
+    const tabla = usePaginacionServidor<Equipo>({
+        consultar: TraerEquiposPaginado,
+        mensajeError: (error) => `Error al cargar los equipos: ${error}`,
+    });
     const { sendMessage, messages } = useSocketIO();
     const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
     const [mensajeAlerta, setMensajeAlerta] = React.useState('');
     const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
 
-    // 🔥 Memoizar cargarEquipos con useCallback
-    const cargarEquipos = async () => {
-        try {
-            const data = await TraerEquipos();
-            setData(data);
-        } catch (error) {
-            setError(`Error al cargar los equipos: ${error}`);
-        } finally {
-            setLoading(false);
-        }
-    }; // 🔥 Dependencias vacías
 
     // 🔥 Memoizar mostrarMensaje con useCallback
     const mostrarMensaje = useCallback((mensaje: string, tipo: 'success' | 'error') => {
@@ -90,16 +81,13 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
         setMostrarAlertas(true);
     }, []);
 
-    React.useEffect(() => {
-        cargarEquipos();
-    }, []); // 🔥 cargarEquipos es estable ahora
 
     React.useEffect(() => {
         if (messages.length > 0) {
             const ultimoMensaje = messages[messages.length - 1];
 
             if (ultimoMensaje.tipo === 'equipo-actualizado' || ultimoMensaje.tipo === 'equipo-creado' || ultimoMensaje.tipo === 'remision-creada' || ultimoMensaje.tipo === 'remision-anulada') {
-                cargarEquipos();
+                tabla.recargar();
             }
         }
     }, [messages]); // 🔥 Ambas funciones son estables ahora
@@ -182,31 +170,19 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
         }
     ];
 
-    // 🔥 Memoizar handleRefresh también
-    const handleRefresh = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            setSearchTerm('');
-            await cargarEquipos();
-        } catch (err) {
-            setError(`Error al actualizar: ${err}`);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     return (
         <>
             <DataTable<Equipo>
-                data={data}
+                data={tabla.datos}
                 columns={columns}
                 actions={actions}
-                loading={loading}
-                error={error}
-                searchTerm={searchTerm}
-                onSearchChange={setSearchTerm}
-                onRefresh={handleRefresh}
+                loading={tabla.cargando}
+                error={tabla.error}
+                searchTerm={tabla.busqueda}
+                onSearchChange={tabla.setBusqueda}
+                paginacionServidor={tabla.paginacionTabla}
+                onRefresh={tabla.refrescar}
                 emptyMessage="No se encontraron equipos"
                 rowKey={(row) => row.IdEquipo}
                 placeHolderBuscador='Buscar equipos...'

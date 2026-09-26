@@ -30,7 +30,8 @@ import {
 } from '@phosphor-icons/react';
 import dayjs, { Dayjs } from 'dayjs';
 import { DataTable, ActionDefinition, ColumnDefinition } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
-import { VerMovimientosGenerales, MovimientoGeneral } from '@/services/comercial/movimientos_generales/VerMovimientosGeneralesService';
+import { VerMovimientosGenerales, VerMovimientosGeneralesPaginado, MovimientoGeneral, type RespuestaMovimientosGenerales } from '@/services/comercial/movimientos_generales/VerMovimientosGeneralesService';
+import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
 import { ListarClientes } from '@/services/generales/ListarClientesService';
 import { ListarProyectos } from '@/services/generales/ListarProyectos';
 import { VisualizarPDFRemision } from '@/services/comercial/remisiones/ObtenerPDFRemisionService';
@@ -44,9 +45,6 @@ import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/
 import { getEstadoColor } from '@/utils/getEstadoColor';
 
 export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
-    const [data, setData] = React.useState<MovimientoGeneral[]>([]);
-    const [loading, setLoading] = React.useState(false);
-    const [error, setError] = React.useState<string | null>(null);
 
     // Estados para alertas
     const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
@@ -102,11 +100,46 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
             FechaInicio: dayjs().startOf('month'),
             FechaFin: dayjs().endOf('month'),
         });
-        setData([]);
     };
 
-    const exportToCSV = () => {
-        if (data.length === 0) return;
+    // Filtros tal como los espera el endpoint (los mismos para la tabla y para exportar)
+    const filtrosConsulta = {
+        FechaInicio: filtros.FechaInicio.format('YYYY-MM-DD'),
+        FechaFin: filtros.FechaFin.format('YYYY-MM-DD'),
+        DocumentoCliente: filtros.Cliente !== OpcionPorDefecto.value ? String(filtros.Cliente) : undefined,
+        IdProyecto: filtros.Proyecto !== 'Todos' ? filtros.Proyecto : undefined,
+    };
+    const rangoFechasInvalido = filtros.FechaFin.isBefore(filtros.FechaInicio);
+
+    // Paginado contra el servidor. El resumen de las tarjetas llega calculado sobre
+    // TODO el conjunto filtrado, no sólo sobre la página visible.
+    const tabla = usePaginacionServidor<MovimientoGeneral, RespuestaMovimientosGenerales>({
+        consultar: (parametros) => VerMovimientosGeneralesPaginado(parametros, filtrosConsulta),
+        filtros: [filtrosConsulta.FechaInicio, filtrosConsulta.FechaFin, filtrosConsulta.DocumentoCliente, filtrosConsulta.IdProyecto],
+        habilitado: !rangoFechasInvalido,
+        mensajeError: (err: any) => {
+            setMensajeAlerta(err?.message || 'Error al cargar los movimientos');
+            setTipoAlerta('error');
+            setMostrarAlertas(true);
+            return err?.message || 'Error al cargar los movimientos';
+        },
+    });
+    const data = tabla.datos;
+    const loading = tabla.cargando;
+
+    // El CSV exporta TODOS los movimientos filtrados, no sólo la página visible:
+    // se piden completos al mismo endpoint (modo clásico, sin paginar).
+    const exportToCSV = async () => {
+        if (tabla.total === 0) return;
+        let data: MovimientoGeneral[];
+        try {
+            data = await VerMovimientosGenerales(filtrosConsulta);
+        } catch (err: any) {
+            setMensajeAlerta(err?.message || 'No fue posible exportar los movimientos');
+            setTipoAlerta('error');
+            setMostrarAlertas(true);
+            return;
+        }
 
         const headers = ['Tipo', 'No. Documento', 'Fecha', 'Cliente', 'Proyecto', 'Valor Total', 'Estado'];
         const csvRows = [
@@ -133,37 +166,6 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
         document.body.removeChild(link);
     };
 
-    const fetchData = React.useCallback(async () => {
-        // No ejecutar si el rango de fechas es inválido
-        if (filtros.FechaFin.isBefore(filtros.FechaInicio)) {
-            return;
-        }
-
-        try {
-            setLoading(true);
-            setError(null);
-            const response = await VerMovimientosGenerales({
-                FechaInicio: filtros.FechaInicio.format('YYYY-MM-DD'),
-                FechaFin: filtros.FechaFin.format('YYYY-MM-DD'),
-                DocumentoCliente: filtros.Cliente !== OpcionPorDefecto.value ? String(filtros.Cliente) : undefined,
-                IdProyecto: filtros.Proyecto !== 'Todos' ? filtros.Proyecto : undefined,
-            });
-            setData(response);
-        } catch (err: any) {
-            setMensajeAlerta(err.message || 'Error al cargar los movimientos');
-            setTipoAlerta('error');
-            setMostrarAlertas(true);
-            setData([]);
-        } finally {
-            setLoading(false);
-        }
-    }, [filtros]);
-
-    // Cargar movimientos automáticamente cuando cambien los filtros
-    React.useEffect(() => {
-        fetchData();
-    }, [fetchData]);
-
     const handleFilterChange = (e: SelectChangeEvent<string | number>) => {
         const { name, value } = e.target;
         setFiltros(prev => ({ ...prev, [name]: value }));
@@ -187,8 +189,6 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
     };
 
     // Validación de rango de fechas para bloquear el botón
-    const rangoFechasInvalido = filtros.FechaFin.isBefore(filtros.FechaInicio);
-
     const getTipoMovimientoInfo = (tipo: string) => {
         switch (tipo) {
             case 'REMISION':
@@ -254,8 +254,6 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
             setMensajeAlerta(`Error al generar el PDF: ${err.message}`);
             setTipoAlerta('error');
             setMostrarAlertas(true);
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -327,16 +325,9 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
     ];
 
     // Resumen para facturación
-    const resumen = React.useMemo(() => {
-        return data.reduce((acc, curr) => {
-            const val = Number(curr.Total || 0);
-            if (curr.TipoMovimiento === 'REMISION') acc.remisiones += val;
-            if (curr.TipoMovimiento === 'DEVOLUCION') acc.devoluciones += val;
-            if (curr.TipoMovimiento === 'ORDEN_DE_SERVICIO') acc.ordenes += val;
-            acc.total += val;
-            return acc;
-        }, { remisiones: 0, devoluciones: 0, ordenes: 0, total: 0 });
-    }, [data]);
+    // Calculado en el servidor sobre todo el conjunto filtrado (antes se sumaba aquí
+    // sobre el listado completo; con paginado aquí sólo está la página visible)
+    const resumen = tabla.respuesta?.Resumen ?? { remisiones: 0, devoluciones: 0, ordenes: 0, total: 0 };
 
     // Obtener nombre del cliente seleccionado para el título
     const nombreCliente = React.useMemo(() => {
@@ -365,7 +356,7 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
                                     variant="outlined"
                                     startIcon={<MicrosoftExcelLogo />}
                                     onClick={exportToCSV}
-                                    disabled={data.length === 0}
+                                    disabled={tabla.total === 0}
                                     color="success"
                                 >
                                     Exportar CSV
@@ -410,7 +401,7 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
                                     fullWidth
                                     variant="contained"
                                     startIcon={<MagnifyingGlass />}
-                                    onClick={fetchData}
+                                    onClick={tabla.recargar}
                                     disabled={loading || rangoFechasInvalido}
                                     sx={{ height: '56px' }}
                                 >
@@ -460,6 +451,7 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
                     data={data}
                     actions={actions}
                     loading={loading}
+                    paginacionServidor={tabla.paginacionTabla}
                     placeHolderBuscador="Buscar por número de documento o cliente..."
                 />
             </Card>

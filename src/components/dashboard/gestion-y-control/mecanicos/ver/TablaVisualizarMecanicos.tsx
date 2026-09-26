@@ -9,7 +9,8 @@ import {
     TextField, Paper, Typography
 } from '@mui/material';
 
-import { ConsultarMecanicos } from '@/services/gestionycontrol/mecanicos/ConsultarMecanicosService';
+import { ConsultarMecanicosPaginado } from '@/services/gestionycontrol/mecanicos/ConsultarMecanicosService';
+import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
 import { TABLE_PADDING } from '@/styles/theme/padding-table';
 
 interface Mecanico {
@@ -38,35 +39,17 @@ const Estado: Record<EstadoKey, { label: string; color: 'success' | 'error' }> =
 };
 
 export function TablaVisualizarMecanicos(): React.JSX.Element {
-    const [mecanicos, setMecanicos] = React.useState<Mecanico[]>([]);
-    const [searchTerm, setSearchTerm] = React.useState('');
-    const [loading, setLoading] = React.useState(true);
-    const [error, setError] = React.useState<string | null>(null);
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    // Paginado y búsqueda (por nombre y documento) resueltos en el servidor
+    const tabla = usePaginacionServidor<Mecanico>({
+        consultar: ConsultarMecanicosPaginado,
+        limiteInicial: 5,
+        mensajeError: (err) => {
+            console.error(err);
+            return 'Error al cargar los mecánicos';
+        },
+    });
 
-    React.useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const data = await ConsultarMecanicos();
-                setMecanicos(data);
-                // console.log(data);
-            } catch (err) {
-                setError('Error al cargar los mecánicos');
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchData();
-    }, []);
-
-    const filteredData = mecanicos.filter(mecanico =>
-        mecanico.Nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        mecanico.Documento.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    const paginatedData = tabla.datos;
 
     return (
         <Card>
@@ -82,7 +65,8 @@ export function TablaVisualizarMecanicos(): React.JSX.Element {
                     <TextField
                         variant="outlined"
                         placeholder="Buscar mecánico..."
-                        onChange={e => setSearchTerm(e.target.value)}
+                        value={tabla.busqueda}
+                        onChange={e => tabla.setBusqueda(e.target.value)}
                         // style={{ margin: '16px' }}
                         size='small'
                     />
@@ -144,13 +128,12 @@ export function TablaVisualizarMecanicos(): React.JSX.Element {
                 </Paper>
                 <TablePagination
                     component="div"
-                    count={filteredData.length}
-                    page={page}
-                    onPageChange={(_, newPage) => setPage(newPage)}
-                    rowsPerPage={rowsPerPage}
+                    count={tabla.total}
+                    page={tabla.pagina}
+                    onPageChange={(_, newPage) => tabla.paginacionTabla.onCambiarPagina(newPage)}
+                    rowsPerPage={tabla.limite}
                     onRowsPerPageChange={(event) => {
-                        setRowsPerPage(parseInt(event.target.value, 10));
-                        setPage(0);
+                        tabla.paginacionTabla.onCambiarLimite(parseInt(event.target.value, 10));
                     }}
                     labelRowsPerPage="Filas por página"
                     rowsPerPageOptions={[5, 10, 25]}

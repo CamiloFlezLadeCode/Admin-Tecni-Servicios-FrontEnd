@@ -2,7 +2,8 @@
 import { DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { FormularioEditarUsuarioGeneral } from '@/components/dashboard/gestion-y-control/usuarios-generales/editar/FormularioEditarUsuarioGeneral';
 import { useSocketIO } from '@/hooks/use-WebSocket';
-import { ConsultarUsuariosGenerales } from '@/services/gestionycontrol/usuariosgenerales/ConsultarUsuariosGeneralesService';
+import { ConsultarUsuariosGeneralesPaginado } from '@/services/gestionycontrol/usuariosgenerales/ConsultarUsuariosGeneralesService';
+import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
 import {
     Chip
 } from '@mui/material';
@@ -39,10 +40,11 @@ const Estado: Record<EstadoKey, { label: string; color: 'success' | 'error' }> =
 };
 
 export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
-    const [data, setData] = React.useState<UsuarioGeneral[]>([]);
-    const [loading, setLoading] = React.useState(true);
-    const [error, setError] = React.useState<string | null>(null);
-    const [searchTerm, setSearchTerm] = React.useState('');
+    // Paginado, búsqueda y recargas contra el servidor
+    const tabla = usePaginacionServidor<UsuarioGeneral>({
+        consultar: ConsultarUsuariosGeneralesPaginado,
+        mensajeError: (error) => `Error al cargar los usuarios generales: ${error}`,
+    });
     const { sendMessage, messages } = useSocketIO();
 
     // Estados para alertas - MOVIDOS AL PRINCIPAL
@@ -50,44 +52,18 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
     const [mensajeAlerta, setMensajeAlerta] = React.useState('');
     const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
 
-    const CargarUsuariosGenerales = async () => {
-        try {
-            const data = await ConsultarUsuariosGenerales();
-            setData(data);
-        } catch (error) {
-            console.error(`Error al cargar los usuarios generales: ${error}`);
-            setError(`Error al cargar los usuarios: ${error}`);
-        } finally {
-            setLoading(false);
-        }
-    };
 
-    React.useEffect(() => {
-        CargarUsuariosGenerales();
-    }, []);
 
     React.useEffect(() => {
         if (messages.length > 0) {
             const ultimoMensaje = messages[messages.length - 1];
 
             if (ultimoMensaje.tipo === 'usuario-actualizado' || ultimoMensaje.tipo === 'usuario-creado') {
-                CargarUsuariosGenerales();
+                tabla.recargar();
             }
         }
     }, [messages]);
 
-    const handleRefresh = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            setSearchTerm('');
-            await CargarUsuariosGenerales();
-        } catch (err) {
-            setError(`Error al actualizar: ${err}`);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const getEstadoColor = (estado: string) => {
         switch (estado) {
@@ -181,14 +157,15 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
     return (
         <>
             <DataTable<UsuarioGeneral>
-                data={data}
+                data={tabla.datos}
                 columns={columns}
                 actions={actions}
-                loading={loading}
-                error={error}
-                searchTerm={searchTerm}
-                onSearchChange={setSearchTerm}
-                onRefresh={handleRefresh}
+                loading={tabla.cargando}
+                error={tabla.error}
+                searchTerm={tabla.busqueda}
+                onSearchChange={tabla.setBusqueda}
+                paginacionServidor={tabla.paginacionTabla}
+                onRefresh={tabla.refrescar}
                 emptyMessage="No se encontraron usuarios"
                 rowKey={(row) => row.Documento}
                 placeHolderBuscador='Buscar usuarios...'

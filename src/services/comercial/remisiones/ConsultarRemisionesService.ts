@@ -1,5 +1,7 @@
 import axiosInstance from "@/config/axiosConfig";
 import { apiRoutes } from "@/config/apiRoutes";
+import { consultarPaginado } from '@/services/paginacion';
+import type { ParametrosPaginacion } from '@/types/paginacion';
 import { TableInterfacePaginacion } from "@/types/InterfaceTablePagination";
 
 export const ConsultarRemisionesConPaginacion = async (paginacion: TableInterfacePaginacion) => {
@@ -97,3 +99,7 @@ export const VerActividadRecienteMovimientos = async (Limite: number = 10): Prom
         throw new Error(`${error?.response?.data?.error ?? 'Error desconocido'}`);
     }
 };
+
+/** Versión paginada en el servidor (ver `usePaginacionServidor`). Mismo endpoint, con `pagina`. */
+export const ConsultarRemisionesPaginado = (parametros: ParametrosPaginacion) =>
+  consultarPaginado<any>(apiRoutes.comercial.remisiones.ver_remisiones, parametros);

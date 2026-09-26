@@ -11,7 +11,8 @@ import {
 } from '@mui/material';
 import { Eye } from '@phosphor-icons/react/dist/ssr';
 import * as React from 'react';
-import { VerTodasLasSalidasDeEquipos } from '@/services/inventario/equipos/VerTodasLasSalidasDeEquiposService';
+import { VerTodasLasSalidasDeEquiposPaginado } from '@/services/inventario/equipos/VerTodasLasSalidasDeEquiposService';
+import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
 import { ModalRegistrarVisualizarSalidaEquipos } from './ModalRegistrarVisualizarSalidaEquipos';
 import { useSocketIO } from '@/hooks/use-WebSocket';
 
@@ -28,10 +29,11 @@ interface SalidaDeEquiposLista {
 }
 
 export function TablaVisualizarSalidasEquipos(): React.JSX.Element {
-  const [data, setData] = React.useState<SalidaDeEquiposLista[]>([]);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = React.useState('');
+  // Paginado, búsqueda y recargas contra el servidor
+  const tabla = usePaginacionServidor<SalidaDeEquiposLista>({
+      consultar: VerTodasLasSalidasDeEquiposPaginado,
+      mensajeError: (error) => `Error al cargar las salidas de equipos: ${error}`,
+  });
   const [noSalidaParaVisualizar, setNoSalidaParaVisualizar] = React.useState<number | null>(null);
 
   const {
@@ -43,21 +45,6 @@ export function TablaVisualizarSalidasEquipos(): React.JSX.Element {
   } = useAlertas();
   const { messages } = useSocketIO();
 
-  React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await VerTodasLasSalidasDeEquipos();
-        setData(response);
-      } catch (err) {
-        setError(`Error al cargar las salidas de los equipos: ${err}`);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
 
   const abrirModalVisualizacion = (salida: SalidaDeEquiposLista) => {
     setNoSalidaParaVisualizar(salida.NoSalidaEquipos);
@@ -105,25 +92,12 @@ export function TablaVisualizarSalidasEquipos(): React.JSX.Element {
     }
   ];
 
-  const handleRefresh = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      setSearchTerm('');
-      const response = await VerTodasLasSalidasDeEquipos();
-      setData(response);
-    } catch (err) {
-      setError(`Error al actualizar: ${err}`);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   React.useEffect(() => {
     if (messages.length > 0) {
       const ultimo = messages[messages.length - 1];
       if (ultimo.tipo === 'salida-equipos-creada') {
-        handleRefresh();
+        tabla.recargar();
       }
     }
   }, [messages]);
@@ -151,14 +125,15 @@ export function TablaVisualizarSalidasEquipos(): React.JSX.Element {
           )}
 
           <DataTable<SalidaDeEquiposLista>
-            data={data}
+            data={tabla.datos}
             columns={columns}
             actions={actions}
-            loading={loading}
-            error={error}
-            searchTerm={searchTerm}
-            onSearchChange={setSearchTerm}
-            onRefresh={handleRefresh}
+            loading={tabla.cargando}
+            error={tabla.error}
+            searchTerm={tabla.busqueda}
+            onSearchChange={tabla.setBusqueda}
+            paginacionServidor={tabla.paginacionTabla}
+            onRefresh={tabla.refrescar}
             emptyMessage="No se encontraron salidas"
             rowKey={(row) => row.NoSalidaEquipos}
             placeHolderBuscador='Buscar salidas...'

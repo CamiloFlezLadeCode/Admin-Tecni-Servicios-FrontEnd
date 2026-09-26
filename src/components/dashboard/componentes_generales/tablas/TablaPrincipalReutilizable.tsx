@@ -19,8 +19,10 @@ import {
     TablePagination,
     Chip,
     Card,
-    CardContent
+    CardContent,
+    LinearProgress
 } from '@mui/material';
+import type { PaginacionTablaServidor } from '@/hooks/use-paginacion-servidor';
 import { TABLE_PADDING } from '@/styles/theme/padding-table';
 import { ArrowsClockwise, Eye, PencilSimple, MagnifyingGlass, X } from '@phosphor-icons/react';
 
@@ -64,6 +66,12 @@ interface DataTableProps<T> {
     placeHolderBuscador: string;
     vista?: number;
     MarginTop?: number;
+    /**
+     * Paginado en el servidor (ver `usePaginacionServidor`). Con esta prop `data` ya es
+     * la página visible: la tabla no filtra ni recorta en memoria, y la búsqueda la
+     * resuelve el servidor. Sin ella, todo funciona en el cliente como siempre.
+     */
+    paginacionServidor?: PaginacionTablaServidor;
 }
 
 export function DataTable<T>({
@@ -86,7 +94,8 @@ export function DataTable<T>({
     customFilters,
     placeHolderBuscador,
     vista,
-    MarginTop
+    MarginTop,
+    paginacionServidor
 }: DataTableProps<T>) {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(defaultRowsPerPage);
@@ -95,7 +104,8 @@ export function DataTable<T>({
     const RolUsuario = user ? `${user.rol}` : null;
 
     const filteredData = useMemo(() => {
-        if (!searchTerm) return data;
+        // En modo servidor la búsqueda ya viene aplicada
+        if (paginacionServidor || !searchTerm) return data;
         return data.filter(item =>
             columns.some(column => {
                 const value = column.render
@@ -104,7 +114,7 @@ export function DataTable<T>({
                 return value.toLowerCase().includes(searchTerm.toLowerCase());
             })
         );
-    }, [data, searchTerm, columns]);
+    }, [data, searchTerm, columns, paginacionServidor]);
 
     const visibleColumns = useMemo(() =>
         columns.filter(column => !column.hidden),
@@ -120,9 +130,28 @@ export function DataTable<T>({
         setPage(0);
     };
 
-    const paginatedData = pagination
-        ? filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-        : filteredData;
+    const paginatedData = paginacionServidor
+        ? data
+        : pagination
+            ? filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            : filteredData;
+
+    // Valores que usan el paginador, el resumen y el estado vacío en ambos modos
+    const paginaActual = paginacionServidor ? paginacionServidor.pagina : page;
+    const filasPorPagina = paginacionServidor ? paginacionServidor.limite : rowsPerPage;
+    const totalRegistros = paginacionServidor ? paginacionServidor.total : filteredData.length;
+    const cambiarPagina = paginacionServidor
+        ? (_evento: unknown, nueva: number) => paginacionServidor.onCambiarPagina(nueva)
+        : handleChangePage;
+    const cambiarFilasPorPagina = paginacionServidor
+        ? (evento: React.ChangeEvent<HTMLInputElement>) => paginacionServidor.onCambiarLimite(parseInt(evento.target.value, 10))
+        : handleChangeRowsPerPage;
+    // Barra fina mientras llega otra página: las filas actuales siguen visibles
+    const barraActualizando = (
+        <Box sx={{ height: 3 }}>
+            {paginacionServidor?.actualizando && !loading ? <LinearProgress sx={{ height: 3 }} /> : null}
+        </Box>
+    );
 
     if (vista === 1) {
         return (
@@ -174,6 +203,7 @@ export function DataTable<T>({
 
                 {/* Table Area */}
                 <Paper sx={{ width: '100%', overflow: 'hidden', mb: 2, border: '1px solid var(--mui-palette-divider)' }}>
+                    {barraActualizando}
                     <TableContainer
                         sx={{
                             maxHeight: stickyHeader ? maxHeight : undefined,
@@ -250,7 +280,7 @@ export function DataTable<T>({
                             </TableHead>
                             <TableBody>
                                 {loading ? (
-                                    Array.from({ length: rowsPerPage }).map((_, index) => (
+                                    Array.from({ length: filasPorPagina }).map((_, index) => (
                                         <TableRow key={index}>
                                             {visibleColumns.map((column) => (
                                                 <TableCell key={`${column.key}-${index}`}>
@@ -274,7 +304,7 @@ export function DataTable<T>({
                                             {error}
                                         </TableCell>
                                     </TableRow>
-                                ) : filteredData.length === 0 ? (
+                                ) : totalRegistros === 0 || paginatedData.length === 0 ? (
                                     <TableRow>
                                         <TableCell
                                             colSpan={visibleColumns.length + (actions.length > 0 ? 1 : 0)}
@@ -350,11 +380,11 @@ export function DataTable<T>({
                         <TablePagination
                             rowsPerPageOptions={rowsPerPageOptions}
                             component="div"
-                            count={filteredData.length}
-                            rowsPerPage={rowsPerPage}
-                            page={page}
-                            onPageChange={handleChangePage}
-                            onRowsPerPageChange={handleChangeRowsPerPage}
+                            count={totalRegistros}
+                            rowsPerPage={filasPorPagina}
+                            page={paginaActual}
+                            onPageChange={cambiarPagina}
+                            onRowsPerPageChange={cambiarFilasPorPagina}
                             labelRowsPerPage="Filas por página:"
                             labelDisplayedRows={({ from, to, count }) =>
                                 `${from}-${to} de ${count !== -1 ? count : `más de ${to}`}`
@@ -363,9 +393,9 @@ export function DataTable<T>({
                     )}
                 </Paper>
 
-                {showSummary && !loading && !error && filteredData.length > 0 && (
+                {showSummary && !loading && !error && totalRegistros > 0 && (
                     <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                        Mostrando {page * rowsPerPage + 1}-{Math.min((page + 1) * rowsPerPage, filteredData.length)} de {filteredData.length} registros
+                        Mostrando {paginaActual * filasPorPagina + 1}-{Math.min((paginaActual + 1) * filasPorPagina, totalRegistros)} de {totalRegistros} registros
                     </Typography>
                 )}
             </Box>
@@ -422,6 +452,7 @@ export function DataTable<T>({
 
                     {/* Table Area */}
                     <Paper sx={{ width: '100%', overflow: 'hidden', mb: 2, border: '1px solid var(--mui-palette-divider)' }}>
+                        {barraActualizando}
                         <TableContainer
                             sx={{
                                 maxHeight: stickyHeader ? maxHeight : undefined,
@@ -498,7 +529,7 @@ export function DataTable<T>({
                                 </TableHead>
                                 <TableBody>
                                     {loading ? (
-                                        Array.from({ length: rowsPerPage }).map((_, index) => (
+                                        Array.from({ length: filasPorPagina }).map((_, index) => (
                                             <TableRow key={index}>
                                                 {visibleColumns.map((column) => (
                                                     <TableCell key={`${column.key}-${index}`}>
@@ -522,7 +553,7 @@ export function DataTable<T>({
                                                 {error}
                                             </TableCell>
                                         </TableRow>
-                                    ) : filteredData.length === 0 ? (
+                                    ) : totalRegistros === 0 || paginatedData.length === 0 ? (
                                         <TableRow>
                                             <TableCell
                                                 colSpan={visibleColumns.length + (actions.length > 0 ? 1 : 0)}
@@ -598,11 +629,11 @@ export function DataTable<T>({
                             <TablePagination
                                 rowsPerPageOptions={rowsPerPageOptions}
                                 component="div"
-                                count={filteredData.length}
-                                rowsPerPage={rowsPerPage}
-                                page={page}
-                                onPageChange={handleChangePage}
-                                onRowsPerPageChange={handleChangeRowsPerPage}
+                                count={totalRegistros}
+                                rowsPerPage={filasPorPagina}
+                                page={paginaActual}
+                                onPageChange={cambiarPagina}
+                                onRowsPerPageChange={cambiarFilasPorPagina}
                                 labelRowsPerPage="Filas por página:"
                                 labelDisplayedRows={({ from, to, count }) =>
                                     `${from}-${to} de ${count !== -1 ? count : `más de ${to}`}`
@@ -611,9 +642,9 @@ export function DataTable<T>({
                         )}
                     </Paper>
 
-                    {showSummary && !loading && !error && filteredData.length > 0 && (
+                    {showSummary && !loading && !error && totalRegistros > 0 && (
                         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                            Mostrando {page * rowsPerPage + 1}-{Math.min((page + 1) * rowsPerPage, filteredData.length)} de {filteredData.length} registros
+                            Mostrando {paginaActual * filasPorPagina + 1}-{Math.min((paginaActual + 1) * filasPorPagina, totalRegistros)} de {totalRegistros} registros
                         </Typography>
                     )}
                 </Box>
