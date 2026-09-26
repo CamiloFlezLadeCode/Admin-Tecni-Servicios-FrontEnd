@@ -1,6 +1,6 @@
 // import axios, { AxiosError } from 'axios'; // Asegúrate de importar axios
 import axios from 'axios';
-import axiosInstance from "@/lib/axiosConfig";
+import axiosInstance from "@/config/axiosConfig";
 
 interface DatosCliente {
     ValorFecha: string;
