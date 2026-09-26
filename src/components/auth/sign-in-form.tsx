@@ -350,15 +350,17 @@ export function SignInForm(): React.JSX.Element {
         sx={{
           position: 'fixed',
           bottom: 16,
-          left: '50%',
-          transform: 'translateX(-50%)',
+          left: 16,
+          right: 16,
+          mx: 'auto',
+          width: 'fit-content',
           zIndex: 2,
-          borderRadius: '999px',
+          borderRadius: { xs: '16px', sm: '999px' },
           px: 2,
           py: 0.75,
           background: 'var(--glass-bg)',
-          whiteSpace: 'nowrap',
-          maxWidth: 'calc(100% - 32px)',
+          textAlign: 'center',
+          whiteSpace: { xs: 'normal', sm: 'nowrap' },
         }}
       >
         <Typography variant="caption" sx={{ color: 'var(--mui-palette-text-secondary)', fontWeight: 500 }}>
