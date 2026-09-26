@@ -543,7 +543,13 @@ export default function Page(): React.JSX.Element {
             dataLabels: { enabled: false },
             grid: { borderColor: paletaGrafica.rejilla, strokeDashArray: 2 },
             stroke: { width: 3, curve: 'smooth' as const },
-            theme: { mode: paletaGrafica.modo },
+            // Sin `theme.mode` a propósito. Cuando Apex recibe opciones nuevas
+            // con el gráfico ya montado (`updateOptions`), `theme.mode` le hace
+            // PISAR `chart.background` con su gris `#424242` en oscuro (`#fff`
+            // en claro) ignorando el `transparent` de arriba: aparecía un velo
+            // opaco sobre las gráficas al volver al panel sin refrescar.
+            // Todo lo que decidiría el modo ya va explícito (colores, foreColor,
+            // fondo, tooltip) y el gráfico se remonta al cambiar de modo (`key`).
             tooltip: { theme: paletaGrafica.modo },
         };
     }, [paletaGrafica]);
