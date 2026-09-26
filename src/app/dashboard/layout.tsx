@@ -77,7 +77,6 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import GlobalStyles from '@mui/material/GlobalStyles';
-import { Typography } from '@mui/material';
 
 import { AuthGuard } from '@/components/auth/auth-guard';
 import { MainNav } from '@/components/dashboard/layout/main-nav';
@@ -88,21 +87,18 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps): React.JSX.Element {
-  const VisitarPaginaCasaDesarrolladora = () => {
-    window.open('https://camiloflezlade.vercel.app/', '_blank', 'noopener,noreferrer');
-  }
   return (
     <AuthGuard>
       <GlobalStyles
         styles={{
           body: {
-            '--MainNav-height': '56px',
+            // 8px de margen superior + 66px de la barra flotante
+            '--MainNav-height': '74px',
             '--MainNav-zIndex': 1000,
             '--SideNav-width': '280px',
             '--SideNav-zIndex': 1100,
             '--MobileNav-width': '320px',
             '--MobileNav-zIndex': 1100,
-            '--Footer-height': '60px', // Añadimos variable para el footer
           },
         }}
       />
@@ -123,42 +119,15 @@ export default function Layout({ children }: LayoutProps): React.JSX.Element {
             flexDirection: 'column',
             pl: { lg: 'var(--SideNav-width)' },
             transition: 'padding-left 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-            minHeight: 'calc(100vh - var(--Footer-height))',
           }}
         >
           <MainNav />
-          <main style={{ flex: 1, marginBottom: 20 }}>
-            <Container maxWidth="xl" sx={{ py: '14px', minHeight: 'calc(100vh - var(--MainNav-height) - var(--Footer-height) - 28px)' }}>
+          <main style={{ flex: 1 }}>
+            <Container maxWidth="xl" sx={{ py: '14px', minHeight: 'calc(100vh - var(--MainNav-height))' }}>
               {children}
             </Container>
           </main>
         </Box>
-      </Box>
-      <Box
-        sx={{
-          position: 'fixed',
-          bottom: 0,
-          left: { lg: 'var(--SideNav-width)' },
-          width: { lg: `calc(100% - var(--SideNav-width))`, xs: '100%' },
-          transition: 'left 0.25s cubic-bezier(0.4, 0, 0.2, 1), width 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-          textAlign: 'center',
-          zIndex: 999,
-          backgroundColor: 'var(--mui-palette-background-paper)',
-          borderTop: '1px solid var(--mui-palette-divider)',
-          // height: 'var(--Footer-height)',
-        }}
-      >
-        <Typography variant='subtitle2' sx={{ color: 'var(--mui-palette-text-secondary)' }}>
-          © {new Date().getFullYear()}{' '}
-          <Box
-            component="strong"
-            onClick={VisitarPaginaCasaDesarrolladora}
-            sx={{ cursor: 'pointer', color: 'var(--mui-palette-primary-main)' }}
-          >
-            FlezLade Softworks
-          </Box>
-          . Todos los derechos reservados.
-        </Typography>
       </Box>
     </AuthGuard>
   );

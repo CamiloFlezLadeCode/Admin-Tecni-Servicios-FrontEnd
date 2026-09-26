@@ -70,6 +70,113 @@ body {
   --app-shadow-opacity: 0.44;
 }
 
+/*
+  ── LIQUID GLASS ──────────────────────────────────────────────────────────
+  Superficie de vidrio para el sidebar y sus menús flotantes.
+
+  Tokens por modo: en claro el vidrio es blanco lechoso con bordes brillantes;
+  en oscuro es pizarra translúcida con un borde de luz tenue. Los tintes
+  ambientales son el primario (neonBlue) y el acento turquesa (kepple).
+*/
+[data-mui-color-scheme='light'] {
+  --glass-bg: rgba(255, 255, 255, 0.62);
+  --glass-bg-strong: rgba(255, 255, 255, 0.78);
+  --glass-border: rgba(255, 255, 255, 0.8);
+  --glass-rim-top: rgba(255, 255, 255, 1);
+  --glass-rim-bottom: rgba(16, 24, 40, 0.1);
+  --glass-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 12px 40px -12px rgba(16, 24, 40, 0.22);
+  --glass-inset: rgba(16, 24, 40, 0.045);
+  --glass-hover: rgba(16, 24, 40, 0.055);
+  --glass-hairline: rgba(16, 24, 40, 0.08);
+  --glass-tint-a: rgba(99, 91, 255, 0.34);
+  --glass-tint-b: rgba(21, 183, 159, 0.24);
+}
+
+[data-mui-color-scheme='dark'] {
+  --glass-bg: rgba(15, 23, 42, 0.5);
+  --glass-bg-strong: rgba(15, 23, 42, 0.78);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-rim-top: rgba(255, 255, 255, 0.28);
+  --glass-rim-bottom: rgba(255, 255, 255, 0.03);
+  --glass-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 18px 50px -12px rgba(0, 0, 0, 0.65);
+  --glass-inset: rgba(255, 255, 255, 0.05);
+  --glass-hover: rgba(255, 255, 255, 0.07);
+  --glass-hairline: rgba(255, 255, 255, 0.08);
+  --glass-tint-a: rgba(139, 140, 255, 0.4);
+  --glass-tint-b: rgba(46, 211, 184, 0.22);
+}
+
+.liquid-glass {
+  position: relative;
+  isolation: isolate;
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+/* Reflejo especular del borde: brilla arriba a la izquierda y se apaga en diagonal */
+.liquid-glass::after {
+  content: '';
+  position: absolute;
+  /* Dentro del borde: si sobresale, los contenedores con scroll (Popover) muestran barra */
+  inset: 0;
+  z-index: 2;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(
+    155deg,
+    var(--glass-rim-top) 0%,
+    transparent 32%,
+    transparent 68%,
+    var(--glass-rim-bottom) 100%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Luz ambiental que da el color "líquido" al vidrio; se desplaza muy despacio */
+.liquid-glass__ambient {
+  position: absolute;
+  inset: -20%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(40% 30% at 20% 12%, var(--glass-tint-a), transparent 70%),
+    radial-gradient(45% 30% at 85% 55%, var(--glass-tint-b), transparent 70%),
+    radial-gradient(40% 28% at 25% 92%, var(--glass-tint-a), transparent 70%);
+  filter: blur(28px);
+  animation: liquid-glass-drift 24s ease-in-out infinite alternate;
+}
+
+@keyframes liquid-glass-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(4%, 3%, 0) scale(1.06);
+  }
+  100% {
+    transform: translate3d(-3%, -2%, 0) scale(1.02);
+  }
+}
+
+/* Quien pide menos transparencia recibe una superficie sólida equivalente */
+@media (prefers-reduced-transparency: reduce) {
+  .liquid-glass {
+    background: var(--mui-palette-background-paper);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .liquid-glass__ambient {
+    display: none;
+  }
+}
+
 /* Barra de scroll de la página, coherente con el modo activo. */
 * {
   scrollbar-width: thin;

@@ -22,17 +22,32 @@ import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react/di
 // import { CaretUpDown as CaretUpDownIcon } from '@phosphor-icons/react/dist/ssr/CaretUpDown';
 
 import type { NavItemConfig } from '@/types/nav';
-import { paths } from '@/paths';
 import { config } from '@/config';
 import { isNavItemActive } from '@/lib/is-nav-item-active';
 import { Logo } from '@/components/core/logo';
 
 import { navItems } from './config';
 import { navIcons } from './nav-icons';
+import {
+  EASE_IOS,
+  GlassSeparator,
+  NAV_CSS_VARS,
+  NavBrand,
+  glassIconButtonSx,
+  glassSearchSx,
+  navIconFill,
+  navItemSx,
+  nestedListSx,
+} from './nav-glass';
 
 import { CaretDown, CaretRight } from '@phosphor-icons/react/dist/ssr';
 
 import { UserContext } from '@/contexts/user-context';
+
+// Ancho total de la columna, incluido el margen de 8px alrededor del panel flotante.
+// El expandido debe coincidir con `--SideNav-width` de dashboard/layout.tsx.
+const SIDENAV_WIDTH_EXPANDED = '280px';
+const SIDENAV_WIDTH_COLLAPSED = '80px';
 
 export function SideNav(): React.JSX.Element {
   const pathname = usePathname();
@@ -53,7 +68,7 @@ export function SideNav(): React.JSX.Element {
   const [query, setQuery] = React.useState('');
 
   React.useEffect(() => {
-    document.body.style.setProperty('--SideNav-width', collapsed ? '72px' : '280px');
+    document.body.style.setProperty('--SideNav-width', collapsed ? SIDENAV_WIDTH_COLLAPSED : SIDENAV_WIDTH_EXPANDED);
   }, [collapsed]);
 
   React.useEffect(() => {
@@ -65,7 +80,7 @@ export function SideNav(): React.JSX.Element {
   const toggleSidebar = () => {
     const next = !collapsed;
     setCollapsed(next);
-    document.body.style.setProperty('--SideNav-width', next ? '72px' : '280px');
+    document.body.style.setProperty('--SideNav-width', next ? SIDENAV_WIDTH_COLLAPSED : SIDENAV_WIDTH_EXPANDED);
     window.localStorage.setItem('sidebar-collapsed', String(next));
   };
 
@@ -78,48 +93,39 @@ export function SideNav(): React.JSX.Element {
   }, [itemsFiltrados, query]);
 
   return (
+    // Columna fija transparente; dentro flota el panel de vidrio con 8px de margen (estilo iPadOS)
     <Box
       sx={{
-        // El sidebar se apoya en `background-paper`, igual que la barra
-        // superior: juntos forman el marco de la aplicación (blanco limpio en
-        // claro, pizarra profunda en oscuro) sobre el lienzo `background-default`.
-        '--SideNav-background': 'var(--mui-palette-background-paper)',
         '--SideNav-color': 'var(--mui-palette-text-primary)',
-        // Superficie de los elementos embebidos dentro del sidebar: buscador,
-        // tarjeta inferior y avatar. Un escalón por encima del fondo.
-        '--SideNav-surface': 'var(--mui-palette-background-level1)',
-        '--NavItem-color': 'var(--mui-palette-text-secondary)',
-        '--NavItem-hover-background': 'var(--mui-palette-action-hover)',
-        '--NavItem-active-background': 'var(--mui-palette-primary-main)',
-        '--NavItem-active-color': 'var(--mui-palette-primary-contrastText)',
-        '--NavItem-disabled-color': 'var(--mui-palette-text-disabled)',
-        '--NavItem-icon-color': 'var(--mui-palette-text-secondary)',
-        '--NavItem-icon-active-color': 'var(--mui-palette-primary-contrastText)',
-        '--NavItem-icon-disabled-color': 'var(--mui-palette-text-disabled)',
-        bgcolor: 'var(--SideNav-background)',
+        ...NAV_CSS_VARS,
         color: 'var(--SideNav-color)',
         display: { xs: 'none', lg: 'flex' },
-        flexDirection: 'column',
         height: '100%',
         left: 0,
         maxWidth: '100%',
         position: 'fixed',
-        scrollbarWidth: 'none',
         top: 0,
         width: 'var(--SideNav-width)',
         zIndex: 'var(--SideNav-zIndex)',
-        overflow: 'hidden',
+        p: 1,
         // Misma duración y curva que `padding-left` del contenido y el footer (dashboard/layout.tsx)
         transition: 'width 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-        borderRight: '1px solid var(--mui-palette-divider)',
-        '&::-webkit-scrollbar': { display: 'none' },
       }}
     >
-      {/*
-        Cabecera con la misma altura que la barra superior (64px + 1px de
-        divisor = 65px de MainNav), para que ambas líneas divisorias queden
-        alineadas en los dos estados del sidebar.
-      */}
+      <Box
+        className="liquid-glass"
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          flex: '1 1 auto',
+          minWidth: 0,
+          borderRadius: '24px',
+          // `clip` y no `hidden`: recorta la luz ambiental sin volver el panel desplazable
+          overflow: 'clip',
+        }}
+      >
+      <Box className="liquid-glass__ambient" aria-hidden />
+
       <Box
         sx={{
           display: 'flex',
@@ -128,70 +134,32 @@ export function SideNav(): React.JSX.Element {
           gap: 1,
           height: 64,
           flex: '0 0 auto',
-          px: collapsed ? 0 : 2,
+          px: collapsed ? 0 : 1.75,
         }}
       >
-        {!collapsed ? (
-          <Box
-            component={RouterLink}
-            href={paths.dashboard.overview}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1.25,
-              minWidth: 0,
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            <Box
-              component="img"
-              src="/assets/LogoCompanyLogoIco.png"
-              alt=""
-              sx={{ width: 32, height: 32, borderRadius: 1, objectFit: 'contain', flex: '0 0 auto' }}
-            />
-            <Box sx={{ minWidth: 0 }}>
-              <Typography noWrap variant="subtitle2" sx={{ fontWeight: 800, lineHeight: 1.2 }}>
-                TECNISERVICIOS
-              </Typography>
-              <Typography noWrap variant="caption" sx={{ display: 'block', color: 'var(--mui-palette-text-secondary)', lineHeight: 1.2 }}>
-                Panel administrativo
-              </Typography>
-            </Box>
-          </Box>
-        ) : null}
+        {!collapsed ? <NavBrand /> : null}
         {/* A la derecha para que el tooltip no tape los ítems de navegación */}
         <Tooltip title={collapsed ? 'Expandir menú' : 'Contraer menú'} placement="right" disableInteractive>
           <IconButton
             aria-label={collapsed ? 'Expandir menú lateral' : 'Contraer menú lateral'}
             aria-expanded={!collapsed}
             onClick={toggleSidebar}
-            sx={{
-              width: 32,
-              height: 32,
-              flex: '0 0 auto',
-              borderRadius: 1,
-              color: 'var(--mui-palette-text-secondary)',
-              '&:hover': {
-                bgcolor: 'var(--NavItem-hover-background)',
-                color: 'var(--mui-palette-text-primary)',
-              },
-            }}
+            sx={glassIconButtonSx}
           >
             {collapsed ? <ArrowLineRight size={18} /> : <ArrowLineLeft size={18} />}
           </IconButton>
         </Tooltip>
       </Box>
 
-      <Divider />
+      <GlassSeparator />
 
       <Box
         component="nav"
-        sx={{ flex: '1 1 auto', p: collapsed ? 1 : 1.5, overflowY: 'auto', scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' } }}
+        sx={{ flex: '1 1 auto', p: collapsed ? 1 : 1.25, overflowY: 'auto', scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' } }}
         tabIndex={0}
       >
         {!collapsed ? (
-          <Box sx={{ px: 0.5, pb: 1 }}>
+          <Box sx={{ px: 0.25, pt: 0.5, pb: 1.25 }}>
             <TextField
               fullWidth
               value={query}
@@ -207,14 +175,13 @@ export function SideNav(): React.JSX.Element {
                   </InputAdornment>
                 ),
               }}
-              // Borde, foco y placeholder ya vienen del tema (MuiOutlinedInput);
-              // aquí sólo se hunde el campo respecto al fondo del sidebar.
-              sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--SideNav-surface)' } }}
+              sx={glassSearchSx}
             />
           </Box>
         ) : null}
 
         {renderNavItems({ pathname, items: itemsFiltradosPorQuery, collapsed, query })}
+      </Box>
       </Box>
     </Box>
   );
@@ -251,9 +218,11 @@ interface NavItemProps extends Omit<NavItemConfig, 'items'> {
   items?: NavItemConfig[];
   collapsed?: boolean;
   query?: string;
+  /** Subítem dentro de un grupo desplegado */
+  nested?: boolean;
 }
 
-function NavItem({ disabled, external, href, icon, matcher, pathname, title, items, collapsed, query }: NavItemProps): React.JSX.Element {
+function NavItem({ disabled, external, href, icon, matcher, pathname, title, items, collapsed, query, nested = false }: NavItemProps): React.JSX.Element {
   const itemRef = React.useRef<HTMLDivElement>(null);
   const isChildActive = items?.some((item) =>
     isNavItemActive({ ...item, pathname })
@@ -285,7 +254,7 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
     if (active && !collapsed) {
       const timer = setTimeout(() => {
         if (itemRef.current) {
-          itemRef.current.scrollIntoView({ behavior: 'auto', block: 'center' });
+          centrarEnNav(itemRef.current);
         }
       }, 10);
       return () => clearTimeout(timer);
@@ -296,7 +265,7 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
     if (isChildActive && !collapsed) {
        const timer = setTimeout(() => {
         if (itemRef.current) {
-          itemRef.current.scrollIntoView({ behavior: 'auto', block: 'center' });
+          centrarEnNav(itemRef.current);
         }
       }, 10);
       return () => clearTimeout(timer);
@@ -338,46 +307,12 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
         }}
         aria-current={effectiveActive ? 'page' : undefined}
         aria-expanded={hasChildren ? (collapsed ? flyOpen : open) : undefined}
-        sx={{
-          alignItems: 'center',
-          borderRadius: 1,
-          color: 'var(--NavItem-color)',
-          cursor: 'pointer',
-          display: 'flex',
-          flex: '0 0 auto',
-          gap: 1,
-          p: collapsed ? '10px' : '10px 12px',
-          position: 'relative',
-          textDecoration: 'none',
-          whiteSpace: 'nowrap',
-          justifyContent: collapsed ? 'center' : 'flex-start',
-          transition: 'background-color 120ms ease, color 120ms ease',
-          ...(disabled && {
-            bgcolor: 'var(--NavItem-disabled-background)',
-            color: 'var(--NavItem-disabled-color)',
-            cursor: 'not-allowed',
-          }),
-          ...(effectiveActive && {
-            bgcolor: 'var(--NavItem-active-background)',
-            color: 'var(--NavItem-active-color)',
-            // Halo derivado del propio primario: da relieve al ítem activo
-            // sin fijar una sombra negra que en modo oscuro no se vería.
-            boxShadow: '0 1px 3px rgba(var(--mui-palette-primary-mainChannel) / 0.35)',
-          }),
-          ...(effectiveActive
-            ? {}
-            : {
-                '&:hover': {
-                  bgcolor: 'var(--NavItem-hover-background)',
-                  color: 'var(--mui-palette-text-primary)',
-                },
-              }),
-        }}
+        sx={navItemSx({ active: effectiveActive, nested, disabled, collapsed })}
       >
         <Box sx={{ alignItems: 'center', display: 'flex', justifyContent: 'center', flex: '0 0 auto', width: 22 }}>
           {Icon ? (
             <Icon
-              fill={effectiveActive ? 'var(--NavItem-icon-active-color)' : 'var(--NavItem-icon-color)'}
+              fill={navIconFill(effectiveActive, nested)}
               fontSize="var(--icon-fontSize-md)"
               weight={effectiveActive ? 'fill' : undefined}
             />
@@ -388,7 +323,10 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
         {!collapsed && (
           <Box sx={{ display: 'flex', alignItems: 'center', flex: '1 1 auto', minWidth: 0 }}>
             <Box sx={{ flex: '1 1 auto', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              <Typography component="span" sx={{ color: 'inherit', fontSize: '0.875rem', fontWeight: 500, lineHeight: '28px' }}>
+              <Typography
+                component="span"
+                sx={{ color: 'inherit', fontSize: '0.875rem', fontWeight: effectiveActive ? 600 : 500, lineHeight: '28px' }}
+              >
                 {title}
               </Typography>
             </Box>
@@ -401,7 +339,7 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
         )}
       </Box>
       {hasChildren && open && !collapsed && (
-        <Stack component="ul" spacing={0} sx={{ listStyle: 'none', m: 0, p: 0, marginLeft: '14px', marginTop: 0.5 }}>
+        <Stack component="ul" spacing={0.25} sx={nestedListSx}>
           {items.map((subItem) => {
             const { key, ...rest } = subItem;
             return (
@@ -410,6 +348,7 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
                 pathname={pathname}
                 collapsed={collapsed}
                 query={query}
+                nested
                 {...rest}
               />
             );
@@ -430,8 +369,19 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
           disableRestoreFocus
           anchorOrigin={{ vertical: 'center', horizontal: 'right' }}
           transformOrigin={{ vertical: 'center', horizontal: 'left' }}
-          // Fondo, borde, radio y sombra los aporta el tema (MuiPopover).
-          PaperProps={{ sx: { ml: 2, p: 1, minWidth: 220 } }}
+          // Menú flotante en vidrio: aquí sí hay contenido detrás que difuminar
+          PaperProps={{
+            className: 'liquid-glass',
+            sx: {
+              ml: 2.5,
+              p: 1,
+              minWidth: 220,
+              borderRadius: '18px',
+              bgcolor: 'var(--glass-bg-strong)',
+              backgroundImage: 'none',
+              boxShadow: 'var(--glass-shadow)',
+            },
+          }}
         >
           <Box sx={{ px: 1, py: 0.75 }}>
             <Typography sx={{ fontWeight: 700, lineHeight: 1.2 }} variant="subtitle2">
@@ -458,17 +408,24 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
                   // El flyout vive en un portal fuera del sidebar, así que no
                   // hereda las variables locales `--NavItem-*`: se usan tokens.
                   sx={{
+                    display: 'block',
                     px: 1.5,
                     py: 1,
-                    borderRadius: 1,
+                    borderRadius: '10px',
                     color: 'var(--mui-palette-text-secondary)',
                     textDecoration: 'none',
                     ...(sdisabled && { opacity: 0.6, pointerEvents: 'none' }),
-                    transition: 'background-color 120ms ease, color 120ms ease',
+                    transition: `background-color 0.2s ${EASE_IOS}, color 0.2s ${EASE_IOS}, transform 0.2s ${EASE_IOS}`,
                     '&:hover': {
-                      bgcolor: 'var(--mui-palette-action-hover)',
+                      bgcolor: 'var(--glass-hover)',
                       color: 'var(--mui-palette-text-primary)',
                     },
+                    '&:active': { transform: 'scale(0.97)' },
+                    ...(isNavItemActive({ ...subItem, pathname }) && {
+                      bgcolor: 'rgba(var(--mui-palette-primary-mainChannel) / 0.14)',
+                      color: 'var(--mui-palette-primary-main)',
+                      fontWeight: 600,
+                    }),
                   }}
                 >
                   {stitle}
@@ -504,6 +461,22 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
       )}
     </li>
   );
+}
+
+/**
+ * Centra un ítem dentro de la lista `<nav>` desplazando SOLO esa lista.
+ *
+ * No se usa `scrollIntoView`: desplaza todos los ancestros desplazables, y el
+ * panel de vidrio lo es (su luz ambiental sobresale del borde). El panel se
+ * subía y la cabecera con el logo desaparecía al marcar una opción inferior.
+ */
+function centrarEnNav(elemento: HTMLElement): void {
+  const nav = elemento.closest('nav');
+  if (!nav) return;
+  const navRect = nav.getBoundingClientRect();
+  const itemRect = elemento.getBoundingClientRect();
+  const desplazamiento = itemRect.top - navRect.top - (nav.clientHeight - itemRect.height) / 2;
+  nav.scrollTop += desplazamiento;
 }
 
 function normalizeText(text: string): string {

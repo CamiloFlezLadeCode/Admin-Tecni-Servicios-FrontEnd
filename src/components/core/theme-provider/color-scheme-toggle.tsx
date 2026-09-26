@@ -37,8 +37,9 @@ export function ColorSchemeToggle(): React.JSX.Element {
     width: 40,
     height: 40,
     borderRadius: '12px',
-    border: '1px solid var(--mui-palette-divider)',
-    backgroundColor: 'var(--mui-palette-background-level1)',
+    // Botón "hundido" en la barra de vidrio del header (tokens en styles/global.css)
+    border: '1px solid var(--glass-hairline)',
+    backgroundColor: 'var(--glass-inset)',
   } as const;
 
   if (!mounted) {
@@ -55,11 +56,12 @@ export function ColorSchemeToggle(): React.JSX.Element {
         sx={{
           ...sharedSx,
           color: isDark ? 'var(--mui-palette-warning-main)' : 'var(--mui-palette-primary-main)',
-          transition: 'background-color 150ms ease, border-color 150ms ease, color 150ms ease',
+          transition: 'background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease',
           '&:hover': {
-            backgroundColor: 'var(--mui-palette-background-level2)',
+            backgroundColor: 'var(--glass-hover)',
             borderColor: 'var(--mui-palette-neutral-400)',
           },
+          '&:active': { transform: 'scale(0.92)' },
           // El icono gira levemente al entrar: da la sensación de conmutador
           // físico sin recurrir a una animación cara.
           '& svg': { transition: 'transform 300ms cubic-bezier(0.4, 0, 0.2, 1)' },

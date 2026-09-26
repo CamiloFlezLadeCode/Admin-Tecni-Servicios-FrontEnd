@@ -15,6 +15,7 @@ import Typography from '@mui/material/Typography';
 // import { ArrowSquareUpRight as ArrowSquareUpRightIcon } from '@phosphor-icons/react/dist/ssr/ArrowSquareUpRight';
 import { CaretUpDown as CaretUpDownIcon } from '@phosphor-icons/react/dist/ssr/CaretUpDown';
 import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass';
+import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
 
 import type { NavItemConfig } from '@/types/nav';
 import { paths } from '@/paths';
@@ -24,6 +25,16 @@ import { Logo } from '@/components/core/logo';
 
 import { navItems } from './config';
 import { navIcons } from './nav-icons';
+import {
+  GlassSeparator,
+  NAV_CSS_VARS,
+  NavBrand,
+  glassIconButtonSx,
+  glassSearchSx,
+  navIconFill,
+  navItemSx,
+  nestedListSx,
+} from './nav-glass';
 // import ExpandMoreIcon from '@mui/icons-material/ExpandMore'; // o usa tu icono preferido
 import { CaretRight, CaretDown } from '@phosphor-icons/react/dist/ssr';
 import Collapse from '@mui/material/Collapse';
@@ -59,173 +70,80 @@ export function MobileNav({ open, onClose }: MobileNavProps): React.JSX.Element 
     return filterNavItems(itemsFiltrados, normalizedQuery);
   }, [itemsFiltrados, query]);
 
-  const userDisplayName =
-    user?.name ?? (user as unknown as { fullName?: string } | null)?.fullName ?? user?.email ?? 'Usuario';
-  const userSecondaryText = user?.rol ?? user?.documento ?? '';
-
   return (
     <Drawer
+      // Velo más ligero que el de MUI: el vidrio difumina la página que queda detrás
+      slotProps={{ backdrop: { sx: { bgcolor: 'rgba(2 6 23 / 0.35)' } } }}
       PaperProps={{
-        // Mismas variables que `side-nav.tsx` para que las dos navegaciones
-        // se vean idénticas en claro y en oscuro.
+        // Panel de vidrio flotante a 8px de los bordes, igual que el sidebar de escritorio
+        className: 'liquid-glass',
         sx: {
-          '--MobileNav-background': 'var(--mui-palette-background-paper)',
-          '--MobileNav-color': 'var(--mui-palette-text-primary)',
-          '--MobileNav-surface': 'var(--mui-palette-background-level1)',
-          '--NavItem-color': 'var(--mui-palette-text-secondary)',
-          '--NavItem-hover-background': 'var(--mui-palette-action-hover)',
-          '--NavItem-active-background': 'var(--mui-palette-primary-main)',
-          '--NavItem-active-color': 'var(--mui-palette-primary-contrastText)',
-          '--NavItem-disabled-color': 'var(--mui-palette-text-disabled)',
-          '--NavItem-icon-color': 'var(--mui-palette-text-secondary)',
-          '--NavItem-icon-active-color': 'var(--mui-palette-primary-contrastText)',
-          '--NavItem-icon-disabled-color': 'var(--mui-palette-text-disabled)',
-          bgcolor: 'var(--MobileNav-background)',
-          color: 'var(--MobileNav-color)',
+          ...NAV_CSS_VARS,
+          color: 'var(--mui-palette-text-primary)',
           display: 'flex',
           flexDirection: 'column',
-          maxWidth: '100%',
-          scrollbarWidth: 'none',
+          m: 1,
+          height: 'calc(100% - 16px)',
           width: 'var(--MobileNav-width)',
+          maxWidth: 'calc(100% - 16px)',
+          borderRadius: '24px',
+          background: 'var(--glass-bg-strong)',
+          backgroundImage: 'none',
+          boxShadow: 'var(--glass-shadow)',
+          // `clip` y no `auto`/`hidden`: recorta la luz ambiental sin volver el panel desplazable
+          overflow: 'clip',
           zIndex: 'var(--MobileNav-zIndex)',
-          '&::-webkit-scrollbar': { display: 'none' },
         },
       }}
       onClose={onClose}
       open={open}
     >
-      <Stack spacing={2} sx={{ p: 3 }}>
-        {/* <Box
-          component={RouterLink}
-          href={paths.home}
-          sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1.25, textDecoration: 'none' }}
-        >
-          <Logo color="light" emblem height={46} width={46} />
-          <Box sx={{ minWidth: 0 }}>
-            <Typography sx={{ fontWeight: 800, lineHeight: 1.2, color: 'var(--MobileNav-color)' }} variant="subtitle1">
-              {config.site.name}
-            </Typography>
-            <Typography sx={{ color: 'var(--mui-palette-neutral-400)', lineHeight: 1.2 }} variant="caption">
-              Navegación
-            </Typography>
-          </Box>
-        </Box> */}
-        <TextField
-          fullWidth
-          value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-          }}
-          placeholder="Buscar..."
-          size="small"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <MagnifyingGlassIcon size={18} color="var(--mui-palette-text-secondary)" />
-              </InputAdornment>
-            ),
-          }}
-          // Borde, foco y placeholder los define el tema (MuiOutlinedInput).
-          sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--MobileNav-surface)' } }}
-        />
-        {/* <Box
-          sx={{
-            alignItems: 'center',
-            backgroundColor: 'var(--mui-palette-neutral-950)',
-            border: '1px solid var(--mui-palette-neutral-700)',
-            borderRadius: '12px',
-            cursor: 'pointer',
-            display: 'flex',
-            p: '4px 12px',
-          }}
-        >
-          <Box sx={{ flex: '1 1 auto' }}>
-            <Typography color="var(--mui-palette-neutral-400)" variant="body2">
-              Workspace
-            </Typography>
-            <Typography color="inherit" variant="subtitle1">
-              Devias
-            </Typography>
-          </Box>
-          <CaretUpDownIcon />
-        </Box> */}
-      </Stack>
-      <Divider />
-      <Box component="nav" sx={{ flex: '1 1 auto', p: '12px', overflowY: 'auto' }}>
-        {/* {renderNavItems({ pathname, items: navItems })} */}
-        {renderNavItems({ pathname, items: itemsFiltradosPorQuery, onClose, query })}
+      <Box className="liquid-glass__ambient" aria-hidden />
+
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 1,
+          height: 64,
+          flex: '0 0 auto',
+          px: 1.75,
+        }}
+      >
+        <NavBrand onClick={onClose} />
+        <IconButton aria-label="Cerrar menú" onClick={onClose} sx={glassIconButtonSx}>
+          <XIcon size={18} />
+        </IconButton>
       </Box>
-      <Divider />
-      <Box sx={{ p: 2 }}>
-        <Stack
-          direction="row"
-          spacing={1.25}
-          sx={{
-            alignItems: 'center',
-            px: 1,
-            py: 1,
-            borderRadius: 2,
-            bgcolor: 'var(--MobileNav-surface)',
-            border: '1px solid var(--mui-palette-divider)',
-            overflow: 'hidden',
-          }}
-        >
-          <Avatar
-            // src={user?.avatar}
-            src="/assets/LogoCompanyLogoIco.png"
-            sx={{
-              width: 34,
-              height: 34,
-              bgcolor: 'var(--mui-palette-background-level2)',
-              color: 'var(--mui-palette-text-primary)',
-              fontWeight: 700,
+
+      <GlassSeparator />
+
+      <Box
+        component="nav"
+        sx={{ flex: '1 1 auto', p: 1.25, overflowY: 'auto', scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' } }}
+      >
+        <Box sx={{ px: 0.25, pt: 0.5, pb: 1.25 }}>
+          <TextField
+            fullWidth
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
             }}
-          >
-            {(userDisplayName || 'U').charAt(0).toUpperCase()}
-          </Avatar>
-          <Box sx={{ minWidth: 0 }}>
-            <Typography sx={{ fontWeight: 700, lineHeight: 1.2 }} variant="body2">
-              {/* {userDisplayName} */}
-              TECNISERVICIOS
-            </Typography>
-            {userSecondaryText ? (
-              <Typography sx={{ color: 'var(--mui-palette-text-secondary)', lineHeight: 1.2 }} variant="caption">
-                {/* {userSecondaryText} */}
-                Panel administrativo
-              </Typography>
-            ) : null}
-          </Box>
-        </Stack>
-      </Box>
-      {/* <Stack spacing={2} sx={{ p: '12px' }}>
-        <div>
-          <Typography color="var(--mui-palette-neutral-100)" variant="subtitle2">
-            Need more features?
-          </Typography>
-          <Typography color="var(--mui-palette-neutral-400)" variant="body2">
-            Check out our Pro solution template.
-          </Typography>
-        </div>
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Box
-            component="img"
-            alt="Pro version"
-            src="/assets/devias-kit-pro.png"
-            sx={{ height: 'auto', width: '160px' }}
+            placeholder="Buscar..."
+            size="small"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <MagnifyingGlassIcon size={18} color="var(--mui-palette-text-secondary)" />
+                </InputAdornment>
+              ),
+            }}
+            sx={glassSearchSx}
           />
         </Box>
-        <Button
-          component="a"
-          endIcon={<ArrowSquareUpRightIcon fontSize="var(--icon-fontSize-md)" />}
-          fullWidth
-          href="https://material-kit-pro-react.devias.io/"
-          sx={{ mt: 2 }}
-          target="_blank"
-          variant="contained"
-        >
-          Pro version
-        </Button>
-      </Stack> */}
+        {renderNavItems({ pathname, items: itemsFiltradosPorQuery, onClose, query })}
+      </Box>
     </Drawer>
   );
 }
@@ -367,9 +285,11 @@ interface NavItemProps extends Omit<NavItemConfig, 'items'> {
   items?: NavItemConfig[]; // Asegúrate de incluir esto
   onClose?: () => void;
   query?: string;
+  /** Subítem dentro de un grupo desplegado */
+  nested?: boolean;
 }
 
-function NavItem({ disabled, external, href, icon, matcher, pathname, title, items, onClose, query }: NavItemProps): React.JSX.Element {
+function NavItem({ disabled, external, href, icon, matcher, pathname, title, items, onClose, query, nested = false }: NavItemProps): React.JSX.Element {
 
   const isChildActive = items?.some((item) =>
     isNavItemActive({ ...item, pathname })
@@ -410,43 +330,12 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
         }
         aria-current={active ? 'page' : undefined}
         aria-expanded={hasChildren ? open : undefined}
-        sx={{
-          alignItems: 'center',
-          borderRadius: 1,
-          color: 'var(--NavItem-color)',
-          cursor: 'pointer',
-          display: 'flex',
-          flex: '0 0 auto',
-          gap: 1,
-          p: '10px 12px',
-          position: 'relative',
-          textDecoration: 'none',
-          whiteSpace: 'nowrap',
-          transition: 'background-color 120ms ease, color 120ms ease',
-          ...(disabled && {
-            bgcolor: 'var(--NavItem-disabled-background)',
-            color: 'var(--NavItem-disabled-color)',
-            cursor: 'not-allowed',
-          }),
-          ...(active && {
-            bgcolor: 'var(--NavItem-active-background)',
-            color: 'var(--NavItem-active-color)',
-            boxShadow: '0 1px 3px rgba(var(--mui-palette-primary-mainChannel) / 0.35)',
-          }),
-          ...(active
-            ? {}
-            : {
-              '&:hover': {
-                bgcolor: 'var(--NavItem-hover-background)',
-                color: 'var(--mui-palette-text-primary)',
-              },
-            }),
-        }}
+        sx={navItemSx({ active, nested, disabled })}
       >
         <Box sx={{ alignItems: 'center', display: 'flex', justifyContent: 'center', flex: '0 0 auto', width: 22 }}>
           {Icon ? (
             <Icon
-              fill={active ? 'var(--NavItem-icon-active-color)' : 'var(--NavItem-icon-color)'}
+              fill={navIconFill(active, nested)}
               fontSize="var(--icon-fontSize-md)"
               weight={active ? 'fill' : undefined}
             />
@@ -454,10 +343,10 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
             <Box sx={{ width: 18, height: 18 }} />
           )}
         </Box>
-        <Box sx={{ flex: '1 1 auto' }}>
+        <Box sx={{ flex: '1 1 auto', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
           <Typography
             component="span"
-            sx={{ color: 'inherit', fontSize: '0.875rem', fontWeight: 500, lineHeight: '28px' }}
+            sx={{ color: 'inherit', fontSize: '0.875rem', fontWeight: active ? 600 : 500, lineHeight: '28px' }}
           >
             {title}
           </Typography>
@@ -469,7 +358,7 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
         )}
       </Box>
       {hasChildren && open && (
-        <Stack component="ul" spacing={0} sx={{ listStyle: 'none', m: 0, p: 0, marginLeft: '14px', marginTop: 0.5 }}>
+        <Stack component="ul" spacing={0.25} sx={nestedListSx}>
           {items.map((subItem) => {
             const { key, ...rest } = subItem;
             return (
@@ -478,6 +367,7 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title, ite
                 pathname={pathname}
                 onClose={onClose}
                 query={query}
+                nested
                 {...rest}
               />
             );

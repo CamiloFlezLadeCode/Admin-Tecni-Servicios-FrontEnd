@@ -140,16 +140,31 @@ export function MainNav(): React.JSX.Element {
         Mensaje={mensajeDeCarga}
         MostrarMensaje={mostrarMensajeDeCarga}
       />
+      {/*
+        Barra de vidrio flotante, a juego con el sidebar: 8px de margen y el
+        mismo alto de cabecera (1 + 64 + 1px), así su borde inferior queda a la
+        altura del separador de la cabecera del sidebar. El contenido pasa por
+        debajo al hacer scroll y el vidrio lo difumina.
+      */}
       <Box
         component="header"
+        className="liquid-glass"
         sx={{
-          borderBottom: '1px solid var(--mui-palette-divider)',
-          backgroundColor: 'var(--mui-palette-background-paper)',
           position: 'sticky',
-          top: 0,
+          top: 8,
           zIndex: 'var(--mui-zIndex-appBar)',
+          mt: 1,
+          mr: 1,
+          // En escritorio el hueco izquierdo ya lo da la columna del sidebar
+          ml: { xs: 1, lg: 0 },
+          borderRadius: '20px',
+          // Más opaco que el sidebar: por debajo pasa contenido y el texto debe leerse
+          background: 'var(--glass-bg-strong)',
+          // `clip` y no `hidden`: recorta la luz ambiental sin volver la barra desplazable
+          overflow: 'clip',
         }}
       >
+        <Box className="liquid-glass__ambient" aria-hidden sx={{ opacity: 0.6 }} />
         <Stack
           direction="row"
           // En moviles el espacio es el recurso escaso: reducimos separacion y padding
@@ -256,14 +271,15 @@ export function MainNav(): React.JSX.Element {
                   width: 40,
                   height: 40,
                   borderRadius: '12px',
-                  border: '1px solid var(--mui-palette-divider)',
-                  backgroundColor: 'var(--mui-palette-background-level1)',
+                  border: '1px solid var(--glass-hairline)',
+                  backgroundColor: 'var(--glass-inset)',
                   color: 'var(--mui-palette-primary-main)',
-                  transition: 'background-color 150ms ease, border-color 150ms ease',
+                  transition: 'background-color 150ms ease, border-color 150ms ease, transform 150ms ease',
                   '&:hover': {
-                    backgroundColor: 'var(--mui-palette-background-level2)',
+                    backgroundColor: 'var(--glass-hover)',
                     borderColor: 'var(--mui-palette-primary-main)',
                   },
+                  '&:active': { transform: 'scale(0.92)' },
                 }}
               >
                 <FloppyDiskIcon size={20} weight="fill" />
@@ -308,7 +324,15 @@ export function MainNav(): React.JSX.Element {
                 // defecto es un trazo sobre transparente, ese gris medio es lo
                 // que se veia detras y en oscuro dejaba el dibujo en 4.5:1.
                 // Sin el, el trazo se apoya en la superficie real de la tarjeta.
-                sx={{ cursor: 'pointer', width: 40, height: 40, flexShrink: 0, bgcolor: 'transparent' }}
+                sx={{
+                  cursor: 'pointer',
+                  width: 40,
+                  height: 40,
+                  flexShrink: 0,
+                  bgcolor: 'transparent',
+                  // Aro de vidrio, como el logo del sidebar
+                  boxShadow: '0 0 0 2px var(--glass-border), 0 4px 12px -4px rgba(var(--app-shadow-rgb) / 0.35)',
+                }}
                 src={avatarMostrado}
                 // Se marca el fallo en el estado en vez de reescribir `src` a mano:
                 // mutar el nodo dejaria fija la imagen del modo activo en ese momento.
@@ -319,13 +343,18 @@ export function MainNav(): React.JSX.Element {
             )}
           </Stack>
         </Stack>
-        <MensajeAlerta
-          open={mostrarAlertas}
-          tipo={tipoAlerta}
-          mensaje={mensajeAlerta}
-          onClose={() => setMostrarAlertas(false)}
-        />
       </Box>
+      {/*
+        Fuera del header: `backdrop-filter` convierte al header en el contenedor
+        de los hijos `position: fixed`, y el Snackbar (sin portal) quedaría
+        recortado dentro de la barra en vez de flotar sobre la pantalla.
+      */}
+      <MensajeAlerta
+        open={mostrarAlertas}
+        tipo={tipoAlerta}
+        mensaje={mensajeAlerta}
+        onClose={() => setMostrarAlertas(false)}
+      />
       <UserPopover anchorEl={userPopover.anchorRef.current} onClose={userPopover.handleClose} open={userPopover.open} />
       <MobileNav
         onClose={() => {
