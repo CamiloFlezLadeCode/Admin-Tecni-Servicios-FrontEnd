@@ -42,7 +42,7 @@ export interface UbicacionEquipoRespuesta {
     Ubicaciones: UbicacionEquipo[];
 }
 
-export const ConsultarUbicacionEquipo = async (IdEquipo: number): Promise<UbicacionEquipoRespuesta> => {
+export const ConsultarUbicacionEquipos = async (IdEquipo: number): Promise<UbicacionEquipoRespuesta> => {
     try {
         const { data } = await axiosInstance.get<UbicacionEquipoRespuesta>(
             apiRoutes.gestionycontrol.equipos.ver_ubicacion_equipo(IdEquipo)

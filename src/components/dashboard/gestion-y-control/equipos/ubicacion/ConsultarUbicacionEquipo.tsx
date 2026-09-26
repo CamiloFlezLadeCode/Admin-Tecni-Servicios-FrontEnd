@@ -36,7 +36,7 @@ import type {
   UbicacionEquipo,
   UbicacionEquipoRespuesta,
 } from '@/services/gestionycontrol/equipos/ConsultarUbicacionEquipoService';
-import { ConsultarUbicacionEquipo } from '@/services/gestionycontrol/equipos/ConsultarUbicacionEquipoService';
+import { ConsultarUbicacionEquipos } from '@/services/gestionycontrol/equipos/ConsultarUbicacionEquipoService';
 import { TraerEquipos } from '@/services/gestionycontrol/equipos/TraerEquiposRegistradosService';
 
 /** Opción del buscador de equipos. */
@@ -126,7 +126,7 @@ function textoAntiguedad(dias: number): string {
   return `${parteMeses} y ${resto} ${resto === 1 ? 'día' : 'días'}`;
 }
 
-export function ConsultarEstadoEquipo(): React.JSX.Element {
+export function ConsultarUbicacionEquipo(): React.JSX.Element {
   const [equipos, setEquipos] = React.useState<OpcionEquipo[]>([]);
   const [cargandoEquipos, setCargandoEquipos] = React.useState(true);
   const [seleccionado, setSeleccionado] = React.useState<OpcionEquipo | null>(null);
@@ -172,7 +172,7 @@ export function ConsultarEstadoEquipo(): React.JSX.Element {
 
     const consultar = async (): Promise<void> => {
       try {
-        const respuesta = await ConsultarUbicacionEquipo(seleccionado.IdEquipo);
+        const respuesta = await ConsultarUbicacionEquipos(seleccionado.IdEquipo);
         if (vigente) setDatos(respuesta);
       } catch (e) {
         if (!vigente) return;

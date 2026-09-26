@@ -25,7 +25,7 @@ const ItemsNavEquipos = [
     },
     {
         label: 'Estado de equipos',
-        path: paths.dashboard.gestionycontrolequiposestado,
+        path: paths.dashboard.gestionycontrolequiposubicacion,
         icon: MapPin
     }
 ]
