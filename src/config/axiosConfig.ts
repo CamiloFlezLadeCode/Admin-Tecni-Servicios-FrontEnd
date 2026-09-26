@@ -20,6 +20,21 @@ const axiosInstance = axios.create({
   },
 });
 
+// Adjunta el token JWT a cada petición (el backend exige Authorization: Bearer en todo excepto /login y /health)
+axiosInstance.interceptors.request.use((requestConfig) => {
+  if (typeof window !== 'undefined') {
+    try {
+      const token = localStorage.getItem('custom-auth-token-autenticacion');
+      if (token && !requestConfig.headers.Authorization) {
+        requestConfig.headers.Authorization = `Bearer ${token}`;
+      }
+    } catch {
+      // localStorage no disponible
+    }
+  }
+  return requestConfig;
+});
+
 // ✅ Interceptores para manejar errores, tokens, etc.
 axiosInstance.interceptors.response.use(
   response => response,

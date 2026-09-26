@@ -1,4 +1,4 @@
-import axiosInstance from "@/lib/axiosConfig";
+import axiosInstance from "@/config/axiosConfig";
 import { apiRoutes } from "@/config/apiRoutes";
 
 export const ListarBodegueros = async () => {

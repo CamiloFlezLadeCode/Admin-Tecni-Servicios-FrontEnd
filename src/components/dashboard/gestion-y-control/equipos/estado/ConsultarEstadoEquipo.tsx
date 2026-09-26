@@ -203,7 +203,7 @@ export function ConsultarEstadoEquipo(): React.JSX.Element {
       <Card>
         <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
           <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1.5 }}>
-            Consultar estado de un equipo
+            Consultar ubicación de un equipo
           </Typography>
           <Autocomplete
             options={equipos}

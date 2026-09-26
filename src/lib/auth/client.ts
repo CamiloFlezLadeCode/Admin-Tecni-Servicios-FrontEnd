@@ -440,7 +440,12 @@ class AuthClient {
 
   async signOut(): Promise<{ error?: string }> {
     try {
-      await axiosInstance.post(apiRoutes.login.cerrar_sesion, {}, { withCredentials: true });
+      try {
+        await axiosInstance.post(apiRoutes.login.cerrar_sesion, {}, { withCredentials: true });
+      } catch (logoutError) {
+        // Con token vencido el backend responde 401/403; igual se limpia la sesión local
+        console.warn('No se pudo notificar el cierre de sesión al servidor:', logoutError);
+      }
       localStorage.removeItem('custom-auth-name');
       localStorage.removeItem('custom-auth-documento');
       localStorage.removeItem('custom-auth-correo');
