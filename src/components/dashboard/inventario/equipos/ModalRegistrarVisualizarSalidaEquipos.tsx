@@ -181,7 +181,8 @@ export function ModalRegistrarVisualizarSalidaEquipos({
       (async () => {
         try {
           const resp = await VisualizarSalidaEquipos({ NoSalidaEquipos: noSalidaEquipos });
-          const fecha = dayjs(String(resp?.FechaSalida ?? resp?.fecha ?? resp?.Fecha ?? dayjs().format('YYYY-MM-DD HH:mm:ss')));
+          // El backend la envía como texto '%d/%m/%Y %r' (mismo ajuste que remisiones y devoluciones).
+          const fecha = resp?.FechaSalida ? dayjs(String(resp.FechaSalida), 'DD/MM/YYYY hh:mm A') : dayjs();
           const numero = Number(resp?.NoSalidaEquipos ?? noSalidaEquipos);
           const responsable = String(resp?.DocumentoResponsable ?? resp?.Responsable ?? OpcionPorDefecto.value);
           const obs = String(resp?.Observaciones ?? '');

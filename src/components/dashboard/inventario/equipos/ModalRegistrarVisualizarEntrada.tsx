@@ -298,7 +298,8 @@ export function ModalRegistrarEntradaEquipos({
             };
 
             setDatos({
-                FechaEntrada: dayjs(datosTransformados.FechaEntrada),
+                // El backend la envía como texto '%d/%m/%Y %r' (mismo ajuste que remisiones y devoluciones).
+                FechaEntrada: dayjs(datosTransformados.FechaEntrada, 'DD/MM/YYYY hh:mm A'),
                 DocumentoResponsable: datosTransformados.DocumentoResponsable || OpcionPorDefecto.value,
                 Observaciones: datosTransformados.Observaciones,
                 NoEntradaEquipos: datosTransformados.NoEntradaEquipos,
