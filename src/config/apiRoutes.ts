@@ -163,6 +163,9 @@ export const apiRoutes = {
             actualizar_bodega: `${API_BASE_URL}/actualizar-bodega`
         }
     },
+    dashboard: {
+        resumen_dashboard: `${API_BASE_URL}/resumen-dashboard`
+    },
     configuraciones: {
         listar_profesionales_pertenecientes: `${API_BASE_URL}/ver-profesionales-pertenecientes`,
         consultar_credenciales_del_profesional: (DocumentoProfesional: string) => `${API_BASE_URL}/consultar-credenciales-del-profesional/${DocumentoProfesional}`,

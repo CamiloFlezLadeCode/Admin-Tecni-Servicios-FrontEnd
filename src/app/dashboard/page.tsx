@@ -19,69 +19,8 @@ import { config } from '@/config';
 import { paths } from '@/paths';
 import { useChartPalette } from '@/hooks/use-chart-palette';
 import { Chart } from '@/components/core/chart';
-import { ListarClientes } from '@/services/generales/ListarClientesService';
-import { ConsultarProyectos } from '@/services/gestionycontrol/proyectos/ConsultarProyectosService';
-import {
-    ConsultarRemisiones,
-    VerActividadRecienteMovimientos,
-    VerCantidadRemisionesYDevolucionesUltimos6Meses,
-    VerTotalesMovimientosMesActual,
-} from '@/services/comercial/remisiones/ConsultarRemisionesService';
-import type {
-    ActividadRecienteMovimientosResponse,
-    CantidadRemisionesDevolucionesUltimos6Meses,
-    TotalesMovimientosMesActual,
-} from '@/services/comercial/remisiones/ConsultarRemisionesService';
-import { VerTodasLasDevoluciones } from '@/services/comercial/devoluciones/VerTodasLasDevolucionesService';
-import { VerTodasLasOrdenesDeServicio } from '@/services/comercial/ordenes_de_servicio/VerTodasLasOrdenesDeServicioService';
-import { VerStockEquipos } from '@/services/inventario/equipos/VerStockEquiposService';
-import { VerStockRepuestos } from '@/services/inventario/repuestos/VerStockRepuestosService';
-
-type Proyecto = {
-    IdProyecto: number;
-    NombreProyecto: string;
-    Cliente: string;
-    DireccionProyecto: string;
-    UsuarioCreacion: string;
-    FechaCreacion: string;
-    EstadoProyecto: string;
-};
-
-type Remision = {
-    IdRemision: number;
-    NoRemision: string;
-    Cliente: string;
-    Proyecto: string;
-    CreadoPor: string;
-    FechaCreacion: string;
-    ObservacionesInternasEmpresa: string;
-    EstadoRemision: string;
-};
-
-type Devolucion = {
-    IdDevolucion: number;
-    NoDevolucion: string;
-    NoRemision?: string;
-    IdRemision: number;
-    Cliente: string;
-    Proyecto: string;
-    CreadoPor: string;
-    FechaCreacion: string;
-    Estado: string;
-};
-
-type OrdenDeServicio = {
-    IdOrdenDeServicio: number;
-    NoOrdenDeServicio: string;
-    Cliente: string;
-    Proyecto: string;
-    Mecanico: string;
-    CreadoPor: string;
-    FechaCreacion: string;
-    EstadoOrdenDeServicio: string;
-};
-
-type StockItem = Record<string, unknown>;
+import { VerResumenDashboard } from '@/services/dashboard/VerResumenDashboardService';
+import type { ResumenDashboard } from '@/services/dashboard/VerResumenDashboardService';
 
 const skeletonKeys6 = ['s1', 's2', 's3', 's4', 's5', 's6'] as const;
 
@@ -140,21 +79,6 @@ function monthLabel(d: dayjs.Dayjs): string {
     return `${labels[d.month()]} ${d.format('YY')}`;
 }
 
-function qtyFromStock(item: StockItem): number {
-    const candidates = [item.CantidadDisponible, item.Cantidad, item.cantidad, item.stock];
-    for (const c of candidates) {
-        const n = Number(c);
-        if (Number.isFinite(n)) return n;
-    }
-    return 0;
-}
-
-function statusFromQty(qty: number): 'OK' | 'Bajo' | 'Agotado' {
-    if (qty <= 0) return 'Agotado';
-    if (qty <= 5) return 'Bajo';
-    return 'OK';
-}
-
 function formatNumber(value: number): string {
     return new Intl.NumberFormat('es-CO', { maximumFractionDigits: 0 }).format(value);
 }
@@ -187,16 +111,11 @@ export default function Page(): React.JSX.Element {
     const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState<string | null>(null);
 
-    const [clientesCount, setClientesCount] = React.useState(0);
-    const [proyectos, setProyectos] = React.useState<Proyecto[]>([]);
-    const [remisiones, setRemisiones] = React.useState<Remision[]>([]);
-    const [devoluciones, setDevoluciones] = React.useState<Devolucion[]>([]);
-    const [ordenes, setOrdenes] = React.useState<OrdenDeServicio[]>([]);
-    const [stockEquipos, setStockEquipos] = React.useState<StockItem[]>([]);
-    const [stockRepuestos, setStockRepuestos] = React.useState<StockItem[]>([]);
-    const [serieRemisionesDevoluciones, setSerieRemisionesDevoluciones] = React.useState<CantidadRemisionesDevolucionesUltimos6Meses | null>(null);
-    const [totalesMovimientosMesActual, setTotalesMovimientosMesActual] = React.useState<TotalesMovimientosMesActual | null>(null);
-    const [actividadRecienteMovimientos, setActividadRecienteMovimientos] = React.useState<ActividadRecienteMovimientosResponse | null>(null);
+    // Una sola petición con todo ya agregado en el servidor. Antes el panel
+    // descargaba los listados completos de clientes, proyectos, remisiones,
+    // devoluciones, órdenes y stock sólo para contarlos en el navegador, y el
+    // tamaño de esa descarga crecía con el historial.
+    const [resumen, setResumen] = React.useState<ResumenDashboard | null>(null);
 
     React.useEffect(() => {
         document.title = `Dashboard | ${config.site.name}`;
@@ -206,70 +125,7 @@ export default function Page(): React.JSX.Element {
         setLoading(true);
         setError(null);
         try {
-            const [
-                clientes,
-                proyectosResp,
-                remisionesResp,
-                devolucionesResp,
-                ordenesResp,
-                stockEquiposResp,
-                stockRepuestosResp,
-            ] = await Promise.all([
-                ListarClientes(),
-                ConsultarProyectos(),
-                ConsultarRemisiones(),
-                VerTodasLasDevoluciones(),
-                VerTodasLasOrdenesDeServicio(),
-                VerStockEquipos(),
-                VerStockRepuestos(),
-            ]);
-
-            let serieRemDevResp: unknown = null;
-            try {
-                serieRemDevResp = await VerCantidadRemisionesYDevolucionesUltimos6Meses();
-            } catch {
-                serieRemDevResp = null;
-            }
-
-            let totalesMesResp: unknown = null;
-            try {
-                totalesMesResp = await VerTotalesMovimientosMesActual();
-            } catch {
-                totalesMesResp = null;
-            }
-
-            let actividadRecienteResp: unknown = null;
-            try {
-                actividadRecienteResp = await VerActividadRecienteMovimientos(10);
-            } catch {
-                actividadRecienteResp = null;
-            }
-
-            setClientesCount(Array.isArray(clientes) ? clientes.length : 0);
-            setProyectos(Array.isArray(proyectosResp) ? proyectosResp : []);
-            setRemisiones(Array.isArray(remisionesResp) ? remisionesResp : []);
-            setSerieRemisionesDevoluciones(
-                serieRemDevResp && typeof serieRemDevResp === 'object' && Array.isArray((serieRemDevResp as any).Meses)
-                    ? (serieRemDevResp as CantidadRemisionesDevolucionesUltimos6Meses)
-                    : null
-            );
-            setTotalesMovimientosMesActual(
-                totalesMesResp && typeof totalesMesResp === 'object' && (totalesMesResp as any).Totales && typeof (totalesMesResp as any).TotalMovimientos === 'number'
-                    ? (totalesMesResp as TotalesMovimientosMesActual)
-                    : null
-            );
-            setActividadRecienteMovimientos(
-                actividadRecienteResp &&
-                    typeof actividadRecienteResp === 'object' &&
-                    Array.isArray((actividadRecienteResp as any).Movimientos) &&
-                    typeof (actividadRecienteResp as any).Limite === 'number'
-                    ? (actividadRecienteResp as ActividadRecienteMovimientosResponse)
-                    : null
-            );
-            setDevoluciones(Array.isArray(devolucionesResp) ? devolucionesResp : []);
-            setOrdenes(Array.isArray(ordenesResp) ? ordenesResp : []);
-            setStockEquipos(Array.isArray(stockEquiposResp) ? stockEquiposResp : []);
-            setStockRepuestos(Array.isArray(stockRepuestosResp) ? stockRepuestosResp : []);
+            setResumen(await VerResumenDashboard());
         } catch (e) {
             setError((e as Error)?.message ?? 'No fue posible cargar el dashboard');
         } finally {
@@ -282,230 +138,78 @@ export default function Page(): React.JSX.Element {
     }, [cargar]);
 
     const now = dayjs();
-    const inicioMes = now.startOf('month');
 
-    const proyectosActivos = React.useMemo(() => {
-        return proyectos.filter((p) => String(p.EstadoProyecto ?? '').toLowerCase() === 'activo').length;
-    }, [proyectos]);
-
-    const remisionesMes = React.useMemo(() => {
-        return remisiones.filter((r) => {
-            const d = parseDate(r.FechaCreacion);
-            return d ? d.isSame(inicioMes, 'month') : false;
-        }).length;
-    }, [remisiones, inicioMes]);
-
-    const devolucionesMes = React.useMemo(() => {
-        return devoluciones.filter((d) => {
-            const dd = parseDate(d.FechaCreacion);
-            return dd ? dd.isSame(inicioMes, 'month') : false;
-        }).length;
-    }, [devoluciones, inicioMes]);
-
-    const ordenesMes = React.useMemo(() => {
-        return ordenes.filter((o) => {
-            const d = parseDate(o.FechaCreacion);
-            return d ? d.isSame(inicioMes, 'month') : false;
-        }).length;
-    }, [ordenes, inicioMes]);
+    const clientesCount = resumen?.TotalClientes ?? 0;
+    const proyectosActivos = resumen?.Proyectos.Activos ?? 0;
+    const proyectosTotal = resumen?.Proyectos.Total ?? 0;
 
     const operacionDelMes = React.useMemo(() => {
-        const totales = totalesMovimientosMesActual?.Totales;
-        const rem = typeof totales?.CantidadRemisiones === 'number' ? totales.CantidadRemisiones : remisionesMes;
-        const dev = typeof totales?.CantidadDevoluciones === 'number' ? totales.CantidadDevoluciones : devolucionesMes;
-        const ord = typeof totales?.CantidadOrdenesDeServicio === 'number' ? totales.CantidadOrdenesDeServicio : ordenesMes;
-        const total = typeof totalesMovimientosMesActual?.TotalMovimientos === 'number' ? totalesMovimientosMesActual.TotalMovimientos : remisionesMes + devolucionesMes + ordenesMes;
-        return { total, rem, dev, ord };
-    }, [devolucionesMes, ordenesMes, remisionesMes, totalesMovimientosMesActual]);
+        const totales = resumen?.TotalesMesActual?.Totales;
+        return {
+            total: resumen?.TotalesMesActual?.TotalMovimientos ?? 0,
+            rem: totales?.CantidadRemisiones ?? 0,
+            dev: totales?.CantidadDevoluciones ?? 0,
+            ord: totales?.CantidadOrdenesDeServicio ?? 0,
+        };
+    }, [resumen]);
 
-    const inventarioResumen = React.useMemo(() => {
-        const items = [...stockEquipos, ...stockRepuestos];
-        const counts: Record<'OK' | 'Bajo' | 'Agotado', number> = { OK: 0, Bajo: 0, Agotado: 0 };
-        for (const item of items) {
-            const qty = qtyFromStock(item);
-            const status = statusFromQty(qty);
-            counts[status] += 1;
-        }
-        return counts;
-    }, [stockEquipos, stockRepuestos]);
-
+    const inventarioResumen = resumen?.Inventario ?? { OK: 0, Bajo: 0, Agotado: 0 };
     const inventarioAlertasCount = inventarioResumen.Bajo + inventarioResumen.Agotado;
 
     const serieMeses = React.useMemo(() => {
-        const ordMap = new Map<string, number>();
-        ordenes.forEach((r) => {
-            const d = parseDate(r.FechaCreacion);
-            if (!d) return;
-            const key = monthKey(d);
-            ordMap.set(key, (ordMap.get(key) ?? 0) + 1);
-        });
-
-        const mesesApi = serieRemisionesDevoluciones?.Meses;
-        if (Array.isArray(mesesApi) && mesesApi.length) {
-            const sorted = [...mesesApi].sort((a, b) => String(a.Mes).localeCompare(String(b.Mes)));
-            const categories = sorted.map((m) => String(m.Etiqueta ?? m.Mes));
-            const remData = sorted.map((m) => Number(m.CantidadRemisiones ?? 0));
-            const devData = sorted.map((m) => Number(m.CantidadDevoluciones ?? 0));
-            const ordDataFromApi = sorted.map((m) => Number(m.CantidadOrdenesDeServicio ?? 0));
-            const apiMonthKeys = sorted.map((m) => normalizeMonthKey(m.Mes));
-            const ordDataFromOrders = apiMonthKeys.map((k) => (k ? (ordMap.get(k) ?? 0) : 0));
-
-            const apiHasValidOrders = ordDataFromApi.every((n) => Number.isFinite(n));
-            const apiHasNonZeroOrders = ordDataFromApi.some((n) => Number.isFinite(n) && n > 0);
-            const ordersHaveNonZero = ordDataFromOrders.some((n) => n > 0);
-
-            const ordData = apiHasValidOrders && apiHasNonZeroOrders ? ordDataFromApi : ordersHaveNonZero ? ordDataFromOrders : ordDataFromApi;
-            return { categories, remisiones: remData, devoluciones: devData, ordenes: ordData };
-        }
-
-        const meses = Array.from({ length: 6 }).map((_, idx) => now.subtract(5 - idx, 'month').startOf('month'));
-        const cats = meses.map(monthLabel);
-
-        const remMap = new Map<string, number>();
-        remisiones.forEach((r) => {
-            const d = parseDate(r.FechaCreacion);
-            if (!d) return;
-            const key = monthKey(d);
-            remMap.set(key, (remMap.get(key) ?? 0) + 1);
-        });
-
-        const devMap = new Map<string, number>();
-        devoluciones.forEach((r) => {
-            const d = parseDate(r.FechaCreacion);
-            if (!d) return;
-            const key = monthKey(d);
-            devMap.set(key, (devMap.get(key) ?? 0) + 1);
-        });
-
-        const remData = meses.map((m) => remMap.get(monthKey(m)) ?? 0);
-        const devData = meses.map((m) => devMap.get(monthKey(m)) ?? 0);
-        const ordData = meses.map((m) => ordMap.get(monthKey(m)) ?? 0);
-
-        return { categories: cats, remisiones: remData, devoluciones: devData, ordenes: ordData };
-    }, [devoluciones, now, ordenes, remisiones, serieRemisionesDevoluciones]);
+        const sorted = [...(resumen?.SerieUltimos6Meses?.Meses ?? [])].sort((a, b) => String(a.Mes).localeCompare(String(b.Mes)));
+        return {
+            categories: sorted.map((m) => String(m.Etiqueta ?? m.Mes)),
+            remisiones: sorted.map((m) => Number(m.CantidadRemisiones ?? 0)),
+            devoluciones: sorted.map((m) => Number(m.CantidadDevoluciones ?? 0)),
+            ordenes: sorted.map((m) => Number(m.CantidadOrdenesDeServicio ?? 0)),
+        };
+    }, [resumen]);
 
     const serieOrdenes6m = React.useMemo(() => {
         const meses = Array.from({ length: 6 }).map((_, idx) => now.subtract(5 - idx, 'month').startOf('month'));
-        const monthKeys = meses.map(monthKey);
-        const categories = meses.map(monthLabel);
-
-        const ordMap = new Map<string, number>();
-        ordenes.forEach((o) => {
-            const d = parseDate(o.FechaCreacion);
-            if (!d) return;
-            const key = monthKey(d);
-            ordMap.set(key, (ordMap.get(key) ?? 0) + 1);
+        const porMes = new Map<string, number>();
+        (resumen?.SerieUltimos6Meses?.Meses ?? []).forEach((m) => {
+            const k = normalizeMonthKey(m.Mes);
+            if (k) porMes.set(k, Number(m.CantidadOrdenesDeServicio ?? 0));
         });
-        const ordFromOrders = monthKeys.map((k) => ordMap.get(k) ?? 0);
-
-        const mesesApi = serieRemisionesDevoluciones?.Meses;
-        if (Array.isArray(mesesApi) && mesesApi.length) {
-            const apiMap = new Map<string, number>();
-            mesesApi.forEach((m) => {
-                const k = normalizeMonthKey(m.Mes);
-                if (!k) return;
-                apiMap.set(k, Number(m.CantidadOrdenesDeServicio ?? 0));
-            });
-            const ordFromApi = monthKeys.map((k) => apiMap.get(k) ?? 0);
-            const apiHasNonZero = ordFromApi.some((n) => Number.isFinite(n) && n > 0);
-            return { categories, ordenes: apiHasNonZero ? ordFromApi : ordFromOrders };
-        }
-
-        return { categories, ordenes: ordFromOrders };
-    }, [now, ordenes, serieRemisionesDevoluciones]);
+        return {
+            categories: meses.map(monthLabel),
+            ordenes: meses.map((m) => porMes.get(monthKey(m)) ?? 0),
+        };
+        // `now` cambia en cada render; la serie sólo depende de los datos.
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- Expected
+    }, [resumen]);
 
     const topClientes = React.useMemo(() => {
-        const map = new Map<string, { remisiones: number; devoluciones: number }>();
-        for (const r of remisiones) {
-            const key = String(r.Cliente ?? 'Sin cliente');
-            const prev = map.get(key) ?? { remisiones: 0, devoluciones: 0 };
-            map.set(key, { ...prev, remisiones: prev.remisiones + 1 });
-        }
-        for (const d of devoluciones) {
-            const key = String(d.Cliente ?? 'Sin cliente');
-            const prev = map.get(key) ?? { remisiones: 0, devoluciones: 0 };
-            map.set(key, { ...prev, devoluciones: prev.devoluciones + 1 });
-        }
-        return Array.from(map.entries())
-            .map(([cliente, v]) => ({ cliente, ...v, total: v.remisiones + v.devoluciones }))
-            .sort((a, b) => b.total - a.total)
-            .slice(0, 6);
-    }, [remisiones, devoluciones]);
-
-    const actividadRecienteFallback = React.useMemo(() => {
-        const rem = remisiones
-            .map((r) => ({
-                tipo: 'Remisión' as const,
-                id: r.IdRemision,
-                numero: r.NoRemision,
-                cliente: r.Cliente,
-                proyecto: r.Proyecto,
-                creadoPor: r.CreadoPor,
-                estado: r.EstadoRemision,
-                fecha: r.FechaCreacion
-            }))
-            .filter((x) => Boolean(parseDate(x.fecha)))
-            .sort((a, b) => (parseDate(b.fecha)!.valueOf() - parseDate(a.fecha)!.valueOf()))
-            .slice(0, 5);
-
-        const dev = devoluciones
-            .map((d) => ({
-                tipo: 'Devolución' as const,
-                id: d.IdDevolucion,
-                numero: d.NoDevolucion,
-                cliente: d.Cliente,
-                proyecto: d.Proyecto,
-                creadoPor: d.CreadoPor,
-                estado: d.Estado,
-                fecha: d.FechaCreacion
-            }))
-            .filter((x) => Boolean(parseDate(x.fecha)))
-            .sort((a, b) => (parseDate(b.fecha)!.valueOf() - parseDate(a.fecha)!.valueOf()))
-            .slice(0, 5);
-
-        const ord = ordenes
-            .map((o) => ({
-                tipo: 'Órden' as const,
-                id: o.IdOrdenDeServicio,
-                numero: o.NoOrdenDeServicio,
-                cliente: o.Cliente,
-                proyecto: o.Proyecto,
-                creadoPor: o.CreadoPor,
-                estado: o.EstadoOrdenDeServicio,
-                fecha: o.FechaCreacion
-            }))
-            .filter((x) => Boolean(parseDate(x.fecha)))
-            .sort((a, b) => (parseDate(b.fecha)!.valueOf() - parseDate(a.fecha)!.valueOf()))
-            .slice(0, 5);
-
-        return [...rem, ...dev, ...ord].sort((a, b) => (parseDate(b.fecha)!.valueOf() - parseDate(a.fecha)!.valueOf())).slice(0, 10);
-    }, [remisiones, devoluciones, ordenes]);
+        return (resumen?.TopClientes ?? []).map((c) => ({
+            cliente: c.Cliente || 'Sin cliente',
+            remisiones: c.CantidadRemisiones,
+            devoluciones: c.CantidadDevoluciones,
+            total: c.Total,
+        }));
+    }, [resumen]);
 
     const actividadReciente = React.useMemo(() => {
-        const movimientos = actividadRecienteMovimientos?.Movimientos;
-        if (Array.isArray(movimientos) && movimientos.length) {
-            return movimientos.map((m: any) => {
-                let tipo: 'Remisión' | 'Devolución' | 'Órden' = 'Remisión';
-                const rawTipo = String(m.TipoMovimiento || '').toUpperCase();
+        return (resumen?.ActividadReciente?.Movimientos ?? []).map((m) => {
+            let tipo: 'Remisión' | 'Devolución' | 'Órden' = 'Remisión';
+            const rawTipo = String(m.TipoMovimiento || '').toUpperCase();
 
-                if (rawTipo === 'DEVOLUCION') tipo = 'Devolución';
-                else if (rawTipo === 'ORDEN_DE_SERVICIO') tipo = 'Órden';
+            if (rawTipo === 'DEVOLUCION') tipo = 'Devolución';
+            else if (rawTipo === 'ORDEN_DE_SERVICIO') tipo = 'Órden';
 
-                return {
-                    tipo,
-                    id: Number(m.IdMovimiento),
-                    numero: String(m.NoMovimiento),
-                    cliente: String(m.Cliente),
-                    proyecto: String(m.Proyecto || ''),
-                    creadoPor: String(m.CreadoPor || ''),
-                    estado: String(m.Estado || ''),
-                    fecha: String(m.FechaCreacion)
-                };
-            });
-        }
-
-        return actividadRecienteFallback;
-    }, [actividadRecienteFallback, actividadRecienteMovimientos]);
+            return {
+                tipo,
+                id: Number(m.IdMovimiento),
+                numero: String(m.NoMovimiento),
+                cliente: String(m.Cliente),
+                proyecto: String(m.Proyecto || ''),
+                creadoPor: String(m.CreadoPor || ''),
+                estado: String(m.Estado || ''),
+                fecha: String(m.FechaCreacion)
+            };
+        });
+    }, [resumen]);
 
     // El fondo de papel y el hairline de elevación ya vienen de `MuiPaper` y
     // `MuiCard`; repetirlos aquí sólo duplicaba el borde de las tarjetas KPI.
@@ -859,7 +563,7 @@ export default function Page(): React.JSX.Element {
                                     </Typography>
                                     {loading ? <Skeleton width={120} height={36} /> : <Typography variant="h4">{formatNumber(proyectosActivos)}</Typography>}
                                     <Typography variant="caption" color="text.secondary">
-                                        De {formatNumber(proyectos.length)} proyectos
+                                        De {formatNumber(proyectosTotal)} proyectos
                                     </Typography>
                                 </Stack>
                                 <Box
