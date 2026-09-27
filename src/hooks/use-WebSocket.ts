@@ -202,6 +202,9 @@ export function useSocketIO() {
         socket.on('entrada-equipos-creada', (data) => {
             setMessages((prev) => [...prev, { tipo: 'entrada-equipos-creada', data }]);
         });
+        socket.on('salida-equipos-creada', (data) => {
+            setMessages((prev) => [...prev, { tipo: 'salida-equipos-creada', data }]);
+        });
         // ...
 
         // SOCKET PARA INVENTARIO DE REPUESTOS

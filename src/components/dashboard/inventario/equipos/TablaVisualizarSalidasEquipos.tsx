@@ -43,7 +43,7 @@ export function TablaVisualizarSalidasEquipos(): React.JSX.Element {
     mostrarMensaje,
     ocultarAlerta
   } = useAlertas();
-  const { messages } = useSocketIO();
+  const { sendMessage, messages } = useSocketIO();
 
 
   const abrirModalVisualizacion = (salida: SalidaDeEquiposLista) => {
@@ -113,6 +113,8 @@ export function TablaVisualizarSalidasEquipos(): React.JSX.Element {
           <ModalRegistrarVisualizarSalidaEquipos
             modo="crear"
             onMostrarMensaje={mostrarMensaje}
+            sendMessage={sendMessage}
+            mensajesSocket={messages}
           />
 
           {noSalidaParaVisualizar && (
@@ -121,6 +123,8 @@ export function TablaVisualizarSalidasEquipos(): React.JSX.Element {
               noSalidaEquipos={noSalidaParaVisualizar}
               onClose={cerrarModalVisualizacion}
               onMostrarMensaje={mostrarMensaje}
+              sendMessage={sendMessage}
+              mensajesSocket={messages}
             />
           )}
 

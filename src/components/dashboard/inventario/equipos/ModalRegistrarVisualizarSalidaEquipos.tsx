@@ -36,7 +36,6 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { X, Trash } from '@phosphor-icons/react/dist/ssr';
 import dayjs, { Dayjs } from 'dayjs';
 import * as React from 'react';
-import { useSocketIO } from '@/hooks/use-WebSocket';
 
 interface EquipoItem {
   IdEquipo: number;
@@ -61,13 +60,19 @@ interface ModalRegistrarVisualizarSalidaEquiposProps {
   noSalidaEquipos?: number;
   onClose?: () => void;
   readonly onMostrarMensaje?: (mensaje: string, tipo: 'success' | 'error') => void;
+  // El socket lo abre la tabla y lo comparte: si cada modal llamara a useSocketIO
+  // abriría su propia conexión al montarse (igual que en entradas de equipos).
+  readonly sendMessage?: (event: string, payload: any) => void;
+  readonly mensajesSocket?: any[];
 }
 
 export function ModalRegistrarVisualizarSalidaEquipos({
   modo = 'crear',
   noSalidaEquipos,
   onClose,
-  onMostrarMensaje
+  onMostrarMensaje,
+  sendMessage,
+  mensajesSocket = []
 }: Readonly<ModalRegistrarVisualizarSalidaEquiposProps>): React.JSX.Element {
   const isMobile = useMediaQuery('(max-width:600px)');
   const { user } = React.useContext(UserContext) || { user: null };
@@ -101,7 +106,6 @@ export function ModalRegistrarVisualizarSalidaEquipos({
   const [unidadesDeMedida, setUnidadesDeMedida] = React.useState<{ value: number; label: string; }[]>([]);
   const [estados, setEstados] = React.useState<{ value: number; label: string; }[]>([]);
   const [tiposMovimiento, setTiposMovimiento] = React.useState<{ value: number; label: string; }[]>([]);
-  const { sendMessage, messages } = useSocketIO();
   const [unidadPorEquipo, setUnidadPorEquipo] = React.useState<Map<number, number>>(new Map());
   const equiposDict = React.useMemo(() => {
     const m = new Map<number, string>();
@@ -207,46 +211,47 @@ export function ModalRegistrarVisualizarSalidaEquipos({
   }, [modo, noSalidaEquipos]);
 
   React.useEffect(() => {
-    const cargarDatosIniciales = async () => {
+    // Cada catálogo se pide en paralelo y se asigna en cuanto llega: encadenarlos
+    // con `await` sumaba las cinco peticiones antes de poder mostrar nombres en el
+    // modal, y un fallo en uno dejaba sin cargar todos los siguientes.
+    const cargar = async <T,>(nombre: string, consultar: () => Promise<T>, asignar: (datos: T) => void) => {
       try {
-        const Unidades = await ListarUnidadesDeMedida();
-        const Estados = await ListarEstados();
-        const Equipos = await ListarEquiposPropios();
-        const Tipos = await ListarTiposMovimientoEquipo();
-        const Resp = await ListarProfesionalesPertenecientes();
-        setUnidadesDeMedida([OpcionPorDefectoNumber, ...Unidades]);
-        setEstados([OpcionPorDefectoNumber, ...Estados]);
-        const opcionesEquipos: { value: number; label: string }[] = [];
-        const vistos = new Set<number>();
-        (Array.isArray(Equipos) ? Equipos : []).forEach((r: any) => {
-          const hasValueLabel = r && 'value' in r && 'label' in r;
-          const id = hasValueLabel ? Number(r.value) : Number(r.IdEquipo);
-          if (!id || vistos.has(id)) return;
-          const etiqueta = hasValueLabel
-            ? String(r.label ?? String(id)).trim()
-            : (() => {
-              const codigo = String(r.CodigoEquipo ?? '').trim();
-              const nombre = String(r.NombreEquipo ?? '').trim();
-              return (codigo || nombre) ? `${codigo}${codigo && nombre ? ' ' : ''}${nombre}` : `Equipo ${id}`;
-            })();
-          opcionesEquipos.push({ value: id, label: etiqueta });
-          vistos.add(id);
-        });
-        setEquipos([OpcionPorDefectoNumber, ...opcionesEquipos]);
-        const mapa = new Map<number, number>();
-        (Array.isArray(Equipos) ? Equipos : []).forEach((r: any) => {
-          const id = Number((r && 'value' in r) ? r.value : r?.IdEquipo);
-          const um = Number(r?.IdUnidadMedida ?? r?.IdUnidadDeMedida ?? 0);
-          if (id && um) mapa.set(id, um);
-        });
-        setUnidadPorEquipo(mapa);
-        setTiposMovimiento([OpcionPorDefectoNumber, ...Tipos]);
-        setResponsables([OpcionPorDefecto, ...((Array.isArray(Resp) ? Resp : []))]);
+        asignar(await consultar());
       } catch (error) {
-        console.error('Error al cargar datos iniciales:', error);
+        console.error(`Error al listar ${nombre}:`, error);
       }
     };
-    cargarDatosIniciales();
+
+    cargar('las unidades de medida', ListarUnidadesDeMedida, (Unidades) => setUnidadesDeMedida([OpcionPorDefectoNumber, ...Unidades]));
+    cargar('los estados', ListarEstados, (Estados) => setEstados([OpcionPorDefectoNumber, ...Estados]));
+    cargar('los tipos de movimiento', ListarTiposMovimientoEquipo, (Tipos) => setTiposMovimiento([OpcionPorDefectoNumber, ...Tipos]));
+    cargar('los responsables', ListarProfesionalesPertenecientes, (Resp) => setResponsables([OpcionPorDefecto, ...((Array.isArray(Resp) ? Resp : []))]));
+    cargar('los equipos', ListarEquiposPropios, (Equipos) => {
+      const opcionesEquipos: { value: number; label: string }[] = [];
+      const vistos = new Set<number>();
+      (Array.isArray(Equipos) ? Equipos : []).forEach((r: any) => {
+        const hasValueLabel = r && 'value' in r && 'label' in r;
+        const id = hasValueLabel ? Number(r.value) : Number(r.IdEquipo);
+        if (!id || vistos.has(id)) return;
+        const etiqueta = hasValueLabel
+          ? String(r.label ?? String(id)).trim()
+          : (() => {
+            const codigo = String(r.CodigoEquipo ?? '').trim();
+            const nombre = String(r.NombreEquipo ?? '').trim();
+            return (codigo || nombre) ? `${codigo}${codigo && nombre ? ' ' : ''}${nombre}` : `Equipo ${id}`;
+          })();
+        opcionesEquipos.push({ value: id, label: etiqueta });
+        vistos.add(id);
+      });
+      setEquipos([OpcionPorDefectoNumber, ...opcionesEquipos]);
+      const mapa = new Map<number, number>();
+      (Array.isArray(Equipos) ? Equipos : []).forEach((r: any) => {
+        const id = Number((r && 'value' in r) ? r.value : r?.IdEquipo);
+        const um = Number(r?.IdUnidadMedida ?? r?.IdUnidadDeMedida ?? 0);
+        if (id && um) mapa.set(id, um);
+      });
+      setUnidadPorEquipo(mapa);
+    });
   }, []);
 
   React.useEffect(() => {
@@ -341,8 +346,8 @@ export function ModalRegistrarVisualizarSalidaEquipos({
   };
 
   React.useEffect(() => {
-    if (messages.length > 0) {
-      const ultimo = messages[messages.length - 1];
+    if (mensajesSocket.length > 0) {
+      const ultimo = mensajesSocket[mensajesSocket.length - 1];
       if (ultimo.tipo === 'salida-equipos-creada') {
         (async () => {
           try {
@@ -355,7 +360,7 @@ export function ModalRegistrarVisualizarSalidaEquipos({
         })();
       }
     }
-  }, [messages]);
+  }, [mensajesSocket]);
 
   return (
     <>
