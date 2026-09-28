@@ -15,6 +15,7 @@ import { ListarClientes } from '@/services/generales/ListarClientesService';
 import { ListarEstados } from '@/services/generales/ListarEstadosService';
 import { ListarProyectos } from '@/services/generales/ListarProyectos';
 import {
+    Alert,
     Box,
     Button,
     Card,
@@ -66,6 +67,8 @@ interface ItemDevolucion {
     Descripcion?: string;
     Subarrendatario?: string;
     IdDetalleRemision: number;
+    /** 'YYYY-MM-DD HH:mm' de la remisión, para validar la fecha de la devolución. */
+    FechaRemisionOrden?: string;
 }
 
 interface DevolucionEnvio {
@@ -372,6 +375,29 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
         );
     };
 
+    // Un equipo no puede devolverse antes de haber sido remitido. Se compara al minuto
+    // (el selector no tiene segundos), igual que la validación del backend.
+    const fechaDevolucionMinuto = datos.FechaDevolucion.format('YYYY-MM-DD HH:mm');
+    const itemsConFechaInvalida = itemsRemision.filter(item =>
+        item.CantidadADevolver > 0 &&
+        Boolean(item.FechaRemisionOrden) &&
+        item.FechaRemisionOrden! > fechaDevolucionMinuto
+    );
+    const remisionesPosteriores = Array.from(
+        new Map(itemsConFechaInvalida.map(item => [
+            item.NoRemision ?? item.IdRemision,
+            `No. ${item.NoRemision ?? item.IdRemision} (${dayjs(item.FechaRemisionOrden).format('DD/MM/YYYY hh:mm A')})`
+        ])).values()
+    );
+    const mensajeFechaInvalida = remisionesPosteriores.length
+        ? `La fecha de la devolución (${datos.FechaDevolucion.format('DD/MM/YYYY hh:mm A')}) es anterior a ${remisionesPosteriores.length > 1 ? 'las remisiones' : 'la remisión'} ${remisionesPosteriores.join(', ')}. Un equipo no puede devolverse antes de haber sido remitido: ajuste la fecha o quite ${itemsConFechaInvalida.length > 1 ? 'esos equipos' : 'ese equipo'}.`
+        : '';
+    // La fecha mínima permitida en el selector: la remisión más reciente entre los equipos a devolver
+    const fechaMinimaDevolucion = itemsRemision
+        .filter(item => item.CantidadADevolver > 0 && item.FechaRemisionOrden)
+        .map(item => dayjs(item.FechaRemisionOrden))
+        .reduce<Dayjs | undefined>((max, fecha) => (!max || fecha.isAfter(max) ? fecha : max), undefined);
+
     const prepararDatosEnvio = (): DevolucionEnvio | null => {
         // Validar datos básicos
         if (!datos.Cliente || !datos.IdProyecto) {
@@ -395,6 +421,11 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
 
         if (itemsAEnviar.length === 0) {
             mostrarMensaje('Debe ingresar una cantidad a devolver mayor a 0', 'error');
+            return null;
+        }
+
+        if (itemsConFechaInvalida.length > 0) {
+            mostrarMensaje(mensajeFechaInvalida, 'error');
             return null;
         }
 
@@ -475,7 +506,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
             await cargarEquiposPendientesPorDevolver();
         } catch (error) {
             console.error('Error al enviar devolución:', error);
-            mostrarMensaje(`Hubo un error al crear la devolución: ${error}`, 'error');
+            mostrarMensaje(`Hubo un error al crear la devolución: ${error instanceof Error ? error.message : error}`, 'error');
         }
     };
 
@@ -546,6 +577,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                 label="Fecha y hora"
                                 value={datos.FechaDevolucion}
                                 onChange={handleFechaChange}
+                                minDateTime={fechaMinimaDevolucion}
                             />
                         </Grid>
 
@@ -631,7 +663,9 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                                 key={`${item.IdEquipo}-${item.IdRemision}-${item.IdDetalleRemision}`}
                                                 sx={{ padding: { xs: '6px 8px', md: '8px 12px' }, display: item.CantidadPendiente === '0' ? 'none' : 'table-row' }}
                                             >
-                                                <TableCell>{item.Descripcion}</TableCell>
+                                                <TableCell sx={itemsConFechaInvalida.includes(item) ? { color: 'error.main', fontWeight: 600 } : undefined}>
+                                                    {item.Descripcion}
+                                                </TableCell>
                                                 <TableCell>{item.NombreEquipo}</TableCell>
                                                 <TableCell>{item.CantidadArrendada}</TableCell>
                                                 <TableCell>{item.CantidadPendiente}</TableCell>
@@ -668,6 +702,12 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                     </TableBody>
                                 </Table>
                             </TableContainer>
+
+                            {itemsConFechaInvalida.length > 0 && (
+                                <Alert severity="error" sx={{ mt: 1 }}>
+                                    {mensajeFechaInvalida}
+                                </Alert>
+                            )}
 
                             <Grid md={6} xs={12} mt={0.5}>
                                 <Input
@@ -714,7 +754,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                     <Button
                         variant="contained"
                         onClick={handleEnviarDevolucion}
-                        disabled={itemsRemision.length === 0 || todosItemsSinPendiente}
+                        disabled={itemsRemision.length === 0 || todosItemsSinPendiente || itemsConFechaInvalida.length > 0}
                     >
                         Crear devolución
                     </Button>

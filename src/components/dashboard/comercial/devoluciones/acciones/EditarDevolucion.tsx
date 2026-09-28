@@ -582,7 +582,7 @@ export function EditarDevolucion({ IdDevolucion, NoDevolucion, sendMessage, most
                 mostrarMensaje('No se realizó ningún cambio', 'warning');
             }
         } catch (error) {
-            mostrarMensaje(`Error al actualizar la devolución: ${error}`, 'error');
+            mostrarMensaje(`Error al actualizar la devolución: ${error instanceof Error ? error.message : error}`, 'error');
         } finally {
             setGuardando(false);
         }

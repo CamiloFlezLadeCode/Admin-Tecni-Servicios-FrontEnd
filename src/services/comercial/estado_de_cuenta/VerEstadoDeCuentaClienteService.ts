@@ -18,12 +18,24 @@ export const VerEstadoDeCuentaCliente = async (DocumentoCliente: string) => {
 };
 
 
-/** Totales de las tarjetas: filtros de proyecto/equipo aplicados, sin la búsqueda de texto. */
+/**
+ * Totales de las tarjetas: filtros de proyecto/equipo aplicados, sin la búsqueda de texto.
+ * Los valores en dinero salen de la misma fórmula de cobro que movimientos generales.
+ */
 export interface ResumenEstadoDeCuenta {
     totalPrestado: number;
     totalDevuelto: number;
     totalPendiente: number;
-    valorPendiente: number;
+    /** Alquiler causado a hoy, sin IVA. */
+    alquilerSinIVA: number;
+    /** Alquiler causado a hoy, con IVA. */
+    alquilerConIVA: number;
+    /** Lo que se suma por cada día más con los equipos que siguen en obra, con IVA. */
+    causacionDiariaConIVA: number;
+    /** Transportes (sin IVA). `null` con el filtro de equipo: el transporte es por documento, no por equipo. */
+    transportes: { remisiones: number; devoluciones: number } | null;
+    /** Alquiler con IVA + transportes. */
+    totalCausado: number;
 }
 
 export interface RespuestaEstadoDeCuenta<T> extends RespuestaPaginada<T> {

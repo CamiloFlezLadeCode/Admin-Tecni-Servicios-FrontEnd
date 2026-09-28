@@ -1,7 +1,6 @@
 import React from 'react';
 import {
     Dialog,
-    DialogTitle,
     DialogContent,
     DialogActions,
     Button,
@@ -13,7 +12,8 @@ import {
     Stack,
     LinearProgress,
     Card,
-    CardContent
+    CardContent,
+    Alert
 } from '@mui/material';
 import {
     CalendarBlank,
@@ -21,33 +21,18 @@ import {
     CheckCircle,
     WarningCircle,
     Buildings,
-    Hash,
     Truck,
     Money,
-    XCircle,
-    Info
+    ArrowUDownLeft
 } from '@phosphor-icons/react';
 
-// Reutilizamos la interfaz si es posible, o la definimos aquí para propósitos del componente
-interface EstadoDeCuenta {
-    IdDetalleRemison?: number;
-    IdProyecto?: number | string;
-    Cliente: string;
-    DocumentoCliente: string;
-    NoRemision: string;
-    FechaRemision: string;
-    FechaUltimaDevolucion?: string;
-    Proyecto: string;
-    Categoria: string;
-    Equipo: string;
-    CantidadPrestada: number | string;
-    CantidadDevuelta: number | string;
-    CantidadPendiente: number | string;
-    TiempoPrestamo: string;
-    EstadoDevolucion: string;
-    ValorPendiente: number | string;
-    PrecioUnitario: number | string;
-}
+import {
+    type EstadoDeCuenta,
+    REGLA_DIAS_COBRADOS,
+    devolucionesOrdenadas,
+    formatoMoneda,
+    tieneDevolucionAnteriorARemision
+} from './estado-de-cuenta';
 
 interface ModalDetalleEstadoCuentaProps {
     open: boolean;
@@ -55,12 +40,20 @@ interface ModalDetalleEstadoCuentaProps {
     data: EstadoDeCuenta | null;
 }
 
+const unidades = (n: number) => `${n} ${n === 1 ? 'unidad' : 'unidades'}`;
+const dias = (n: number) => `${n} ${n === 1 ? 'día' : 'días'}`;
+
 export function ModalDetalleEstadoCuenta({ open, onClose, data }: ModalDetalleEstadoCuentaProps): JSX.Element {
     if (!data) return <></>;
 
     const prestada = Number(data.CantidadPrestada || 0);
     const devuelta = Number(data.CantidadDevuelta || 0);
     const pendiente = Number(data.CantidadPendiente || 0);
+    const precio = Number(data.PrecioUnitario || 0);
+    const iva = Number(data.IVA || 0);
+    const devoluciones = devolucionesOrdenadas(data);
+    const diasEnObra = data.DiasCobradosEnObra === null ? null : Number(data.DiasCobradosEnObra);
+    const hayDevolucionAnterior = tieneDevolucionAnteriorARemision(data);
 
     // Calcular porcentaje de devolución
     const porcentajeDevolucion = prestada > 0 ? Math.min(100, (devuelta / prestada) * 100) : 0;
@@ -97,6 +90,22 @@ export function ModalDetalleEstadoCuenta({ open, onClose, data }: ModalDetalleEs
         if (reason === 'backdropClick' || reason === 'escapeKeyDown') return;
         onClose();
     };
+
+    // Desglose del cobro: una línea por grupo de unidades con los mismos días.
+    const desglose = [
+        ...devoluciones.map((d) => ({
+            clave: `dev-${d.NoDevolucion}-${d.FechaOrden}`,
+            texto: `${unidades(Number(d.Cantidad))} devuelta${Number(d.Cantidad) === 1 ? '' : 's'} en la devolución ${d.NoDevolucion} × ${dias(Number(d.DiasCobrados))}`,
+            unidadesDia: Number(d.Cantidad) * Number(d.DiasCobrados),
+        })),
+        ...(pendiente > 0 && diasEnObra !== null
+            ? [{
+                clave: 'en-obra',
+                texto: `${unidades(pendiente)} en obra × ${dias(diasEnObra)} (hasta hoy)`,
+                unidadesDia: pendiente * diasEnObra,
+            }]
+            : []),
+    ];
 
     return (
         <Dialog
@@ -138,7 +147,7 @@ export function ModalDetalleEstadoCuenta({ open, onClose, data }: ModalDetalleEs
                                 }}
                             />
                             <Typography variant="caption" color="text.secondary">
-                                ID: {data.IdDetalleRemison}
+                                Renglón de remisión: {data.IdDetalleRemision}
                             </Typography>
                         </Stack>
                         <Typography variant="h5" fontWeight="bold" gutterBottom>
@@ -241,23 +250,42 @@ export function ModalDetalleEstadoCuenta({ open, onClose, data }: ModalDetalleEs
                                     <Clock size={20} color="var(--mui-palette-text-secondary)" />
                                 </Box>
                                 <Box>
-                                    <Typography variant="body2" fontWeight="bold">Tiempo Transcurrido</Typography>
+                                    <Typography variant="body2" fontWeight="bold">
+                                        Tiempo Transcurrido {pendiente > 0 ? '(hasta hoy)' : '(hasta la última devolución)'}
+                                    </Typography>
                                     <Typography variant="body1">{data.TiempoPrestamo}</Typography>
                                 </Box>
                             </Box>
 
-                            {data.FechaUltimaDevolucion && (
-                                <Box sx={{ display: 'flex', gap: 2 }}>
+                            {devoluciones.map((d) => (
+                                <Box key={`${d.NoDevolucion}-${d.FechaOrden}`} sx={{ display: 'flex', gap: 2 }}>
                                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                         <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: 'success.main' }} />
                                     </Box>
                                     <Box>
-                                        <Typography variant="body2" fontWeight="bold">Última Devolución Registrada</Typography>
-                                        <Typography variant="body1">{data.FechaUltimaDevolucion}</Typography>
+                                        <Typography variant="body2" fontWeight="bold" sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                                            <ArrowUDownLeft size={16} /> Devolución No. {d.NoDevolucion}
+                                        </Typography>
+                                        <Typography variant="body1">{d.Fecha}</Typography>
+                                        <Typography variant="caption" color="text.secondary">
+                                            {unidades(Number(d.Cantidad))} · se cobran {dias(Number(d.DiasCobrados))}
+                                        </Typography>
+                                        {Boolean(Number(d.AnteriorARemision)) && (
+                                            <Typography variant="caption" color="warning.main" display="block">
+                                                Registrada con una hora anterior a la de la remisión.
+                                            </Typography>
+                                        )}
                                     </Box>
                                 </Box>
-                            )}
+                            ))}
                         </Stack>
+                        {hayDevolucionAnterior && (
+                            <Alert severity="warning" sx={{ mt: 2 }}>
+                                Una devolución de este equipo quedó registrada con fecha y hora anteriores a las de la remisión.
+                                El tiempo transcurrido se muestra en 0 y se cobra el mínimo de 1 día. Conviene revisar y
+                                corregir la fecha de esa devolución.
+                            </Alert>
+                        )}
                     </Grid>
 
                     <Grid item xs={12} md={6}>
@@ -276,38 +304,76 @@ export function ModalDetalleEstadoCuenta({ open, onClose, data }: ModalDetalleEs
                                     <Box>
                                         <Typography variant="caption" color="text.secondary">Proyecto / Obra</Typography>
                                         <Typography variant="body2" fontWeight="bold">{data.Proyecto}</Typography>
-                                        {/* <Typography variant="caption" color="text.secondary">ID Proyecto: {data.IdProyecto}</Typography> */}
                                     </Box>
                                 </Stack>
                             </CardContent>
                         </Card>
                     </Grid>
 
-                    {/* Información Financiera (Opcional, si hay datos) */}
-                    {(Number(data.ValorPendiente) > 0 || Number(data.PrecioUnitario) > 0) && (
-                        <>
-                            <Grid item xs={12}><Divider /></Grid>
-                            <Grid item xs={12}>
-                                <Typography variant="subtitle2" sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <Money size={20} /> Detalles Financieros
-                                </Typography>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={6}>
-                                        <Typography variant="caption" color="text.secondary">Precio Unitario</Typography>
-                                        <Typography variant="body1">
-                                            {new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(Number(data.PrecioUnitario))}
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Typography variant="caption" color="text.secondary">Valor Pendiente Total</Typography>
-                                        <Typography variant="body1" fontWeight="bold" color={Number(data.ValorPendiente) > 0 ? "error.main" : "text.primary"}>
-                                            {new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(Number(data.ValorPendiente))}
-                                        </Typography>
-                                    </Grid>
-                                </Grid>
+                    {/* Cobro del alquiler: misma fórmula que movimientos generales */}
+                    <Grid item xs={12}><Divider /></Grid>
+                    <Grid item xs={12}>
+                        <Typography variant="subtitle2" sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Money size={20} /> Cobro del alquiler
+                        </Typography>
+
+                        <Card variant="outlined" sx={{ mb: 2 }}>
+                            <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+                                <Typography variant="caption" color="text.secondary">Días cobrados</Typography>
+                                <Stack spacing={0.5} sx={{ mt: 0.5 }}>
+                                    {desglose.length ? desglose.map((linea) => (
+                                        <Stack key={linea.clave} direction="row" justifyContent="space-between" spacing={2}>
+                                            <Typography variant="body2">{linea.texto}</Typography>
+                                            <Typography variant="body2" sx={{ whiteSpace: 'nowrap' }}>
+                                                {linea.unidadesDia} unid.·día
+                                            </Typography>
+                                        </Stack>
+                                    )) : (
+                                        <Typography variant="body2">—</Typography>
+                                    )}
+                                    <Divider />
+                                    <Stack direction="row" justifyContent="space-between">
+                                        <Typography variant="body2" fontWeight="bold">Total unidades·día cobradas</Typography>
+                                        <Typography variant="body2" fontWeight="bold">{Number(data.UnidadesDiaCobradas)}</Typography>
+                                    </Stack>
+                                </Stack>
+                            </CardContent>
+                        </Card>
+
+                        <Grid container spacing={2}>
+                            <Grid item xs={6} md={3}>
+                                <Typography variant="caption" color="text.secondary">Precio por unidad y día</Typography>
+                                <Typography variant="body1">{formatoMoneda(precio, 2)}</Typography>
                             </Grid>
-                        </>
-                    )}
+                            <Grid item xs={6} md={3}>
+                                <Typography variant="caption" color="text.secondary">Alquiler (sin IVA)</Typography>
+                                <Typography variant="body1">{formatoMoneda(data.ValorAlquiler, 2)}</Typography>
+                            </Grid>
+                            <Grid item xs={6} md={3}>
+                                <Typography variant="caption" color="text.secondary">IVA ({iva}%)</Typography>
+                                <Typography variant="body1">
+                                    {formatoMoneda(Number(data.ValorAlquilerConIVA) - Number(data.ValorAlquiler), 2)}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={6} md={3}>
+                                <Typography variant="caption" color="text.secondary">Alquiler causado (con IVA)</Typography>
+                                <Typography variant="body1" fontWeight="bold">{formatoMoneda(data.ValorAlquilerConIVA, 2)}</Typography>
+                            </Grid>
+                            {pendiente > 0 && (
+                                <Grid item xs={12}>
+                                    <Typography variant="body2" color="warning.main">
+                                        Mientras sigan {unidades(pendiente)} en obra, este renglón suma {formatoMoneda(data.CausacionDiariaConIVA, 2)} (con IVA) por cada día más.
+                                    </Typography>
+                                </Grid>
+                            )}
+                        </Grid>
+
+                        <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 2 }}>
+                            Alquiler = precio por unidad y día × unidades·día cobradas, más IVA. {REGLA_DIAS_COBRADOS} El
+                            transporte se cobra por remisión y por devolución (sin IVA), así que no se incluye en este renglón:
+                            aparece en el total del estado de cuenta.
+                        </Typography>
+                    </Grid>
 
                 </Grid>
             </DialogContent>

@@ -12,9 +12,10 @@ import {
     Button,
     Paper,
     IconButton,
+    LinearProgress,
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
-import { FilePdf, Buildings, Wrench, CheckCircle, Clock } from '@phosphor-icons/react';
+import { FilePdf, Buildings, Wrench, CheckCircle, Clock, Money, Truck, Receipt, TrendUp } from '@phosphor-icons/react';
 import { VerEstadoDeCuentaClientePaginado, type RespuestaEstadoDeCuenta } from '@/services/comercial/estado_de_cuenta/VerEstadoDeCuentaClienteService';
 import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
 import { InformeClienteEquiposEnObra } from '@/services/comercial/estado_de_cuenta/InformeClienteEquiposEnObraService';
@@ -27,26 +28,7 @@ import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import { ModalDetalleEstadoCuenta } from './ModalDetalleEstadoCuenta';
 import { Eye } from '@phosphor-icons/react/dist/ssr';
 import { getEstadoColor } from '@/utils/getEstadoColor';
-
-interface EstadoDeCuenta {
-    IdDetalleRemison?: number;
-    IdProyecto?: number | string;
-    Cliente: string;
-    DocumentoCliente: string;
-    NoRemision: string;
-    FechaRemision: string;
-    FechaUltimaDevolucion?: string;
-    Proyecto: string;
-    Categoria: string;
-    Equipo: string;
-    CantidadPrestada: number | string;
-    CantidadDevuelta: number | string;
-    CantidadPendiente: number | string;
-    TiempoPrestamo: string;
-    EstadoDevolucion: string;
-    ValorPendiente: number | string;
-    PrecioUnitario: number | string;
-}
+import { type EstadoDeCuenta, REGLA_DIAS_COBRADOS, diasCobradosTexto, formatoMoneda } from './estado-de-cuenta';
 
 export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
     // Errores de los informes PDF (los de la tabla los maneja el hook de paginado)
@@ -134,7 +116,16 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
     // Filtrado de datos en memoria
     // Resumen de las tarjetas, calculado en el servidor con los filtros de proyecto/equipo
     // (sin la búsqueda de texto, como antes)
-    const resumen = tabla.respuesta?.Resumen ?? { totalPrestado: 0, totalDevuelto: 0, totalPendiente: 0, valorPendiente: 0 };
+    const resumen = tabla.respuesta?.Resumen ?? {
+        totalPrestado: 0,
+        totalDevuelto: 0,
+        totalPendiente: 0,
+        alquilerSinIVA: 0,
+        alquilerConIVA: 0,
+        causacionDiariaConIVA: 0,
+        transportes: null,
+        totalCausado: 0,
+    };
 
     type InformeRow = Record<string, unknown>;
 
@@ -525,27 +516,21 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
         }
     };
 
+    // Tabla compacta: 5 columnas + acciones. Cada celda agrupa un dato principal y su
+    // contexto en una segunda línea, para que quepa sin scroll horizontal. El detalle
+    // completo (categoría, devoluciones, desglose del cobro) está en el modal.
+    const textoSecundario = { display: 'block', lineHeight: 1.3 } as const;
     const columns = [
         {
             key: 'NoRemision',
             header: 'Remisión',
+            width: 150,
             render: (row: EstadoDeCuenta) => (
-                <Typography variant="body2" fontWeight="bold">{row.NoRemision}</Typography>
-            )
-        },
-        {
-            key: 'FechaRemision',
-            header: 'Fecha Préstamo',
-            render: (row: EstadoDeCuenta) => (
-                <Typography variant="body2">{row.FechaRemision}</Typography>
-            )
-        },
-        {
-            key: 'Proyecto',
-            header: 'Proyecto',
-            render: (row: EstadoDeCuenta) => (
-                <Box sx={{ maxWidth: 150, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={row.Proyecto}>
-                    {row.Proyecto}
+                <Box>
+                    <Typography variant="body2" fontWeight={700}>{row.NoRemision}</Typography>
+                    <Typography variant="caption" color="text.secondary" sx={{ ...textoSecundario, whiteSpace: 'nowrap' }}>
+                        {row.FechaRemision.replace(' a las ', ' · ')}
+                    </Typography>
                 </Box>
             )
         },
@@ -553,43 +538,78 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
             key: 'Equipo',
             header: 'Equipo',
             render: (row: EstadoDeCuenta) => (
-                <Box>
-                    <Typography variant="body2" fontWeight={500}>{row.Equipo}</Typography>
-                    <Typography variant="caption" color="text.secondary">{row.Categoria}</Typography>
+                <Box sx={{ minWidth: 0, maxWidth: 280 }} title={`${row.Equipo} · ${row.Categoria}`}>
+                    <Typography variant="body2" fontWeight={500} noWrap>{row.Equipo}</Typography>
+                    <Typography variant="caption" color="text.secondary" noWrap sx={textoSecundario}>
+                        {row.Proyecto}
+                    </Typography>
                 </Box>
             )
         },
         {
-            key: 'Cantidades',
-            header: 'Estado Cantidades',
-            render: (row: EstadoDeCuenta) => (
-                <Stack direction="row" spacing={1} alignItems="center">
-                    <Chip label={`Prest: ${row.CantidadPrestada}`} size="small" variant="outlined" />
-                    <Chip label={`Dev: ${row.CantidadDevuelta}`} size="small" variant="outlined" color="success" />
-                    <Chip label={`Pend: ${row.CantidadPendiente}`} size="small" color={Number(row.CantidadPendiente) > 0 ? "warning" : "default"} />
-                </Stack>
-            )
+            key: 'EstadoDevolucion',
+            header: 'Devolución',
+            width: 170,
+            render: (row: EstadoDeCuenta) => {
+                const prestada = Number(row.CantidadPrestada) || 0;
+                const devuelta = Number(row.CantidadDevuelta) || 0;
+                const completo = Number(row.CantidadPendiente) <= 0;
+                return (
+                    <Box>
+                        <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
+                            <Chip
+                                label={completo ? 'Completo' : `${row.CantidadPendiente} en obra`}
+                                color={getEstadoColor(row.EstadoDevolucion)}
+                                size="small"
+                                sx={{ fontWeight: 700, height: 22 }}
+                            />
+                            <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
+                                {devuelta} de {prestada}
+                            </Typography>
+                        </Stack>
+                        <LinearProgress
+                            variant="determinate"
+                            value={prestada > 0 ? Math.min(100, (devuelta / prestada) * 100) : 0}
+                            color={completo ? 'success' : 'warning'}
+                            sx={{ mt: 0.75, height: 4, borderRadius: 2, bgcolor: 'var(--mui-palette-background-level2)' }}
+                            aria-label={`${devuelta} de ${prestada} unidades devueltas`}
+                        />
+                    </Box>
+                );
+            }
         },
         {
             key: 'TiempoPrestamo',
-            header: 'Tiempo',
+            header: 'Días cobrados',
+            width: 150,
             render: (row: EstadoDeCuenta) => (
-                <Stack direction="row" spacing={0.5} alignItems="center">
-                    <Clock size={16} />
-                    <Typography variant="body2">{row.TiempoPrestamo}</Typography>
-                </Stack>
+                <Box>
+                    <Typography variant="body2" fontWeight={600}>{diasCobradosTexto(row)}</Typography>
+                    <Stack direction="row" spacing={0.5} alignItems="center" sx={{ color: 'text.secondary' }}>
+                        <Clock size={12} />
+                        <Typography variant="caption" sx={textoSecundario}>{row.TiempoPrestamo}</Typography>
+                    </Stack>
+                </Box>
             )
         },
         {
-            key: 'EstadoDevolucion',
-            header: 'Estado',
+            key: 'ValorAlquilerConIVA',
+            header: 'Alquiler causado',
+            width: 150,
+            align: 'right' as const,
             render: (row: EstadoDeCuenta) => (
-                <Chip
-                    label={row.EstadoDevolucion}
-                    color={getEstadoColor(row.EstadoDevolucion)}
-                    size="small"
-                    sx={{ minWidth: 80, fontWeight: 'bold' }}
-                />
+                <Box sx={{ textAlign: 'right' }}>
+                    <Typography variant="body2" fontWeight={700} sx={{ whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' }}>
+                        {formatoMoneda(row.ValorAlquilerConIVA)}
+                    </Typography>
+                    {Number(row.CausacionDiariaConIVA) > 0 ? (
+                        <Typography variant="caption" color="warning.main" sx={{ ...textoSecundario, whiteSpace: 'nowrap' }}>
+                            +{formatoMoneda(row.CausacionDiariaConIVA)}/día
+                        </Typography>
+                    ) : (
+                        <Typography variant="caption" color="text.secondary" sx={textoSecundario}>con IVA</Typography>
+                    )}
+                </Box>
             )
         }
     ];
@@ -735,6 +755,94 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
                             </Card>
                         </Grid>
                     </Grid>
+
+                    {/* Valores causados: misma fórmula de cobro que movimientos generales */}
+                    <Grid container spacing={2} sx={{ mt: 0 }}>
+                        <Grid xs={12} sm={6} md={3}>
+                            <Card sx={{ height: '100%' }}>
+                                <CardContent sx={{ py: 2, '&:last-child': { pb: 2 } }}>
+                                    <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+                                        <Box>
+                                            <Typography variant="overline" color="text.secondary">Alquiler causado</Typography>
+                                            <Typography variant="h5">{formatoMoneda(resumen.alquilerConIVA)}</Typography>
+                                            <Typography variant="caption" color="text.secondary">
+                                                {formatoMoneda(resumen.alquilerSinIVA)} + IVA
+                                            </Typography>
+                                        </Box>
+                                        <Money size={28} weight="duotone" style={{ color: 'var(--mui-palette-primary-main)' }} />
+                                    </Stack>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid xs={12} sm={6} md={3}>
+                            <Card sx={{ height: '100%' }}>
+                                <CardContent sx={{ py: 2, '&:last-child': { pb: 2 } }}>
+                                    <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+                                        <Box>
+                                            <Typography variant="overline" color="text.secondary">Transportes</Typography>
+                                            {resumen.transportes ? (
+                                                <>
+                                                    <Typography variant="h5">
+                                                        {formatoMoneda(resumen.transportes.remisiones + resumen.transportes.devoluciones)}
+                                                    </Typography>
+                                                    <Typography variant="caption" color="text.secondary">
+                                                        Remisiones {formatoMoneda(resumen.transportes.remisiones)} · Devoluciones {formatoMoneda(resumen.transportes.devoluciones)}
+                                                    </Typography>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Typography variant="h5">—</Typography>
+                                                    <Typography variant="caption" color="text.secondary">
+                                                        No aplica al filtrar por equipo: se cobra por documento
+                                                    </Typography>
+                                                </>
+                                            )}
+                                        </Box>
+                                        <Truck size={28} weight="duotone" style={{ color: 'var(--mui-palette-info-main)' }} />
+                                    </Stack>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid xs={12} sm={6} md={3}>
+                            <Card sx={{ height: '100%', bgcolor: 'var(--mui-palette-primary-main)', color: 'var(--mui-palette-primary-contrastText)' }}>
+                                <CardContent sx={{ py: 2, '&:last-child': { pb: 2 } }}>
+                                    <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+                                        <Box>
+                                            <Typography variant="overline" sx={{ opacity: 0.8 }}>Total causado a hoy</Typography>
+                                            <Typography variant="h5">{formatoMoneda(resumen.totalCausado)}</Typography>
+                                            <Typography variant="caption" sx={{ opacity: 0.8 }}>
+                                                {resumen.transportes ? 'Alquiler con IVA + transportes' : 'Sólo alquiler con IVA'}
+                                            </Typography>
+                                        </Box>
+                                        <Receipt size={28} weight="duotone" style={{ opacity: 0.6 }} />
+                                    </Stack>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid xs={12} sm={6} md={3}>
+                            <Card sx={{ height: '100%' }}>
+                                <CardContent sx={{ py: 2, '&:last-child': { pb: 2 } }}>
+                                    <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+                                        <Box>
+                                            <Typography variant="overline" color="text.secondary">Suma por cada día más</Typography>
+                                            <Typography variant="h5" color={resumen.causacionDiariaConIVA > 0 ? 'warning.main' : undefined}>
+                                                {formatoMoneda(resumen.causacionDiariaConIVA)}
+                                            </Typography>
+                                            <Typography variant="caption" color="text.secondary">
+                                                Equipos en obra, con IVA
+                                            </Typography>
+                                        </Box>
+                                        <TrendUp size={28} weight="duotone" style={{ color: 'var(--mui-palette-warning-main)' }} />
+                                    </Stack>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid xs={12}>
+                            <Typography variant="caption" color="text.secondary">
+                                Valores a la fecha y hora actual. Precio por unidad y por día; el IVA se aplica al alquiler y el transporte se suma sin IVA. {REGLA_DIAS_COBRADOS}
+                            </Typography>
+                        </Grid>
+                    </Grid>
                 </Box>
             )}
 
@@ -758,7 +866,7 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
                         onRefresh={handleRefresh}
                         paginacionServidor={tabla.paginacionTabla}
                         emptyMessage="No se encontraron registros para los filtros seleccionados"
-                        rowKey={(row) => row.IdDetalleRemison ?? Math.random()}
+                        rowKey={(row) => row.IdDetalleRemision}
                         placeHolderBuscador='Buscar por equipo, remisión o proyecto...'
                     />
                 </Paper>
