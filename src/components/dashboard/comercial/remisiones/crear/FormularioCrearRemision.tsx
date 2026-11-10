@@ -1,4 +1,5 @@
 'use client';
+import { FiltrarOpcionesActivas } from '@/utils/filtrarOpcionesActivas';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import Input from '@/components/dashboard/componentes_generales/formulario/Input';
 import InputSelectConEstado from '@/components/dashboard/componentes_generales/formulario/SelectConEstado';
@@ -824,7 +825,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
                         <InputSelect
                             label="Empresa/Cliente"
                             value={datos.Cliente}
-                            options={clientes}
+                            options={FiltrarOpcionesActivas(clientes, datos.Cliente)}
                             size="small"
                             onChange={handleChange}
                             valorname="Cliente"
@@ -835,7 +836,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
                         <InputSelect
                             label="Proyecto"
                             value={datos.Proyecto}
-                            options={proyectos}
+                            options={FiltrarOpcionesActivas(proyectos, datos.Proyecto)}
                             size="small"
                             onChange={handleChange}
                             valorname="Proyecto"
@@ -846,7 +847,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
                         <InputSelect
                             label="Subarrendatario"
                             value={datos.Subarrendatario}
-                            options={subarrendatarios}
+                            options={FiltrarOpcionesActivas(subarrendatarios, datos.Subarrendatario)}
                             size="small"
                             onChange={handleChange}
                             valorname="Subarrendatario"
@@ -857,7 +858,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
                         <InputSelect
                             label="Categoría"
                             value={datos.IdCategoria}
-                            options={categorias}
+                            options={FiltrarOpcionesActivas(categorias, datos.IdCategoria)}
                             size="small"
                             onChange={handleChange}
                             valorname="IdCategoria"

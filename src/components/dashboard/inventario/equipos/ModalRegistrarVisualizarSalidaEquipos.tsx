@@ -1,4 +1,5 @@
 'use client';
+import { FiltrarOpcionesActivas } from '@/utils/filtrarOpcionesActivas';
 import FechayHora from '@/components/dashboard/componentes_generales/formulario/DateTimePicker';
 import Input from '@/components/dashboard/componentes_generales/formulario/Input';
 import Select from '@/components/dashboard/componentes_generales/formulario/Select';
@@ -418,7 +419,7 @@ export function ModalRegistrarVisualizarSalidaEquipos({
                 <FechayHora label='Fecha salida' value={datos.FechaSalida} onChange={handleFechaChange} disabled={modo === 'visualizar'} />
               </Grid>
               <Grid xs={12} md={3}>
-                <Select label='Responsable' value={datos.DocumentoResponsable} onChange={handleDatosChange} options={responsables} valorname='DocumentoResponsable' bloqueado={modo === 'visualizar'} />
+                <Select label='Responsable' value={datos.DocumentoResponsable} onChange={handleDatosChange} options={FiltrarOpcionesActivas(responsables, datos.DocumentoResponsable)} valorname='DocumentoResponsable' bloqueado={modo === 'visualizar'} />
               </Grid>
               <Grid xs={12} md={3}>
                 <Select label='Tipo de movimiento' value={datos.IdTipoMovimiento ?? OpcionPorDefectoNumber.value} onChange={handleDatosChange} options={tiposMovimiento} valorname='IdTipoMovimiento' bloqueado={modo === 'visualizar'} />

@@ -1,4 +1,5 @@
 'use client';
+import { FiltrarOpcionesActivas } from '@/utils/filtrarOpcionesActivas';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import FechayHora from '@/components/dashboard/componentes_generales/formulario/DateTimePicker';
 import Input from '@/components/dashboard/componentes_generales/formulario/Input';
@@ -586,7 +587,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                             <InputSelect
                                 label="Cliente"
                                 value={datos.Cliente}
-                                options={clientes}
+                                options={FiltrarOpcionesActivas(clientes, datos.Cliente)}
                                 onChange={handleChange}
                                 valorname="Cliente"
                             />
@@ -597,7 +598,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                             <InputSelect
                                 label="Proyecto"
                                 value={Number(datos.IdProyecto)}
-                                options={proyectos}
+                                options={FiltrarOpcionesActivas(proyectos, Number(datos.IdProyecto))}
                                 onChange={handleChange}
                                 valorname="IdProyecto"
                             />
@@ -726,7 +727,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                     <InputSelect
                                         label="Recibe"
                                         value={datos.PersonaQueRecibe}
-                                        options={profesionales}
+                                        options={FiltrarOpcionesActivas(profesionales, datos.PersonaQueRecibe)}
                                         onChange={handleChange}
                                         valorname="PersonaQueRecibe"
                                         bloqueado={todosItemsSinPendiente}

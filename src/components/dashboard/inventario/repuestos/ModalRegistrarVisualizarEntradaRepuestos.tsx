@@ -1,4 +1,5 @@
 'use client';
+import { FiltrarOpcionesActivas } from '@/utils/filtrarOpcionesActivas';
 import FechayHora from '@/components/dashboard/componentes_generales/formulario/DateTimePicker';
 import Input from '@/components/dashboard/componentes_generales/formulario/Input';
 import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
@@ -523,7 +524,7 @@ export function ModalRegistrarVisualizarEntradaRepuestos({
                                         <InputSelect
                                             label="Responsable"
                                             value={datos.DocumentoResponsable}
-                                            options={responsables}
+                                            options={FiltrarOpcionesActivas(responsables, datos.DocumentoResponsable)}
                                             onChange={handleChange}
                                             valorname="DocumentoResponsable"
                                             required

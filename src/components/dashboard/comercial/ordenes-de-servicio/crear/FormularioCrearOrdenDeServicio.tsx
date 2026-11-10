@@ -1,4 +1,5 @@
 'use client';
+import { FiltrarOpcionesActivas } from '@/utils/filtrarOpcionesActivas';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import FechayHora from '@/components/dashboard/componentes_generales/formulario/DateTimePicker';
 import Input from '@/components/dashboard/componentes_generales/formulario/Input';
@@ -519,7 +520,7 @@ export function FormularioCrearOrdenDeServicio(): React.JSX.Element {
                         <InputSelect
                             label='Empresa/Cliente'
                             value={datos.DocumentoCliente}
-                            options={clientes}
+                            options={FiltrarOpcionesActivas(clientes, datos.DocumentoCliente)}
                             size='small'
                             onChange={handleChange}
                             valorname='DocumentoCliente'
@@ -529,7 +530,7 @@ export function FormularioCrearOrdenDeServicio(): React.JSX.Element {
                         <InputSelect
                             label='Obra/Proyecto'
                             value={Number(datos.IdProyecto)}
-                            options={proyectos}
+                            options={FiltrarOpcionesActivas(proyectos, Number(datos.IdProyecto))}
                             size='small'
                             onChange={handleChange}
                             valorname='IdProyecto'
@@ -701,7 +702,7 @@ export function FormularioCrearOrdenDeServicio(): React.JSX.Element {
                         <InputSelect
                             label='Persona que entrega'
                             value={datos.PersonaQueEntrega}
-                            options={profesionalesPertenecientes}
+                            options={FiltrarOpcionesActivas(profesionalesPertenecientes, datos.PersonaQueEntrega)}
                             size='small'
                             onChange={handleChange}
                             valorname='PersonaQueEntrega'

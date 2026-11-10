@@ -1,4 +1,5 @@
 'use client';
+import { FiltrarOpcionesActivas } from '@/utils/filtrarOpcionesActivas';
 import FechayHora from '@/components/dashboard/componentes_generales/formulario/DateTimePicker';
 import Input from '@/components/dashboard/componentes_generales/formulario/Input';
 import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
@@ -708,7 +709,7 @@ export function EditarDevolucion({ IdDevolucion, NoDevolucion, sendMessage, most
                                         <InputSelect
                                             label="Persona que recibe"
                                             value={datosGenerales.PersonaQueRecibe}
-                                            options={profesionales}
+                                            options={FiltrarOpcionesActivas(profesionales, datosGenerales.PersonaQueRecibe)}
                                             onChange={handleChangePersonaQueRecibe}
                                             valorname="PersonaQueRecibe"
                                             required={datosGenerales.IncluyeTransporte === true}

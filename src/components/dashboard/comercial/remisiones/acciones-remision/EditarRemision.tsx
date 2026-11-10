@@ -1,4 +1,5 @@
 'use client';
+import { FiltrarOpcionesActivas } from '@/utils/filtrarOpcionesActivas';
 import FechayHora from '@/components/dashboard/componentes_generales/formulario/DateTimePicker';
 import Input from '@/components/dashboard/componentes_generales/formulario/Input';
 import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
@@ -651,7 +652,7 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
                                     <InputSelect
                                         label="Subarrendatario"
                                         value={nuevoItem.Subarrendatario}
-                                        options={subarrendatarios}
+                                        options={FiltrarOpcionesActivas(subarrendatarios, nuevoItem.Subarrendatario)}
                                         onChange={handleChangeNuevoItem}
                                         valorname="Subarrendatario"
                                     />
@@ -660,7 +661,7 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
                                     <InputSelect
                                         label="Categoría"
                                         value={nuevoItem.IdCategoria}
-                                        options={categorias}
+                                        options={FiltrarOpcionesActivas(categorias, nuevoItem.IdCategoria)}
                                         onChange={handleChangeNuevoItem}
                                         valorname="IdCategoria"
                                     />
