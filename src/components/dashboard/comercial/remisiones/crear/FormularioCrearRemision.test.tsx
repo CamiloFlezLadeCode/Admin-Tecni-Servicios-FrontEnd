@@ -64,6 +64,13 @@ async function llenarEncabezado(user: Usuario) {
   await elegirOpcion(user, /^Despachador/, 'Despachador Uno');
 }
 
+/** Cierra una alerta abierta: si no, el Snackbar se reutiliza sin reiniciar su temporizador. */
+async function cerrarAlerta(user: Usuario, texto: string) {
+  const alerta = (await screen.findByText(texto)).closest('[role="alert"]') as HTMLElement;
+  await user.click(within(alerta).getByRole('button'));
+  await waitFor(() => expect(screen.queryByText(texto)).not.toBeInTheDocument());
+}
+
 describe('FormularioCrearRemision', () => {
   it('carga catálogos y el siguiente número; sin ítems no deja crear', async () => {
     const { api } = await montar();
@@ -126,6 +133,7 @@ describe('FormularioCrearRemision', () => {
     expect(screen.getByText('La cantidad no puede ser mayor a la disponible')).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Cerrar' }));
     await waitFor(() => expect(screen.queryByText('Equipo No Disponible')).not.toBeInTheDocument());
+    await cerrarAlerta(user, 'La cantidad no puede ser mayor a la disponible');
     await user.click(screen.getByRole('button', { name: 'Agregar item' }));
     expect(await screen.findByText('La cantidad ingresada excede la disponible')).toBeInTheDocument();
   });
@@ -238,6 +246,7 @@ describe('FormularioCrearRemision', () => {
     await elegirEquipoPropio(user);
     await waitFor(() => expect(campo(/^Precio unidad/)).toHaveValue(100));
     await user.click(screen.getByRole('button', { name: 'Agregar item' }));
+    await cerrarAlerta(user, 'Item agregado correctamente');
     await user.click(screen.getByRole('button', { name: 'Ver' }));
     expect(await screen.findByText('Items remisión')).toBeInTheDocument();
     const fila = screen.getAllByText('Andamio').map((n) => n.closest('tr')).find(Boolean)!;
