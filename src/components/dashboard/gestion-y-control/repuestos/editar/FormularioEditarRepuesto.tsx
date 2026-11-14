@@ -21,6 +21,7 @@ import {
 import Grid from '@mui/material/Unstable_Grid2';
 import { PencilSimple, X } from '@phosphor-icons/react/dist/ssr';
 import * as React from 'react';
+import { BotonEditar, ModalFormulario } from '@/components/dashboard/componentes_generales/modal/ModalFormulario';
 
 interface Props {
     readonly IdRepuesto: number;
@@ -163,54 +164,11 @@ export function FormularioEditarRepuesto({ IdRepuesto, sendMessage, onMostrarMen
                 mensaje={mensajeAlerta}
                 onClose={() => setMostrarAlertas(false)}
             />
-            <Modal
-                open={modalAbierto}
-                onClose={(_, reason) => {
-                    if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
-                        setModalAbierto(false);
-                    }
-                }}
+            <ModalFormulario
+                abierto={modalAbierto}
+                onCerrar={() => setModalAbierto(false)}
+                titulo={'Actualizar repuesto'}
             >
-
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        // width: '90%',
-                        // maxWidth: 1000,
-                        // width: '80%',
-                        width: {
-                            xs: '95%',
-                            sm: '90%',
-                            md: '80%',
-                            lg: '70%',
-                        },
-                        [theme.breakpoints.down('xl')]: {
-                            // width: 700,
-                        },
-                        bgcolor: 'background.paper',
-                        boxShadow: 24,
-                        p: 3,
-                        borderRadius: 2,
-                        maxHeight: '90vh',
-                        overflowY: 'auto',
-                    }}
-                >
-                    <IconButton
-                        onClick={() => setModalAbierto(false)}
-                        sx={{
-                            position: 'absolute',
-                            top: 8,
-                            right: 8,
-                        }}
-                    >
-                        <X />
-                    </IconButton>
-                    <Typography variant="subtitle1" mb={1}>
-                        Actualizar repuesto
-                    </Typography>
                     <Card>
                         <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                             <Grid container spacing={1}>
@@ -242,8 +200,7 @@ export function FormularioEditarRepuesto({ IdRepuesto, sendMessage, onMostrarMen
                             <Button variant="contained" onClick={HandleActualizarRepuesto}>Guardar cambios</Button>
                         </CardActions>
                     </Card>
-                </Box>
-            </Modal >
+            </ModalFormulario>
         </>
     )
 };

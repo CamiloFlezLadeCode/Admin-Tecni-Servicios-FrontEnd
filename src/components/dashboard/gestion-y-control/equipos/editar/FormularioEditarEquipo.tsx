@@ -23,6 +23,7 @@ import { SelectChangeEvent } from '@mui/material/Select';
 import Grid from '@mui/material/Unstable_Grid2';
 import { PencilSimple, X } from '@phosphor-icons/react/dist/ssr';
 import * as React from 'react';
+import { BotonEditar, ModalFormulario } from '@/components/dashboard/componentes_generales/modal/ModalFormulario';
 
 interface Props {
     readonly IdEquipo: number;
@@ -145,16 +146,11 @@ export function FormularioEditarEquipo({ IdEquipo, sendMessage, onMostrarMensaje
             >
                 <PencilSimple size={20} weight="bold" />
             </IconButton>
-            <Modal
-                open={modalAbierto}
-                onClose={(_, reason) => {
-                    if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
-                        setModalAbierto(false);
-                    }
-                }}
-            >
-                <Box
-                    sx={{
+            <ModalFormulario
+                abierto={modalAbierto}
+                onCerrar={() => setModalAbierto(false)}
+                titulo={'Actualizar Equipo'}
+                sx={{
                         position: 'absolute',
                         top: {
                             xs: '40%',
@@ -187,21 +183,8 @@ export function FormularioEditarEquipo({ IdEquipo, sendMessage, onMostrarMensaje
                         borderRadius: 2,
                         maxHeight: '90vh',
                         overflowY: 'auto',
-                    }}
-                >
-                    <IconButton
-                        onClick={() => setModalAbierto(false)}
-                        sx={{
-                            position: 'absolute',
-                            top: 8,
-                            right: 8,
-                        }}
-                    >
-                        <X />
-                    </IconButton>
-                    <Typography variant="subtitle1" mb={1}>
-                        Actualizar Equipo
-                    </Typography>
+                }}
+            >
                     <Card>
                         <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                             <Grid container spacing={1}>
@@ -288,8 +271,7 @@ export function FormularioEditarEquipo({ IdEquipo, sendMessage, onMostrarMensaje
                             </Button>
                         </CardActions>
                     </Card>
-                </Box>
-            </Modal>
+            </ModalFormulario>
         </>
     );
 };

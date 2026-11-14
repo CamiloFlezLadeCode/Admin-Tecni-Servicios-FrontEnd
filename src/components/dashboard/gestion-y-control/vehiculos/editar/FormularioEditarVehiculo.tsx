@@ -22,6 +22,7 @@ import {
 import Grid from '@mui/material/Unstable_Grid2';
 import { PencilSimple, X } from '@phosphor-icons/react/dist/ssr';
 import * as React from 'react';
+import { BotonEditar, ModalFormulario } from '@/components/dashboard/componentes_generales/modal/ModalFormulario';
 
 const EstadoVehiculo = [
     { value: 1, label: 'Activo' },
@@ -133,16 +134,11 @@ export function FormularioModalEditarVehiculo({
                 mensaje={mensajeAlerta}
                 onClose={() => setMostrarAlertas(false)}
             />
-            <Modal
-                open={modalAbierto}
-                onClose={(_, reason) => {
-                    if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
-                        setModalAbierto(false);
-                    }
-                }}
-            >
-                <Box
-                    sx={{
+            <ModalFormulario
+                abierto={modalAbierto}
+                onCerrar={() => setModalAbierto(false)}
+                titulo={'Actualizar Vehículo'}
+                sx={{
                         position: 'absolute',
                         top: '50%',
                         left: '50%',
@@ -160,21 +156,8 @@ export function FormularioModalEditarVehiculo({
                         borderRadius: 2,
                         maxHeight: '90vh',
                         overflowY: 'auto',
-                    }}
-                >
-                    <IconButton
-                        onClick={() => setModalAbierto(false)}
-                        sx={{
-                            position: 'absolute',
-                            top: 8,
-                            right: 8,
-                        }}
-                    >
-                        <X />
-                    </IconButton>
-                    <Typography variant="subtitle1" mb={1}>
-                        Actualizar Vehículo
-                    </Typography>
+                }}
+            >
                     <Card>
                         <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                             <Grid container spacing={1}>
@@ -209,8 +192,7 @@ export function FormularioModalEditarVehiculo({
                             </Button>
                         </CardActions>
                     </Card>
-                </Box>
-            </Modal>
+            </ModalFormulario>
         </>
     )
 };

@@ -32,6 +32,7 @@ import { z as zod } from 'zod';
 // Para actualizar la bodega
 import { ActualizarBodega } from '@/services/gestionycontrol/bodegas/ActualizarBodegaService';
 import { OpcionPorDefecto } from '@/lib/constants/option-default';
+import { BotonEditar, ModalFormulario } from '@/components/dashboard/componentes_generales/modal/ModalFormulario';
 
 
 // Esquema de validación corregido
@@ -178,53 +179,11 @@ export function FormularioEditarBodega({ IdBodega, onMostrarMensaje }: PropsForm
             >
                 <PencilSimple size={20} weight='bold' />
             </IconButton>
-            <Modal
-                open={modalAbierto}
-                onClose={(_, reason) => {
-                    if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
-                        setModalAbierto(false);
-                    }
-                }}
+            <ModalFormulario
+                abierto={modalAbierto}
+                onCerrar={() => setModalAbierto(false)}
+                titulo={'Actualizar Bodega'}
             >
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        // width: '90%',
-                        // maxWidth: 1000,
-                        // width: '80%',
-                        width: {
-                            xs: '95%',
-                            sm: '90%',
-                            md: '80%',
-                            lg: '70%',
-                        },
-                        [theme.breakpoints.down('xl')]: {
-                            // width: 700,
-                        },
-                        bgcolor: 'background.paper',
-                        boxShadow: 24,
-                        p: 3,
-                        borderRadius: 2,
-                        maxHeight: '90vh',
-                        overflowY: 'auto',
-                    }}
-                >
-                    <IconButton
-                        onClick={() => setModalAbierto(false)}
-                        sx={{
-                            position: 'absolute',
-                            top: 8,
-                            right: 8,
-                        }}
-                    >
-                        <X />
-                    </IconButton>
-                    <Typography variant="subtitle1" mb={1}>
-                        Actualizar Bodega
-                    </Typography>
                     <form onSubmit={handleSubmit(HandleEditarBodega)}>
                         <Card>
                             <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
@@ -329,8 +288,7 @@ export function FormularioEditarBodega({ IdBodega, onMostrarMensaje }: PropsForm
                             </CardActions>
                         </Card>
                     </form>
-                </Box>
-            </Modal>
+            </ModalFormulario>
         </>
     );
 };

@@ -23,6 +23,7 @@ import { ListarClientes } from '@/services/generales/ListarClientesService';
 import { ListarEstados } from '@/services/generales/ListarEstadosService';
 import { ConsultarProyectoPorId } from '@/services/gestionycontrol/proyectos/ConsultarProyectoPorIdService';
 import { ActualizarProyecto } from '@/services/gestionycontrol/proyectos/ActualizarProyectoService';
+import { BotonEditar, ModalFormulario } from '@/components/dashboard/componentes_generales/modal/ModalFormulario';
 
 // 1. Interfaces
 interface ProyectoAEditar {
@@ -163,53 +164,11 @@ export function ModalFormularioEditarProyecto({ onMostrarMensaje, ProyectoAEdita
         >
             <PencilSimple size={20} weight="bold" />
         </IconButton>
-        <Modal
-            open={modalAbierto}
-            onClose={(_, reason) => {
-                if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
-                    setModalAbierto(false);
-                }
-            }}
+        <ModalFormulario
+            abierto={modalAbierto}
+            onCerrar={() => setModalAbierto(false)}
+            titulo={'Actualizar proyecto'}
         >
-            <Box
-                sx={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    // width: '90%',
-                    // maxWidth: 1000,
-                    // width: '80%',
-                    width: {
-                        xs: '95%',
-                        sm: '90%',
-                        md: '80%',
-                        lg: '70%',
-                    },
-                    [theme.breakpoints.down('xl')]: {
-                        // width: 700,
-                    },
-                    bgcolor: 'background.paper',
-                    boxShadow: 24,
-                    p: 3,
-                    borderRadius: 2,
-                    maxHeight: '90vh',
-                    overflowY: 'auto',
-                }}
-            >
-                <IconButton
-                    onClick={() => setModalAbierto(false)}
-                    sx={{
-                        position: 'absolute',
-                        top: 8,
-                        right: 8,
-                    }}
-                >
-                    <X />
-                </IconButton>
-                <Typography variant="subtitle1" mb={1}>
-                    Actualizar proyecto
-                </Typography>
                 <Card>
                     <CardContent>
                         <Grid container spacing={1}>
@@ -263,7 +222,6 @@ export function ModalFormularioEditarProyecto({ onMostrarMensaje, ProyectoAEdita
                         <Button variant="contained" onClick={HandleActualizarProyecto}>Guardar cambios</Button>
                     </CardActions>
                 </Card>
-            </Box>
-        </Modal>
+        </ModalFormulario>
     </>;
 };
