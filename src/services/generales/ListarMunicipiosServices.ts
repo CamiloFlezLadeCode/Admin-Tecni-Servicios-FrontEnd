@@ -1,5 +1,6 @@
 import axiosInstance from '@/config/axiosConfig';
 import { apiRoutes } from '@/config/apiRoutes';
+import type { ParametrosPaginacion, RespuestaPaginada } from '@/types/paginacion';
 
 interface Params {
     Page: number,
@@ -22,4 +23,14 @@ export const ListarMunicipios = async (Params: Params) => {
         console.error('Error al listar municipios:', error);
         throw error;
     }
+}
+/**
+ * Adapta el listado de municipios (que pagina con `page`/`limit`/`search` y responde
+ * `{ data, totalItems, totalPages }`) al contrato de `usePaginacionServidor`.
+ */
+export const ListarMunicipiosPaginado = async ({ pagina, limite, busqueda }: ParametrosPaginacion): Promise<RespuestaPaginada<any>> => {
+    const res = await ListarMunicipios({ Page: pagina, Limit: limite, Search: busqueda ?? '' });
+    const Datos = (res.data || res.Data || []) as any[];
+    const Total = [res.totalItems, res.total, res.Total].find((valor) => typeof valor === 'number') ?? Datos.length;
+    return { Datos, Total, Pagina: pagina, Limite: limite, TotalPaginas: Math.ceil(Total / limite) };
 }

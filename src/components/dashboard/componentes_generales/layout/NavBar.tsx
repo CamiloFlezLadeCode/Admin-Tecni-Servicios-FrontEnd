@@ -4,10 +4,8 @@ import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import * as React from 'react';
-import { paths } from '@/paths';
 import Card from '@mui/material/Card';
-import { Eye } from '@phosphor-icons/react/dist/ssr/Eye';
-import { Plus } from '@phosphor-icons/react/dist/ssr/Plus';
+import type { SxProps, Theme } from '@mui/material/styles';
 import RouterLink from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -20,13 +18,21 @@ interface ParametrosProps {
 
 interface PropsNavBarLayout {
     readonly ItemsLayout: ParametrosProps[];
+    /** Sin alto fijo de 40px: la tarjeta toma el alto de su contenido. */
+    readonly altoAutomatico?: boolean;
+    /** Marca activo solo la ruta exacta (por defecto también sus subrutas). */
+    readonly rutaExacta?: boolean;
+    /** Estilos extra del encabezado (algunas vistas antiguas usan otro z-index/posición). */
+    readonly sxEncabezado?: Record<string, unknown>;
+    /** Estilos extra de la fila de íconos. */
+    readonly sxBarra?: Record<string, unknown>;
 }
 
-export function NavBarLayout({ ItemsLayout }: PropsNavBarLayout): React.JSX.Element {
+export function NavBarLayout({ ItemsLayout, altoAutomatico = false, rutaExacta = false, sxEncabezado, sxBarra }: PropsNavBarLayout): React.JSX.Element {
     const pathname = usePathname();
 
     return (
-        <Card style={{ height: '40px' }}>
+        <Card style={altoAutomatico ? undefined : { height: '40px' }}>
             <Box
                 component="header"
                 sx={{
@@ -34,18 +40,17 @@ export function NavBarLayout({ ItemsLayout }: PropsNavBarLayout): React.JSX.Elem
                     backgroundColor: 'var(--mui-palette-background-paper)',
                     position: 'sticky',
                     top: 0,
-                    // zIndex: 'var(--mui-zIndex-appBar)',
-                }}
+                    ...sxEncabezado,
+                } as SxProps<Theme>}
             >
                 <Stack
                     direction="row"
                     spacing={2}
-                    // sx={{ alignItems: 'center', justifyContent: 'space-between', minHeight: '64px', px: 2 }}
-                    sx={{ alignItems: 'center', justifyContent: 'space-between', px: 2 }}
+                    sx={{ alignItems: 'center', justifyContent: 'space-between', px: 2, ...sxBarra } as SxProps<Theme>}
                 >
                     <Stack direction="row" spacing={2}>
                         {ItemsLayout.map(({ path, label, icon: Icon }) => {
-                            const isActive = pathname.startsWith(path); // usamos startsWith para subrutas también
+                            const isActive = rutaExacta ? pathname === path : pathname.startsWith(path); // startsWith: subrutas también
 
                             return (
                                 <Tooltip key={path} title={label}>

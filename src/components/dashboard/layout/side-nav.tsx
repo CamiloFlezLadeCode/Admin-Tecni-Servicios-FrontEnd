@@ -22,6 +22,7 @@ import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react/di
 // import { CaretUpDown as CaretUpDownIcon } from '@phosphor-icons/react/dist/ssr/CaretUpDown';
 
 import type { NavItemConfig } from '@/types/nav';
+import { filtrarNavPorTexto } from './filtro-nav';
 import { config } from '@/config';
 import { isNavItemActive } from '@/lib/is-nav-item-active';
 import { Logo } from '@/components/core/logo';
@@ -84,13 +85,7 @@ export function SideNav(): React.JSX.Element {
     window.localStorage.setItem('sidebar-collapsed', String(next));
   };
 
-  const itemsFiltradosPorQuery = React.useMemo(() => {
-    const normalizedQuery = normalizeText(query);
-    if (!normalizedQuery) {
-      return itemsFiltrados;
-    }
-    return filterNavItems(itemsFiltrados, normalizedQuery);
-  }, [itemsFiltrados, query]);
+  const itemsFiltradosPorQuery = React.useMemo(() => filtrarNavPorTexto(itemsFiltrados, query), [itemsFiltrados, query]);
 
   return (
     // Columna fija transparente; dentro flota el panel de vidrio con 8px de margen (estilo iPadOS)
@@ -479,35 +474,7 @@ function centrarEnNav(elemento: HTMLElement): void {
   nav.scrollTop += desplazamiento;
 }
 
-function normalizeText(text: string): string {
-  return text
-    .toLowerCase()
-    .trim()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '');
-}
 
-function filterNavItems(items: NavItemConfig[], normalizedQuery: string): NavItemConfig[] {
-  return items
-    .map((item) => {
-      const title = item.title ?? '';
-      const normalizedTitle = normalizeText(title);
-      const children = item.items ? filterNavItems(item.items, normalizedQuery) : undefined;
-      const matchesSelf = normalizedTitle.includes(normalizedQuery);
-      const matchesChildren = Boolean(children && children.length);
-
-      if (!matchesSelf && !matchesChildren) {
-        return null;
-      }
-
-      if (children) {
-        return { ...item, items: children };
-      }
-
-      return item;
-    })
-    .filter(Boolean) as NavItemConfig[];
-}
 
 
 

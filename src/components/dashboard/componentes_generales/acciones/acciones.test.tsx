@@ -215,4 +215,18 @@ describe('alertas, carga y NavBarLayout', () => {
     ]);
     expect(enlaces[0].querySelector('button')).not.toBe(enlaces[1].querySelector('button'));
   });
+
+  it('NavBarLayout: con rutaExacta no marca la sección padre en una subruta', () => {
+    navegacion.pathname = '/dashboard/comercial/movimientos/detalle';
+    const items = [{ label: 'Movimientos', path: '/dashboard/comercial/movimientos', icon: Eye }];
+    const color = () => getComputedStyle(screen.getByRole('link')).backgroundColor;
+    const { unmount } = renderConProveedores(<NavBarLayout ItemsLayout={items} />);
+    const conSubrutas = color();
+    unmount();
+    const { container } = renderConProveedores(
+      <NavBarLayout ItemsLayout={items} rutaExacta altoAutomatico sxEncabezado={{ zIndex: 5 }} sxBarra={{ minHeight: '64px' }} />
+    );
+    expect(color()).not.toBe(conSubrutas);
+    expect((container.querySelector('.MuiCard-root') as HTMLElement).style.height).toBe('');
+  });
 });

@@ -1,7 +1,6 @@
 // PARA EJEMPLO PRUEBA Y PODER CREAR EL PNPM RUN BUILD
 
 import * as React from 'react';
-import { MainNav } from '@/components/dashboard/maestro/AppBar';
 import Typography from '@mui/material/Typography';
 import { NavOrdenesDeServicio } from '@/components/dashboard/comercial/ordenes-de-servicio/NavOrdenesDeServicio';
 interface LayoutProps {

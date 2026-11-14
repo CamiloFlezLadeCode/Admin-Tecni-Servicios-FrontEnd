@@ -2090,6 +2090,44 @@ exports[`contrato de la capa de servicios > generales/ListarMunicipiosServices.t
 }
 `;
 
+exports[`contrato de la capa de servicios > generales/ListarMunicipiosServices.ts › ListarMunicipiosPaginado 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [],
+      "Limite": 25,
+      "Pagina": 2,
+      "Total": 1,
+      "TotalPaginas": 1,
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listar-municipios",
+      {
+        "params": {
+          "limit": 25,
+          "page": 2,
+          "search": "texto",
+        },
+      },
+    ],
+  ],
+}
+`;
+
 exports[`contrato de la capa de servicios > generales/ListarNivelesService.ts › ListarNiveles 1`] = `
 {
   "conErrorDeRed": {

@@ -1,6 +1,5 @@
 // app/dashboard/maestro/layout.tsx
 import * as React from 'react';
-import { MainNav } from '@/components/dashboard/maestro/AppBar';
 import Typography from '@mui/material/Typography';
 import { NavDevoluciones } from '@/components/dashboard/devoluciones/NavDevoluciones';
 

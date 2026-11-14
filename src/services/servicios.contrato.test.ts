@@ -26,6 +26,7 @@ const ARGUMENTOS: Record<string, unknown[]> = {
   ListarBodegasPorTipo: [{ IdTipoBodega: 3 }],
   ListarEquipos: [{ IdCategoria: 4, IdTipoBodega: 5 }],
   ListarMunicipios: [{ Page: 1, Limit: 10, Search: 'cali' }],
+  ListarMunicipiosPaginado: [PAGINACION],
   ListarProyectos: [{ DocumentoCliente: '900' }],
   equipos_pendientes_por_devolver: [{ IdProyecto: 3, DocumentoSubarrendatario: '800', DocumentoCliente: '900' }],
   ConsultarSubarrendatariosConRemisionesAsignadasClienteProyecto: [{ DocumentoCliente: '900', IdProyecto: 3 }],
