@@ -11,3 +11,6 @@ minimumReleaseAgeExclude:
   - '@next/swc-win32-arm64-msvc@16.4.6'
   - '@next/swc-win32-x64-msvc@16.4.6'
   - next@16.4.6
+  - '@playwright/test@1.65.1'
+  - playwright-core@1.65.1
+  - playwright@1.65.1

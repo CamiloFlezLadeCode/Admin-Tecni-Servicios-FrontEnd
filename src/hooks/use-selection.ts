@@ -11,7 +11,11 @@ export interface Selection<T = string> {
 }
 
 // IMPORTANT: To prevent infinite loop, `keys` argument must be memoized with React.useMemo hook.
-export function useSelection<T = string>(keys: T[] = []): Selection<T> {
+// Arreglo vacío estable: un `[]` por defecto en la firma sería nuevo en cada render y
+// el efecto que reinicia la selección entraría en un bucle infinito.
+const SIN_CLAVES: never[] = [];
+
+export function useSelection<T = string>(keys: T[] = SIN_CLAVES): Selection<T> {
   const [selected, setSelected] = React.useState<Set<T>>(new Set());
 
   React.useEffect(() => {

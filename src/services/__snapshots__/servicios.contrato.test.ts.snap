@@ -1,0 +1,5147 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`contrato de la capa de servicios > comercial/devoluciones/ActualizarDevolucionService.ts › ActualizarDevolucion 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "data": {
+        "Datos": [
+          {
+            "Id": 1,
+          },
+        ],
+        "Total": 1,
+        "encontrado": true,
+        "mensaje": "ok",
+      },
+      "status": 200,
+    },
+  },
+  "peticiones": [
+    [
+      "PUT",
+      "http://api.test/actualizar-devolucion",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/devoluciones/ConsultarDevolucionPorIdService.ts › ConsultarDevolucionPorId 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-devolucion-por-id",
+      {
+        "params": {
+          "IdDevolucion": 7,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/devoluciones/ConsultarSiguienteNoDevolucionService.ts › ConsultarSiguienteNoDevolucion 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/siguiente-no-devolucion",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/devoluciones/CrearDevolucionService.ts › CrearDevolucion 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "POST",
+      "http://api.test/crear-devolucion",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/devoluciones/EliminarDevolucionService.ts › EliminarDevolucion 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "DELETE",
+      "http://api.test/eliminar-devolucion",
+      {
+        "params": {
+          "IdDevolucion": 7,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/devoluciones/EquiposPendientesPorDevolverService.ts › equipos_pendientes_por_devolver 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/equipos-pendientes-por-devolver",
+      {
+        "params": {
+          "DocumentoCliente": "900",
+          "DocumentoSubarrendatario": "800",
+          "IdProyecto": 3,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/devoluciones/MostrarItemsRemisionService.ts › MostrarItemsRemision 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-items-remision",
+      {
+        "params": {
+          "IdRemision": 7,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/devoluciones/ObtenerPDFDevolucionService.ts › ObtenerPDFDevolucion 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/obtener-pdf-devolucion",
+      {
+        "params": {
+          "IdDevolucion": 7,
+        },
+        "responseType": "blob",
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/devoluciones/VerSubarrendatariosConRemisionesAsignadasClienteProyectoService.ts › ConsultarSubarrendatariosConRemisionesAsignadasClienteProyecto 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-subarrendatarios-con-remisiones-asignadas-para-cliente-proyecto",
+      {
+        "params": {
+          "DocumentoCliente": "900",
+          "IdProyecto": 3,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/devoluciones/VerTodasLasDevolucionesService.ts › VerTodasLasDevoluciones 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-todas-las-devoluciones",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/devoluciones/VerTodasLasDevolucionesService.ts › VerTodasLasDevolucionesPaginado 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-todas-las-devoluciones",
+      {
+        "params": {
+          "busqueda": "texto",
+          "limite": 25,
+          "pagina": 2,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/estado_de_cuenta/InformeClienteEquiposEnObraService.ts › InformeClienteEquiposEnObra 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/informe-cliente-equipos-en-obra",
+      {
+        "params": {
+          "DocumentoCliente": "900",
+          "IdProyecto": 3,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/estado_de_cuenta/InformeInternoEmpresaEquiposEnObraService.ts › InformeInternoEmpresaEquiposEnObra 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/informe-interno-empresa-equipos-en-obra",
+      {
+        "params": {
+          "DocumentoCliente": "900",
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/estado_de_cuenta/VerEstadoDeCuentaClienteService.ts › VerEstadoDeCuentaCliente 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-estado-de-cuenta-cliente",
+      {
+        "params": {
+          "DocumentoCliente": "900",
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/estado_de_cuenta/VerEstadoDeCuentaClienteService.ts › VerEstadoDeCuentaClientePaginado 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-estado-de-cuenta-cliente",
+      {
+        "params": {
+          "DocumentoCliente": "900",
+          "Proyecto": "Torre",
+          "busqueda": "texto",
+          "limite": 25,
+          "pagina": 2,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/movimientos_generales/VerMovimientosGeneralesService.ts › VerMovimientosGenerales 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error al consultar los movimientos generales",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-movimientos-generales",
+      {
+        "params": {
+          "FechaFin": "2026-01-31",
+          "FechaInicio": "2026-01-01",
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/movimientos_generales/VerMovimientosGeneralesService.ts › VerMovimientosGeneralesPaginado 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-movimientos-generales",
+      {
+        "params": {
+          "DocumentoCliente": "900",
+          "busqueda": "texto",
+          "limite": 25,
+          "pagina": 2,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/ordenes_de_servicio/ConsultarSiguienteNoOrdenDeServicioService.ts › ConsultarSiguienteNoOrdenDeServicio 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/siguiente-no-orden-de-servicio",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/ordenes_de_servicio/CrearOrdenDeServicioService.ts › CrearOrdenDeServicio 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "POST",
+      "http://api.test/crear-orden-de-servicio",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/ordenes_de_servicio/EliminarOrdenDeServicioService.ts › EliminarOrdenDeServicio 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "DELETE",
+      "http://api.test/eliminar-orden-de-servicio",
+      {
+        "params": {
+          "IdOrdenDeServicio": 7,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/ordenes_de_servicio/ObtenerPDFOrdenDeServicioService.ts › ObtenerPDFOrdenDeServicio 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/obtener-pdf-orden-de-servicio",
+      {
+        "params": {
+          "IdOrdenDeServicio": 7,
+        },
+        "responseType": "blob",
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/ordenes_de_servicio/VerDisponibilidadDeRepuestoService.ts › VerDisponibilidadDeRepuesto 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-disponibilidad-de-repuesto",
+      {
+        "params": {
+          "IdRepuesto": 2,
+          "IdTipoBodega": 1,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/ordenes_de_servicio/VerEquiposDelClienteService.ts › VerEquiposDelCliente 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-equipos-del-cliente",
+      {
+        "params": {
+          "DocumentoPropietario": "900",
+          "IdTipoBodega": 1,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/ordenes_de_servicio/VerRepuestosDisponiblesService.ts › VerRepuestosDisponibles 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-repuestos-disponibles",
+      {
+        "params": {
+          "IdTipoBodega": 1,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/ordenes_de_servicio/VerTodasLasOrdenesDeServicioService.ts › VerTodasLasOrdenesDeServicio 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-todas-las-ordenes-de-servicio",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/ordenes_de_servicio/VerTodasLasOrdenesDeServicioService.ts › VerTodasLasOrdenesDeServicioPaginado 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-todas-las-ordenes-de-servicio",
+      {
+        "params": {
+          "busqueda": "texto",
+          "limite": 25,
+          "pagina": 2,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/remisiones/ActualizarRemisionService.ts › ActualizarRemision 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "data": {
+        "Datos": [
+          {
+            "Id": 1,
+          },
+        ],
+        "Total": 1,
+        "encontrado": true,
+        "mensaje": "ok",
+      },
+      "status": 200,
+    },
+  },
+  "peticiones": [
+    [
+      "PUT",
+      "http://api.test/actualizar-remision",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/remisiones/ConsultarCantidadDisponibleEquipoService.ts › ConsultarCantidadDisponibleEquipo 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error => Error: Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error => Error: Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-cantidad-disponible-equipo/7",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/remisiones/ConsultarRemisionPorIdService.ts › ConsultarRemisionPorId 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-remision-por-id",
+      {
+        "params": {
+          "IdRemision": 7,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/remisiones/ConsultarRemisionesService.ts › ConsultarRemisiones 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-remisiones",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/remisiones/ConsultarRemisionesService.ts › ConsultarRemisionesConPaginacion 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-remisiones",
+      {
+        "params": {
+          "limit": 10,
+          "page": 1,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/remisiones/ConsultarRemisionesService.ts › ConsultarRemisionesPaginado 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-remisiones",
+      {
+        "params": {
+          "busqueda": "texto",
+          "limite": 25,
+          "pagina": 2,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/remisiones/ConsultarRemisionesService.ts › VerActividadRecienteMovimientos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error desconocido",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/actividad-reciente-movimientos",
+      {
+        "params": {
+          "Limite": 5,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/remisiones/ConsultarRemisionesService.ts › VerCantidadRemisionesYDevolucionesUltimos6Meses 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error desconocido",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/cantidad-remisiones-devoluciones-ultimos-6-meses",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/remisiones/ConsultarRemisionesService.ts › VerTotalesMovimientosMesActual 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error desconocido",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/totales-movimientos-mes-actual",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/remisiones/ConsultarSiguienteNoRemisionService.ts › ConsultarSiguienteNoRemision 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/siguiente-no-remision",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/remisiones/CrearRemisionService.ts › CrearRemision 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "POST",
+      "http://api.test/crear-remision",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/remisiones/EliminarRemisionService.ts › EliminarRemision 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "DELETE",
+      "http://api.test/eliminar-remision",
+      {
+        "params": {
+          "IdRemision": 7,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/remisiones/ListarEquiposService.ts › ListarEquipos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-disponibilidad-equipos-generales",
+      {
+        "params": {
+          "IdCategoria": 4,
+          "IdTipoBodega": 5,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/remisiones/ObtenerPDFRemisionService.ts › VisualizarPDFRemision 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/obtener-pdf-remision/7",
+      {
+        "responseType": "blob",
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > comercial/remisiones/VerDisponibilidadDeEquiposService.ts › VerDisponibilidadDeEquipos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-disponibilidad-equipos",
+      {
+        "params": {
+          "DocumentoSubarrendatario": "800",
+          "IdCategoria": 1,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > configuraciones/ActualizarCredencialesProfesionalPorAdministradorService.ts › ActualizarCredencialesProfesionalPorAdministrador 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "PUT",
+      "http://api.test/actualizar-credenciales-profesional",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > configuraciones/ConsultarCredencialesDelProfesionalService.ts › ConsultarCredencialesDelProfesional 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/consultar-credenciales-del-profesional/1001",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > configuraciones/CrearCredencialesProfesionalPorAdministradorService.ts › CrearCredencialesProfesionalPorAdministrador 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "POST",
+      "http://api.test/crear-credenciales-profesional",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > configuraciones/ListarProfesionalesPertenecientesService.ts › ListarProfesionalesPertenecientes 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-profesionales-pertenecientes",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > dashboard/VerResumenDashboardService.ts › VerResumenDashboard 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error desconocido",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/resumen-dashboard",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > generales/GuardarBackUpService.ts › default 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "POST",
+      "http://api.test/crear-backup",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > generales/ListarBodegasPorTipoService.ts › ListarBodegasPorTipo 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listar-bodegas-subarrendatario",
+      {
+        "params": {
+          "IdTipoBodega": 3,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > generales/ListarBodeguerosService.ts › ListarBodegueros 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listar-bodegueros",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > generales/ListarCategoriasServices.ts › ListarCategorias 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listar-categorias",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > generales/ListarClientesService.ts › ListarClientes 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listar-clientes",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > generales/ListarDespachadores.ts › ListarDespachadores 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listar-despachadores",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > generales/ListarEquiposService.ts › default 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listar-equipos",
+      {
+        "params": 7,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > generales/ListarEstadosService.ts › ListarEstados 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error al listar los estados: Error: Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error al listar los estados: Error: Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listar-estados",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > generales/ListarMecanicosService.ts › listarmecanicos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listar-mecanicos",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > generales/ListarMunicipiosServices.ts › ListarMunicipios 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listar-municipios",
+      {
+        "params": {
+          "limit": 10,
+          "page": 1,
+          "search": "cali",
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > generales/ListarNivelesService.ts › ListarNiveles 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listar-niveles",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > generales/ListarProyectos.ts › ListarProyectos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listar-proyectos",
+      {
+        "params": {
+          "DocumentoCliente": "900",
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > generales/ListarRolesService.ts › ListarRoles 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listar-roles",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > generales/ListarSubarrendatariosService.ts › ListarSubarrendatarios 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listar-subarrendatarios",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > generales/ListarTipoDeBodegas.ts › ListarTiposDeBodegas 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listar-tipo-de-bodegas",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > generales/ListarTipoDeDocumentosService.ts › ListarTiposDeDocumentos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listar-tipo-de-documentos",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > generales/ListarTiposDeEquiposService.ts › ListarTiposDeEquipos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listar-tipo-de-equipos",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > generales/ListarTranspotadoresService.ts › ListarTransportadores 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listar-transportadores",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > generales/ListarUnidadesDeMedidaService.ts › ListarUnidadesDeMedida 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listar-unidades-de-medida",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > generales/ListarVehiculosService.ts › ListarVehiculos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listar-vehiculos",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/ajustes/ActualizarCredencialesUsuarioActivoService.ts › ActualizarCredencialesUsuarioActivo 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "PUT",
+      "http://api.test/actualizar-credenciales",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/bodegas/ActualizarBodegaService.ts › ActualizarBodega 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "PUT",
+      "http://api.test/actualizar-bodega",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/bodegas/ConsultarInfoBodegaService.ts › ConsultarInfoBodega 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-bodega",
+      {
+        "params": {
+          "IdBodega": 7,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/bodegas/CrearBodegaService.ts › CrearBodega 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "POST",
+      "http://api.test/crear-bodega",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/bodegas/VerBodegasService.ts › VerBodegas 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-bodegas",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/bodegas/VerBodegasService.ts › VerBodegasPaginado 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-bodegas",
+      {
+        "params": {
+          "busqueda": "texto",
+          "limite": 25,
+          "pagina": 2,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/clientes/CrearClienteService.ts › crearCliente 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "POST",
+      "http://api.test/crearclientecompleto",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/clientes/CrearClienteService.ts › verificarClienteExistenteService 1`] = `
+{
+  "conErrorDeRed": {
+    "tipo": "resuelve",
+    "valor": {
+      "cliente": null,
+      "encontrado": false,
+    },
+  },
+  "conErrorDelBackend": {
+    "tipo": "resuelve",
+    "valor": {
+      "cliente": null,
+      "encontrado": false,
+    },
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": true,
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/buscarclientepordocumento/1001",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/clientes/TraerClientesRegistrados.ts › TraerClientes 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-clientes",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/clientes/TraerClientesRegistrados.ts › TraerClientesPaginado 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-clientes",
+      {
+        "params": {
+          "busqueda": "texto",
+          "limite": 25,
+          "pagina": 2,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/cuenta/ActualizarInformacionUsuarioActivoService.ts › ActualizarInformacionUsuarioActivo 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "PUT",
+      "http://api.test/actualizar-informacion-usuario",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/cuenta/ConsultarInformacionUsuarioActivoService.ts › ConsultarInformacionUsuarioActivo 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-informacion-usuario/7",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/cuenta/MostrarAvatarService.ts › MostrarAvatar 1`] = `
+{
+  "conErrorDeRed": {
+    "tipo": "resuelve",
+    "valor": null,
+  },
+  "conErrorDelBackend": {
+    "tipo": "resuelve",
+    "valor": null,
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": "blob:avatar",
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/mostrar-avatar/7",
+      {
+        "responseType": "blob",
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/cuenta/SubirGuardarAvatarService.ts › GuardarAvatar 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "POST",
+      "http://api.test/subir-avatar?nombre=mi%20foto.png",
+      {
+        "formulario": "avatar",
+      },
+      {
+        "headers": {
+          "Content-Type": "multipart/form-data",
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/equipos/ActualizarEquipoService.ts › ActualizarEquipo 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "PUT",
+      "http://api.test/actualizar-equipo",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/equipos/ConsultarEquipoPorIdService.ts › ConsultarEquipoPorId 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error al consultar la información del equipo: Error: Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error al consultar la información del equipo: Error: Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-equipo/7",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/equipos/ConsultarUbicacionEquipoService.ts › ConsultarUbicacionEquipos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-ubicacion-equipo/7",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/equipos/CrearEquipoService.ts › CrearEquipo 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "POST",
+      "http://api.test/crear-equipo",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/equipos/TraerEquiposRegistradosService.ts › TraerEquipos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-equipos",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/equipos/TraerEquiposRegistradosService.ts › TraerEquiposPaginado 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-equipos",
+      {
+        "params": {
+          "busqueda": "texto",
+          "limite": 25,
+          "pagina": 2,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/mecanicos/ConsultarMecanicosService.ts › ConsultarMecanicos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-mecanicos",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/mecanicos/ConsultarMecanicosService.ts › ConsultarMecanicosPaginado 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-mecanicos",
+      {
+        "params": {
+          "busqueda": "texto",
+          "limite": 25,
+          "pagina": 2,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/mecanicos/CrearMecanicoService.ts › CrearMecanico 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "POST",
+      "http://api.test/crear-mecanico",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/proyectos/ActualizarProyectoService.ts › ActualizarProyecto 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "PUT",
+      "http://api.test/actualizar-proyecto",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/proyectos/ConsultarProyectoPorIdService.ts › ConsultarProyectoPorId 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-proyecto-por-id",
+      {
+        "params": {
+          "IdProyecto": 7,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/proyectos/ConsultarProyectosService.ts › ConsultarProyectos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-proyectos",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/proyectos/ConsultarProyectosService.ts › ConsultarProyectosPaginado 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-proyectos",
+      {
+        "params": {
+          "busqueda": "texto",
+          "limite": 25,
+          "pagina": 2,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/proyectos/CrearProyectoService.ts › CrearProyecto 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "POST",
+      "http://api.test/crear-proyecto",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/repuestos/ActualizarRepuestoService.ts › ActualizarRepuesto 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "PUT",
+      "http://api.test/actualizar-repuesto",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/repuestos/ConsultarRepuestoPorIdService.ts › ConsultarRepuestoPorId 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-repuesto/7",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/repuestos/ConsultarRepuestosService.ts › ConsultarRepuestos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-repuestos",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/repuestos/ConsultarRepuestosService.ts › ConsultarRepuestosPaginado 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-repuestos",
+      {
+        "params": {
+          "busqueda": "texto",
+          "limite": 25,
+          "pagina": 2,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/repuestos/CrearRepuestoService.ts › CrearRepuesto 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error al crear el repuesto Error: Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error al crear el repuesto Error: Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "POST",
+      "http://api.test/crear-repuesto",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/usuarios/CrearUsuarioService.ts › CrearUsuario 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "POST",
+      "http://api.test/crear-usuario",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/usuariosgenerales/ActualizarUsuarioGeneralService.ts › ActualizarUsuarioGeneral 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "PUT",
+      "http://api.test/actualizar-usuario-general",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/usuariosgenerales/ConsultarUsuarioGeneralPorDocumentoService.ts › ConsultarUsuarioGeneralPorDocumento 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-usuario-general/7",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/usuariosgenerales/ConsultarUsuariosGeneralesService.ts › ConsultarUsuariosGenerales 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-usuarios-generales",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/usuariosgenerales/ConsultarUsuariosGeneralesService.ts › ConsultarUsuariosGeneralesPaginado 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-usuarios-generales",
+      {
+        "params": {
+          "busqueda": "texto",
+          "limite": 25,
+          "pagina": 2,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/usuariosgenerales/CrearUsuarioGeneralService.ts › CrearUsuarioGeneral 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "POST",
+      "http://api.test/crear-usuario-general",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/usuariosgenerales/VerificarExistenciaUsuarioGeneralService.ts › VerificarExistenciaUsuario 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": true,
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/buscarclientepordocumento/1001",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/vehiculos/ActualizarVehiculoService.ts › ActualizarVehiculo 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "PUT",
+      "http://api.test/actualizar-vehiculo",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/vehiculos/ConsultarVehiculoPorIdService.ts › ConsultarVehiculoPorId 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-vehiculo/7",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/vehiculos/ConsultarVehiculosService.ts › ConsultarVehiculos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-vehiculos",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/vehiculos/ConsultarVehiculosService.ts › ConsultarVehiculosPaginado 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-vehiculos",
+      {
+        "params": {
+          "busqueda": "texto",
+          "limite": 25,
+          "pagina": 2,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/vehiculos/CrearVehiculoService.ts › CrearVehiculo 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "POST",
+      "http://api.test/crear-vehiculo",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > gestionycontrol/vehiculos/EliminarVehiculoService.ts › EliminarVehiculo 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": true,
+    "mensaje": "Request failed with status code 400",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "DELETE",
+      "http://api.test/eliminar-vehiculo/7",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/equipos/ConsultarSiguienteNoEntradaEquiposService.ts › SiguienteNoEntradaEquipos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/siguiente-no-entrada-equipos",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/equipos/ConsultarSiguienteNoSalidaEquiposService.ts › ConsultarSiguienteNoSalidaEquipos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error desconocido",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/siguiente-no-salida-equipos",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/equipos/GuardarEntradaEquiposService.ts › GuardarEntradaEquipos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "POST",
+      "http://api.test/guardar-entrada-equipos",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/equipos/GuardarSalidaEquiposService.ts › GuardarSalidaEquipos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error desconocido",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "POST",
+      "http://api.test/guardar-salida-equipos",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/equipos/ListarEquiposPropiosService.ts › ListarEquiposPropios 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listar-equipos-propios",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/equipos/ListarTiposMovimientoEquipoService.ts › ListarTiposMovimientoEquipo 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error desconocido",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": [],
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listar-tipos-movimiento-equipo",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/equipos/VerStockEquiposService.ts › VerStockEquipos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error desconocido",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-stock-equipos",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/equipos/VerStockEquiposService.ts › VerStockEquiposPaginado 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-stock-equipos",
+      {
+        "params": {
+          "busqueda": "texto",
+          "limite": 25,
+          "pagina": 2,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/equipos/VerTodasLasEntradasDeEquiposService.ts › VerTodasLasEntradasDeEquipos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-entradas-de-equipos",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/equipos/VerTodasLasEntradasDeEquiposService.ts › VerTodasLasEntradasDeEquiposPaginado 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-entradas-de-equipos",
+      {
+        "params": {
+          "busqueda": "texto",
+          "limite": 25,
+          "pagina": 2,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/equipos/VerTodasLasSalidasDeEquiposService.ts › VerTodasLasSalidasDeEquipos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error desconocido",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-salidas-de-equipos",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/equipos/VerTodasLasSalidasDeEquiposService.ts › VerTodasLasSalidasDeEquiposPaginado 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-salidas-de-equipos",
+      {
+        "params": {
+          "busqueda": "texto",
+          "limite": 25,
+          "pagina": 2,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/equipos/VisualizarEntradaEquiposService.ts › VisualizarEntradaEquipos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/visualizar-entrada-equipos",
+      {
+        "params": 7,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/equipos/VisualizarSalidaEquiposService.ts › VisualizarSalidaEquipos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error desconocido",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/visualizar-salida-equipos",
+      {
+        "params": 7,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/repuestos/ConsultarSiguienteNoEntradaRepuestosService.ts › ConsultarSiguienteNoEntradaRepuestos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/siguiente-no-entrada-repuestos",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/repuestos/ConsultarSiguienteNoSalidaRepuestosService.ts › ConsultarSiguienteNoSalidaRepuestos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error desconocido",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/siguiente-no-salida-repuestos",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/repuestos/GuardarEntradaRepuestosService.ts › GuardarEntradaRepuestos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "POST",
+      "http://api.test/guardar-entrada-repuestos",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/repuestos/GuardarSalidaRepuestosService.ts › GuardarSalidaRepuestos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error desconocido",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "POST",
+      "http://api.test/guardar-salida-repuestos",
+      7,
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/repuestos/ListarRepuestosService.ts › ListarRepuestos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listar-repuestos",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/repuestos/ListarTiposMovimientoRepuestoService.ts › ListarTiposMovimientoRepuesto 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error desconocido",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": [],
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listar-tipos-movimiento-repuesto",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/repuestos/VerStockRepuestosService.ts › VerStockRepuestos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error desconocido",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-stock-repuestos",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/repuestos/VerStockRepuestosService.ts › VerStockRepuestosPaginado 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-stock-repuestos",
+      {
+        "params": {
+          "busqueda": "texto",
+          "limite": 25,
+          "pagina": 2,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/repuestos/VerTodasLasEntradasDeRepuestosService.ts › VerTodasLasEntradasDeRepuestos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-entradas-de-repuestos",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/repuestos/VerTodasLasEntradasDeRepuestosService.ts › VerTodasLasEntradasDeRepuestosPaginado 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-entradas-de-repuestos",
+      {
+        "params": {
+          "busqueda": "texto",
+          "limite": 25,
+          "pagina": 2,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/repuestos/VerTodasLasSalidasDeRepuestosService.ts › VerTodasLasSalidasDeRepuestos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error desconocido",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-salidas-de-repuestos",
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/repuestos/VerTodasLasSalidasDeRepuestosService.ts › VerTodasLasSalidasDeRepuestosPaginado 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/ver-salidas-de-repuestos",
+      {
+        "params": {
+          "busqueda": "texto",
+          "limite": 25,
+          "pagina": 2,
+        },
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/repuestos/VisualizarEntradaRepuestosService.ts › VisualizarEntradaRepuestos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Cannot read properties of undefined (reading 'data')",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/visualizar-entrada-repuestos",
+      {
+        "params": 7,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > inventario/repuestos/VisualizarSalidaRepuestosService.ts › VisualizarSalidaRepuestos 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Error desconocido",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/visualizar-salida-repuestos",
+      {
+        "params": 7,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > login/LoginService.ts › Login 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "No se pudo iniciar sesión. Intenta nuevamente.",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "No se pudo iniciar sesión. Intenta nuevamente.",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "accesohabilitado": undefined,
+      "correo": undefined,
+      "documento": undefined,
+      "nombre": undefined,
+      "rol": undefined,
+      "token": undefined,
+    },
+  },
+  "peticiones": [
+    [
+      "POST",
+      "http://api.test/login",
+      {
+        "data": "NnYtGCAmMxIYNzQWPy0uVXd2AhksZm1VDiggASgRMgIsJgoYb35jBCgnMxI5JWMK",
+        "key": "MTcwMDAwMDAwMDAw",
+      },
+      {
+        "headers": {
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Expires": "0",
+          "Pragma": "no-cache",
+        },
+        "withCredentials": true,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`contrato de la capa de servicios > paginacion.ts › consultarPaginado 1`] = `
+{
+  "conErrorDeRed": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Network Error",
+    "tipo": "lanza",
+  },
+  "conErrorDelBackend": {
+    "conservaRespuestaAxios": false,
+    "mensaje": "Mensaje del backend",
+    "tipo": "lanza",
+  },
+  "conExito": {
+    "tipo": "resuelve",
+    "valor": {
+      "Datos": [
+        {
+          "Id": 1,
+        },
+      ],
+      "Total": 1,
+      "encontrado": true,
+      "mensaje": "ok",
+    },
+  },
+  "peticiones": [
+    [
+      "GET",
+      "http://api.test/listado",
+      {
+        "params": {
+          "Activo": true,
+          "busqueda": "texto",
+          "limite": 25,
+          "pagina": 2,
+        },
+      },
+    ],
+  ],
+}
+`;

@@ -34,7 +34,6 @@ import {
   Paper,
 } from '@mui/material';
 import MensajeDeCarga from '../componentes_generales/mensajedecarga/BackDropCircularProgress';
-import * as AppPage from 'next/dist/build/templates/app-page';
 
 
 export function MainNav(): React.JSX.Element {

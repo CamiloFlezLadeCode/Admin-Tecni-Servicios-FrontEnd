@@ -33,3 +33,9 @@ archivo_pesado.zip
 
 # Se ignora archivo .nvmrc el cual contiene la versión de nodejs configurada para usar solo usando "fnm use" o "nvm use", solo si se tiene configurado
 .nvmrc
+# Pruebas y calidad
+/coverage
+/test-results
+/playwright-report
+/blob-report
+/.scannerwork
