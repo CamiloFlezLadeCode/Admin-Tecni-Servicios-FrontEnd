@@ -38,4 +38,5 @@ archivo_pesado.zip
 /test-results
 /playwright-report
 /blob-report
+/.next-e2e
 /.scannerwork
