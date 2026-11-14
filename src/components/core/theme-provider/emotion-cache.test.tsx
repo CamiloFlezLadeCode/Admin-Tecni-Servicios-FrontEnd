@@ -49,7 +49,7 @@ describe('NextAppDirEmotionCacheProvider', () => {
       </>
     );
     // <Global> de emotion usa su propia hoja: se registra a mano una inserción global (selector vacío).
-    cache.insert('', { name: 'global-prueba', styles: 'body{margin:0;}', map: undefined, next: undefined }, cache.sheet, true);
+    cache.insert('', { name: 'global-prueba', styles: 'body{margin:0;}', next: undefined }, cache.sheet, true);
     // Simula el servidor: el CSS se guarda como texto.
     const nombres = Object.keys(cache.inserted);
     for (const nombre of nombres) cache.inserted[nombre] = `/*${nombre}*/`;
@@ -71,7 +71,7 @@ describe('NextAppDirEmotionCacheProvider', () => {
         <Box sx={{ color: 'purple' }}>hola</Box>
       </>
     );
-    cache.insert('', { name: 'global-vacio', styles: 'body{}', map: undefined, next: undefined }, cache.sheet, true);
+    cache.insert('', { name: 'global-vacio', styles: 'body{}', next: undefined }, cache.sheet, true);
     for (const nombre of Object.keys(cache.inserted)) cache.inserted[nombre] = undefined as unknown as string;
     expect(estilosInsertados()).toHaveLength(0);
   });

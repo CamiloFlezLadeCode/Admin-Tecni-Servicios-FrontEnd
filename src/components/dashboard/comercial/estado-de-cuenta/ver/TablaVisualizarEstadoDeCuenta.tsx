@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import {
     Chip,
@@ -30,7 +30,7 @@ import { Eye } from '@phosphor-icons/react/dist/ssr';
 import { getEstadoColor } from '@/utils/getEstadoColor';
 import { type EstadoDeCuenta, REGLA_DIAS_COBRADOS, diasCobradosTexto, formatoMoneda } from './estado-de-cuenta';
 
-export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
+export function TablaVisualizarEstadoDeCuenta(): React.JSX.Element {
     // Errores de los informes PDF (los de la tabla los maneja el hook de paginado)
     const [error, setError] = useState<string | null>(null);
     const [clientes, setClientes] = useState<{ value: string | number; label: string }[]>([]);

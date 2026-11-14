@@ -43,7 +43,7 @@ interface ModalDetalleEstadoCuentaProps {
 const unidades = (n: number) => `${n} ${n === 1 ? 'unidad' : 'unidades'}`;
 const dias = (n: number) => `${n} ${n === 1 ? 'día' : 'días'}`;
 
-export function ModalDetalleEstadoCuenta({ open, onClose, data }: ModalDetalleEstadoCuentaProps): JSX.Element {
+export function ModalDetalleEstadoCuenta({ open, onClose, data }: ModalDetalleEstadoCuentaProps): React.JSX.Element {
     if (!data) return <></>;
 
     const prestada = Number(data.CantidadPrestada || 0);
