@@ -15,99 +15,29 @@ import type { Customer } from '@/components/dashboard/customer/customers-table';
 
 export const metadata = { title: `Clientes | ${config.site.name}` } satisfies Metadata;
 
-const customers = [
-  {
-    id: 'USR-010',
-    name: 'Alcides Antonio',
-    avatar: '/assets/avatar-10.png',
-    email: 'alcides.antonio@devias.io',
-    phone: '908-691-3242',
-    address: { city: 'Madrid', country: 'Spain', state: 'Comunidad de Madrid', street: '4158 Hedge Street' },
-    createdAt: dayjs().subtract(2, 'hours').toDate(),
-  },
-  {
-    id: 'USR-009',
-    name: 'Marcus Finn',
-    avatar: '/assets/avatar-9.png',
-    email: 'marcus.finn@devias.io',
-    phone: '415-907-2647',
-    address: { city: 'Carson City', country: 'USA', state: 'Nevada', street: '2188 Armbrester Drive' },
-    createdAt: dayjs().subtract(2, 'hours').toDate(),
-  },
-  {
-    id: 'USR-008',
-    name: 'Jie Yan',
-    avatar: '/assets/avatar-8.png',
-    email: 'jie.yan.song@devias.io',
-    phone: '770-635-2682',
-    address: { city: 'North Canton', country: 'USA', state: 'Ohio', street: '4894 Lakeland Park Drive' },
-    createdAt: dayjs().subtract(2, 'hours').toDate(),
-  },
-  {
-    id: 'USR-007',
-    name: 'Nasimiyu Danai',
-    avatar: '/assets/avatar-7.png',
-    email: 'nasimiyu.danai@devias.io',
-    phone: '801-301-7894',
-    address: { city: 'Salt Lake City', country: 'USA', state: 'Utah', street: '368 Lamberts Branch Road' },
-    createdAt: dayjs().subtract(2, 'hours').toDate(),
-  },
-  {
-    id: 'USR-006',
-    name: 'Iulia Albu',
-    avatar: '/assets/avatar-6.png',
-    email: 'iulia.albu@devias.io',
-    phone: '313-812-8947',
-    address: { city: 'Murray', country: 'USA', state: 'Utah', street: '3934 Wildrose Lane' },
-    createdAt: dayjs().subtract(2, 'hours').toDate(),
-  },
-  {
-    id: 'USR-005',
-    name: 'Fran Perez',
-    avatar: '/assets/avatar-5.png',
-    email: 'fran.perez@devias.io',
-    phone: '712-351-5711',
-    address: { city: 'Atlanta', country: 'USA', state: 'Georgia', street: '1865 Pleasant Hill Road' },
-    createdAt: dayjs().subtract(2, 'hours').toDate(),
-  },
+// Datos de ejemplo de la plantilla: [número, nombre, usuario de correo, teléfono, ciudad, país, estado, calle]
+const datosEjemplo: [string, string, string, string, string, string, string, string][] = [
+  ['010', 'Alcides Antonio', 'alcides.antonio', '908-691-3242', 'Madrid', 'Spain', 'Comunidad de Madrid', '4158 Hedge Street'],
+  ['009', 'Marcus Finn', 'marcus.finn', '415-907-2647', 'Carson City', 'USA', 'Nevada', '2188 Armbrester Drive'],
+  ['008', 'Jie Yan', 'jie.yan.song', '770-635-2682', 'North Canton', 'USA', 'Ohio', '4894 Lakeland Park Drive'],
+  ['007', 'Nasimiyu Danai', 'nasimiyu.danai', '801-301-7894', 'Salt Lake City', 'USA', 'Utah', '368 Lamberts Branch Road'],
+  ['006', 'Iulia Albu', 'iulia.albu', '313-812-8947', 'Murray', 'USA', 'Utah', '3934 Wildrose Lane'],
+  ['005', 'Fran Perez', 'fran.perez', '712-351-5711', 'Atlanta', 'USA', 'Georgia', '1865 Pleasant Hill Road'],
+  ['004', 'Penjani Inyene', 'penjani.inyene', '858-602-3409', 'Berkeley', 'USA', 'California', '317 Angus Road'],
+  ['003', 'Carson Darrin', 'carson.darrin', '304-428-3097', 'Cleveland', 'USA', 'Ohio', '2849 Fulton Street'],
+  ['002', 'Siegbert Gottfried', 'siegbert.gottfried', '702-661-1654', 'Los Angeles', 'USA', 'California', '1798 Hickory Ridge Drive'],
+  ['001', 'Miron Vitold', 'miron.vitold', '972-333-4106', 'San Diego', 'USA', 'California', '75247'],
+];
 
-  {
-    id: 'USR-004',
-    name: 'Penjani Inyene',
-    avatar: '/assets/avatar-4.png',
-    email: 'penjani.inyene@devias.io',
-    phone: '858-602-3409',
-    address: { city: 'Berkeley', country: 'USA', state: 'California', street: '317 Angus Road' },
-    createdAt: dayjs().subtract(2, 'hours').toDate(),
-  },
-  {
-    id: 'USR-003',
-    name: 'Carson Darrin',
-    avatar: '/assets/avatar-3.png',
-    email: 'carson.darrin@devias.io',
-    phone: '304-428-3097',
-    address: { city: 'Cleveland', country: 'USA', state: 'Ohio', street: '2849 Fulton Street' },
-    createdAt: dayjs().subtract(2, 'hours').toDate(),
-  },
-  {
-    id: 'USR-002',
-    name: 'Siegbert Gottfried',
-    avatar: '/assets/avatar-2.png',
-    email: 'siegbert.gottfried@devias.io',
-    phone: '702-661-1654',
-    address: { city: 'Los Angeles', country: 'USA', state: 'California', street: '1798 Hickory Ridge Drive' },
-    createdAt: dayjs().subtract(2, 'hours').toDate(),
-  },
-  {
-    id: 'USR-001',
-    name: 'Miron Vitold',
-    avatar: '/assets/avatar-1.png',
-    email: 'miron.vitold@devias.io',
-    phone: '972-333-4106',
-    address: { city: 'San Diego', country: 'USA', state: 'California', street: '75247' },
-    createdAt: dayjs().subtract(2, 'hours').toDate(),
-  },
-] satisfies Customer[];
+const customers = datosEjemplo.map(([numero, name, usuario, phone, city, country, state, street]) => ({
+  id: `USR-${numero}`,
+  name,
+  avatar: `/assets/avatar-${Number(numero)}.png`,
+  email: `${usuario}@devias.io`,
+  phone,
+  address: { city, country, state, street },
+  createdAt: dayjs().subtract(2, 'hours').toDate(),
+})) satisfies Customer[];
 
 export default function Page(): React.JSX.Element {
   const page = 0;

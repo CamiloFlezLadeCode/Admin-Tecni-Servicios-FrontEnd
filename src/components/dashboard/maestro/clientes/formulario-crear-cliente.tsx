@@ -9,18 +9,13 @@ import CardHeader from '@mui/material/CardHeader';
 import Divider from '@mui/material/Divider';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import Select from '@mui/material/Select';
 import Grid from '@mui/material/Unstable_Grid2';
 import Alert from '@mui/material/Alert';
+import { CamposContactoMaqueta } from '@/components/dashboard/maestro/clientes/campos-contacto-maqueta';
 import Snackbar from '@mui/material/Snackbar'; // Alertas Flotantes
 
 
-const EstadoCliente = [
-    { value: '1', label: 'Activo' },
-    { value: '2', label: 'Inactivo' },
-]
 
 export function FormularioCrearCliente(): React.JSX.Element {
     const [mostrarAlerta, setMostrarAlerta] = React.useState<boolean>(false);
@@ -49,63 +44,7 @@ export function FormularioCrearCliente(): React.JSX.Element {
                             <OutlinedInput defaultValue="Constructions" label="Nombre" name="Nombre" size="small"/>
                         </FormControl>
                     </Grid>
-                    <Grid md={3} xs={12}>
-                        <FormControl fullWidth required>
-                            <InputLabel>Nit</InputLabel>
-                            <OutlinedInput defaultValue="Rivers" label="Nit" name="lastName" size="small"/>
-                        </FormControl>
-                    </Grid>
-                    <Grid md={3} xs={12}>
-                        <FormControl fullWidth required>
-                            <InputLabel>Dirección</InputLabel>
-                            <OutlinedInput defaultValue="Rivers" label="Dirección" name="lastName" size="small"/>
-                        </FormControl>
-                    </Grid>
-                    <Grid md={3} xs={12} mt={1}>
-                        <FormControl fullWidth required>
-                            <InputLabel>Teléfono</InputLabel>
-                            <OutlinedInput defaultValue="Rivers" label="Teléfono" name="lastName" size="small"/>
-                        </FormControl>
-                    </Grid>
-                    <Grid md={3} xs={12} mt={1}>
-                        <FormControl fullWidth required>
-                            <InputLabel>Celular</InputLabel>
-                            <OutlinedInput defaultValue="Rivers" label="Celular" name="lastName" size="small"/>
-                        </FormControl>
-                    </Grid>
-                    <Grid md={3} xs={12} mt={1}>
-                        <FormControl fullWidth>
-                            <InputLabel>Estado</InputLabel>
-                            <Select defaultValue="Activo" label="Estado" name="state" variant="outlined" size="small">
-                                {EstadoCliente.map((option) => (
-                                    <MenuItem key={option.value} value={option.value}>
-                                        {option.label}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid md={3} xs={12} mt={1}>
-                        <FormControl fullWidth required>
-                            <InputLabel>Correo</InputLabel>
-                            <OutlinedInput defaultValue="Rivers" label="Correo" name="lastName" size="small"/>
-                        </FormControl>
-                    </Grid>
-                    <Grid md={3} xs={12} mt={1}>
-                        <FormControl fullWidth required>
-                            <InputLabel shrink htmlFor="fecha">
-                                Fecha
-                            </InputLabel>
-                            <OutlinedInput
-                                id="fecha"
-                                type="date"
-                                name="fecha"
-                                notched
-                                label="Fecha"
-                                size="small"
-                            />
-                        </FormControl>
-                    </Grid>
+                    <CamposContactoMaqueta primeros={['Nit']} />
                 </Grid>
                 {/* {mostrarAlerta && (
                     <Alert severity="success" sx={{ mt: 1 }}>
