@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { emitirDesdeServidor, ioMock, sockets } from '../../test/mocks/socket';
+import { emitirDesdeServidor, ioMock, sockets } from '@test/mocks/socket';
 
 const colorScheme = vi.hoisted(() => ({ mode: 'light' as string | undefined, systemMode: 'light' as string | undefined }));
 vi.mock('@mui/material/styles', async (original) => ({

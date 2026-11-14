@@ -6,8 +6,8 @@ import { authClient } from '@/lib/auth/client';
 import { UserConsumer, UserProvider } from '@/contexts/user-context';
 import { AuthGuard } from '@/components/auth/auth-guard';
 import { GuestGuard } from '@/components/auth/guest-guard';
-import { renderConProveedores } from '../../test/utils';
-import { routerMock } from '../../test/mocks/next-navigation';
+import { renderConProveedores } from '@test/utils';
+import { routerMock } from '@test/mocks/next-navigation';
 
 function MostrarEstado() {
   return (

@@ -8,6 +8,12 @@ import { ioMock, reiniciarSockets } from './mocks/socket';
 
 vi.mock('next/navigation', () => nextNavigationMock);
 vi.mock('socket.io-client', () => ({ io: ioMock, default: ioMock }));
+// ApexCharts necesita APIs SVG de layout que jsdom no tiene: se reemplaza por un marcador con sus props.
+vi.mock('react-apexcharts', () => ({
+  default: (props: { type?: string; series?: unknown; options?: { labels?: unknown } }) => (
+    <div data-testid="grafica" data-tipo={props.type} data-series={JSON.stringify(props.series)} />
+  ),
+}));
 
 // --- APIs del navegador que jsdom no implementa ---------------------------------
 if (!window.matchMedia) {

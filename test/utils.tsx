@@ -49,13 +49,27 @@ export function renderConProveedores(ui: React.ReactElement, opciones: OpcionesR
   return { user: userEvent.setup(), ...render(ui, { wrapper: Proveedores, ...resto }) };
 }
 
+/**
+ * Encuentra el combo (Select/Autocomplete de MUI) por el texto de su `<label>`.
+ * Se busca por la etiqueta y no por el nombre accesible porque varios selects arman
+ * su `labelId` con el texto (con espacios) y el nombre accesible queda incompleto.
+ */
+export function comboPorEtiqueta(etiqueta: string | RegExp, indice = 0): HTMLElement {
+  const etiquetas = screen.getAllByText(etiqueta, { selector: 'label' });
+  const control = etiquetas[indice]?.closest('.MuiFormControl-root, .MuiAutocomplete-root');
+  const combo = control?.querySelector<HTMLElement>('[role="combobox"]');
+  if (!combo) throw new Error(`No se encontró el combo con etiqueta ${String(etiqueta)}`);
+  return combo;
+}
+
 /** Abre un Select de MUI por su etiqueta y elige la opción con el texto dado. */
 export async function elegirOpcion(
   usuario: ReturnType<typeof userEvent.setup>,
   etiqueta: string | RegExp,
-  opcion: string | RegExp
+  opcion: string | RegExp,
+  indice = 0
 ): Promise<void> {
-  const combo = screen.getByRole('combobox', { name: etiqueta });
+  const combo = comboPorEtiqueta(etiqueta, indice);
   await usuario.click(combo);
   const lista = await screen.findByRole('listbox');
   await usuario.click(within(lista).getByRole('option', { name: opcion }));
