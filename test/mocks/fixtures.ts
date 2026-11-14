@@ -61,7 +61,7 @@ export const rutasBase = {
   'GET /siguiente-no-orden-de-servicio': [{ SiguienteNoOrdenDeServicio: 'OS-0042' }],
   'GET /siguiente-no-entrada-equipos': [{ SiguienteNoEntradaEquipo: 42 }],
   'GET /siguiente-no-salida-equipos': [{ SiguienteNoSalidaEquipo: 42 }],
-  'GET /siguiente-no-entrada-repuestos': [{ SiguienteNoEntradaRepuesto: 42 }],
-  'GET /siguiente-no-salida-repuestos': [{ SiguienteNoSalidaRepuesto: 42 }],
+  'GET /siguiente-no-entrada-repuestos': [{ SiguienteNoEntradaRepuestos: 42 }],
+  'GET /siguiente-no-salida-repuestos': [{ SiguienteNoSalidaRepuestos: 42 }],
   'GET /resumen-dashboard': resumenDashboard,
 } as const;
