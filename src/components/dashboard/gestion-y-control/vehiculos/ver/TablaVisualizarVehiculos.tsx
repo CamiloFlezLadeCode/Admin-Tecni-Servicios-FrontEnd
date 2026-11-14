@@ -1,10 +1,11 @@
 'use client';
+import { useMensajeAlerta } from '@/components/dashboard/componentes_generales/alertas/use-mensaje-alerta';
+import { useRecargaPorEventos, ChipEstadoTexto } from '../../comun/tabla-comun';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useSocketIO } from '@/hooks/use-WebSocket';
 import { ConsultarVehiculosPaginado } from '@/services/gestionycontrol/vehiculos/ConsultarVehiculosService';
 import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
-import { Chip } from '@mui/material';
 import * as React from 'react';
 import { FormularioModalEditarVehiculo } from '../editar/FormularioEditarVehiculo';
 // Acciones generales
@@ -32,28 +33,12 @@ export function TablaVisualizarVehiculos(): React.JSX.Element {
     // Se implementó acá porque si se dejaba en el componente "AlertaEliminarVehiculo.tsx", se perdía al momento de eliminar el vehículo
     // ya que al no estar presente en la tabla, este desmontaba el componente por completo impidiendo la visualización de la alerta de confirmación
     // Se declaran los estados para las alertas para la eliminación del vehículo
-    const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
-    const [mensajeAlerta, setMensajeAlerta] = React.useState('');
-    const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
+    const { mostrarMensaje, propsAlerta } = useMensajeAlerta();
     // ...
 
 
-    const getEstadoColor = (estado: string) => {
-        switch (estado) {
-            case 'Activo': return 'success';
-            case 'Inactivo': return 'error';
-            default: return 'default';
-        }
-    };
 
-    React.useEffect(() => {
-        if (messages.length > 0) {
-            const ultimomensajes = messages[messages.length - 1];
-            if (ultimomensajes.tipo === 'vehiculo-creado' || ultimomensajes.tipo === 'vehiculo-actualizado' || ultimomensajes.tipo === 'vehiculo-eliminado') {
-                tabla.recargar();
-            }
-        }
-    }, [messages]);
+    useRecargaPorEventos(messages, ['vehiculo-creado', 'vehiculo-actualizado', 'vehiculo-eliminado'], tabla.recargar);
 
     const columns = [
         {
@@ -75,16 +60,7 @@ export function TablaVisualizarVehiculos(): React.JSX.Element {
         {
             key: 'Estado',
             header: 'Estado',
-            render: (row: Vehiculo) => {
-                return (
-                    <Chip
-                        label={row.Estado}
-                        color={getEstadoColor(row.Estado)}
-                        size="small"
-                        sx={{ minWidth: 100 }}
-                    />
-                )
-            }
+            render: (row: Vehiculo) => <ChipEstadoTexto estado={row.Estado} />
         }
     ];
 
@@ -130,12 +106,6 @@ export function TablaVisualizarVehiculos(): React.JSX.Element {
         // }
     ];
 
-    // Funcionalidad para abrir/mostrar la alerta para la eliminación del vehículo
-    const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error') => {
-        setMensajeAlerta(mensaje);
-        setTipoAlerta(tipo);
-        setMostrarAlertas(true);
-    };
     // ...
 
 
@@ -155,12 +125,7 @@ export function TablaVisualizarVehiculos(): React.JSX.Element {
                 rowKey={(row) => row.IdVehiculo}
                 placeHolderBuscador='Buscar vehículos...'
             />
-            <MensajeAlerta
-                open={mostrarAlertas}
-                tipo={tipoAlerta}
-                mensaje={mensajeAlerta}
-                onClose={() => setMostrarAlertas(false)}
-            />
+            <MensajeAlerta {...propsAlerta} />
         </>
     )
 }

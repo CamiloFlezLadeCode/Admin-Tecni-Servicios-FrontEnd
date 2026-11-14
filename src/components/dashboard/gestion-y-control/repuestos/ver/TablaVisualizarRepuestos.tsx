@@ -1,9 +1,10 @@
 'use client';
+import { useMensajeAlerta } from '@/components/dashboard/componentes_generales/alertas/use-mensaje-alerta';
+import { useRecargaPorEventos, ChipDisponibilidad } from '../../comun/tabla-comun';
 import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useSocketIO } from '@/hooks/use-WebSocket';
 import { ConsultarRepuestosPaginado } from '@/services/gestionycontrol/repuestos/ConsultarRepuestosService';
 import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
-import { Chip } from '@mui/material';
 import * as React from 'react';
 import { FormularioEditarRepuesto } from '../editar/FormularioEditarRepuesto';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
@@ -17,40 +18,7 @@ interface Repuesto {
     FechaCreacion: string;
 }
 
-// Se implemente la configuración para los colores de los estados de los repuestos
-type EstadoDb = 'Disponible' | 'No disponible' | 'Reparación';
-type EstadoKey = 'active' | 'inactive' | 'pending';
 
-const estadoMap: Record<EstadoDb, EstadoKey> = {
-    'Disponible': 'active',
-    'No disponible': 'inactive',
-    'Reparación': 'pending',
-};
-
-const Estado: Record<EstadoKey, { label: string; color: 'success' | 'error' | 'warning' }> = {
-    active: { label: 'Disponible', color: 'success' },
-    inactive: { label: 'No disponible', color: 'error' },
-    pending: { label: 'En reparación', color: 'warning' },
-};
-
-// const normalizarEstado = (EstadoRepuesto: string): EstadoDb | null => {
-//     const limpio = EstadoRepuesto.trim().toLowerCase();
-//     if (limpio === 'disponible') return 'Disponible';
-//     if (limpio === 'no disponible') return 'No disponible';
-//     if (limpio === 'reparación') return 'Reparación';
-//     return null;
-// };
-const normalizarEstado = (EstadoRepuesto: string | null | undefined): EstadoDb | null => {
-    if (!EstadoRepuesto || typeof EstadoRepuesto !== 'string') return null;
-
-    const limpio = EstadoRepuesto.trim().toLowerCase();
-
-    if (limpio === 'disponible') return 'Disponible';
-    if (limpio === 'no disponible') return 'No disponible';
-    if (limpio === 'reparación') return 'Reparación';
-
-    return null;
-};
 
 export function TablaVisualizarProyectos(): React.JSX.Element {
     const { sendMessage, messages } = useSocketIO();
@@ -61,9 +29,7 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
     });
 
     // Estados para alertas - MOVIDOS AL PRINCIPAL
-    const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
-    const [mensajeAlerta, setMensajeAlerta] = React.useState('');
-    const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
+    const { mostrarMensaje, propsAlerta } = useMensajeAlerta();
 
     // React.useEffect(() => {
     //     const fetchData = async () => {
@@ -84,30 +50,17 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
 
 
 
-    const OperacionesStandar = new Set([
+    const OperacionesStandar = [
         'repuesto-creado',
         'repuesto-actualizado',
         'repuesto-eliminado',
         'entrada-repuestos-creada',
         'salida-repuestos-creada',
         'orden-de-servicio-creada'
-    ]);
-    React.useEffect(() => {
-        if (messages.length > 0) {
-            const ultimoMensaje = messages[messages.length - 1];
-            if (OperacionesStandar.has(ultimoMensaje.tipo)) {
-                tabla.recargar();
-            }
-        }
-    }, [messages]);
+    ];
+    useRecargaPorEventos(messages, OperacionesStandar, tabla.recargar);
 
 
-    // Función para mostrar mensajes de alerta
-    const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error') => {
-        setMensajeAlerta(mensaje);
-        setTipoAlerta(tipo);
-        setMostrarAlertas(true);
-    };
 
     const columns = [
         {
@@ -137,18 +90,7 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
         {
             key: 'EstadoRepuesto',
             header: 'Estado',
-            render: (row: Repuesto) => {
-                const estadoDb = normalizarEstado(row.EstadoRepuesto);
-                const estadoKey = estadoDb ? estadoMap[estadoDb] : null;
-                return (
-                    <Chip
-                        label={estadoKey ? Estado[estadoKey].label : row.EstadoRepuesto}
-                        color={estadoKey ? Estado[estadoKey].color : 'default'}
-                        size="small"
-                        sx={{ width: 120, justifyContent: 'center' }}
-                    />
-                )
-            }
+            render: (row: Repuesto) => <ChipDisponibilidad estado={row.EstadoRepuesto} />
         },
     ]
 
@@ -180,12 +122,7 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
                 rowKey={(row) => row.IdRepuesto}
                 placeHolderBuscador='Buscar repuestos...'
             />
-            <MensajeAlerta
-                open={mostrarAlertas}
-                tipo={tipoAlerta}
-                mensaje={mensajeAlerta}
-                onClose={() => setMostrarAlertas(false)}
-            />
+            <MensajeAlerta {...propsAlerta} />
         </>
     )
 }

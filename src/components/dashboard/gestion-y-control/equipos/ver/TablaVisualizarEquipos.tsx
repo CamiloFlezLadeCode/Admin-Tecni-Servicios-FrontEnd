@@ -1,12 +1,12 @@
 'use client';
+import { useMensajeAlerta } from '@/components/dashboard/componentes_generales/alertas/use-mensaje-alerta';
+import { useRecargaPorEventos, ChipDisponibilidad } from '../../comun/tabla-comun';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import { DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useSocketIO } from '@/hooks/use-WebSocket';
 import { TraerEquiposPaginado } from '@/services/gestionycontrol/equipos/TraerEquiposRegistradosService';
 import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
-import { Chip } from '@mui/material';
 import * as React from 'react';
-import { useCallback } from 'react'; // 🔥 Importar useCallback
 import { FormularioEditarEquipo } from '../editar/FormularioEditarEquipo';
 
 interface Equipo {
@@ -23,45 +23,6 @@ interface Equipo {
     Estado: string;
 }
 
-type EstadoDb = 'Disponible' | 'No disponible' | 'Reparación';
-type EstadoKey = 'active' | 'inactive' | 'pending';
-
-const estadoMap: Record<EstadoDb, EstadoKey> = {
-    'Disponible': 'active',
-    'No disponible': 'inactive',
-    'Reparación': 'pending',
-};
-
-const Estado: Record<EstadoKey, { label: string; color: 'success' | 'error' | 'warning' }> = {
-    active: { label: 'Disponible', color: 'success' },
-    inactive: { label: 'No disponible', color: 'error' },
-    pending: { label: 'En reparación', color: 'warning' },
-};
-
-const normalizarEstado = (estado: string): EstadoDb | null => {
-    const limpio = estado.trim().toLowerCase();
-    if (limpio === 'disponible') return 'Disponible';
-    if (limpio === 'no disponible') return 'No disponible';
-    if (limpio === 'reparación') return 'Reparación';
-    return null;
-};
-
-type TipoMensaje =
-    | 'equipo-actualizado'
-    | 'equipo-creado'
-    | 'remision-creada'
-    | 'devolucion-creada'
-    | 'remision-anulada';
-
-interface Mensaje {
-    tipo: TipoMensaje;
-    [key: string]: any;
-}
-
-type Acciones = {
-    [key in TipoMensaje]: () => Promise<void>;
-};
-
 export function TablaVisualizarEquipos(): React.JSX.Element {
     // Paginado, búsqueda y recargas contra el servidor
     const tabla = usePaginacionServidor<Equipo>({
@@ -69,28 +30,9 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
         mensajeError: (error) => `Error al cargar los equipos: ${error}`,
     });
     const { sendMessage, messages } = useSocketIO();
-    const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
-    const [mensajeAlerta, setMensajeAlerta] = React.useState('');
-    const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
+    const { mostrarMensaje, propsAlerta } = useMensajeAlerta();
 
-
-    // 🔥 Memoizar mostrarMensaje con useCallback
-    const mostrarMensaje = useCallback((mensaje: string, tipo: 'success' | 'error') => {
-        setMensajeAlerta(mensaje);
-        setTipoAlerta(tipo);
-        setMostrarAlertas(true);
-    }, []);
-
-
-    React.useEffect(() => {
-        if (messages.length > 0) {
-            const ultimoMensaje = messages[messages.length - 1];
-
-            if (ultimoMensaje.tipo === 'equipo-actualizado' || ultimoMensaje.tipo === 'equipo-creado' || ultimoMensaje.tipo === 'remision-creada' || ultimoMensaje.tipo === 'remision-anulada') {
-                tabla.recargar();
-            }
-        }
-    }, [messages]); // 🔥 Ambas funciones son estables ahora
+    useRecargaPorEventos(messages, ['equipo-actualizado', 'equipo-creado', 'remision-creada', 'remision-anulada'], tabla.recargar);
 
     const columns = [
         {
@@ -141,19 +83,7 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
         {
             key: 'Estado',
             header: 'Estado',
-            render: (row: Equipo) => {
-                const estadoDb = normalizarEstado(row.Estado);
-                const estadoKey = estadoDb ? estadoMap[estadoDb] : null;
-
-                return (
-                    <Chip
-                        label={estadoKey ? Estado[estadoKey].label : row.Estado}
-                        color={estadoKey ? Estado[estadoKey].color : 'default'}
-                        size="small"
-                        sx={{ width: 120, justifyContent: 'center' }}
-                    />
-                );
-            }
+            render: (row: Equipo) => <ChipDisponibilidad estado={row.Estado} />
         }
     ];
 
@@ -169,7 +99,6 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
             tooltip: 'Editar equipo'
         }
     ];
-
 
     return (
         <>
@@ -188,12 +117,7 @@ export function TablaVisualizarEquipos(): React.JSX.Element {
                 placeHolderBuscador='Buscar equipos...'
             />
 
-            <MensajeAlerta
-                open={mostrarAlertas}
-                tipo={tipoAlerta}
-                mensaje={mensajeAlerta}
-                onClose={() => setMostrarAlertas(false)}
-            />
+            <MensajeAlerta {...propsAlerta} />
         </>
     );
 }

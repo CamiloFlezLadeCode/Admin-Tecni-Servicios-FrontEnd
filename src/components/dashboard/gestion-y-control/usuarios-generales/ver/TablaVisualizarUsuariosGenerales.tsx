@@ -1,4 +1,6 @@
 'use client';
+import { useMensajeAlerta } from '@/components/dashboard/componentes_generales/alertas/use-mensaje-alerta';
+import { useRecargaPorEventos, ChipEstadoTexto } from '../../comun/tabla-comun';
 import { DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { FormularioEditarUsuarioGeneral } from '@/components/dashboard/gestion-y-control/usuarios-generales/editar/FormularioEditarUsuarioGeneral';
 import { useSocketIO } from '@/hooks/use-WebSocket';
@@ -26,18 +28,14 @@ interface UsuarioGeneral {
     Estado: string;
 }
 
-type EstadoDb = 'activo' | 'inactivo';
-type EstadoKey = 'active' | 'inactive';
 
-const estadoMap: Record<EstadoDb, EstadoKey> = {
-    activo: 'active',
-    inactivo: 'inactive',
-};
-
-const Estado: Record<EstadoKey, { label: string; color: 'success' | 'error' }> = {
-    active: { label: 'Activo', color: 'success' },
-    inactive: { label: 'Inactivo', color: 'error' },
-};
+const COLORES_USUARIO = {
+    Activo: 'success',
+    Inactivo: 'error',
+    Cancelada: 'error',
+    'En Proceso': 'info',
+    Creado: 'info',
+} as const;
 
 export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
     // Paginado, búsqueda y recargas contra el servidor
@@ -48,40 +46,14 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
     const { sendMessage, messages } = useSocketIO();
 
     // Estados para alertas - MOVIDOS AL PRINCIPAL
-    const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
-    const [mensajeAlerta, setMensajeAlerta] = React.useState('');
-    const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
+    const { mostrarMensaje, propsAlerta } = useMensajeAlerta();
 
 
 
-    React.useEffect(() => {
-        if (messages.length > 0) {
-            const ultimoMensaje = messages[messages.length - 1];
-
-            if (ultimoMensaje.tipo === 'usuario-actualizado' || ultimoMensaje.tipo === 'usuario-creado') {
-                tabla.recargar();
-            }
-        }
-    }, [messages]);
+    useRecargaPorEventos(messages, ['usuario-actualizado', 'usuario-creado'], tabla.recargar);
 
 
-    const getEstadoColor = (estado: string) => {
-        switch (estado) {
-            case 'Activo': return 'success';
-            case 'Inactivo': return 'error';
-            case 'Cancelada': return 'error';
-            case 'En Proceso': return 'info';
-            case 'Creado': return 'info'
-            default: return 'default';
-        }
-    };
 
-    // Función para mostrar mensajes de alerta
-    const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error') => {
-        setMensajeAlerta(mensaje);
-        setTipoAlerta(tipo);
-        setMostrarAlertas(true);
-    };
 
     const columns = [
         {
@@ -131,14 +103,7 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
         {
             key: 'Estado',
             header: 'Estado',
-            render: (row: UsuarioGeneral) => (
-                <Chip
-                    label={row.Estado}
-                    color={getEstadoColor(row.Estado)}
-                    size="small"
-                    sx={{ minWidth: 100 }}
-                />
-            )
+            render: (row: UsuarioGeneral) => <ChipEstadoTexto estado={row.Estado} colores={COLORES_USUARIO} />
         },
     ];
 
@@ -171,12 +136,7 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
                 placeHolderBuscador='Buscar usuarios...'
             />
 
-            <MensajeAlerta
-                open={mostrarAlertas}
-                tipo={tipoAlerta}
-                mensaje={mensajeAlerta}
-                onClose={() => setMostrarAlertas(false)}
-            />
+            <MensajeAlerta {...propsAlerta} />
         </>
     )
 }

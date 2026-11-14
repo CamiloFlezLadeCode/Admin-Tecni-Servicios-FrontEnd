@@ -1,10 +1,11 @@
 'use client';
+import { useMensajeAlerta } from '@/components/dashboard/componentes_generales/alertas/use-mensaje-alerta';
+import { useRecargaPorEventos, ChipEstadoTexto } from '../../comun/tabla-comun';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useSocketIO } from '@/hooks/use-WebSocket';
 import { VerBodegasPaginado } from '@/services/gestionycontrol/bodegas/VerBodegasService';
 import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
-import { Chip } from '@mui/material';
 import * as React from 'react';
 import { FormularioEditarBodega } from '../editar/FormularioEditarBodega';
 
@@ -30,39 +31,15 @@ export function TablaVisualizarBodegas(): React.JSX.Element {
     });
     const { sendMessage, messages } = useSocketIO();
     //Estados para el manejo de las notificaciones/alertas
-    const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
-    const [mensajeAlerta, setMensajeAlerta] = React.useState('');
-    const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
+    const { mostrarMensaje, propsAlerta } = useMensajeAlerta();
     //....
 
     // 5. USEEFFECT PARA CARGA DE DATOS INICIALES Y SOCKETS
     // Carga las bodegas cuando se emite un evento socket
-    React.useEffect(() => {
-        if (messages.length > 0) {
-            const UltimoMensajeEmitido = messages[messages.length - 1];
-            if (UltimoMensajeEmitido.tipo === 'bodega-creada' || UltimoMensajeEmitido.tipo === 'bodega-actualizada') {
-                // Conserva la página y la búsqueda de quien está mirando la tabla
-                tabla.recargar();
-            }
-        }
-    }, [messages]);
+    useRecargaPorEventos(messages, ['bodega-creada', 'bodega-actualizada'], tabla.recargar);
     // ....
     // 6. FUNCIONES DEL COMPONENTE
-    //Función para abrir la alerta
-    const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error') => {
-        setMensajeAlerta(mensaje);
-        setTipoAlerta(tipo);
-        setMostrarAlertas(true);
-    };
     //....
-    // Función para retornar el color dependiendo del estado
-    const getEstadoColor = (estado: string) => {
-        switch (estado) {
-            case 'Activo': return 'success';
-            case 'Inactivo': return 'error';
-            default: return 'default';
-        }
-    };
     // ....
 
     const columns = [
@@ -93,14 +70,7 @@ export function TablaVisualizarBodegas(): React.JSX.Element {
         {
             key: 'EstadoBodega',
             header: 'Estado',
-            render: (row: Bodega) => (
-                <Chip
-                    label={row.EstadoBodega}
-                    color={getEstadoColor(row.EstadoBodega)}
-                    size='small'
-                    sx={{ minWidth: 100 }}
-                />
-            )
+            render: (row: Bodega) => <ChipEstadoTexto estado={row.EstadoBodega} />
         }
     ];
 
@@ -134,12 +104,7 @@ export function TablaVisualizarBodegas(): React.JSX.Element {
                 placeHolderBuscador='Buscar bodegas...'
             />
 
-            <MensajeAlerta
-                open={mostrarAlertas}
-                tipo={tipoAlerta}
-                mensaje={mensajeAlerta}
-                onClose={() => setMostrarAlertas(false)}
-            />
+            <MensajeAlerta {...propsAlerta} />
         </>
     );
 };

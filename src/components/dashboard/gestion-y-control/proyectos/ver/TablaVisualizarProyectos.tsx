@@ -1,9 +1,10 @@
 'use client';
+import { useMensajeAlerta } from '@/components/dashboard/componentes_generales/alertas/use-mensaje-alerta';
+import { useRecargaPorEventos, ChipActivoInactivo } from '../../comun/tabla-comun';
 import { DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useSocketIO } from '@/hooks/use-WebSocket';
 import { ConsultarProyectosPaginado } from '@/services/gestionycontrol/proyectos/ConsultarProyectosService';
 import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
-import { Chip } from '@mui/material';
 import * as React from 'react';
 import { ModalFormularioEditarProyecto } from '../editar/ModalFormularioEditarProyecto';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
@@ -18,18 +19,6 @@ interface Proyecto {
     EstadoProyecto: string;
 }
 
-type EstadoDb = 'activo' | 'inactivo';
-type EstadoKey = 'active' | 'inactive';
-
-const estadoMap: Record<EstadoDb, EstadoKey> = {
-    activo: 'active',
-    inactivo: 'inactive',
-};
-
-const Estado: Record<EstadoKey, { label: string; color: 'success' | 'error' }> = {
-    active: { label: 'Activo', color: 'success' },
-    inactive: { label: 'Inactivo', color: 'error' },
-};
 
 export function TablaVisualizarProyectos(): React.JSX.Element {
     // Paginado, búsqueda y recargas contra el servidor
@@ -40,27 +29,12 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
     const { sendMessage, messages } = useSocketIO();
 
     // Estados para alertas - MOVIDOS AL PRINCIPAL
-    const [mostrarAlertas, setMostrarAlertas] = React.useState(false);
-    const [mensajeAlerta, setMensajeAlerta] = React.useState('');
-    const [tipoAlerta, setTipoAlerta] = React.useState<'success' | 'error'>('success');
+    const { mostrarMensaje, propsAlerta } = useMensajeAlerta();
 
 
 
-    React.useEffect(() => {
-        if (messages.length > 0) {
-            const ultimoMensaje = messages[messages.length - 1];
-            if (ultimoMensaje.tipo === 'proyecto-actualizado' || ultimoMensaje.tipo === 'proyecto-creado') {
-                tabla.recargar();
-            }
-        }
-    }, [messages]);
+    useRecargaPorEventos(messages, ['proyecto-actualizado', 'proyecto-creado'], tabla.recargar);
 
-    // Función para mostrar mensajes de alerta
-    const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error') => {
-        setMensajeAlerta(mensaje);
-        setTipoAlerta(tipo);
-        setMostrarAlertas(true);
-    };
 
     const columns = [
         {
@@ -86,17 +60,7 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
         {
             key: 'EstadoProyecto',
             header: 'Estado',
-            render: (row: Proyecto) => {
-                const estadoKey = estadoMap[row.EstadoProyecto.toLowerCase() as EstadoDb] ?? 'inactive';
-                return (
-                    <Chip
-                        label={Estado[estadoKey].label}
-                        color={Estado[estadoKey].color}
-                        size="small"
-                        sx={{ width: 90, justifyContent: 'center' }}
-                    />
-                );
-            }
+            render: (row: Proyecto) => <ChipActivoInactivo estado={row.EstadoProyecto} />
         }
     ];
 
@@ -130,12 +94,7 @@ export function TablaVisualizarProyectos(): React.JSX.Element {
                 rowKey={(row) => row.IdProyecto}
                 placeHolderBuscador='Buscar proyectos...'
             />
-            <MensajeAlerta
-                open={mostrarAlertas}
-                tipo={tipoAlerta}
-                mensaje={mensajeAlerta}
-                onClose={() => setMostrarAlertas(false)}
-            />
+            <MensajeAlerta {...propsAlerta} />
         </>
     );
 }
