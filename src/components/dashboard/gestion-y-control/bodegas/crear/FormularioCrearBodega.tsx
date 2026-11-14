@@ -105,7 +105,7 @@ const FormularioCrearBodega = () => {
                 console.error(`Error al cargar los datos: ${error}`);
             }
         };
-        CargarDatosIniciales();
+        void CargarDatosIniciales();
     }, []);
 
     const mostrarMensaje = (mensaje: string, tipo: 'success' | 'error' | 'warning') => {

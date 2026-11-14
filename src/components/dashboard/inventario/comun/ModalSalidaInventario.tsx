@@ -143,7 +143,7 @@ export function ModalSalidaInventario({
   React.useEffect(() => {
     if (modo === 'visualizar' && numero) {
       setModalAbierto(true);
-      (async () => {
+      void (async () => {
         try {
           const resp = await servicios.visualizar({ [campoNumero]: numero });
           const numeroLeido = Number(resp?.[campoNumero] ?? numero);

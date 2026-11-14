@@ -386,7 +386,7 @@ export function FormularioCrearProyecto(): React.JSX.Element {
     }, [formData, validarFormulario, sendMessage, documentoUsuarioActivo, mostrarMensaje]);
 
     useEffect(() => {
-        listarClientes();
+        void listarClientes();
     }, [listarClientes]);
 
     return (

@@ -440,7 +440,7 @@ export function FormularioCrearUsuarios(): React.JSX.Element {
     };
 
     React.useEffect(() => {
-        CargarProfesionalesPertenecientes();
+        void CargarProfesionalesPertenecientes();
     }, []);
 
     // Estados para alertas
@@ -518,7 +518,7 @@ export function FormularioCrearUsuarios(): React.JSX.Element {
             // Actualizar automáticamente el campo User con el documento
             setValue('User', value);
             // Consultar las credenciales
-            HandleConsultarCredencialesProfesional(value);
+            void HandleConsultarCredencialesProfesional(value);
         }
     };
 

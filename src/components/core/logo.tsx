@@ -25,7 +25,7 @@ export function Logo({ color = 'dark', emblem, height = HEIGHT, width = WIDTH }:
     // url = color === 'light' ? '/assets/logo-emblem.svg' : '/assets/logo-emblem--dark.svg';
     url = color === 'light' ? '/assets/LogoPrincipal.png' : '/assets/LogoCompany.webp';
   } else {
-    url = color === 'light' ? '/assets/LogoCompany.webp' : '/assets/LogoCompany.webp';
+    url = '/assets/LogoCompany.webp';
   }
 
   return <Box alt="logo" component="img" height={height} src={url} width={width} style={{borderRadius: '4%'}}/>;

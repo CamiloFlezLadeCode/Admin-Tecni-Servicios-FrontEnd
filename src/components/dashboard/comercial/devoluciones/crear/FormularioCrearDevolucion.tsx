@@ -131,21 +131,21 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
 
     // 5. USEEFFECT PARA LA CARGA INICIAL Y SOCKETS
     React.useEffect(() => {
-        ObtenerClientes();
-        CargarEstados();
-        CargarSiguienteNoDevolucion();
-        CargarProfesionales();
+        void ObtenerClientes();
+        void CargarEstados();
+        void CargarSiguienteNoDevolucion();
+        void CargarProfesionales();
     }, []);
 
     React.useEffect(() => {
         if (datos.Cliente) {
-            ObtenerProyectosDelCliente();
+            void ObtenerProyectosDelCliente();
         }
     }, [datos.Cliente]);
 
     React.useEffect(() => {
         if (datos.Cliente && datos.IdProyecto) {
-            CargarSubarrendatariosConRemisionesAsignadasClienteProyecto();
+            void CargarSubarrendatariosConRemisionesAsignadasClienteProyecto();
         }
     }, [datos.Cliente, datos.IdProyecto]);
 
@@ -158,7 +158,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
         if (messages.length > 0) {
             const UltimoMensaje = messages[messages.length - 1];
             if (UltimoMensaje.tipo === 'devolucion-creada') {
-                CargarSiguienteNoDevolucion();
+                void CargarSiguienteNoDevolucion();
             }
         }
     }, [messages]);
@@ -171,7 +171,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
 
     React.useEffect(() => {
         if (datos.IdProyecto) {
-            cargarEquiposPendientesPorDevolver();
+            void cargarEquiposPendientesPorDevolver();
         }
     }, [datos.IdProyecto])
 
@@ -328,7 +328,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
 
         if (name === 'Subarrendatario') {
             if (value) {
-                CargarProfesionales();
+                void CargarProfesionales();
             } else {
                 setItemsRemision([]);
             }
@@ -679,7 +679,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                                         onChange={(e) => {
                                                             const raw = e.target.value;
                                                             const limpio = raw.replace(/^0+(?=\d)/, '');
-                                                            const numero = limpio === '' ? 0 : parseInt(limpio, 10);
+                                                            const numero = limpio === '' ? 0 : Number.parseInt(limpio, 10);
                                                             actualizarCantidadADevolver(`${item.IdEquipo}-${item.IdRemision}-${item.IdDetalleRemision}`, numero);
                                                         }}
                                                         bloqueado={item.CantidadPendiente === '0'}
@@ -691,7 +691,7 @@ export function FormularioCrearDevolucion(): React.JSX.Element {
                                                         value={item.EstadoEquipo}
                                                         options={estados}
                                                         onChange={(e) => {
-                                                            const nuevoEstado = parseInt(e.target.value);
+                                                            const nuevoEstado = Number.parseInt(e.target.value);
                                                             actualizarEstadoEntregaEquipo(`${item.IdEquipo}-${item.IdRemision}`, nuevoEstado);
                                                         }}
                                                         valorname={`EstadoEquipo-${item.IdEquipo}-${item.IdRemision}`}

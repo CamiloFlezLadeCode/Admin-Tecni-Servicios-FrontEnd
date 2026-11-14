@@ -119,7 +119,7 @@ export function TablaVisualizarMecanicos(): React.JSX.Element {
                         onPageChange={(_, newPage) => setPage(newPage)}
                         rowsPerPage={rowsPerPage}
                         onRowsPerPageChange={(event) => {
-                            setRowsPerPage(parseInt(event.target.value, 10));
+                            setRowsPerPage(Number.parseInt(event.target.value, 10));
                             setPage(0);
                         }}
                         labelRowsPerPage="Filas por página"
@@ -133,7 +133,7 @@ export function TablaVisualizarMecanicos(): React.JSX.Element {
                     onPageChange={(_, newPage) => tabla.paginacionTabla.onCambiarPagina(newPage)}
                     rowsPerPage={tabla.limite}
                     onRowsPerPageChange={(event) => {
-                        tabla.paginacionTabla.onCambiarLimite(parseInt(event.target.value, 10));
+                        tabla.paginacionTabla.onCambiarLimite(Number.parseInt(event.target.value, 10));
                     }}
                     labelRowsPerPage="Filas por página"
                     rowsPerPageOptions={[5, 10, 25]}

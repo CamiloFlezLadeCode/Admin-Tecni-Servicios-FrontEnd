@@ -59,7 +59,7 @@ export function TablaVisualizarStockRepuestos(): React.JSX.Element {
   const categorias = React.useMemo(() => {
     const set = new Set<string>();
     data.forEach((d) => { if (d.Categoria) set.add(String(d.Categoria)); });
-    return Array.from(set).sort();
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
   }, [data]);
 
   // `Categoria` hoy llega siempre en null desde el servidor, así que el selector sólo

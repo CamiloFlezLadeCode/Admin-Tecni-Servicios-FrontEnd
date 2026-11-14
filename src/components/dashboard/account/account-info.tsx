@@ -194,7 +194,7 @@ export function AccountInfo(): React.JSX.Element {
     }
   };
   React.useEffect(() => {
-    CargarInformacionDelUsuarioActivo();
+    void CargarInformacionDelUsuarioActivo();
   }, []);
   // ...
 
@@ -307,7 +307,7 @@ export function AccountInfo(): React.JSX.Element {
   }
 
   React.useEffect(() => {
-    CargarAvatar();
+    void CargarAvatar();
   }, [DocumentoUsuarioActivo]);
 
   // Libera la URL blob anterior al reemplazarla o al desmontar
@@ -321,11 +321,11 @@ export function AccountInfo(): React.JSX.Element {
     if (messages.length > 0) {
       const ultimomensajes = messages[messages.length - 1];
       if (ultimomensajes.tipo === 'avatar-guardado') {
-        CargarAvatar();
+        void CargarAvatar();
       }
 
       if (ultimomensajes.tipo === 'informacion-usuario-activo-actualizada') {
-        CargarInformacionDelUsuarioActivo();
+        void CargarInformacionDelUsuarioActivo();
       }
     }
   }, [messages]);

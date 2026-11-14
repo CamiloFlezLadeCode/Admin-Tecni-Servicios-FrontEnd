@@ -410,12 +410,12 @@ export function FormularioCrearEquipo(): React.JSX.Element {
 
     // Efectos para cargar datos iniciales
     useEffect(() => {
-        cargarSubarrendatarios();
-        cargarCategorias();
-        cargarEstados();
-        cargarTiposDeEquipos();
-        cargarUnidadesDeMedida();
-        cargarBodegas(formData.IdTipoBodega);
+        void cargarSubarrendatarios();
+        void cargarCategorias();
+        void cargarEstados();
+        void cargarTiposDeEquipos();
+        void cargarUnidadesDeMedida();
+        void cargarBodegas(formData.IdTipoBodega);
     }, [cargarSubarrendatarios, cargarCategorias, cargarEstados, cargarTiposDeEquipos, cargarUnidadesDeMedida, cargarBodegas]);
 
     // Efectos para mostrar u ocultar el select de subarrendatarios, dependiendo del tipo de equipo
@@ -473,7 +473,7 @@ export function FormularioCrearEquipo(): React.JSX.Element {
 
         // Cargar las bodegas con el tipo correcto
         if (idTipoBodega !== OpcionPorDefectoNumber.value) {
-            cargarBodegas(idTipoBodega);
+            void cargarBodegas(idTipoBodega);
         }
     }, [formData.TipoDeEquipo]);
 

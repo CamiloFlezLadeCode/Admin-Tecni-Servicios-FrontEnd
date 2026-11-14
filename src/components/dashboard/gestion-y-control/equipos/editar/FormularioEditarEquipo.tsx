@@ -101,7 +101,7 @@ export function FormularioEditarEquipo({ IdEquipo, sendMessage, onMostrarMensaje
     const EditarEquipo = async () => {
         try {
             setModalAbierto(true);
-            CargarDatosIniciales();
+            void CargarDatosIniciales();
         } catch (error) {
             mostrarMensaje(`Error al cargar los datos del equipo: ${error}`, 'error');
         }

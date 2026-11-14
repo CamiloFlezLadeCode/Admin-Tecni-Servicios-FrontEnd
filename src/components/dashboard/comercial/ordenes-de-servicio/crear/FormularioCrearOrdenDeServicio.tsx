@@ -153,7 +153,7 @@ export function FormularioCrearOrdenDeServicio(): React.JSX.Element {
                 console.error(`Error al cargar datos: ${error}`);
             }
         };
-        CargarDatosIniciales();
+        void CargarDatosIniciales();
     }, []);
 
     React.useEffect(() => {
@@ -163,15 +163,15 @@ export function FormularioCrearOrdenDeServicio(): React.JSX.Element {
     }, [datos.NoOrdenDeServicio]);
 
     React.useEffect(() => {
-        CargarProyectosDelCliente();
-        CargarEquiposDelCliente();
+        void CargarProyectosDelCliente();
+        void CargarEquiposDelCliente();
     }, [datos.DocumentoCliente]);
 
     React.useEffect(() => {
         if (messages.length > 0) {
             const UltimoMensaje = messages[messages.length - 1];
             if (UltimoMensaje.tipo === 'orden-de-servicio-creada') {
-                CargarSiguienteNoOrdenDeServicio();
+                void CargarSiguienteNoOrdenDeServicio();
             }
         }
     }, [messages]);
@@ -297,7 +297,7 @@ export function FormularioCrearOrdenDeServicio(): React.JSX.Element {
             newEquipos[index].esRepuesto = true;
 
             // Validar si la cantidad actual excede la disponible
-            if (newEquipos[index].cantidad && parseInt(newEquipos[index].cantidad) > cantidadDisponible) {
+            if (newEquipos[index].cantidad && Number.parseInt(newEquipos[index].cantidad) > cantidadDisponible) {
                 newEquipos[index].errorCantidad = true;
             } else {
                 newEquipos[index].errorCantidad = false;
@@ -319,7 +319,7 @@ export function FormularioCrearOrdenDeServicio(): React.JSX.Element {
         handleChangee({ index, field: 'IdRepuesto', value: IdRepuesto });
 
         if (IdRepuesto !== OpcionPorDefectoNumber.value) {
-            ConsultarDisponibilidadDeRepuesto(IdRepuesto, index);
+            void ConsultarDisponibilidadDeRepuesto(IdRepuesto, index);
         } else {
             // Si se selecciona la opción por defecto, no es un repuesto
             const newEquipos = [...equipos];
@@ -332,7 +332,7 @@ export function FormularioCrearOrdenDeServicio(): React.JSX.Element {
 
     // Manejador específico para cambios en la cantidad con validación (solo para repuestos)
     const handleCantidadChange = (index: number, value: string) => {
-        const cantidad = parseInt(value) || 0;
+        const cantidad = Number.parseInt(value) || 0;
         const disponible = equipos[index].cantidadDisponible;
 
         handleChangee({ index, field: 'cantidad', value });
@@ -399,7 +399,7 @@ export function FormularioCrearOrdenDeServicio(): React.JSX.Element {
                 }
 
                 // Validar que la cantidad sea mayor a 0
-                if (parseInt(equipo.cantidad) <= 0) {
+                if (Number.parseInt(equipo.cantidad) <= 0) {
                     mostrarMensaje(`La cantidad del repuesto ${i + 1} debe ser mayor a 0`, 'error');
                     return false;
                 }

@@ -316,7 +316,7 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
                 console.error(error);
             }
         };
-        if (open) cargarEquipos();
+        if (open) void cargarEquipos();
     }, [nuevoItem.IdCategoria, nuevoItem.Subarrendatario, open]);
 
     // Cargar disponibilidad cuando cambia el equipo
@@ -347,7 +347,7 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
                 }, 300);
             }
         };
-        if (open) cargarDisponibilidad();
+        if (open) void cargarDisponibilidad();
     }, [nuevoItem.Equipo, open]);
 
     const agregarItem = () => {
@@ -698,7 +698,7 @@ export function EditarRemision({ IdRemision, onSuccess, onMostrarMensaje }: Edit
                                         />
                                     </Grid>
                                 )}
-                                <Grid xs={6} md={nuevoItem.Subarrendatario === EmpresaAnfitriona.value ? 1.5 : 1.5}>
+                                <Grid xs={6} md={1.5}>
                                     <Input
                                         label="Precio Unit."
                                         value={nuevoItem.PrecioUnidad}

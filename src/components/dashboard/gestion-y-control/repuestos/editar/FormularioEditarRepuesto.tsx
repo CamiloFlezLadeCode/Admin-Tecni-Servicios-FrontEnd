@@ -141,7 +141,7 @@ export function FormularioEditarRepuesto({ IdRepuesto, sendMessage, onMostrarMen
     const EditarRepuesto = async () => {
         try {
             setModalAbierto(true);
-            CargarDatosIniciales();
+            void CargarDatosIniciales();
         } catch (error) {
             mostrarMensaje(`Error al cargar los datos del equipo: ${error}`, 'error');
         }

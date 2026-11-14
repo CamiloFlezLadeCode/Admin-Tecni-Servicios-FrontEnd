@@ -151,7 +151,7 @@ export function FormularioEditarBodega({ IdBodega, onMostrarMensaje }: PropsForm
                 ...Datos,
                 IdBodega
             };
-            ActualizarBodega(NuevosDatos);
+            void ActualizarBodega(NuevosDatos);
             onMostrarMensaje('Bodega actualizada correctamente', 'success');
             sendMessage('bodega-actualizada', {});
         } catch (error) {
@@ -173,7 +173,7 @@ export function FormularioEditarBodega({ IdBodega, onMostrarMensaje }: PropsForm
             <IconButton
                 size="small"
                 color="primary"
-                onClick={(e) => { CargarDatosIniciales(); setModalAbierto(true); }}
+                onClick={(e) => { void CargarDatosIniciales(); setModalAbierto(true); }}
                 title='Editar'
             >
                 <PencilSimple size={20} weight='bold' />

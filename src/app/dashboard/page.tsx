@@ -134,7 +134,7 @@ export default function Page(): React.JSX.Element {
     }, []);
 
     React.useEffect(() => {
-        cargar();
+        void cargar();
     }, [cargar]);
 
     const now = dayjs();

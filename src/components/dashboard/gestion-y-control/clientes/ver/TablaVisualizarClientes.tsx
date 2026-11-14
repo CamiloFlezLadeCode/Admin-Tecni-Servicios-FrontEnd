@@ -179,7 +179,7 @@ export function TablaVisualizarCientes(): React.JSX.Element {
                     onPageChange={(event, newPage) => tabla.paginacionTabla.onCambiarPagina(newPage)}
                     rowsPerPage={tabla.limite}
                     onRowsPerPageChange={(event) => {
-                        tabla.paginacionTabla.onCambiarLimite(parseInt(event.target.value, 10));
+                        tabla.paginacionTabla.onCambiarLimite(Number.parseInt(event.target.value, 10));
                     }}
                     rowsPerPageOptions={[5, 10, 25]}
                 />

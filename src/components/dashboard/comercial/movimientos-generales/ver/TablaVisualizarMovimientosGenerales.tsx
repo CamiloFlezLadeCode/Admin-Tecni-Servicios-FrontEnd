@@ -71,7 +71,7 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
                 console.error('Error al cargar clientes:', err);
             }
         };
-        cargarClientes();
+        void cargarClientes();
     }, []);
 
     // Cargar proyectos cuando cambie el cliente
@@ -90,7 +90,7 @@ export function TablaVisualizarMovimientosGenerales(): React.JSX.Element {
                 setProyectos([{ value: 'Todos', label: 'Todos los Proyectos' }]);
             }
         };
-        cargarProyectos();
+        void cargarProyectos();
     }, [filtros.Cliente]);
 
     const handleClearFilters = () => {

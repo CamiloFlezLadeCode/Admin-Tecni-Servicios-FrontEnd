@@ -75,7 +75,7 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
                 console.error(`Error al listar los clientes: ${error}`);
             }
         };
-        CargarClientes();
+        void CargarClientes();
     }, []);
 
     // Cargar data principal al seleccionar cliente
@@ -314,7 +314,7 @@ export function TablaVisualizarEstadoDeCuenta(): JSX.Element {
         const scaleFactor = tableWidth / columns.reduce((sum, c) => sum + c.width, 0);
         const scaledColumns = columns.map(c => ({ ...c, width: Math.floor(c.width * scaleFactor) }));
         const scaledTotal = scaledColumns.reduce((sum, c) => sum + c.width, 0);
-        if (scaledColumns.length > 0 && scaledTotal !== tableWidth) {
+        if (scaledColumns.length > 0 && Math.abs(scaledTotal - tableWidth) > Number.EPSILON) {
             scaledColumns[scaledColumns.length - 1] = {
                 ...scaledColumns[scaledColumns.length - 1]!,
                 width: scaledColumns[scaledColumns.length - 1]!.width + (tableWidth - scaledTotal),

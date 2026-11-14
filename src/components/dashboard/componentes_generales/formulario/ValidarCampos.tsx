@@ -14,6 +14,19 @@ interface FormularioValidatorProps {
     onValid?: () => void;
 }
 
+/**
+ * Mismo criterio que la expresión `/^[^\s@]+@[^\s@]+\.[^\s@]+$/` (usuario@dominio con un
+ * punto que tenga texto antes y después), sin el retroceso costoso de esa expresión.
+ */
+export function esCorreoValido(valor: unknown): boolean {
+    if (typeof valor !== 'string' || /\s/.test(valor)) return false;
+    const partes = valor.split('@');
+    if (partes.length !== 2) return false;
+    const [usuario, dominio] = partes;
+    const punto = dominio.indexOf('.', 1);
+    return usuario.length > 0 && punto > 0 && punto < dominio.length - 1;
+}
+
 export interface FormularioValidatorRef {
     manejarValidacion: () => void;
 }
@@ -92,8 +105,7 @@ const FormularioValidator = forwardRef<FormularioValidatorRef, FormularioValidat
                 const esNumeroValido = /^\d{10}$/.test(valor);
                 if (!esNumeroValido) mensajesFaltantes.push(mensaje);
             } else if (campo === 'Correo' || campo === 'CorreoUsuario') {
-                const esCorreoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor);
-                if (!esCorreoValido) mensajesFaltantes.push(mensaje);
+                if (!esCorreoValido(valor)) mensajesFaltantes.push(mensaje);
             } else if (campo === 'Roles' && valor.length === 0) {
                 mensajesFaltantes.push(mensaje);
             } else if (campo === 'Garantia') {

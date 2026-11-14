@@ -254,7 +254,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
             ValorFecha: new Date(Fecha),
             ValorEmpresa: Empresa,
             ValorNit: Nit,
-            ValorTelefono: parseInt(Telefono, 10),
+            ValorTelefono: Number.parseInt(Telefono, 10),
             ValorDireccion: Direccion,
             ValorNombreEquipo: NombreEquipo,
             ValorCodigo: Codigo,
@@ -282,7 +282,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
         const camposFaltantes = []; // Array para almacenar mensajes de campos faltantes
         try {
             // Verificar si la fecha es válida
-            if (isNaN(Datos.ValorFecha.getTime())) {
+            if (Number.isNaN(Datos.ValorFecha.getTime())) {
                 camposFaltantes.push('La fecha es obligatoria');
             }
 
@@ -296,7 +296,7 @@ export function FormularioCrearHojaDeVidaEquipo(): React.JSX.Element {
             // if (!Datos.ValorTelefono) {
             //     camposFaltantes.push('El teléfono es obligatorio');
             // }
-            if (isNaN(Datos.ValorTelefono) || Datos.ValorTelefono <= 0) {
+            if (Number.isNaN(Datos.ValorTelefono) || Datos.ValorTelefono <= 0) {
                 camposFaltantes.push('El teléfono es obligatorio y debe ser un número válido');
             }
 

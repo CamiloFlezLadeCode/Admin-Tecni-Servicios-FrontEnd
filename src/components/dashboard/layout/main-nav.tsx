@@ -111,7 +111,7 @@ export function MainNav(): React.JSX.Element {
     }
   }
   React.useEffect(() => {
-    CargarAvatar();
+    void CargarAvatar();
   }, [DocumentoUsuarioActivo]);
 
   // Libera la URL blob anterior al reemplazarla o al desmontar
@@ -128,7 +128,7 @@ export function MainNav(): React.JSX.Element {
     if (messages.length > 0) {
       const ultimomensajes = messages[messages.length - 1];
       if (ultimomensajes.tipo === 'avatar-guardado') {
-        CargarAvatar();
+        void CargarAvatar();
       }
     }
   }, [messages]);

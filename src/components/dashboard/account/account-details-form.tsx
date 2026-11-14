@@ -61,7 +61,7 @@ export function AccountDetailsForm(): React.JSX.Element {
     }
   };
   React.useEffect(() => {
-    CargarInformacionDelUsuarioActivo();
+    void CargarInformacionDelUsuarioActivo();
   }, []);
   // ...
 

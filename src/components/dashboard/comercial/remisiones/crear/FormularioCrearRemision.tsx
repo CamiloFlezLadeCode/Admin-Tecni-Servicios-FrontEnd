@@ -240,7 +240,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
             }
         };
 
-        cargarDatosIniciales();
+        void cargarDatosIniciales();
     }, []);
 
     // Cargar proyectos cuando cambia el cliente
@@ -258,7 +258,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
             }
         };
 
-        cargarProyectos();
+        void cargarProyectos();
     }, [datos.Cliente]);
 
     // Cargar equipos cuando cambia la categoría o subarrendatario
@@ -287,7 +287,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
             }
         };
 
-        cargarEquipos();
+        void cargarEquipos();
     }, [datos.IdCategoria, datos.Subarrendatario]);
 
 
@@ -448,7 +448,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
             }
         };
 
-        cargarDisponibilidad();
+        void cargarDisponibilidad();
     }, [datos.Equipo, datos.Subarrendatario]); // 🔥 Remover datos.IdCategoria de las dependencias
 
     // Efecto separado para controlar el modal basado en la cantidad disponible
@@ -490,7 +490,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
         const totalConIVA = totalSinIVA * (1 + Number(datos.IVA) / 100);
         setDatos(prev => ({
             ...prev,
-            PrecioTotal: parseFloat(totalConIVA.toFixed(2))
+            PrecioTotal: Number.parseFloat(totalConIVA.toFixed(2))
         }));
     }, [datos.Cantidad, datos.PrecioUnidad, datos.IVA]);
 
@@ -508,7 +508,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
             }
         };
 
-        manejarMensajeRemisionCreada();
+        void manejarMensajeRemisionCreada();
     }, [messages]);
 
     const normalizarPlaca = (raw: unknown) => String(raw ?? '')
@@ -536,7 +536,7 @@ export function FormularioCrearRemision(): React.JSX.Element {
             if (value === OpcionPorDefecto.value) {
                 setCategoria([]);
             } else {
-                listarCagetoriasIndependientes();
+                void listarCagetoriasIndependientes();
             }
         }
         if (name === 'IncluyeTransporte') {

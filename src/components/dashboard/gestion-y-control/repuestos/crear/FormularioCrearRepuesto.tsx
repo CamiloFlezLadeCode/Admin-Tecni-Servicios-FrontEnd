@@ -104,7 +104,7 @@ export function FormularioCrearRepuesto(): React.JSX.Element {
                 console.error(`Error al cargar datos iniciales: ${error}`);
             }
         };
-        cargarIniciales();
+        void cargarIniciales();
     }, []);
 
     // Handlers
