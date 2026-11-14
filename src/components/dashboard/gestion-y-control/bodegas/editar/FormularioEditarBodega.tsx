@@ -6,14 +6,10 @@ import {
     Card,
     Divider,
     CardActions,
-    Button,
-    FormControl,
-    FormHelperText
+    Button
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
-import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
-import Input from '@/components/dashboard/componentes_generales/formulario/Input';
 // Para cargar datos iniciales
 import { ListarTiposDeBodegas } from '@/services/generales/ListarTipoDeBodegas';
 import { ListarSubarrendatarios } from '@/services/generales/ListarSubarrendatariosService';
@@ -21,12 +17,13 @@ import { ListarEstados } from '@/services/generales/ListarEstadosService';
 import { ConsultarInfoBodega } from '@/services/gestionycontrol/bodegas/ConsultarInfoBodegaService';
 // Para validar formulario
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
 // Para actualizar la bodega
 import { ActualizarBodega } from '@/services/gestionycontrol/bodegas/ActualizarBodegaService';
 import { OpcionPorDefecto } from '@/lib/constants/option-default';
 import { BotonEditar, ModalFormulario } from '@/components/dashboard/componentes_generales/modal/ModalFormulario';
+import { CamposBodega, filtrarEstadosBodega } from '../comun/CamposBodega';
 
 
 // Esquema de validación corregido
@@ -68,9 +65,9 @@ export function FormularioEditarBodega({ IdBodega, onMostrarMensaje }: PropsForm
     const [modalAbierto, setModalAbierto] = React.useState(false);
     //Para el tema del modal
     // Para almecnar datos iniciales
-    const [tiposDeBodegas, setTiposDeBodegas] = React.useState([]);
+    const [tiposDeBodegas, setTiposDeBodegas] = React.useState<{ value: string | number; label: string }[]>([]);
     const [subarrendatarios, setSubarrendatarios] = React.useState([{ value: '', label: 'Sin seleccionar' },]);
-    const [estados, setEstados] = React.useState([]);
+    const [estados, setEstados] = React.useState<{ value: string | number; label: string }[]>([]);
     // Para datos iniciales y validación
     const {
         control,
@@ -113,12 +110,7 @@ export function FormularioEditarBodega({ IdBodega, onMostrarMensaje }: PropsForm
             ]);
             TiposDeBodegas.unshift(OpcionPorDefecto);
             setTiposDeBodegas(TiposDeBodegas);
-            const EstadosPermitidos = new Set(['activo', 'inactivo']);
-            const EstadosFiltrados = Estados.filter((item: any) =>
-                EstadosPermitidos.has(item.label.toLowerCase().trim())
-            );
-            EstadosFiltrados.unshift(OpcionPorDefecto);
-            setEstados(EstadosFiltrados);
+            setEstados(filtrarEstadosBodega(Estados, OpcionPorDefecto));
             const DatosBodega = InfoBodega[0];
             reset({
                 TipoDeBodega: String(DatosBodega.IdTipoBodega),
@@ -174,96 +166,13 @@ export function FormularioEditarBodega({ IdBodega, onMostrarMensaje }: PropsForm
                         <Card>
                             <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                                 <Grid container spacing={1}>
-                                    <Grid md={3} xs={12} mt={0.5}>
-                                        <Controller
-                                            name="TipoDeBodega"
-                                            control={control}
-                                            render={({ field }) => (
-                                                <FormControl fullWidth>
-                                                    <InputSelect
-                                                        label='Tipo de bodega'
-                                                        value={String(field.value)}
-                                                        options={tiposDeBodegas}
-                                                        size='small'
-                                                        onChange={(e) => {
-                                                            field.onChange(String(e.target.value));
-                                                        }}
-                                                    />
-                                                    {errors.TipoDeBodega && (
-                                                        <FormHelperText error sx={{ width: '100%', margin: 0 }}>
-                                                            {errors.TipoDeBodega.message}
-                                                        </FormHelperText>
-                                                    )}
-                                                </FormControl>
-                                            )}
-                                        />
-                                    </Grid>
-                                    <Grid md={3} xs={12} mt={0.5}>
-                                        <Controller
-                                            name="NombreDeBodega"
-                                            control={control}
-                                            render={({ field }) => (
-                                                <FormControl fullWidth>
-                                                    <Input
-                                                        label='Nombre de bodega'
-                                                        value={field.value}
-                                                        tamano='small'
-                                                        tipo_input='text'
-                                                        valorname='NombreDeBodega'
-                                                        onChange={(e) => {
-                                                            field.onChange(e.target.value);
-                                                        }}
-                                                    />
-                                                    {errors.NombreDeBodega && (
-                                                        <FormHelperText error sx={{ width: '100%', margin: 0 }}>
-                                                            {errors.NombreDeBodega.message}
-                                                        </FormHelperText>
-                                                    )}
-                                                </FormControl>
-                                            )}
-                                        />
-                                    </Grid>
-                                    <Grid md={3} xs={12} mt={0.5}>
-                                        <Controller
-                                            name="Descripcion"
-                                            control={control}
-                                            render={({ field }) => (
-                                                <FormControl fullWidth>
-                                                    <Input
-                                                        label='Descripción'
-                                                        value={field.value ?? ''}
-                                                        tamano='small'
-                                                        tipo_input='text'
-                                                        valorname='Descripcion'
-                                                        onChange={(e) => field.onChange(e.target.value)}
-                                                    />
-                                                </FormControl>
-                                            )}
-                                        />
-                                    </Grid>
-
-                                    <Grid md={3} xs={12} mt={0.5}>
-                                        <Controller
-                                            name="Estado"
-                                            control={control}
-                                            render={({ field }) => (
-                                                <FormControl fullWidth>
-                                                    <InputSelect
-                                                        label='Estado'
-                                                        value={String(field.value)}
-                                                        options={estados}
-                                                        size='small'
-                                                        onChange={(e) => field.onChange(String(e.target.value))}
-                                                    />
-                                                    {errors.Estado && (
-                                                        <FormHelperText error sx={{ width: '100%', margin: 0 }}>
-                                                            {errors.Estado.message}
-                                                        </FormHelperText>
-                                                    )}
-                                                </FormControl>
-                                            )}
-                                        />
-                                    </Grid>
+                                    <CamposBodega
+                                        control={control}
+                                        errors={errors}
+                                        tiposDeBodegas={tiposDeBodegas}
+                                        estados={estados}
+                                        estadoComoTexto
+                                    />
                                 </Grid>
                             </CardContent>
                             <Divider />

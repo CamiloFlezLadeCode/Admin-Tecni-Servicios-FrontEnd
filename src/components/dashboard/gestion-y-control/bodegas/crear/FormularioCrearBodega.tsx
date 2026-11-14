@@ -1,7 +1,5 @@
 'use client';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
-import Input from '@/components/dashboard/componentes_generales/formulario/Input';
-import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
 import { UserContext } from '@/contexts/user-context';
 import { useSocketIO } from '@/hooks/use-WebSocket';
 import {
@@ -10,15 +8,13 @@ import {
     CardActions,
     CardContent,
     Divider,
-    FormControl,
-    FormHelperText,
     Typography
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import * as React from 'react';
 // Para validar formulario
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
 // Para cargar datos iniciales
 import { ListarEstados } from '@/services/generales/ListarEstadosService';
@@ -26,6 +22,7 @@ import { ListarTiposDeBodegas } from '@/services/generales/ListarTipoDeBodegas';
 // Uso API para crear la bodega
 import { OpcionPorDefecto } from '@/lib/constants/option-default';
 import { CrearBodega } from '@/services/gestionycontrol/bodegas/CrearBodegaService';
+import { CamposBodega, filtrarEstadosBodega } from '../comun/CamposBodega';
 
 
 // Esquema de validación corregido
@@ -77,8 +74,8 @@ const FormularioCrearBodega = () => {
         resolver: zodResolver(schema)
     });
 
-    const [tiposDeBodegas, setTiposDeBodegas] = React.useState([]);
-    const [estados, setEstados] = React.useState([]);
+    const [tiposDeBodegas, setTiposDeBodegas] = React.useState<{ value: string | number; label: string }[]>([]);
+    const [estados, setEstados] = React.useState<{ value: string | number; label: string }[]>([]);
 
     // 5. USEEFFECT PARA LA CARGA INICIAL Y SOCKETS
     React.useEffect(() => {
@@ -93,14 +90,7 @@ const FormularioCrearBodega = () => {
                 ]);
                 TiposDeBodegas.unshift(OpcionPorDefecto);
                 setTiposDeBodegas(TiposDeBodegas);
-                const EstadosPermitidos = new Set(['activo', 'inactivo']);
-                const EstadosFiltrados = Estados.filter((item: any) =>
-                    EstadosPermitidos.has(item.label.toLowerCase().trim())
-                );
-                EstadosFiltrados.unshift(
-                    { value: 0, label: 'Sin seleccionar' }
-                );
-                setEstados(EstadosFiltrados);
+                setEstados(filtrarEstadosBodega(Estados, { value: 0, label: 'Sin seleccionar' }));
             } catch (error) {
                 console.error(`Error al cargar los datos: ${error}`);
             }
@@ -140,101 +130,18 @@ const FormularioCrearBodega = () => {
                 <Divider />
                 <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                     <Grid container spacing={1}>
-                        <Grid md={3} xs={12} mt={0.5} display='block'>
-                            <Controller
-                                name="TipoDeBodega"
-                                control={control}
-                                render={({ field }) => (
-                                    <FormControl fullWidth>
-                                        <InputSelect
-                                            label='Tipo de bodega'
-                                            value={String(field.value)}
-                                            options={tiposDeBodegas}
-                                            size='small'
-                                            onChange={(e) => {
-                                                field.onChange(String(e.target.value));
-                                                // Limpiar el valor de subarrendatario cuando no es necesario
-                                                if (e.target.value !== '2') {
-                                                    control._formValues.DocumentoSubarrendatario = '0';
-                                                }
-                                            }}
-                                        />
-                                        {errors.TipoDeBodega && (
-                                            <FormHelperText error sx={{ width: '100%', margin: 0 }}>
-                                                {errors.TipoDeBodega.message}
-                                            </FormHelperText>
-                                        )}
-                                    </FormControl>
-                                )}
-                            />
-                        </Grid>
-
-                        <Grid md={3} xs={12} mt={0.5}>
-                            <Controller
-                                name="NombreDeBodega"
-                                control={control}
-                                render={({ field }) => (
-                                    <FormControl fullWidth>
-                                        <Input
-                                            label='Nombre de bodega'
-                                            value={field.value}
-                                            tamano='small'
-                                            tipo_input='text'
-                                            valorname='NombreDeBodega'
-                                            onChange={(e) => field.onChange(e.target.value)}
-                                        />
-                                        {errors.NombreDeBodega && (
-                                            <FormHelperText error sx={{ width: '100%', margin: 0 }}>
-                                                {errors.NombreDeBodega.message}
-                                            </FormHelperText>
-                                        )}
-                                    </FormControl>
-                                )}
-
-                            />
-                        </Grid>
-
-                        <Grid md={3} xs={12} mt={0.5}>
-                            <Controller
-                                name="Descripcion"
-                                control={control}
-                                render={({ field }) => (
-                                    <FormControl fullWidth>
-                                        <Input
-                                            label='Descripción'
-                                            value={field.value ?? ''}
-                                            tamano='small'
-                                            tipo_input='text'
-                                            valorname='Descripcion'
-                                            onChange={(e) => field.onChange(e.target.value)}
-                                        />
-                                    </FormControl>
-                                )}
-                            />
-                        </Grid>
-
-                        <Grid md={3} xs={12} mt={0.5}>
-                            <Controller
-                                name="Estado"
-                                control={control}
-                                render={({ field }) => (
-                                    <FormControl fullWidth>
-                                        <InputSelect
-                                            label='Estado'
-                                            value={field.value}
-                                            options={estados}
-                                            size='small'
-                                            onChange={(e) => field.onChange(e.target.value)}
-                                        />
-                                        {errors.Estado && (
-                                            <FormHelperText error sx={{ width: '100%', margin: 0 }}>
-                                                {errors.Estado.message}
-                                            </FormHelperText>
-                                        )}
-                                    </FormControl>
-                                )}
-                            />
-                        </Grid>
+                        <CamposBodega
+                            control={control}
+                            errors={errors}
+                            tiposDeBodegas={tiposDeBodegas}
+                            estados={estados}
+                            onCambioTipo={(valor) => {
+                                // Limpiar el valor de subarrendatario cuando no es necesario
+                                if (valor !== '2') {
+                                    control._formValues.DocumentoSubarrendatario = '0';
+                                }
+                            }}
+                        />
                     </Grid>
                 </CardContent>
                 <Divider />
