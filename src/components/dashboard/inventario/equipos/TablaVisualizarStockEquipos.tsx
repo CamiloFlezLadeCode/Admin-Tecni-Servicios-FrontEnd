@@ -1,21 +1,14 @@
 'use client';
+import { useRecargaPorEventos } from '@/hooks/use-recarga-por-eventos';
+import { CeldaCantidadStock, ChipEstadoStock } from '../comun/columnas-inventario';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import { ColumnDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useAlertas } from '@/hooks/FuncionMostrarAlerta';
 import { VerStockEquiposPaginado } from '@/services/inventario/equipos/VerStockEquiposService';
 import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
-import {
-  Box,
-  Card,
-  CardContent,
-  Chip,
-  Divider,
-  Stack,
-  Typography
-} from '@mui/material';
+import { Box, Card, CardContent, Chip, Divider, Typography } from '@mui/material';
 import * as React from 'react';
 import { useSocketIO } from '@/hooks/use-WebSocket';
-import { getEstadoColor } from '@/utils/getEstadoColor';
 
 interface EquipoStock {
   IdEquipo: number;
@@ -56,14 +49,7 @@ export function TablaVisualizarStockEquipos(): React.JSX.Element {
     }
   });
 
-  React.useEffect(() => {
-    if (messages.length > 0) {
-      const ultimo = messages[messages.length - 1];
-      if (ultimo.tipo === 'salida-equipos-creada' || ultimo.tipo === 'entrada-equipos-creada') {
-        tabla.recargar();
-      }
-    }
-  }, [messages]);
+  useRecargaPorEventos(messages, ['salida-equipos-creada', 'entrada-equipos-creada'], tabla.recargar);
 
   const columns: ColumnDefinition<EquipoStock>[] = [
     {
@@ -75,28 +61,13 @@ export function TablaVisualizarStockEquipos(): React.JSX.Element {
       header: 'Disponible',
       align: 'center',
       width: 120,
-      render: (row) => {
-        const qty = row.Cantidad ?? 0;
-        const color = qty <= 0 ? 'error' : qty <= 5 ? 'warning' : 'success';
-        const label = qty <= 0 ? 'Agotado' : qty <= 5 ? 'Bajo' : 'OK';
-        return (
-          <Stack alignItems="center" spacing={0.5}>
-            <Typography variant="body2" sx={{ fontWeight: 600 }}>{qty}</Typography>
-            <Chip size="small" color={color as any} label={label} />
-          </Stack>
-        );
-      }
+      render: (row) => <CeldaCantidadStock cantidad={row.Cantidad} />
     },
     {
       key: 'Estado',
       header: 'Estado',
       width: 120,
-      render: (row) => {
-        // Usar el estado directo si existe, o calcular basado en cantidad
-        const disponible = row.Estado === 'Disponible' || (row.Cantidad ?? 0) > 0;
-        // return <Chip size="small" color={disponible ? 'success' : 'default'} label={row.Estado || (disponible ? 'Disponible' : 'No disponible')} />;
-        return <Chip size="small" color={getEstadoColor(row.Estado)} label={row.Estado} />;
-      }
+      render: (row) => <ChipEstadoStock estado={row.Estado} />
     }
   ];
 

@@ -1,14 +1,12 @@
 'use client';
 import { useMensajeAlerta } from '@/components/dashboard/componentes_generales/alertas/use-mensaje-alerta';
-import { useRecargaPorEventos, ChipEstadoTexto } from '../../comun/tabla-comun';
+import { useRecargaPorEventos } from '@/hooks/use-recarga-por-eventos';
+import { ChipEstadoTexto } from '../../comun/tabla-comun';
 import { DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { FormularioEditarUsuarioGeneral } from '@/components/dashboard/gestion-y-control/usuarios-generales/editar/FormularioEditarUsuarioGeneral';
 import { useSocketIO } from '@/hooks/use-WebSocket';
 import { ConsultarUsuariosGeneralesPaginado } from '@/services/gestionycontrol/usuariosgenerales/ConsultarUsuariosGeneralesService';
 import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
-import {
-    Chip
-} from '@mui/material';
 import * as React from 'react';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 
@@ -56,50 +54,17 @@ export function TablaVisualizarUsuariosGenerales(): React.JSX.Element {
 
 
     const columns = [
-        {
-            key: 'Nombre',
-            header: 'Nombre'
-        },
-        {
-            key: 'TipoDocumento',
-            header: 'Tipo Documento'
-        },
-        {
-            key: 'Documento',
-            header: 'Documento'
-        },
-        {
-            key: 'Correo',
-            header: 'Correo'
-        },
-        {
-            key: 'Direccion',
-            header: 'Dirección'
-        },
-        {
-            key: 'Celular1',
-            header: 'Celular 1'
-        },
-        {
-            key: 'Celular2',
-            header: 'Celular 2'
-        },
-        {
-            key: 'RolesLabel',
-            header: 'Roles'
-        },
-        {
-            key: 'Nivel',
-            header: 'Nivel'
-        },
-        {
-            key: 'UsuarioCreacion',
-            header: 'Creado Por'
-        },
-        {
-            key: 'FechaCreacion',
-            header: 'Fecha Creación'
-        },
+        { key: 'Nombre', header: 'Nombre' },
+        { key: 'TipoDocumento', header: 'Tipo Documento' },
+        { key: 'Documento', header: 'Documento' },
+        { key: 'Correo', header: 'Correo' },
+        { key: 'Direccion', header: 'Dirección' },
+        { key: 'Celular1', header: 'Celular 1' },
+        { key: 'Celular2', header: 'Celular 2' },
+        { key: 'RolesLabel', header: 'Roles' },
+        { key: 'Nivel', header: 'Nivel' },
+        { key: 'UsuarioCreacion', header: 'Creado Por' },
+        { key: 'FechaCreacion', header: 'Fecha Creación' },
         {
             key: 'Estado',
             header: 'Estado',

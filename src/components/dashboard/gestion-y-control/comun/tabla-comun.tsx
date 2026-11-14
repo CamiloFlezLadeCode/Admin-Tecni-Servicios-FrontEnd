@@ -9,25 +9,6 @@ function buscar<T>(mapa: Readonly<Record<string, T>>, clave: string): T | undefi
     return Object.prototype.hasOwnProperty.call(mapa, clave) ? mapa[clave] : undefined;
 }
 
-/**
- * Recarga la tabla (conservando página y búsqueda) cuando el último evento
- * recibido por socket es uno de `eventos`.
- */
-export function useRecargaPorEventos(
-    messages: ReadonlyArray<{ tipo: string }>,
-    eventos: readonly string[],
-    recargar: () => void
-): void {
-    React.useEffect(() => {
-        if (messages.length > 0) {
-            const ultimoMensaje = messages[messages.length - 1];
-            if (eventos.includes(ultimoMensaje.tipo)) {
-                recargar();
-            }
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps -- solo reacciona a mensajes nuevos
-    }, [messages]);
-}
 
 export const COLORES_ACTIVO_INACTIVO: Readonly<Record<string, ColorChip>> = {
     Activo: 'success',

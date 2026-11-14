@@ -1,13 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import {
-    Button, Card, CardActions, CardContent, CardHeader, Divider,
-    FormControl, InputLabel, MenuItem, OutlinedInput, Select,
-    Grid, Alert, Snackbar, TablePagination, Chip,
-    Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-    TextField, Paper, Typography
-} from '@mui/material';
+import { Card, CardContent, Divider, TablePagination, Chip, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Paper, Typography } from '@mui/material';
 
 import { ConsultarMecanicosPaginado } from '@/services/gestionycontrol/mecanicos/ConsultarMecanicosService';
 import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';

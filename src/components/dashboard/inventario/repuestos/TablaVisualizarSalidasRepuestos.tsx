@@ -1,15 +1,10 @@
 'use client';
+import { useRecargaPorEventos } from '@/hooks/use-recarga-por-eventos';
+import { CeldaObservaciones, accionVerDetalles } from '../comun/columnas-inventario';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useAlertas } from '@/hooks/FuncionMostrarAlerta';
-import {
-  Card,
-  CardContent,
-  Divider,
-  IconButton,
-  Typography
-} from '@mui/material';
-import { Eye } from '@phosphor-icons/react/dist/ssr';
+import { Card, CardContent, Divider, Typography } from '@mui/material';
 import * as React from 'react';
 import { VerTodasLasSalidasDeRepuestosPaginado } from '@/services/inventario/repuestos/VerTodasLasSalidasDeRepuestosService';
 import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
@@ -62,45 +57,18 @@ export function TablaVisualizarSalidasRepuestos(): React.JSX.Element {
     {
       key: 'Observaciones',
       header: 'Observaciones',
-      render: (row: SalidaDeRepuestosLista) => (
-        <Typography
-          variant="body2"
-          sx={{
-            maxWidth: '200px',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap'
-          }}
-          title={row.Observaciones}
-        >
-          {row.Observaciones || 'Sin observaciones'}
-        </Typography>
-      )
+      render: (row: SalidaDeRepuestosLista) => <CeldaObservaciones texto={row.Observaciones} />
     },
     { key: 'CreadoPor', header: 'Creado Por' },
     { key: 'FechaCreacion', header: 'Fecha Creación' }
   ];
 
   const actions: ActionDefinition<SalidaDeRepuestosLista>[] = [
-    {
-      render: (row: SalidaDeRepuestosLista) => (
-        <IconButton size="small" onClick={() => abrirModalVisualizacion(row)} color="secondary">
-          <Eye size={20} weight='bold' />
-        </IconButton>
-      ),
-      tooltip: 'Ver detalles'
-    }
+    accionVerDetalles<SalidaDeRepuestosLista>(abrirModalVisualizacion)
   ];
 
 
-  React.useEffect(() => {
-    if (messages.length > 0) {
-      const ultimo = messages[messages.length - 1];
-      if (ultimo.tipo === 'salida-repuestos-creada') {
-        tabla.recargar();
-      }
-    }
-  }, [messages]);
+  useRecargaPorEventos(messages, ['salida-repuestos-creada'], tabla.recargar);
 
   return (
     <>

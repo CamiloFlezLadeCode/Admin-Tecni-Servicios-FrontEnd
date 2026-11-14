@@ -1,6 +1,7 @@
 'use client';
 import { useMensajeAlerta } from '@/components/dashboard/componentes_generales/alertas/use-mensaje-alerta';
-import { useRecargaPorEventos, ChipActivoInactivo } from '../../comun/tabla-comun';
+import { useRecargaPorEventos } from '@/hooks/use-recarga-por-eventos';
+import { ChipActivoInactivo } from '../../comun/tabla-comun';
 import { DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useSocketIO } from '@/hooks/use-WebSocket';
 import { ConsultarProyectosPaginado } from '@/services/gestionycontrol/proyectos/ConsultarProyectosService';

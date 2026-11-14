@@ -1,6 +1,7 @@
 'use client';
 import { useMensajeAlerta } from '@/components/dashboard/componentes_generales/alertas/use-mensaje-alerta';
-import { useRecargaPorEventos, ChipDisponibilidad } from '../../comun/tabla-comun';
+import { useRecargaPorEventos } from '@/hooks/use-recarga-por-eventos';
+import { ChipDisponibilidad } from '../../comun/tabla-comun';
 import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useSocketIO } from '@/hooks/use-WebSocket';
 import { ConsultarRepuestosPaginado } from '@/services/gestionycontrol/repuestos/ConsultarRepuestosService';

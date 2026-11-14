@@ -1,21 +1,14 @@
 'use client';
+import { useRecargaPorEventos } from '@/hooks/use-recarga-por-eventos';
+import { CeldaCantidadStock, ChipEstadoStock } from '../comun/columnas-inventario';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import { ColumnDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useAlertas } from '@/hooks/FuncionMostrarAlerta';
 import { VerStockRepuestosPaginado } from '@/services/inventario/repuestos/VerStockRepuestosService';
 import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
-import {
-  Box,
-  Card,
-  CardContent,
-  Chip,
-  Divider,
-  Stack,
-  Typography
-} from '@mui/material';
+import { Box, Card, CardContent, Chip, Divider, Typography } from '@mui/material';
 import * as React from 'react';
 import { useSocketIO } from '@/hooks/use-WebSocket';
-import { getEstadoColor } from '@/utils/getEstadoColor';
 
 interface RepuestoStock {
   IdRepuesto: number;
@@ -45,16 +38,7 @@ export function TablaVisualizarStockRepuestos(): React.JSX.Element {
   });
   const data = tabla.datos;
 
-  React.useEffect(() => {
-    if (messages.length > 0) {
-      console.log('messages', messages);
-      const ultimo = messages[messages.length - 1];
-      console.log('ultimo', ultimo);
-      if (ultimo.tipo === 'salida-repuestos-creada' || ultimo.tipo === 'entrada-repuestos-creada') {
-        tabla.recargar();
-      }
-    }
-  }, [messages]);
+  useRecargaPorEventos(messages, ['salida-repuestos-creada', 'entrada-repuestos-creada'], tabla.recargar);
 
   const categorias = React.useMemo(() => {
     const set = new Set<string>();
@@ -94,28 +78,14 @@ export function TablaVisualizarStockRepuestos(): React.JSX.Element {
       header: 'Disponible',
       align: 'center',
       width: 120,
-      render: (row) => {
-        const qty = row.CantidadDisponible ?? 0;
-        const color = qty <= 0 ? 'error' : qty <= 5 ? 'warning' : 'success';
-        const label = qty <= 0 ? 'Agotado' : qty <= 5 ? 'Bajo' : 'OK';
-        return (
-          <Stack alignItems="center" spacing={0.5}>
-            <Typography variant="body2" sx={{ fontWeight: 600 }}>{qty}</Typography>
-            <Chip size="small" color={color as any} label={label} />
-          </Stack>
-        );
-      }
+      render: (row) => <CeldaCantidadStock cantidad={row.CantidadDisponible} />
     },
     // { key: 'UnidadMedida', header: 'Unidad', width: 120 },
     {
       key: 'Estado',
       header: 'Estado',
       width: 120,
-      render: (row) => {
-        const disponible = (row.CantidadDisponible ?? 0) > 0;
-        // return <Chip size="small" color={disponible ? 'success' : 'default'} label={disponible ? 'Disponible' : 'No disponible'} />;
-        return <Chip size="small" color={getEstadoColor(row.Estado)} label={row.Estado} />;
-      }
+      render: (row) => <ChipEstadoStock estado={row.Estado} />
     }
   ];
 

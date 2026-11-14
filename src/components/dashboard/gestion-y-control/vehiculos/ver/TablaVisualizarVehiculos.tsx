@@ -1,6 +1,7 @@
 'use client';
 import { useMensajeAlerta } from '@/components/dashboard/componentes_generales/alertas/use-mensaje-alerta';
-import { useRecargaPorEventos, ChipEstadoTexto } from '../../comun/tabla-comun';
+import { useRecargaPorEventos } from '@/hooks/use-recarga-por-eventos';
+import { ChipEstadoTexto } from '../../comun/tabla-comun';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import { ActionDefinition, DataTable } from '@/components/dashboard/componentes_generales/tablas/TablaPrincipalReutilizable';
 import { useSocketIO } from '@/hooks/use-WebSocket';
