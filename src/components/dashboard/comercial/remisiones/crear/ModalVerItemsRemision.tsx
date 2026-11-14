@@ -2,10 +2,7 @@
 import * as React from 'react';
 import {
     Button,
-    Modal,
     Box,
-    useMediaQuery,
-    useTheme,
     IconButton,
     Typography,
     Card,
@@ -19,11 +16,10 @@ import {
     TableRow
 } from '@mui/material';
 import {
-    PencilSimple,
     Trash,
-    X,
     Info
 } from '@phosphor-icons/react/dist/ssr';
+import { ModalFormulario } from '@/components/dashboard/componentes_generales/modal/ModalFormulario';
 
 type EquipoItem = {
     value: string | number;
@@ -46,14 +42,8 @@ type ModalVerItemsRemisionProps = {
     precioTotalGeneral?: number;
 };
 export default function ModalVerItemsRemision({ items, onEliminarItem, precioTotalGeneral }: ModalVerItemsRemisionProps) {
-    //Para el manejo del tamaño de la pantalla del dispositivo
-    const isMobile = useMediaQuery('(max-width:600px)');
-    //...
     //Para menajar el estado del modal
     const [modalAbierto, setModalAbierto] = React.useState(false);
-    //...
-    //Para menejar el tema del modal
-    const theme = useTheme();
     //...
     //Para manejar la apertura del modal
     const VerItems = async () => {
@@ -68,53 +58,13 @@ export default function ModalVerItemsRemision({ items, onEliminarItem, precioTot
     return (
         <>
             <Button onClick={VerItems}>Ver</Button>
-            <Modal
-                open={modalAbierto}
-                onClose={(_, reason) => {
-                    if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
-                        setModalAbierto(false);
-                    }
-                }}
+            <ModalFormulario
+                abierto={modalAbierto}
+                onCerrar={() => setModalAbierto(false)}
+                titulo='Items remisión'
+                // Arriba de la pantalla y centrado solo en horizontal
+                sx={{ top: '1%', transform: 'translate(-50%)' }}
             >
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: '1%',
-                        left: '50%',
-                        transform: 'translate(-50%)', //Solo horizontalmente
-                        // width: '90%',
-                        // maxWidth: 1000,
-                        // width: '80%',
-                        width: {
-                            xs: '95%',
-                            sm: '90%',
-                            md: '80%',
-                            lg: '70%',
-                        },
-                        [theme.breakpoints.down('xl')]: {
-                            // width: 700,
-                        },
-                        bgcolor: 'background.paper',
-                        boxShadow: 24,
-                        p: 3,
-                        borderRadius: 2,
-                        maxHeight: '90vh',
-                        overflowY: 'auto',
-                    }}
-                >
-                    <IconButton
-                        onClick={() => setModalAbierto(false)}
-                        sx={{
-                            position: 'absolute',
-                            top: 8,
-                            right: 8,
-                        }}
-                    >
-                        <X />
-                    </IconButton>
-                    <Typography variant="subtitle1" mb={1}>
-                        Items remisión
-                    </Typography>
                     <Card>
                         <CardContent>
                             <TableContainer>
@@ -202,8 +152,7 @@ export default function ModalVerItemsRemision({ items, onEliminarItem, precioTot
                             </Box>
                         </CardContent>
                     </Card>
-                </Box>
-            </Modal>
+            </ModalFormulario>
         </>
     );
 };

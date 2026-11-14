@@ -5,20 +5,14 @@ import Input from '@/components/dashboard/componentes_generales/formulario/Input
 import InputSelect from '@/components/dashboard/componentes_generales/formulario/Select';
 import MensajeAlerta from '@/components/dashboard/componentes_generales/alertas/errorandsuccess';
 import {
-    Box,
     Button,
     Card,
     CardActions,
     CardContent,
     Divider,
-    IconButton,
-    Modal,
-    SelectChangeEvent,
-    Typography,
-    useTheme
+    SelectChangeEvent
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
-import { PencilSimple, X } from '@phosphor-icons/react/dist/ssr';
 import { ListarClientes } from '@/services/generales/ListarClientesService';
 import { ListarEstados } from '@/services/generales/ListarEstadosService';
 import { ConsultarProyectoPorId } from '@/services/gestionycontrol/proyectos/ConsultarProyectoPorIdService';
@@ -48,7 +42,6 @@ interface FormData {
 export function ModalFormularioEditarProyecto({ onMostrarMensaje, ProyectoAEditar, sendMessage }: ModalFormularioEditarProyectoProps): React.JSX.Element {
     // 3. Hooks de React y otros hooks de librerías
     //Para el tema del modal
-    const theme = useTheme();
     //...
 
     // 4. Estados
@@ -156,14 +149,7 @@ export function ModalFormularioEditarProyecto({ onMostrarMensaje, ProyectoAEdita
             mensaje={mensajeAlerta}
             onClose={() => setMostrarAlertas(false)}
         />
-        <IconButton
-            size="small"
-            color="primary"
-            onClick={AbrirModal}
-            title='Editar'
-        >
-            <PencilSimple size={20} weight="bold" />
-        </IconButton>
+        <BotonEditar onClick={AbrirModal} />
         <ModalFormulario
             abierto={modalAbierto}
             onCerrar={() => setModalAbierto(false)}

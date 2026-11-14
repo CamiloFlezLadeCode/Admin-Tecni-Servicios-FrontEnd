@@ -1,13 +1,7 @@
 'use client';
 import * as React from 'react';
-import { PencilSimple, X } from '@phosphor-icons/react/dist/ssr';
 import { useSocketIO } from '@/hooks/use-WebSocket';
 import {
-    IconButton,
-    Modal,
-    Box,
-    useTheme,
-    Typography,
     CardContent,
     Card,
     Divider,
@@ -73,7 +67,6 @@ export function FormularioEditarBodega({ IdBodega, onMostrarMensaje }: PropsForm
     // Para mostrar u ocultar el modal
     const [modalAbierto, setModalAbierto] = React.useState(false);
     //Para el tema del modal
-    const theme = useTheme();
     // Para almecnar datos iniciales
     const [tiposDeBodegas, setTiposDeBodegas] = React.useState([]);
     const [subarrendatarios, setSubarrendatarios] = React.useState([{ value: '', label: 'Sin seleccionar' },]);
@@ -171,14 +164,7 @@ export function FormularioEditarBodega({ IdBodega, onMostrarMensaje }: PropsForm
                 mensaje={mensajeAlerta}
                 onClose={() => setMostrarAlertas(false)}
             />
-            <IconButton
-                size="small"
-                color="primary"
-                onClick={(e) => { void CargarDatosIniciales(); setModalAbierto(true); }}
-                title='Editar'
-            >
-                <PencilSimple size={20} weight='bold' />
-            </IconButton>
+            <BotonEditar onClick={() => { void CargarDatosIniciales(); setModalAbierto(true); }} />
             <ModalFormulario
                 abierto={modalAbierto}
                 onCerrar={() => setModalAbierto(false)}

@@ -8,20 +8,14 @@ import { ListarSubarrendatarios } from '@/services/generales/ListarSubarrendatar
 import { ActualizarEquipo } from '@/services/gestionycontrol/equipos/ActualizarEquipoService';
 import { ConsultarEquipoPorId } from '@/services/gestionycontrol/equipos/ConsultarEquipoPorIdService';
 import {
-    Box,
     Button,
     Card,
     CardActions,
     CardContent,
-    Divider,
-    IconButton,
-    Modal,
-    Typography,
-    useTheme
+    Divider
 } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
 import Grid from '@mui/material/Unstable_Grid2';
-import { PencilSimple, X } from '@phosphor-icons/react/dist/ssr';
 import * as React from 'react';
 import { BotonEditar, ModalFormulario } from '@/components/dashboard/componentes_generales/modal/ModalFormulario';
 
@@ -83,7 +77,6 @@ export function FormularioEditarEquipo({ IdEquipo, sendMessage, onMostrarMensaje
     //...
 
     //Para el tema del modal
-    const theme = useTheme();
     //...
 
     //Para el manejo de las notificiones/alertas
@@ -138,52 +131,12 @@ export function FormularioEditarEquipo({ IdEquipo, sendMessage, onMostrarMensaje
                 mensaje={mensajeAlerta}
                 onClose={() => setMostrarAlertas(false)}
             />
-            <IconButton
-                size="small"
-                color="primary"
-                onClick={EditarEquipo}
-                title='Editar'
-            >
-                <PencilSimple size={20} weight="bold" />
-            </IconButton>
+            <BotonEditar onClick={EditarEquipo} />
             <ModalFormulario
                 abierto={modalAbierto}
                 onCerrar={() => setModalAbierto(false)}
                 titulo={'Actualizar Equipo'}
-                sx={{
-                        position: 'absolute',
-                        top: {
-                            xs: '40%',
-                            sm: '50%',
-                            md: '50%',
-                            lg: '30%',
-                        },
-                        left: {
-                            xs: '50%',
-                            sm: '50%',
-                            md: '50%',
-                            lg: '50%',
-                        },
-                        transform: 'translate(-50%, -50%)',
-                        // width: '90%',
-                        // maxWidth: 1000,
-                        // width: '80%',
-                        width: {
-                            xs: '95%',
-                            sm: '90%',
-                            md: '80%',
-                            lg: '70%',
-                        },
-                        [theme.breakpoints.down('xl')]: {
-                            // width: 700,
-                        },
-                        bgcolor: 'background.paper',
-                        boxShadow: 24,
-                        p: 3,
-                        borderRadius: 2,
-                        maxHeight: '90vh',
-                        overflowY: 'auto',
-                }}
+                sx={{ top: { xs: '40%', sm: '50%', md: '50%', lg: '30%' } }}
             >
                     <Card>
                         <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>

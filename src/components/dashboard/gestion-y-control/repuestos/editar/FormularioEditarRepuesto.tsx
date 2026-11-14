@@ -6,20 +6,14 @@ import { ListarEstados } from '@/services/generales/ListarEstadosService';
 import { ActualizarRepuesto } from '@/services/gestionycontrol/repuestos/ActualizarRepuestoService';
 import { ConsultarRepuestoPorId } from '@/services/gestionycontrol/repuestos/ConsultarRepuestoPorIdService';
 import {
-    Box,
     Button,
     Card,
     CardActions,
     CardContent,
     Divider,
-    IconButton,
-    Modal,
-    SelectChangeEvent,
-    Typography,
-    useTheme
+    SelectChangeEvent
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
-import { PencilSimple, X } from '@phosphor-icons/react/dist/ssr';
 import * as React from 'react';
 import { BotonEditar, ModalFormulario } from '@/components/dashboard/componentes_generales/modal/ModalFormulario';
 
@@ -102,7 +96,6 @@ export function FormularioEditarRepuesto({ IdRepuesto, sendMessage, onMostrarMen
     // ...
 
     //Para el tema del modal
-    const theme = useTheme();
     //...
 
     //Se maneja el cambio para todos los campos
@@ -150,14 +143,7 @@ export function FormularioEditarRepuesto({ IdRepuesto, sendMessage, onMostrarMen
     //...
     return (
         <>
-            <IconButton
-                size="small"
-                color="primary"
-                onClick={EditarRepuesto}
-            // title='Editar'
-            >
-                <PencilSimple size={20} weight="bold" />
-            </IconButton>
+            <BotonEditar onClick={EditarRepuesto} />
             <MensajeAlerta
                 open={mostrarAlertas}
                 tipo={tipoAlerta}

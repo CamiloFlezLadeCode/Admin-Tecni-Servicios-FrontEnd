@@ -7,20 +7,16 @@ import { ListarEstados } from '@/services/generales/ListarEstadosService';
 import { ActualizarVehiculo } from '@/services/gestionycontrol/vehiculos/ActualizarVehiculoService';
 import { ConsultarVehiculoPorId } from '@/services/gestionycontrol/vehiculos/ConsultarVehiculoPorIdService';
 import {
-    Box,
     Button,
     Card,
     CardActions,
     CardContent,
     Divider,
-    IconButton, Modal,
     SelectChangeEvent,
-    Typography,
     useMediaQuery,
     useTheme
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
-import { PencilSimple, X } from '@phosphor-icons/react/dist/ssr';
 import * as React from 'react';
 import { BotonEditar, ModalFormulario } from '@/components/dashboard/componentes_generales/modal/ModalFormulario';
 
@@ -121,13 +117,7 @@ export function FormularioModalEditarVehiculo({
     };
     return (
         <>
-            <IconButton
-                size="small"
-                color="primary"
-                onClick={EditarVehiculo}
-            >
-                <PencilSimple size={20} weight="bold" />
-            </IconButton>
+            <BotonEditar onClick={EditarVehiculo} />
             <MensajeAlerta
                 open={mostrarAlertas}
                 tipo={tipoAlerta}
@@ -138,25 +128,7 @@ export function FormularioModalEditarVehiculo({
                 abierto={modalAbierto}
                 onCerrar={() => setModalAbierto(false)}
                 titulo={'Actualizar Vehículo'}
-                sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        // width: '90%',
-                        // maxWidth: 1000,
-                        // width: '50%',
-                        width: { xs: '80%', md: '40%' },
-                        [theme.breakpoints.down('xl')]: {
-                            // width: 700,
-                        },
-                        bgcolor: 'background.paper',
-                        boxShadow: 24,
-                        p: 3,
-                        borderRadius: 2,
-                        maxHeight: '90vh',
-                        overflowY: 'auto',
-                }}
+                sx={{ width: { xs: '80%', md: '40%' } }}
             >
                     <Card>
                         <CardContent style={{ paddingTop: '10px', paddingBottom: '10px' }}>
