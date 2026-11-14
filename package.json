@@ -16,7 +16,12 @@
     "lint:fix": "next lint --fix",
     "typecheck": "tsc --noEmit",
     "format:write": "prettier --write \"**/*.{js,jsx,mjs,ts,tsx,mdx}\" --cache",
-    "format:check": "prettier --check \"**/*.{js,jsx,mjs,ts,tsx,mdx}\" --cache"
+    "format:check": "prettier --check \"**/*.{js,jsx,mjs,ts,tsx,mdx}\" --cache",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "sonar": "sonar-scanner-npm"
   },
   "dependencies": {
     "@emotion/cache": "11.11.0",
