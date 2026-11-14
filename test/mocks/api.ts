@@ -8,6 +8,8 @@ export interface PeticionRegistrada {
   metodo: Metodo;
   /** Ruta sin la URL base: `/ver-bodegas`. */
   ruta: string;
+  /** URL sin la base pero con su query string (si la petición la arma a mano). */
+  url: string;
   cuerpo?: unknown;
   params?: Record<string, unknown>;
   config?: Record<string, unknown>;
@@ -69,6 +71,7 @@ export function simularApi(rutas: Rutas = {}) {
       const peticion: PeticionRegistrada = {
         metodo,
         ruta,
+        url: String(url).replace(BASE, ''),
         cuerpo: tieneCuerpo ? a : undefined,
         params: config.params,
         config,

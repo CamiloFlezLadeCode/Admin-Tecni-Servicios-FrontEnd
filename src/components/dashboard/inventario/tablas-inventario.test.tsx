@@ -43,7 +43,7 @@ describe.each([
   const fila = (nombre: string) => screen.getByText(nombre).closest('tr') as HTMLElement;
 
   it('clasifica la disponibilidad (OK / Bajo / Agotado) y filtra solo bajo stock en el servidor', async () => {
-    const api = simularApi({ [`GET ${ruta}`]: () => paginar(filas) });
+    const api = simularApi({ [`GET ${ruta}`]: () => paginar<unknown>(filas) });
     const { user } = renderConProveedores(<Componente />);
     await screen.findByText('Andamio');
     expect(api.llamadasA(ruta)[0].params).toEqual({ pagina: 1, limite: 10 });
@@ -60,7 +60,7 @@ describe.each([
   });
 
   it('recarga con entradas y salidas, y avisa si no puede cargar', async () => {
-    const api = simularApi({ [`GET ${ruta}`]: () => paginar(filas) });
+    const api = simularApi({ [`GET ${ruta}`]: () => paginar<unknown>(filas) });
     const { unmount } = renderConProveedores(<Componente />);
     await screen.findByText('Andamio');
     act(() => emitirDesdeServidor('bodega-creada', {}));

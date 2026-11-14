@@ -66,7 +66,7 @@ describe('raíz de la aplicación', () => {
   it('el layout raíz monta proveedores con idioma español', () => {
     const { default: LayoutRaiz } = raiz['./layout.tsx'];
     // El layout raíz pinta <html>/<body>: se renderiza como elemento para inspeccionarlo.
-    const arbol = LayoutRaiz({ children: 'x' }) as React.ReactElement<{ lang: string }>;
+    const arbol = (LayoutRaiz as (props: { children: React.ReactNode }) => React.ReactNode)({ children: 'x' }) as React.ReactElement<{ lang: string }>;
     expect(arbol.props.lang).toBe('es');
   });
 

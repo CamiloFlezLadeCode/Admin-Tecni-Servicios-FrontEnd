@@ -86,7 +86,7 @@ async function resultado(promesa: () => unknown) {
 }
 
 function serializarLlamadas(espias: ReturnType<typeof espiarAxios>) {
-  return METODOS.flatMap((metodo) => espias[metodo].mock.calls.map((args) => [metodo.toUpperCase(), ...args]));
+  return METODOS.flatMap((metodo) => espias[metodo].mock.calls.map((args: unknown[]) => [metodo.toUpperCase(), ...args]));
 }
 
 const casos = Object.entries(modulos)

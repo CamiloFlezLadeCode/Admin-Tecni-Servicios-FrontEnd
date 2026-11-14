@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
 import { render, type RenderOptions, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { expect } from 'vitest';
 
 import type { User } from '@/types/user';
 import { LocalizationProvider } from '@/components/core/localization-provider';

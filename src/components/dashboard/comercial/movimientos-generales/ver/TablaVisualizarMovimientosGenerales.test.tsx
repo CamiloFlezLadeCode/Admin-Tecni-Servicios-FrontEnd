@@ -93,7 +93,7 @@ describe('TablaVisualizarMovimientosGenerales', () => {
     api.definir({ 'GET /listar-proyectos': () => [{ value: 3, label: 'Torre' }] });
     await user.click(screen.getByRole('button', { name: 'Limpiar' }));
     await waitFor(() => expect(screen.getByText('Todos los Clientes')).toBeInTheDocument());
-    await waitFor(() => expect(api.llamadasA('/ver-movimientos-generales').at(-1)!.params.IdProyecto).toBeUndefined());
+    await waitFor(() => expect(api.llamadasA('/ver-movimientos-generales').at(-1)!.params?.IdProyecto).toBeUndefined());
 
     const antes = api.llamadasA('/ver-movimientos-generales').length;
     await user.click(screen.getByRole('button', { name: 'Buscar' }));

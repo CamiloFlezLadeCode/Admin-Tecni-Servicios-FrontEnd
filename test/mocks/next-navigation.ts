@@ -15,10 +15,14 @@ export const navegacion = {
   searchParams: new URLSearchParams(),
 };
 
+/** Callbacks registrados con `useServerInsertedHTML` (solo se ejecutan en SSR; aquí se invocan a mano). */
+export const htmlInsertadoEnServidor: (() => unknown)[] = [];
+
 export function reiniciarNavegacion(): void {
   for (const espia of Object.values(routerMock)) espia.mockReset();
   navegacion.pathname = '/dashboard';
   navegacion.searchParams = new URLSearchParams();
+  htmlInsertadoEnServidor.length = 0;
 }
 
 export const nextNavigationMock = {
@@ -28,4 +32,7 @@ export const nextNavigationMock = {
   useParams: () => ({}),
   redirect: vi.fn(),
   notFound: vi.fn(),
+  useServerInsertedHTML: (callback: () => unknown) => {
+    htmlInsertadoEnServidor.push(callback);
+  },
 };
