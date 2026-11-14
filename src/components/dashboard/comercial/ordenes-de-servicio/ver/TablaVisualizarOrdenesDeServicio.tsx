@@ -6,8 +6,6 @@ import { VerTodasLasOrdenesDeServicioPaginado } from '@/services/comercial/orden
 import { usePaginacionServidor } from '@/hooks/use-paginacion-servidor';
 import { Chip } from '@mui/material';
 import * as React from 'react';
-import { BotonEliminarOrdenDeServicio } from '../acciones/EliminarOrdenDeServicio';
-import { VerGenerarPDFOrdenDeServicio } from '../acciones/VerGenerarPDFOrdenDeServicio';
 // Servicios
 import { ObtenerPDFOrdenDeServicio } from '@/services/comercial/ordenes_de_servicio/ObtenerPDFOrdenDeServicioService';
 import { EliminarOrdenDeServicio } from '@/services/comercial/ordenes_de_servicio/EliminarOrdenDeServicioService';
